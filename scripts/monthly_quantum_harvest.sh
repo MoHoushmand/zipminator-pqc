@@ -1,6 +1,6 @@
 #!/bin/bash
 # Automated Monthly Quantum Entropy Harvest
-# Location: /Users/mos/dev/qdaria-qrng/scripts/monthly_quantum_harvest.sh
+# Location: scripts/monthly_quantum_harvest.sh
 # Purpose: Harvest quantum entropy from IBM Quantum once per month
 
 set -euo pipefail

@@ -11,9 +11,10 @@ pub mod mock;
 use thiserror::Error;
 
 /// Health status of a QRNG device
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum HealthStatus {
-    /// Device is healthy and operating normally
+    /// Device is healthy and operating normally (default)
+    #[default]
     Healthy,
     /// Device is degraded but still functional
     Degraded,

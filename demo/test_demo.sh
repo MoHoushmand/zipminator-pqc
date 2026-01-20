@@ -90,7 +90,7 @@ fi
 print_section "Quantum Entropy Validation (5 tests)"
 
 # Check entropy file existence in production
-ENTROPY_FILE=$(ls -t /Users/mos/dev/zipminator/production/entropy_pool/quantum_entropy_ibm_*.bin 2>/dev/null | head -1)
+ENTROPY_FILE=$(ls -t ../production/entropy_pool/quantum_entropy_ibm_*.bin 2>/dev/null | head -1)
 
 if [ -f "$ENTROPY_FILE" ]; then
     echo "Found entropy file: $(basename $ENTROPY_FILE)"

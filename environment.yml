@@ -41,4 +41,4 @@ dependencies:
     - xlsxwriter==3.2.9
     - youtube-transcript-api==1.0.3
 
-prefix: "/Users/mos/y/envs/ds-quantum"
+prefix: "./envs/ds-quantum"

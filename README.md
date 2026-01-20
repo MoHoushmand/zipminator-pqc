@@ -133,7 +133,7 @@ Zipminator-PQC harvests entropy from **real quantum computers**, not pseudo-rand
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/zipminator-pqc.git
+git clone https://github.com/MoHoushmand/zipminator-pqc.git
 cd zipminator-pqc
 
 # Install Python dependencies
@@ -396,9 +396,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-- **Email**: [your-email@example.com]
-- **GitHub Issues**: [https://github.com/yourusername/zipminator-pqc/issues](https://github.com/yourusername/zipminator-pqc/issues)
-- **Documentation**: [https://zipminator-pqc.readthedocs.io](https://zipminator-pqc.readthedocs.io)
+- **Email**: [enterprise@zipminator.io](mailto:enterprise@zipminator.io)
+- **GitHub Issues**: [https://github.com/MoHoushmand/zipminator-pqc/issues](https://github.com/MoHoushmand/zipminator-pqc/issues)
+- **Security**: [security@zipminator.io](mailto:security@zipminator.io)
 
 ---
 

@@ -1,10 +1,11 @@
 /// ID Quantique QRNG Device Driver
 ///
 /// Implements communication with ID Quantique Quantis USB quantum random number generators.
-/// Uses libusb for USB communication and provides thread-safe access.
+/// Uses rusb for USB communication and provides thread-safe access.
 
 use super::{HealthStatus, QrngDevice, QrngError};
 use log::{debug, error, info, warn};
+use rusb::{Context, DeviceHandle, GlobalContext};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
@@ -22,9 +23,9 @@ const MAX_BIAS: f64 = 0.55; // Maximum acceptable bit bias (0.5 = perfect)
 /// ID Quantique QRNG device driver
 pub struct IdQuantiqueDevice {
     /// USB context (shared across threads if needed)
-    context: Arc<Mutex<Option<libusb::Context>>>,
+    context: Arc<Mutex<Option<Context>>>,
     /// USB device handle
-    device_handle: Option<libusb::DeviceHandle<libusb::Context>>,
+    device_handle: Option<DeviceHandle<GlobalContext>>,
     /// Device initialization status
     initialized: bool,
     /// Statistics for health monitoring
@@ -41,8 +42,8 @@ struct DeviceStats {
 impl IdQuantiqueDevice {
     /// Create a new ID Quantique device driver
     pub fn new() -> Result<Self, QrngError> {
-        let context = libusb::Context::new()
-            .map_err(|e| QrngError::InitializationFailed(format!("libusb context: {}", e)))?;
+        let context = Context::new()
+            .map_err(|e| QrngError::InitializationFailed(format!("rusb context: {}", e)))?;
 
         Ok(Self {
             context: Arc::new(Mutex::new(Some(context))),
@@ -52,12 +53,11 @@ impl IdQuantiqueDevice {
         })
     }
 
-    /// Find the ID Quantique device on the USB bus
-    fn find_device(&self) -> Result<libusb::Device<libusb::Context>, QrngError> {
-        let context_lock = self.context.lock().unwrap();
-        let context = context_lock.as_ref().ok_or(QrngError::DeviceNotFound)?;
+    /// Find and open the ID Quantique device on the USB bus
+    fn open_device(&self) -> Result<DeviceHandle<GlobalContext>, QrngError> {
+        let devices = rusb::devices().map_err(|e| QrngError::UsbError(e.to_string()))?;
 
-        for device in context.devices().map_err(|e| QrngError::UsbError(e.to_string()))?.iter() {
+        for device in devices.iter() {
             let desc = device
                 .device_descriptor()
                 .map_err(|e| QrngError::UsbError(e.to_string()))?;
@@ -65,15 +65,21 @@ impl IdQuantiqueDevice {
             if desc.vendor_id() == VENDOR_ID && desc.product_id() == PRODUCT_ID {
                 debug!("Found ID Quantique device: VID={:04x} PID={:04x}",
                        desc.vendor_id(), desc.product_id());
-                return Ok(device);
+                return device.open()
+                    .map_err(|e| QrngError::InitializationFailed(format!("open device: {}", e)));
             }
         }
 
         Err(QrngError::DeviceNotFound)
     }
 
-    /// Perform statistical quality check on random data
+    /// Perform statistical quality check on random data (instance method)
     fn check_statistical_quality(&self, data: &[u8]) -> Result<(), QrngError> {
+        Self::check_statistical_quality_static(data)
+    }
+
+    /// Perform statistical quality check on random data (static method for borrow-friendly calls)
+    fn check_statistical_quality_static(data: &[u8]) -> Result<(), QrngError> {
         if data.is_empty() {
             return Ok(());
         }
@@ -106,13 +112,8 @@ impl QrngDevice for IdQuantiqueDevice {
 
         info!("Initializing ID Quantique QRNG device...");
 
-        // Find the device
-        let device = self.find_device()?;
-
-        // Open device handle
-        let mut handle = device
-            .open()
-            .map_err(|e| QrngError::InitializationFailed(format!("open device: {}", e)))?;
+        // Find and open the device
+        let mut handle = self.open_device()?;
 
         // Claim interface 0
         handle
@@ -142,9 +143,6 @@ impl QrngDevice for IdQuantiqueDevice {
             return Err(QrngError::InitializationFailed("Device not initialized".to_string()));
         }
 
-        let handle = self.device_handle.as_mut()
-            .ok_or(QrngError::DeviceNotFound)?;
-
         let mut total_read = 0;
         let timeout = Duration::from_millis(TIMEOUT_MS);
 
@@ -152,17 +150,23 @@ impl QrngDevice for IdQuantiqueDevice {
         while total_read < buffer.len() {
             let remaining = buffer.len() - total_read;
             let chunk_size = remaining.min(MAX_CHUNK_SIZE);
+
+            let handle = self.device_handle.as_mut()
+                .ok_or(QrngError::DeviceNotFound)?;
+
             let chunk = &mut buffer[total_read..total_read + chunk_size];
 
-            match handle.read_bulk(ENDPOINT_IN, chunk, timeout) {
+            let read_result = handle.read_bulk(ENDPOINT_IN, chunk, timeout);
+
+            match read_result {
                 Ok(bytes_read) => {
                     if bytes_read == 0 {
                         warn!("Read 0 bytes from device, retrying...");
                         continue;
                     }
 
-                    // Verify statistical quality of received data
-                    self.check_statistical_quality(&chunk[..bytes_read])?;
+                    // Verify statistical quality of received data (borrow ends before this)
+                    Self::check_statistical_quality_static(&buffer[total_read..total_read + bytes_read])?;
 
                     total_read += bytes_read;
                     self.stats.total_bytes_read += bytes_read as u64;

@@ -2,7 +2,7 @@
 
 ## One-Command Launch
 ```bash
-cd /Users/mos/dev/zipminator/demo && ./start_demo.sh
+cd zipminator-pqc/demo && ./start_demo.sh
 ```
 
 ## What You'll See
@@ -42,7 +42,7 @@ Starting Zipminator Demo...
 
 ## Testing (Optional)
 ```bash
-cd /Users/mos/dev/zipminator/demo
+cd zipminator-pqc/demo
 ./test_demo.sh
 # Expected: 34/34 tests passing
 ```
@@ -64,7 +64,7 @@ lsof -ti:5001 | xargs kill -9
 
 **Entropy file missing**:
 ```bash
-cd /Users/mos/dev/zipminator
+cd zipminator-pqc
 python3 scripts/qrng_harvester.py  # Regenerates 750 bytes
 ```
 

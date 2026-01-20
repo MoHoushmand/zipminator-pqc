@@ -166,27 +166,28 @@ impl EntropyManager {
             _ => {}
         }
 
+        // Get old source info before iteration
+        let old_info = self.sources[self.active_index].source_info();
+        let old_active_index = self.active_index;
+
         // Try other sources
-        for (idx, source) in self.sources.iter_mut().enumerate() {
-            if idx == self.active_index {
+        for idx in 0..self.sources.len() {
+            if idx == old_active_index {
                 continue;
             }
 
-            match source.get_random_bytes(buffer) {
+            match self.sources[idx].get_random_bytes(buffer) {
                 Ok(bytes_read) if bytes_read == buffer.len() => {
-                    if idx != self.active_index {
-                        let old_info = self.sources[self.active_index].source_info();
-                        let new_info = source.source_info();
+                    let new_info = self.sources[idx].source_info();
 
-                        if self.warn_on_fallback {
-                            warn!(
-                                "Entropy source changed: {} → {}",
-                                old_info, new_info
-                            );
-                        }
-
-                        self.active_index = idx;
+                    if self.warn_on_fallback {
+                        warn!(
+                            "Entropy source changed: {} → {}",
+                            old_info, new_info
+                        );
                     }
+
+                    self.active_index = idx;
                     return Ok(());
                 }
                 _ => continue,

@@ -3,7 +3,7 @@
 ## Quick Start
 
 ```bash
-cd /Users/mos/dev/qdaria-qrng/src/rust
+cd src/rust
 
 # Run tests
 cargo test

@@ -4,30 +4,11 @@
 
 ---
 
-## 📁 Where Are The Docs?
-
-All Zipminator analysis docs are in **this project** (qdaria-qrng):
-
-```bash
-cd /Users/mos/dev/qdaria-qrng/docs
-
-# Main security analysis
-cat ZIPMINATOR_FINAL_VERDICT.md      # Complete security verdict
-cat ZIPMINATOR_CLONE_GUIDE.md        # Clone instructions
-
-# Deep security review (if created by agent)
-ls -l zipminator-analysis/            # Detailed analysis folder
-```
-
-**Note**: These docs are in the **qdaria-qrng** project, not in the cloned zipminator repo!
-
----
-
-## 🚀 1. Run Your First Quantum Harvest (NOW!)
+## 1. Run Your First Quantum Harvest (NOW!)
 
 ### Option A: Quick Test (100 bytes, ~30 seconds)
 ```bash
-cd /Users/mos/dev/qdaria-qrng
+cd zipminator-pqc
 ./scripts/harvest_now.sh 100 ibm_strasbourg
 ```
 
@@ -45,7 +26,7 @@ cd /Users/mos/dev/qdaria-qrng
 
 ---
 
-## ⚙️ 2. Set Up Automated Monthly Harvesting
+## 2. Set Up Automated Monthly Harvesting
 
 ### Install Cron Job (One Command!)
 ```bash
@@ -72,11 +53,9 @@ tail -f logs/quantum_harvest.log
 
 ---
 
-## 📊 3. Check Your Entropy Pool Status
+## 3. Check Your Entropy Pool Status
 
 ```bash
-cd /Users/mos/dev/qdaria-qrng
-
 python3 << 'EOF'
 import sys
 sys.path.insert(0, 'src/python')
@@ -98,9 +77,9 @@ EOF
 
 ---
 
-## 🎯 Available Scripts
+## 4. Available Scripts
 
-All scripts are in `/Users/mos/dev/qdaria-qrng/scripts/`:
+All scripts are in `scripts/`:
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
@@ -112,7 +91,7 @@ All scripts are in `/Users/mos/dev/qdaria-qrng/scripts/`:
 
 ---
 
-## 🔧 Troubleshooting
+## 5. Troubleshooting
 
 ### "IBM_QUANTUM_TOKEN not set"
 ```bash
@@ -146,7 +125,7 @@ python3 scripts/test_ibm_token.py
 
 ---
 
-## 📈 What Happens After Harvest?
+## 6. What Happens After Harvest?
 
 1. **Entropy Generated**: Real quantum random bytes from IBM hardware
 2. **Encrypted Storage**: AES-256-GCM with HMAC-SHA256 integrity
@@ -155,12 +134,12 @@ python3 scripts/test_ibm_token.py
 
 ---
 
-## 🎓 Next Steps
+## 7. Next Steps
 
 ### Immediate
-- ✅ Run first harvest (`./scripts/harvest_now.sh 100`)
-- ✅ Set up automation (`./scripts/setup_cron.sh`)
-- ✅ Verify logs (`tail -f logs/quantum_harvest.log`)
+- Run first harvest (`./scripts/harvest_now.sh 100`)
+- Set up automation (`./scripts/setup_cron.sh`)
+- Verify logs (`tail -f logs/quantum_harvest.log`)
 
 ### This Week
 - Integrate with Kyber-768 implementation
@@ -174,7 +153,7 @@ python3 scripts/test_ibm_token.py
 
 ---
 
-## 💡 Tips
+## Tips
 
 1. **Start Small**: Test with 100 bytes first (30 seconds, ~0.1 credits)
 2. **Monitor Credits**: Check IBM dashboard regularly
@@ -185,8 +164,7 @@ python3 scripts/test_ibm_token.py
 
 **Ready?** Run your first harvest now:
 ```bash
-cd /Users/mos/dev/qdaria-qrng
 ./scripts/harvest_now.sh 100
 ```
 
-🚀 **You'll have real quantum entropy in 30 seconds!**
+**You'll have real quantum entropy in 30 seconds!**

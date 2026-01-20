@@ -13,7 +13,7 @@ rand_core = "0.6"
 getrandom = { version = "0.2", features = ["std"] }
 
 # QRNG Integration
-libusb = "0.3"
+rusb = "0.9"
 thiserror = "1.0"
 log = "0.4"
 env_logger = "0.11"

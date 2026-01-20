@@ -38,9 +38,18 @@ impl Poly {
         ntt(&mut self.coeffs);
     }
 
-    /// Apply inverse NTT
+    /// Apply inverse NTT (output is in Montgomery form)
     pub fn invntt(&mut self) {
         invntt(&mut self.coeffs);
+    }
+
+    /// Convert from Montgomery form to normal form
+    /// Call this after invntt before using coefficients for encoding/compression
+    pub fn from_mont(&mut self) {
+        for i in 0..KYBER_N {
+            // montgomery_reduce(a) computes a * R^(-1) mod q
+            self.coeffs[i] = crate::ntt::montgomery_reduce_pub(self.coeffs[i] as i32);
+        }
     }
 
     /// Pointwise multiply in NTT domain

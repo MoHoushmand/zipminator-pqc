@@ -114,13 +114,20 @@ impl Kyber768 {
         pk: &PublicKey,
         coins: &[u8; KYBER_SYMBYTES],
     ) -> (Ciphertext, SharedSecret) {
-        // Hash public key
-        let _pk_hash = sha3_256(&pk.data);
+        // Hash public key (multitarget countermeasure)
+        let pk_hash = sha3_256(&pk.data);
 
-        // Derive keys
-        let kr = sha3_512(coins);
+        // Derive (K, r) = G(coins || H(pk))
+        let mut buf = Vec::with_capacity(2 * KYBER_SYMBYTES);
+        buf.extend_from_slice(coins);
+        buf.extend_from_slice(&pk_hash);
+        let kr = sha3_512(&buf);
+
+        // K = kr[0..32], encryption coins = kr[32..64]
         let mut k = [0u8; KYBER_SYMBYTES];
         k.copy_from_slice(&kr[0..KYBER_SYMBYTES]);
+        let mut enc_coins = [0u8; KYBER_SYMBYTES];
+        enc_coins.copy_from_slice(&kr[KYBER_SYMBYTES..]);
 
         // Unpack public key
         let t = PolyVec::from_bytes(&pk.data[..KYBER_POLYVECBYTES]);
@@ -130,10 +137,10 @@ impl Kyber768 {
         // Generate matrix A
         let at = Self::gen_matrix(&publicseed, true);
 
-        // Sample r, e1, e2
+        // Sample r, e1, e2 using encryption coins
         let mut r = PolyVec::new();
         for i in 0..KYBER_K {
-            let mut nonce = k.to_vec();
+            let mut nonce = enc_coins.to_vec();
             nonce.push(i as u8);
             r.polys[i] = Poly::cbd(KYBER_ETA1, &nonce);
         }
@@ -141,12 +148,12 @@ impl Kyber768 {
 
         let mut e1 = PolyVec::new();
         for i in 0..KYBER_K {
-            let mut nonce = k.to_vec();
+            let mut nonce = enc_coins.to_vec();
             nonce.push((i + KYBER_K) as u8);
             e1.polys[i] = Poly::cbd(KYBER_ETA2, &nonce);
         }
 
-        let mut nonce = k.to_vec();
+        let mut nonce = enc_coins.to_vec();
         nonce.push((2 * KYBER_K) as u8);
         let e2 = Poly::cbd(KYBER_ETA2, &nonce);
 
@@ -165,11 +172,12 @@ impl Kyber768 {
         v.add(&e2);
 
         // Add message (encoded from coins)
+        // Reference: msg encoding uses (q+1)/2 = 1665 for bit 1
         for i in 0..KYBER_N {
             let byte_idx = i / 8;
             let bit_idx = i % 8;
             let bit = (coins[byte_idx] >> bit_idx) & 1;
-            v.coeffs[i] = v.coeffs[i].wrapping_add((bit as i16) * (KYBER_Q / 2));
+            v.coeffs[i] = v.coeffs[i].wrapping_add((bit as i16) * ((KYBER_Q + 1) / 2));
         }
         v.reduce();
 
@@ -217,10 +225,14 @@ impl Kyber768 {
 
         let mut msg = [0u8; KYBER_SYMBYTES];
         for i in 0..KYBER_N {
-            let t = v.coeffs[i] - mp.coeffs[i];
-            let t = ((t as i32 * 2) + KYBER_Q as i32 / 2) / KYBER_Q as i32;
-            let bit = t & 1;
-            msg[i / 8] |= (bit as u8) << (i % 8);
+            // m' = v - s^T*u, need to recover bit from this
+            let mut t = v.coeffs[i] - mp.coeffs[i];
+            // Normalize to [0, q-1]
+            t += (t >> 15) & KYBER_Q;
+            // Decode: if t is closer to q/2 (1665), bit = 1; if closer to 0, bit = 0
+            // (t * 2 + q/2) / q gives 0 or 1
+            let bit = (((t as u32) << 1) + (KYBER_Q as u32 / 2)) / (KYBER_Q as u32);
+            msg[i / 8] |= ((bit & 1) as u8) << (i % 8);
         }
 
         // Re-encapsulate to verify

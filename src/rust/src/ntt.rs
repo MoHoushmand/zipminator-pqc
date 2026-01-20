@@ -11,11 +11,19 @@ use crate::constants::*;
 
 /// Montgomery reduction: compute a * R^(-1) mod q where R = 2^16
 /// CRITICAL: Must be constant-time
+/// Reference: NIST FIPS 203 / PQ-Crystals Kyber
 #[inline(always)]
 fn montgomery_reduce(a: i32) -> i16 {
-    let t = (a as i64 * QINV as i64) & 0xFFFF;
-    let t = (a as i64 - t * KYBER_Q as i64) >> 16;
-    t as i16
+    // t = a * QINV mod 2^16 (signed truncation like C's (int16_t)a * QINV)
+    let t = (a as i16).wrapping_mul(QINV as i16) as i32;
+    // (a - t*q) >> 16
+    ((a - t * KYBER_Q as i32) >> 16) as i16
+}
+
+/// Public wrapper for montgomery_reduce (for poly.rs access)
+#[inline(always)]
+pub fn montgomery_reduce_pub(a: i32) -> i16 {
+    montgomery_reduce(a)
 }
 
 /// Barrett reduction: reduce a mod q
@@ -39,7 +47,8 @@ fn csubq(a: i16) -> i16 {
 
 /// Forward NTT transformation
 /// Input: polynomial coefficients in normal order
-/// Output: polynomial coefficients in NTT representation
+/// Output: polynomial coefficients in NTT representation (Montgomery domain)
+/// Reference: NIST FIPS 203 / PQ-Crystals Kyber
 pub fn ntt(poly: &mut [i16; KYBER_N]) {
     let mut k = 1;
     let mut len = 128;
@@ -51,75 +60,74 @@ pub fn ntt(poly: &mut [i16; KYBER_N]) {
             k += 1;
 
             for j in start..start + len {
-                let t = montgomery_reduce(zeta as i32 * poly[j + len] as i32);
-                poly[j + len] = poly[j].wrapping_sub(t);
-                poly[j] = poly[j].wrapping_add(t);
+                let t = fqmul(zeta, poly[j + len]);
+                poly[j + len] = poly[j] - t;
+                poly[j] = poly[j] + t;
             }
             start += 2 * len;
         }
         len >>= 1;
     }
+}
 
-    // Final reduction: double reduction to ensure [0, q-1] range
-    for i in 0..KYBER_N {
-        poly[i] = csubq(barrett_reduce(poly[i]));
-    }
+/// Multiplication followed by Montgomery reduction
+#[inline(always)]
+fn fqmul(a: i16, b: i16) -> i16 {
+    montgomery_reduce(a as i32 * b as i32)
 }
 
 /// Inverse NTT transformation
-/// Input: polynomial coefficients in NTT representation
-/// Output: polynomial coefficients in normal order
+/// Input: polynomial coefficients in NTT representation (Montgomery domain)
+/// Output: polynomial coefficients in normal order, multiplied by Montgomery factor 2^16
+/// Reference: NIST FIPS 203 / PQ-Crystals Kyber ref/ntt.c
 pub fn invntt(poly: &mut [i16; KYBER_N]) {
-    let mut k = 127;
+    let mut k: usize = 127;
     let mut len = 2;
 
     while len <= 128 {
         let mut start = 0;
         while start < KYBER_N {
-            let zeta = ZETAS_INV[k];
-            k -= 1;
+            // Use same ZETAS array as forward NTT, accessed in reverse order
+            let zeta = ZETAS[k];
+            k = k.wrapping_sub(1);
 
             for j in start..start + len {
                 let t = poly[j];
-                poly[j] = barrett_reduce(t.wrapping_add(poly[j + len]));
-                poly[j + len] = t.wrapping_sub(poly[j + len]);
-                poly[j + len] = montgomery_reduce(zeta as i32 * poly[j + len] as i32);
+                poly[j] = barrett_reduce(t + poly[j + len]);
+                poly[j + len] = poly[j + len] - t;
+                poly[j + len] = fqmul(zeta, poly[j + len]);
             }
             start += 2 * len;
         }
         len <<= 1;
     }
 
-    // Multiply by inverse of n and normalize to [0, q-1]
-    const F: i16 = 1441; // mont^2 / 128
+    // Multiply by f = mont^2/128 to complete inverse NTT
+    const F: i16 = 1441;
     for i in 0..KYBER_N {
-        poly[i] = montgomery_reduce(F as i32 * poly[i] as i32);
-        poly[i] = csubq(poly[i]); // Normalize to [0, q-1] range
+        poly[i] = fqmul(poly[i], F);
     }
+}
+
+/// Multiplication of polynomials in Zq[X]/(X^2-zeta)
+/// Used for pointwise multiplication in NTT domain
+/// Reference: NIST FIPS 203 / PQ-Crystals Kyber ref/ntt.c basemul()
+fn basemul(r: &mut [i16], a: &[i16], b: &[i16], zeta: i16) {
+    r[0] = fqmul(a[1], b[1]);
+    r[0] = fqmul(r[0], zeta);
+    r[0] = r[0].wrapping_add(fqmul(a[0], b[0]));
+    r[1] = fqmul(a[0], b[1]);
+    r[1] = r[1].wrapping_add(fqmul(a[1], b[0]));
 }
 
 /// Pointwise multiplication in NTT domain
 /// Computes c = a * b in NTT representation
+/// Reference: polyvec_basemul_acc_montgomery
 pub fn basemul_ntt(c: &mut [i16; KYBER_N], a: &[i16; KYBER_N], b: &[i16; KYBER_N]) {
     for i in (0..KYBER_N).step_by(4) {
-        let zeta = ZETAS[64 + i / 4] as i64;
-
-        c[i] = montgomery_reduce(
-            (a[i + 1] as i64 * b[i + 1] as i64 * zeta +
-            a[i] as i64 * b[i] as i64) as i32
-        );
-        c[i + 1] = montgomery_reduce(
-            (a[i] as i64 * b[i + 1] as i64 +
-            a[i + 1] as i64 * b[i] as i64) as i32
-        );
-        c[i + 2] = montgomery_reduce(
-            (a[i + 3] as i64 * b[i + 3] as i64 * zeta +
-            a[i + 2] as i64 * b[i + 2] as i64) as i32
-        );
-        c[i + 3] = montgomery_reduce(
-            (a[i + 2] as i64 * b[i + 3] as i64 +
-            a[i + 3] as i64 * b[i + 2] as i64) as i32
-        );
+        let zeta_idx = 64 + i / 4;
+        basemul(&mut c[i..i+2], &a[i..i+2], &b[i..i+2], ZETAS[zeta_idx]);
+        basemul(&mut c[i+2..i+4], &a[i+2..i+4], &b[i+2..i+4], -ZETAS[zeta_idx]);
     }
 }
 
@@ -127,8 +135,24 @@ pub fn basemul_ntt(c: &mut [i16; KYBER_N], a: &[i16; KYBER_N], b: &[i16; KYBER_N
 mod tests {
     use super::*;
 
+    /// Helper: convert from Montgomery domain to standard domain
+    fn from_mont(a: i16) -> i16 {
+        montgomery_reduce(a as i32)
+    }
+
+    /// Helper: normalize to [0, q-1] range
+    fn reduce_mod_q(a: i16) -> i16 {
+        let mut r = a % KYBER_Q;
+        if r < 0 {
+            r += KYBER_Q;
+        }
+        r
+    }
+
     #[test]
-    fn test_ntt_invntt_identity() {
+    fn test_ntt_invntt_tomont() {
+        // Reference: invntt outputs values multiplied by Montgomery factor 2^16
+        // So NTT->INVNTT gives: original * MONT mod q
         let mut poly = [0i16; KYBER_N];
         for i in 0..KYBER_N {
             poly[i] = (i as i16) % KYBER_Q;
@@ -138,11 +162,16 @@ mod tests {
         ntt(&mut poly);
         invntt(&mut poly);
 
+        // After invntt, values are in Montgomery form (original * 2^16 mod q)
+        // Convert back using from_mont to verify correctness
         for i in 0..KYBER_N {
+            let recovered = from_mont(poly[i]);
+            let expected = reduce_mod_q(original[i]);
+            let got = reduce_mod_q(recovered);
             assert_eq!(
-                poly[i], original[i],
-                "NTT->INVNTT not identity at index {}",
-                i
+                got, expected,
+                "NTT->INVNTT->from_mont failed at index {}: got {}, expected {}",
+                i, got, expected
             );
         }
     }
@@ -159,5 +188,19 @@ mod tests {
         let a = KYBER_Q + 100;
         let reduced = barrett_reduce(a);
         assert!(reduced < KYBER_Q);
+    }
+
+    #[test]
+    fn test_fqmul_mont_identity() {
+        // MONT = 2^16 mod q = 2285 = -1044 (signed)
+        // fqmul(a, MONT) should give a (since MONT is Montgomery representation of 1)
+        const MONT: i16 = -1044;
+        for i in 0..100 {
+            let a = (i * 33) as i16 % KYBER_Q;
+            let result = fqmul(a, MONT);
+            let normalized = reduce_mod_q(result);
+            let expected = reduce_mod_q(a);
+            assert_eq!(normalized, expected, "fqmul({}, MONT) = {} != {}", a, result, a);
+        }
     }
 }

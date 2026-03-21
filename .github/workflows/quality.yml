@@ -158,7 +158,7 @@ jobs:
         run: cargo llvm-cov --all-features --workspace --html
 
       - name: Upload HTML coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: target/llvm-cov/html/
@@ -217,7 +217,7 @@ jobs:
         run: cargo tree --duplicates > duplicates.txt || echo "No duplicates found"
 
       - name: Upload dependency reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dependency-reports
           path: |
@@ -254,7 +254,7 @@ jobs:
           ! grep -i "GPL" licenses.txt || echo "Warning: GPL licenses found"
 
       - name: Upload license report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: license-report
           path: |
@@ -288,7 +288,7 @@ jobs:
           cat unsafe-code-report.txt >> $GITHUB_STEP_SUMMARY
 
       - name: Upload complexity report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: complexity-report
           path: unsafe-code-report.txt

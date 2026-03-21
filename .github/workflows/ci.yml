@@ -53,7 +53,7 @@ jobs:
       # NOTE: Only upload test result XMLs, not the entire target/ directory
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rust-test-results-${{ matrix.os }}
           path: |
@@ -113,7 +113,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: python-test-results-${{ matrix.os }}-py${{ matrix.python-version }}
           path: test-results/
@@ -141,7 +141,7 @@ jobs:
         run: jupyter-book build docs/book/ --all
 
       - name: Upload docs artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: jupyter-book-html
           path: docs/book/_build/html/
@@ -250,7 +250,7 @@ jobs:
         run: maturin build --release --strip
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wheels-${{ matrix.os }}
           path: target/wheels/*.whl

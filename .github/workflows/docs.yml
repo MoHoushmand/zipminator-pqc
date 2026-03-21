@@ -40,7 +40,7 @@ jobs:
         run: cargo doc --workspace --no-deps --document-private-items
 
       - name: Upload documentation
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rust-docs
           path: target/doc/
@@ -70,7 +70,7 @@ jobs:
           jupyter-book build . --all
 
       - name: Upload Jupyter Book
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: jupyter-book
           path: docs/book/_build/html/

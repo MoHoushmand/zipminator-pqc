@@ -455,7 +455,7 @@ export default function DemoSlide({ scenario: _scenario }: { scenario?: Scenario
       </motion.div>
 
       {/* Tab content */}
-      <div className="flex-1 min-h-0">
+      <div className="flex-1 min-h-0 mb-8">
         <AnimatePresence mode="wait">
           <motion.div
             key={active.id}
@@ -494,6 +494,121 @@ export default function DemoSlide({ scenario: _scenario }: { scenario?: Scenario
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* Live Platform Metrics - Gold Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25, duration: 0.5 }}
+        className="card-quantum-gold mb-8"
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <Zap className="w-5 h-5 text-amber-400" />
+          <h3 className="text-lg font-semibold gradient-text-gold">Live Platform Metrics</h3>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { label: 'Rust Test Suite', value: '268', unit: 'tests passing', color: 'text-emerald-400' },
+            { label: 'Key Generation', value: '<1ms', unit: 'Kyber768 keygen', color: 'text-amber-400' },
+            { label: 'Encapsulation', value: '<1ms', unit: 'ML-KEM-768', color: 'text-amber-400' },
+            { label: 'Platform Modules', value: '8', unit: 'integrated pillars', color: 'text-quantum-400' },
+          ].map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 + i * 0.06 }}
+              className="text-center p-3 rounded-lg bg-amber-500/[0.04] border border-amber-500/15"
+            >
+              <p className={`text-2xl font-bold font-mono ${stat.color}`}>{stat.value}</p>
+              <p className="text-[11px] text-white/80 font-semibold mt-0.5">{stat.label}</p>
+              <p className="text-[9px] text-gray-500 mt-1">{stat.unit}</p>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Technical Specifications Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35, duration: 0.5 }}
+        className="mb-8"
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <Shield className="w-4 h-4 text-amber-400" />
+          <h3 className="text-sm font-semibold text-white">Technical Specifications per Module</h3>
+        </div>
+        <div className="table-quantum">
+          <table className="w-full text-sm">
+            <thead>
+              <tr>
+                <th className="text-left py-2 px-3 text-gray-400 font-mono text-xs">Module</th>
+                <th className="text-left py-2 px-3 text-gray-400 font-mono text-xs">Encryption</th>
+                <th className="text-left py-2 px-3 text-gray-400 font-mono text-xs">Protocol</th>
+                <th className="text-left py-2 px-3 text-gray-400 font-mono text-xs">Key Feature</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { mod: 'Quantum Vault', enc: 'ML-KEM-768 + AES-256-GCM', proto: 'NIST FIPS 203', feat: 'DoD 5220.22-M 3-pass wipe' },
+                { mod: 'Secure Messenger', enc: 'PQ Double Ratchet', proto: 'X3DH + Kyber768', feat: 'Forward secrecy per message' },
+                { mod: 'Quantum VoIP', enc: 'PQ-SRTP', proto: 'Kyber768 key exchange', feat: 'QRNG-derived session keys' },
+                { mod: 'Q-VPN', enc: 'PQ-WireGuard', proto: 'ML-KEM-768 handshake', feat: '98% renewable Norwegian servers' },
+                { mod: 'Quantum Mail', enc: 'ML-KEM-768 + PII scan', proto: 'S/MIME PQ extension', feat: 'Self-destruct timer' },
+                { mod: 'PII Anonymizer', enc: '10-level anonymization', proto: 'QRNG noise (L7-10)', feat: 'IBM quantum hardware entropy' },
+                { mod: 'AI Assistant', enc: 'On-device inference', proto: 'PQC tunnel (optional)', feat: 'Zero data exfiltration' },
+                { mod: 'ZipBrowser', enc: 'PQC TLS + built-in VPN', proto: 'Tauri 2.x + Rust core', feat: 'Zero telemetry, AI agent' },
+              ].map((row, i) => (
+                <tr key={i} className="border-t border-white/5">
+                  <td className="py-2 px-3 text-white font-semibold text-xs">{row.mod}</td>
+                  <td className="py-2 px-3 text-quantum-400 font-mono text-xs">{row.enc}</td>
+                  <td className="py-2 px-3 text-gray-400 text-xs">{row.proto}</td>
+                  <td className="py-2 px-3 text-gray-300 text-xs">{row.feat}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
+      {/* Try It Section - Gold Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+        className="card-quantum-gold"
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <Sparkles className="w-5 h-5 text-amber-400" />
+          <h3 className="text-lg font-semibold gradient-text-gold">Try It Yourself</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 rounded-lg bg-amber-500/[0.04] border border-amber-500/15 text-center">
+            <Monitor className="w-6 h-6 text-amber-400 mx-auto mb-2" />
+            <p className="text-sm font-semibold text-white mb-1">Live Web Demo</p>
+            <p className="text-xs text-gray-400 mb-2">Full platform walkthrough with all 8 modules</p>
+            <span className="text-xs font-mono text-quantum-400">demo.zipminator.zip</span>
+          </div>
+          <div className="p-4 rounded-lg bg-amber-500/[0.04] border border-amber-500/15 text-center">
+            <Globe className="w-6 h-6 text-amber-400 mx-auto mb-2" />
+            <p className="text-sm font-semibold text-white mb-1">API Playground</p>
+            <p className="text-xs text-gray-400 mb-2">Encrypt, sign, and verify with our REST API</p>
+            <span className="text-xs font-mono text-quantum-400">api.zipminator.zip/docs</span>
+          </div>
+          <div className="p-4 rounded-lg bg-amber-500/[0.04] border border-amber-500/15 text-center">
+            <Lock className="w-6 h-6 text-amber-400 mx-auto mb-2" />
+            <p className="text-sm font-semibold text-white mb-1">Jupyter Notebook</p>
+            <p className="text-xs text-gray-400 mb-2">Interactive PQC benchmarks and KAT verification</p>
+            <span className="text-xs font-mono text-quantum-400">book.zipminator.zip</span>
+          </div>
+        </div>
+        <div className="mt-4 p-3 rounded-lg bg-amber-500/[0.06] border border-amber-500/20 text-center">
+          <p className="text-xs text-amber-400/90 font-mono">
+            All demos run on Norwegian infrastructure with 98% renewable energy. No data leaves the EEA.
+          </p>
+        </div>
+      </motion.div>
     </SlideWrapper>
   )
 }

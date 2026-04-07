@@ -258,7 +258,7 @@ export default function FinancialsSlide({ scenario = 'base' }: { scenario?: Scen
       </motion.div>
 
       {/* Key Assumptions */}
-      <motion.div {...fadeUp(0.25)} className="grid sm:grid-cols-2 gap-4">
+      <motion.div {...fadeUp(0.25)} className="grid sm:grid-cols-2 gap-4 mb-6">
         <div className="card-quantum">
           <h4 className="text-base font-semibold text-white mb-2">Revenue Drivers</h4>
           <ul className="text-sm text-gray-400 space-y-1.5">
@@ -293,6 +293,129 @@ export default function FinancialsSlide({ scenario = 'base' }: { scenario?: Scen
             </li>
           </ul>
         </div>
+      </motion.div>
+
+      {/* ── NEW: 5-Year Financial Projection ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="card-quantum-gold mb-6"
+      >
+        <h3 className="text-base font-semibold gradient-text-gold mb-2 flex items-center gap-2">
+          <BarChart3 className="w-5 h-5 text-amber-400" />
+          5-Year Financial Projection
+        </h3>
+        <p className="text-[10px] font-mono text-amber-400/60 uppercase tracking-wider mb-4">
+          All figures are projected targets, not actuals
+        </p>
+        <div className="overflow-x-auto">
+          <table className="table-quantum">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Revenue</th>
+                <th>Users</th>
+                <th>ARR</th>
+                <th>Burn Rate</th>
+                <th>Runway</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { year: '2026', revenue: 'Projected: $0-50K', users: '100-500', arr: '-', burn: '$15K/mo', runway: '18mo' },
+                { year: '2027', revenue: 'Projected: $200K-500K', users: '2K-5K', arr: 'Projected: $200K', burn: '$25K/mo', runway: '24mo' },
+                { year: '2028', revenue: 'Projected: $1M-3M', users: '10K-25K', arr: 'Projected: $1M', burn: '$40K/mo', runway: '36mo' },
+                { year: '2029', revenue: 'Projected: $5M-10M', users: '50K-100K', arr: 'Projected: $5M', burn: '$60K/mo', runway: '48mo' },
+                { year: '2030', revenue: 'Projected: $15M-30M', users: '200K-500K', arr: 'Projected: $15M', burn: '$80K/mo', runway: 'Profitable' },
+              ].map((row) => (
+                <tr key={row.year}>
+                  <td className="font-mono font-bold text-white">{row.year}</td>
+                  <td className="font-mono text-xs">{row.revenue}</td>
+                  <td className="font-mono text-xs">{row.users}</td>
+                  <td className="font-mono text-xs">{row.arr}</td>
+                  <td className="font-mono text-xs">{row.burn}</td>
+                  <td>
+                    <span className={`text-xs font-mono font-semibold ${row.runway === 'Profitable' ? 'text-emerald-400' : 'text-gray-300'}`}>
+                      {row.runway}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
+      {/* ── NEW: Key Financial Metrics ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35, duration: 0.5 }}
+        className="grid sm:grid-cols-3 gap-4 mb-6"
+      >
+        <div className="card-quantum-gold text-center">
+          <DollarSign className="w-6 h-6 text-amber-400 mx-auto mb-2" />
+          <p className="text-2xl font-bold gradient-text-gold font-mono">70%+</p>
+          <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mt-1">Target Gross Margin</p>
+          <p className="text-[10px] text-gray-500 mt-1">SaaS-native, minimal COGS</p>
+        </div>
+        <div className="card-quantum-gold text-center">
+          <TrendingUp className="w-6 h-6 text-amber-400 mx-auto mb-2" />
+          <p className="text-2xl font-bold gradient-text-gold font-mono">&lt;18mo</p>
+          <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mt-1">Target Payback Period</p>
+          <p className="text-[10px] text-gray-500 mt-1">Projected: CAC recovery via annual plans</p>
+        </div>
+        <div className="card-quantum-gold text-center">
+          <Users className="w-6 h-6 text-amber-400 mx-auto mb-2" />
+          <p className="text-2xl font-bold gradient-text-gold font-mono">120%+</p>
+          <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mt-1">Target Net Revenue Retention</p>
+          <p className="text-[10px] text-gray-500 mt-1">Projected: upsell Free to Pro to Enterprise</p>
+        </div>
+      </motion.div>
+
+      {/* ── NEW: Revenue Model Breakdown ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+        className="card-quantum-gold"
+      >
+        <h3 className="text-base font-semibold gradient-text-gold mb-4 flex items-center gap-2">
+          <Layers className="w-5 h-5 text-amber-400" />
+          Revenue Model Breakdown
+        </h3>
+        <table className="table-quantum">
+          <thead>
+            <tr>
+              <th>Revenue Stream</th>
+              <th>Model</th>
+              <th>Target Price</th>
+              <th>Year 5 Mix</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              { stream: 'Consumer Subscriptions (QCaaS)', model: 'Monthly/Annual SaaS', price: '$9.99-19.99/mo', mix: '40%' },
+              { stream: 'Enterprise Licenses (QCaaP)', model: 'Annual contract + seats', price: 'Custom ($5K-50K/yr)', mix: '30%' },
+              { stream: 'API/SDK Usage', model: 'Consumption-based', price: '$0.001-0.01/call', mix: '15%' },
+              { stream: 'Managed Security Services', model: 'Retainer + usage', price: '$2K-10K/mo', mix: '10%' },
+              { stream: 'Professional Services', model: 'Project-based', price: '$150-250/hr', mix: '5%' },
+            ].map((row) => (
+              <tr key={row.stream}>
+                <td className="font-semibold text-white text-xs">{row.stream}</td>
+                <td className="text-xs">{row.model}</td>
+                <td className="font-mono text-xs">{row.price}</td>
+                <td>
+                  <span className="text-xs font-mono font-bold text-amber-400">{row.mix}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="text-[10px] font-mono text-gray-500 mt-3 text-center">
+          All prices and revenue mix percentages are projected targets
+        </p>
       </motion.div>
     </SlideWrapper>
   )

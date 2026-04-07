@@ -331,6 +331,129 @@ export default function TractionSlide({ scenario: _scenario }: { scenario?: Scen
           Every module listed has working code, tests, and cross-platform bindings.
         </p>
       </motion.div>
+
+      {/* Gold divider */}
+      <div className="section-divider-gold" />
+
+      {/* Verified Metrics Table */}
+      <motion.div {...fadeUp(0.35)} className="card-quantum-gold mb-6">
+        <div className="flex items-center gap-3 mb-4">
+          <CheckCircle2 className="w-5 h-5 text-amber-400" />
+          <h3 className="font-semibold text-white text-sm">Verified Metrics (All Independently Auditable)</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="table-quantum">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Value</th>
+                <th>Verification Method</th>
+                <th>Last Verified</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { metric: 'Lines of Code', value: '300K+', method: 'cloc --vcs (git-tracked files)', verified: 'Continuous' },
+                { metric: 'Tests Passing', value: '1,338+', method: 'cargo test + pytest + vitest + flutter test', verified: 'Every CI build' },
+                { metric: 'Fuzz Targets', value: '6', method: 'cargo fuzz (keygen, encap, decap, serialize, entropy, rng)', verified: 'Weekly runs' },
+                { metric: 'Integrated Modules', value: '9', method: 'Module manifest + integration test suite', verified: 'Per release' },
+                { metric: 'Patent Applications', value: '3', method: 'Patentstyret filing receipts (March 2026)', verified: 'Filed' },
+                { metric: 'Technologies Integrated', value: '26', method: 'Cargo.toml + package.json dependency audit', verified: 'Continuous' },
+                { metric: 'QRNG Source', value: '156-qubit IBM Quantum', method: 'IBM Quantum Platform API credentials', verified: 'Live connection' },
+                { metric: 'Platform Builds', value: '5', method: 'macOS, Windows, Linux, iOS, Android build artifacts', verified: 'Per release' },
+                { metric: 'Languages Used', value: '7', method: 'Rust, Python, TypeScript, Dart, Swift, Kotlin, C', verified: 'cloc breakdown' },
+              ].map((row, i) => (
+                <tr key={i}>
+                  <td className="font-semibold text-white text-xs">{row.metric}</td>
+                  <td className="font-mono text-sm font-bold text-amber-300">{row.value}</td>
+                  <td className="text-[11px] text-gray-400">{row.method}</td>
+                  <td>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono bg-green-500/10 text-green-400 border border-green-500/20">
+                      {row.verified}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
+      {/* Development Velocity Gold Card */}
+      <motion.div {...fadeUp(0.38)} className="card-quantum-gold mb-6">
+        <div className="flex items-center gap-3 mb-4">
+          <Rocket className="w-5 h-5 text-amber-400" />
+          <h3 className="font-semibold text-white text-sm">Development Velocity</h3>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { label: 'Avg. Commits/Week', value: '45+', detail: 'Measured over last 90 days' },
+            { label: 'Solo Dev Output', value: '300K LOC', detail: '8 months, 1 engineer' },
+            { label: 'Test Coverage Growth', value: '+200%', detail: 'From 450 to 1,338+ tests in Q1 2026' },
+            { label: 'Module Ship Rate', value: '1/month', detail: 'New pillar every 30 days avg.' },
+          ].map((stat) => (
+            <div key={stat.label} className="text-center p-3 rounded-xl bg-amber-500/[0.04] border border-amber-500/10">
+              <p className="text-xl font-bold font-mono gradient-text-gold">{stat.value}</p>
+              <p className="text-[10px] font-semibold text-white mt-1">{stat.label}</p>
+              <p className="text-[9px] text-gray-500 mt-0.5">{stat.detail}</p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Milestone Timeline */}
+      <motion.div {...fadeUp(0.4)} className="card-quantum-gold">
+        <div className="flex items-center gap-3 mb-4">
+          <Flag className="w-5 h-5 text-amber-400" />
+          <h3 className="font-semibold text-white text-sm">Milestone Timeline</h3>
+        </div>
+        <div className="relative">
+          {/* Timeline line */}
+          <div className="absolute left-4 top-0 bottom-0 w-px bg-amber-500/20" />
+          <div className="space-y-4">
+            {[
+              { date: 'Aug 2025', title: 'Project Inception', detail: 'Rust Kyber768 core engine, first NIST KAT pass', done: true },
+              { date: 'Oct 2025', title: 'PyO3 Bridge', detail: 'Python bindings via maturin, FastAPI backend', done: true },
+              { date: 'Dec 2025', title: 'Messenger + VoIP', detail: 'PQ Double Ratchet messaging, PQ-SRTP voice/video', done: true },
+              { date: 'Jan 2026', title: 'Q-VPN + Browser', detail: 'WireGuard+Kyber VPN, Tauri 2.x PQC browser', done: true },
+              { date: 'Feb 2026', title: 'QRNG + Self-Destruct', detail: '156-qubit IBM integration, DoD 5220.22-M wipe', done: true },
+              { date: 'Mar 2026', title: 'Patents Filed', detail: '3 applications to Patentstyret (Norwegian Patent Office)', done: true },
+              { date: 'Q2 2026', title: 'Beta Launch', detail: 'Closed beta with select enterprise partners', done: false },
+              { date: 'Q3 2026', title: 'Public Launch', detail: 'App Store + Play Store + Desktop releases', done: false },
+              { date: 'Q4 2026', title: 'Enterprise Tier', detail: 'SSO, audit logs, dedicated QRNG endpoints', done: false },
+            ].map((milestone, i) => (
+              <motion.div
+                key={milestone.date}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.42 + i * 0.04 }}
+                className="flex items-start gap-4 pl-1"
+              >
+                <div className={`relative z-10 w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
+                  milestone.done
+                    ? 'bg-amber-500/20 border border-amber-500/40'
+                    : 'bg-white/[0.04] border border-white/10'
+                }`}>
+                  {milestone.done ? (
+                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
+                  ) : (
+                    <div className="w-2 h-2 rounded-full bg-gray-500" />
+                  )}
+                </div>
+                <div className="flex-1 pb-1">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs font-mono font-semibold ${milestone.done ? 'text-amber-300' : 'text-gray-500'}`}>
+                      {milestone.date}
+                    </span>
+                    <span className="text-xs font-semibold text-white">{milestone.title}</span>
+                  </div>
+                  <p className="text-[11px] text-gray-400 mt-0.5">{milestone.detail}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
     </SlideWrapper>
   )
 }

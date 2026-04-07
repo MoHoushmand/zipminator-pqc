@@ -372,13 +372,120 @@ export default function RoadmapSlide({ scenario: _scenario }: { scenario?: Scena
       {/* Bottom callout */}
       <motion.div
         {...fadeUp(0.8)}
-        className="mt-4 flex items-center gap-3 px-5 py-3 rounded-xl bg-quantum-500/[0.06] border border-quantum-500/15"
+        className="mt-4 flex items-center gap-3 px-5 py-3 rounded-xl bg-quantum-500/[0.06] border border-quantum-500/15 mb-6"
       >
         <Map className="w-5 h-5 text-quantum-400 shrink-0" />
         <p className="text-sm text-gray-300">
           <span className="text-quantum-400 font-semibold">24-36 months</span>{' '}
           to complete the full super-app. {doneCount} products shipped, {progressCount} in progress.
         </p>
+      </motion.div>
+
+      {/* ── NEW: Technical Milestones Achieved ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.85, duration: 0.5 }}
+        className="card-quantum-gold mb-6"
+      >
+        <h3 className="text-base font-semibold gradient-text-gold mb-4 flex items-center gap-2">
+          <CheckCircle2 className="w-5 h-5 text-amber-400" />
+          Technical Milestones Achieved
+        </h3>
+        <div className="grid sm:grid-cols-3 gap-4">
+          {[
+            { metric: '268', label: 'Rust Tests Passing', detail: 'Full workspace including browser/src-tauri' },
+            { metric: 'NIST KAT', label: 'Vector Verification', detail: 'ML-KEM-768 validated against official test vectors' },
+            { metric: 'PyO3', label: 'Bindings Shipped', detail: 'Rust crypto engine exposed to Python via maturin' },
+            { metric: '11/11', label: 'Mobile Test Suites', detail: 'Expo React Native test coverage complete' },
+            { metric: 'Tauri 2.x', label: 'PQC Browser Built', detail: 'DMG bundle at target/release/bundle/' },
+            { metric: 'FIPS 203', label: 'ML-KEM Implementation', detail: 'Constant-time, clippy-clean, no unsafe' },
+          ].map((item) => (
+            <div key={item.label} className="rounded-lg bg-amber-500/[0.04] border border-amber-500/10 px-4 py-3 text-center">
+              <p className="text-2xl font-bold gradient-text-gold font-mono">{item.metric}</p>
+              <p className="text-xs font-semibold text-white mt-1">{item.label}</p>
+              <p className="text-[10px] text-gray-500 mt-0.5">{item.detail}</p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* ── NEW: 10-Phase Implementation Plan ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.9, duration: 0.5 }}
+        className="card-quantum-gold mb-6"
+      >
+        <h3 className="text-base font-semibold gradient-text-gold mb-4 flex items-center gap-2">
+          <Milestone className="w-5 h-5 text-amber-400" />
+          10-Phase Implementation Plan
+        </h3>
+        <table className="table-quantum">
+          <thead>
+            <tr>
+              <th>Phase</th>
+              <th>Name</th>
+              <th>Key Deliverables</th>
+              <th>Target</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              { phase: 'P1', name: 'Crypto Core', deliverables: 'ML-KEM-768 Rust engine, NIST KAT validation, PyO3 bindings', target: 'Q1 2026' },
+              { phase: 'P2', name: 'VPN Tunnel', deliverables: 'WireGuard + ML-KEM key exchange, kill switch, DNS leak protection', target: 'Q2 2026' },
+              { phase: 'P3', name: 'PQC Browser', deliverables: 'Tauri 2.x shell, PQC proxy, ad blocker, certificate pinning', target: 'Q2 2026' },
+              { phase: 'P4', name: 'Secure Messenger', deliverables: 'E2E PQC messaging, group chats, disappearing messages', target: 'Q3 2026' },
+              { phase: 'P5', name: 'Encrypted Email', deliverables: 'PQC email client, PII scanner, self-destruct attachments', target: 'Q4 2026' },
+              { phase: 'P6', name: 'Credential Vault', deliverables: 'Zero-knowledge vault, autofill, hardware key support', target: 'Q4 2026' },
+              { phase: 'P7', name: 'Developer SDK', deliverables: 'REST API, Python/JS SDKs, webhook integrations', target: 'Q1 2027' },
+              { phase: 'P8', name: 'Entropy Pool', deliverables: 'QRNG aggregation (Rigetti, IBM), OS fallback, entropy dashboard', target: 'Q1 2027' },
+              { phase: 'P9', name: 'Enterprise Suite', deliverables: 'Admin console, SSO/SCIM, audit logs, compliance reporting', target: 'Q2 2027' },
+              { phase: 'P10', name: 'Super-App Integration', deliverables: 'Unified dashboard, cross-pillar workflows, mobile super-app', target: 'Q3 2027' },
+            ].map((row) => (
+              <tr key={row.phase}>
+                <td>
+                  <span className="text-[10px] font-mono font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded">
+                    {row.phase}
+                  </span>
+                </td>
+                <td className="font-semibold text-white">{row.name}</td>
+                <td className="text-xs">{row.deliverables}</td>
+                <td className="font-mono text-xs text-amber-400">{row.target}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </motion.div>
+
+      {/* ── NEW: Key Deliverables Per Phase ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.95, duration: 0.5 }}
+        className="card-quantum-gold"
+      >
+        <h3 className="text-base font-semibold gradient-text-gold mb-4 flex items-center gap-2">
+          <Banknote className="w-5 h-5 text-amber-400" />
+          Phase-Gated Funding Alignment
+        </h3>
+        <p className="text-xs text-gray-400 mb-4">
+          Each phase unlocks specific grant eligibility and revenue triggers. All timelines are targets.
+        </p>
+        <div className="grid sm:grid-cols-2 gap-3">
+          {[
+            { phase: 'P1-P3 Complete', unlock: 'Innovation Norway application eligible', funding: 'NOK 1-3M (Projected)', color: 'text-green-400' },
+            { phase: 'P4-P5 Complete', unlock: 'Consumer beta launch, first revenue', funding: 'Projected: $50-200K ARR', color: 'text-quantum-400' },
+            { phase: 'P6-P8 Complete', unlock: 'Enterprise pilot readiness, NATO DIANA eligible', funding: 'Projected: $500K-1M ARR', color: 'text-purple-400' },
+            { phase: 'P9-P10 Complete', unlock: 'Full super-app, Series A trigger', funding: 'Projected: $3-5M ARR', color: 'text-amber-400' },
+          ].map((item) => (
+            <div key={item.phase} className="rounded-lg bg-amber-500/[0.04] border border-amber-500/10 px-4 py-3">
+              <p className="text-xs font-mono font-bold text-amber-400 mb-1">{item.phase}</p>
+              <p className="text-sm text-white font-semibold mb-1">{item.unlock}</p>
+              <p className={`text-xs font-mono ${item.color}`}>{item.funding}</p>
+            </div>
+          ))}
+        </div>
       </motion.div>
     </SlideWrapper>
   )

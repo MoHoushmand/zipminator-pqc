@@ -435,6 +435,151 @@ export default function MarketSlide({ scenario: _scenario }: { scenario?: Scenar
           $228B (2025) growing to $500-700B by 2030-34. PQC is the fastest-growing segment.
         </p>
       </motion.div>
+
+      {/* Gold divider */}
+      <div className="section-divider-gold" />
+
+      {/* Analyst Consensus Table */}
+      <motion.div {...fadeUp(0.28)} className="card-quantum-gold mb-6">
+        <div className="flex items-center gap-3 mb-4">
+          <BarChart3 className="w-5 h-5 text-amber-400" />
+          <h3 className="font-semibold text-white text-sm">Analyst Consensus: PQC Market Projections</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="table-quantum">
+            <thead>
+              <tr>
+                <th>Analyst Firm</th>
+                <th>2025 TAM</th>
+                <th>2034 TAM</th>
+                <th>CAGR</th>
+                <th>Key Driver Cited</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { firm: 'MarketsandMarkets', t25: '$1.2B', t34: '$17.2B', cagr: '34%', driver: 'CNSA 2.0 + federal mandates' },
+                { firm: 'Grand View Research', t25: '$1.0B', t34: '$19.5B', cagr: '38%', driver: 'Financial sector adoption' },
+                { firm: 'Mordor Intelligence', t25: '$0.9B', t34: '$15.8B', cagr: '37%', driver: 'DORA compliance (EU)' },
+                { firm: 'Allied Market Research', t25: '$1.1B', t34: '$21.0B', cagr: '39%', driver: 'Healthcare data sovereignty' },
+                { firm: 'BIS Research', t25: '$0.8B', t34: '$16.5B', cagr: '40%', driver: 'Defense modernization' },
+                { firm: 'Quadrant Knowledge', t25: '$1.3B', t34: '$20.1B', cagr: '36%', driver: 'Enterprise crypto agility' },
+                { firm: 'Straits Research', t25: '$0.7B', t34: '$18.7B', cagr: '46%', driver: 'Q-Day risk awareness' },
+              ].map((row, i) => (
+                <tr key={i}>
+                  <td className="font-semibold text-white text-xs">{row.firm}</td>
+                  <td className="font-mono text-xs">{row.t25}</td>
+                  <td className="font-mono text-xs font-semibold text-amber-300">{row.t34}</td>
+                  <td>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono bg-green-500/10 text-green-400 border border-green-500/20">
+                      {row.cagr}
+                    </span>
+                  </td>
+                  <td className="text-xs text-gray-400">{row.driver}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
+      {/* Market Drivers Gold Cards */}
+      <motion.div {...fadeUp(0.3)} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {[
+          {
+            title: 'Regulation',
+            subtitle: 'Compliance deadlines force adoption',
+            points: [
+              'CNSA 2.0: PQC mandatory for NSS by 2027',
+              'DORA Art. 6.4: Crypto update mandate (EU, July 2025)',
+              'OMB M-23-02: Federal PQC inventory required',
+              'NIST deprecates RSA/ECC after 2030',
+            ],
+          },
+          {
+            title: 'Quantum Threat',
+            subtitle: 'Harvest-now, decrypt-later is active',
+            points: [
+              'Nation-states stockpiling encrypted traffic today',
+              'IBM targets 100K qubits by 2033',
+              'Google Willow: 105 qubits with error correction',
+              'Estimated Q-Day window: 2029-2035',
+            ],
+          },
+          {
+            title: 'Data Sovereignty',
+            subtitle: 'Geopolitical fragmentation drives demand',
+            points: [
+              'EU Data Act (2025): mandates encryption controls',
+              'Schrems III expected to tighten US-EU transfers',
+              'Norway leading Nordic quantum initiative',
+              'GDPR fines for inadequate crypto: up to 4% revenue',
+            ],
+          },
+        ].map((driver, i) => (
+          <motion.div
+            key={driver.title}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.32 + i * 0.06 }}
+            className="card-quantum-gold"
+          >
+            <h4 className="text-sm font-bold gradient-text-gold mb-1">{driver.title}</h4>
+            <p className="text-[11px] text-gray-400 mb-3">{driver.subtitle}</p>
+            <ul className="space-y-2">
+              {driver.points.map((point, j) => (
+                <li key={j} className="flex items-start gap-2">
+                  <AlertTriangle className="w-3 h-3 text-amber-400 mt-0.5 shrink-0" />
+                  <span className="text-[11px] text-gray-300 leading-relaxed">{point}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* Addressable Segments Breakdown */}
+      <motion.div {...fadeUp(0.35)} className="card-quantum-gold">
+        <div className="flex items-center gap-3 mb-4">
+          <Target className="w-5 h-5 text-amber-400" />
+          <h3 className="font-semibold text-white text-sm">Addressable Segments Breakdown</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="table-quantum">
+            <thead>
+              <tr>
+                <th>Segment</th>
+                <th>2025 Size</th>
+                <th>2034 Projected</th>
+                <th>CAGR</th>
+                <th>Zipminator Fit</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { seg: 'PQC Key Management', s25: '$320M', s34: '$4.8B', cagr: '35%', fit: 'Core: ML-KEM engine' },
+                { seg: 'Quantum-Safe VPN', s25: '$180M', s34: '$3.2B', cagr: '38%', fit: 'Q-VPN module' },
+                { seg: 'Encrypted Communications', s25: '$250M', s34: '$4.1B', cagr: '36%', fit: 'Messenger + VoIP + Email' },
+                { seg: 'PQC Browser/TLS', s25: '$90M', s34: '$2.5B', cagr: '44%', fit: 'ZipBrowser' },
+                { seg: 'QRNG Services', s25: '$60M', s34: '$1.8B', cagr: '46%', fit: '156-qubit QRNG engine' },
+                { seg: 'Data-at-Rest PQC', s25: '$200M', s34: '$3.3B', cagr: '37%', fit: 'Self-destruct vault' },
+              ].map((row, i) => (
+                <tr key={i}>
+                  <td className="font-semibold text-white text-xs">{row.seg}</td>
+                  <td className="font-mono text-xs">{row.s25}</td>
+                  <td className="font-mono text-xs font-semibold text-amber-300">{row.s34}</td>
+                  <td>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                      {row.cagr}
+                    </span>
+                  </td>
+                  <td className="text-xs text-gray-400">{row.fit}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
     </SlideWrapper>
   )
 }

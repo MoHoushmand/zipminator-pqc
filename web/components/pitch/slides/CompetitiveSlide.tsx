@@ -330,6 +330,144 @@ export default function CompetitiveSlide({ scenario: _scenario }: { scenario?: S
           </div>
         ))}
       </motion.div>
+
+      {/* Gold divider */}
+      <div className="section-divider-gold" />
+
+      {/* Extended Feature Comparison Matrix */}
+      <motion.div {...fadeUp(0.33)} className="card-quantum-gold mb-6">
+        <div className="flex items-center gap-3 mb-4">
+          <Swords className="w-5 h-5 text-amber-400" />
+          <h3 className="font-semibold text-white text-sm">Extended Feature Comparison</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="table-quantum">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th className="text-center">Zipminator</th>
+                <th className="text-center">PQShield</th>
+                <th className="text-center">SandboxAQ</th>
+                <th className="text-center">Qrypt</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { feature: 'Full Super-App (9 modules)', zip: true, pq: false, sq: false, qr: false },
+                { feature: 'QRNG (hardware entropy)', zip: true, pq: false, sq: true, qr: true },
+                { feature: 'PQC VPN (WireGuard+Kyber)', zip: true, pq: false, sq: false, qr: false },
+                { feature: 'PQC Messenger (Double Ratchet)', zip: true, pq: false, sq: false, qr: false },
+                { feature: 'PQC Browser (Tauri 2.x)', zip: true, pq: false, sq: false, qr: false },
+                { feature: 'Self-Destruct Vault', zip: true, pq: false, sq: false, qr: false },
+                { feature: '10-Level Quantum Anonymizer', zip: true, pq: false, sq: false, qr: false },
+                { feature: 'NIST FIPS 203 (ML-KEM)', zip: true, pq: true, sq: true, qr: 'partial' as const },
+                { feature: 'NIST FIPS 204 (ML-DSA)', zip: true, pq: true, sq: true, qr: false },
+                { feature: 'Consumer Pricing ($0-99/mo)', zip: true, pq: false, sq: false, qr: false },
+                { feature: 'Open-Source Crypto Core', zip: true, pq: true, sq: false, qr: false },
+                { feature: 'Cross-Platform (5 platforms)', zip: true, pq: false, sq: false, qr: false },
+              ].map((row, i) => (
+                <tr key={i}>
+                  <td className="text-xs font-semibold text-white">{row.feature}</td>
+                  {[row.zip, row.pq, row.sq, row.qr].map((val, j) => (
+                    <td key={j} className="text-center">
+                      {val === true ? (
+                        <Check className="w-4 h-4 text-green-400 mx-auto" />
+                      ) : val === 'partial' ? (
+                        <Minus className="w-4 h-4 text-yellow-400 mx-auto" />
+                      ) : (
+                        <X className="w-4 h-4 text-gray-600 mx-auto" />
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="flex items-center justify-center gap-6 mt-3 text-[10px] text-gray-500">
+          <span className="flex items-center gap-1.5"><Check className="w-3 h-3 text-green-400" /> Full support</span>
+          <span className="flex items-center gap-1.5"><Minus className="w-3 h-3 text-yellow-400" /> Partial</span>
+          <span className="flex items-center gap-1.5"><X className="w-3 h-3 text-gray-600" /> None</span>
+        </div>
+      </motion.div>
+
+      {/* Competitive Moat: 5 Layers */}
+      <motion.div {...fadeUp(0.36)} className="card-quantum-gold mb-6">
+        <div className="flex items-center gap-3 mb-4">
+          <ShieldCheck className="w-5 h-5 text-amber-400" />
+          <h3 className="font-semibold text-white text-sm">5-Layer Competitive Moat</h3>
+        </div>
+        <div className="space-y-3">
+          {[
+            {
+              layer: '1. Integration Depth',
+              detail: '9 tightly integrated modules create compound switching costs. Replacing one module means losing PQC guarantees across all others.',
+            },
+            {
+              layer: '2. PQC-Native Architecture',
+              detail: 'Built from Kyber768 up, not bolted onto legacy crypto. Every byte is post-quantum from the kernel out.',
+            },
+            {
+              layer: '3. Hardware Entropy Moat',
+              detail: '156-qubit IBM Quantum QRNG provides physical randomness no software-only competitor can replicate. Entropy is a physical resource.',
+            },
+            {
+              layer: '4. Patent Portfolio',
+              detail: '3 patent applications filed (Patentstyret, March 2026) covering quantum-certified anonymization, PQ Double Ratchet, and QRNG key derivation.',
+            },
+            {
+              layer: '5. Pricing Disruption',
+              detail: '$0-99/mo fills the gap between free CDN/TLS ($0) and enterprise PQC ($100K+/yr). This captures the 91% of businesses lacking a PQC roadmap.',
+            },
+          ].map((moat, i) => (
+            <motion.div
+              key={moat.layer}
+              initial={{ opacity: 0, x: -15 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 + i * 0.05 }}
+              className="flex items-start gap-3 p-3 rounded-lg bg-amber-500/[0.04] border border-amber-500/10"
+            >
+              <div className="w-7 h-7 rounded-full bg-amber-500/15 border border-amber-500/25 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-xs font-bold font-mono text-amber-400">{i + 1}</span>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-amber-300">{moat.layer}</p>
+                <p className="text-[11px] text-gray-400 leading-relaxed mt-0.5">{moat.detail}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Why We Win */}
+      <motion.div {...fadeUp(0.4)} className="card-quantum-gold">
+        <h3 className="text-sm font-semibold gradient-text-gold mb-4">Why Zipminator Wins</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[
+            {
+              title: 'Breadth',
+              stat: '9/9',
+              detail: 'Only platform with all 9 PQC modules. Nearest competitor covers 3.',
+            },
+            {
+              title: 'Depth',
+              stat: '300K+ LOC',
+              detail: 'Production code, not a whitepaper. 513+ tests passing, 6 fuzz targets, KAT-verified.',
+            },
+            {
+              title: 'Access',
+              stat: '$0 entry',
+              detail: 'Free tier with real PQC. Competitors start at $10K+/yr or require enterprise sales cycles.',
+            },
+          ].map((item) => (
+            <div key={item.title} className="text-center p-4 rounded-xl bg-amber-500/[0.04] border border-amber-500/10">
+              <p className="text-2xl font-bold font-mono gradient-text-gold">{item.stat}</p>
+              <p className="text-xs font-semibold text-white mt-1">{item.title}</p>
+              <p className="text-[10px] text-gray-400 mt-1 leading-relaxed">{item.detail}</p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </SlideWrapper>
   )
 }

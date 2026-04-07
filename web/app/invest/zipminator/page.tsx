@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useSession } from 'next-auth/react'
 import { AnimatePresence } from 'framer-motion'
 import PitchSidebar from '@/components/pitch/PitchSidebar'
 import { SLIDE_TITLES, type Scenario } from '@/lib/pitch-data'
@@ -57,6 +58,7 @@ const PASS = 'zip2026inv'
 const STORAGE_KEY = 'zipminator-pitch-auth'
 
 export default function InvestPage() {
+  const { data: session } = useSession()
   const [authed, setAuthed] = useState(false)
   const [input, setInput] = useState('')
   const [error, setError] = useState(false)
@@ -65,8 +67,14 @@ export default function InvestPage() {
   const [scenario, setScenario] = useState<Scenario>('all')
 
   useEffect(() => {
-    if (sessionStorage.getItem(STORAGE_KEY) === '1') setAuthed(true)
-  }, [])
+    // Auto-authenticate if user has OAuth session
+    if (session?.user) {
+      setAuthed(true)
+      sessionStorage.setItem(STORAGE_KEY, '1')
+    } else if (sessionStorage.getItem(STORAGE_KEY) === '1') {
+      setAuthed(true)
+    }
+  }, [session])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

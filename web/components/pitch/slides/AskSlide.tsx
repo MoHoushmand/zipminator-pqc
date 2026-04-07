@@ -295,7 +295,7 @@ export default function AskSlide({ scenario = 'base' }: { scenario?: Scenario })
       </motion.div>
 
       {/* Comparable Raises Context */}
-      <motion.div {...fadeUp(0.25)} className="grid sm:grid-cols-3 gap-4 mt-6">
+      <motion.div {...fadeUp(0.25)} className="grid sm:grid-cols-3 gap-4 mt-6 mb-8">
         {COMPARABLE_RAISES.map((comp) => (
           <div key={comp.company} className="card-quantum text-center">
             <p className="text-xs text-gray-400 font-mono mb-1">{comp.company}</p>
@@ -304,6 +304,164 @@ export default function AskSlide({ scenario = 'base' }: { scenario?: Scenario })
             <p className="text-xs text-gray-400 mt-1">{comp.focus}</p>
           </div>
         ))}
+      </motion.div>
+
+      {/* Use of Funds Table - Gold Styled */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="mb-8"
+      >
+        <div className="section-divider-gold mb-6" />
+        <div className="flex items-center gap-2 mb-4">
+          <DollarSign className="w-5 h-5 text-amber-400" />
+          <h3 className="text-lg font-semibold gradient-text-gold">Detailed Use of Funds</h3>
+        </div>
+        <div className="table-quantum">
+          <table className="w-full text-sm">
+            <thead>
+              <tr>
+                <th className="text-left py-2 px-3 text-gray-400 font-mono text-xs">Category</th>
+                <th className="text-right py-2 px-3 text-gray-400 font-mono text-xs">Allocation</th>
+                <th className="text-left py-2 px-3 text-gray-400 font-mono text-xs">Key Activities</th>
+                <th className="text-right py-2 px-3 text-gray-400 font-mono text-xs">Headcount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { cat: 'Engineering', pct: '50%', activities: 'Core PQC engine, mobile apps, browser, API platform', hc: '6-8 engineers' },
+                { cat: 'Security Audits', pct: '15%', activities: 'Third-party pen testing, SOC 2 prep, FIPS lab testing', hc: '2 + external' },
+                { cat: 'Marketing & Sales', pct: '15%', activities: 'Developer relations, enterprise pilots, content marketing', hc: '2-3 hires' },
+                { cat: 'Operations', pct: '10%', activities: 'Cloud infra (Norwegian DCs), CI/CD, monitoring, support', hc: '1-2 hires' },
+                { cat: 'Legal & IP', pct: '10%', activities: 'Patent filings, GDPR counsel, DORA compliance advisory', hc: 'External counsel' },
+              ].map((row, i) => (
+                <tr key={i} className="border-t border-white/5">
+                  <td className="py-2 px-3 text-white font-semibold">{row.cat}</td>
+                  <td className="py-2 px-3 text-right text-amber-400 font-mono font-bold">{row.pct}</td>
+                  <td className="py-2 px-3 text-gray-400 text-xs">{row.activities}</td>
+                  <td className="py-2 px-3 text-right text-gray-300 font-mono text-xs">{row.hc}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
+      {/* Expected Milestones - Gold Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35, duration: 0.5 }}
+        className="card-quantum-gold mb-8"
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <Target className="w-5 h-5 text-amber-400" />
+          <h3 className="text-lg font-semibold gradient-text-gold">12-Month Milestones (Projected)</h3>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { month: 'Month 3', target: 'MVP Beta Launch', detail: 'Vault + Messenger + VPN live for beta users', icon: Sparkles },
+            { month: 'Month 6', target: 'Enterprise Pilots', detail: '3-5 enterprise pilot agreements signed', icon: Users },
+            { month: 'Month 9', target: 'Mobile Launch', detail: 'iOS + Android apps in app stores', icon: Smartphone },
+            { month: 'Month 12', target: '$500K+ ARR', detail: 'Revenue from subscriptions and enterprise', icon: TrendingUp },
+          ].map((m, i) => (
+            <motion.div
+              key={m.month}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4 + i * 0.08 }}
+              className="p-4 rounded-lg bg-amber-500/[0.04] border border-amber-500/15 text-center"
+            >
+              <m.icon className="w-5 h-5 text-amber-400 mx-auto mb-2" />
+              <p className="text-xs font-mono text-amber-400/80 mb-1">{m.month}</p>
+              <p className="text-sm font-semibold text-white mb-1">{m.target}</p>
+              <p className="text-[11px] text-gray-400 leading-snug">{m.detail}</p>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Investment Terms */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+        className="mb-8"
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <Layers className="w-4 h-4 text-quantum-400" />
+          <h3 className="text-sm font-semibold text-white">Investment Terms</h3>
+        </div>
+        <div className="table-quantum">
+          <table className="w-full text-sm">
+            <thead>
+              <tr>
+                <th className="text-left py-2 px-3 text-gray-400 font-mono text-xs">Term</th>
+                <th className="text-left py-2 px-3 text-gray-400 font-mono text-xs">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { term: 'Round', detail: 'Seed' },
+                { term: 'Target Raise', detail: '$3-5M (grants-first, equity-preserving)' },
+                { term: 'Strategy', detail: 'Grants fund R&D; seed round for GTM and scaling' },
+                { term: 'Use of Proceeds', detail: '50% engineering, 15% security, 15% GTM, 10% ops, 10% legal' },
+                { term: 'Key Grants Pipeline', detail: 'Innovasjon Norge, NFR, EU Horizon, NATO DIANA' },
+                { term: 'Norwegian Cost Advantage', detail: '$1 in Norway = $2 in Silicon Valley (40-55% savings)' },
+                { term: 'Board Seat', detail: 'Available for lead investor' },
+                { term: 'Governance', detail: 'Norwegian AS corporate structure, EEA jurisdiction' },
+              ].map((row, i) => (
+                <tr key={i} className="border-t border-white/5">
+                  <td className="py-2 px-3 text-amber-400 font-semibold">{row.term}</td>
+                  <td className="py-2 px-3 text-gray-300">{row.detail}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
+      {/* Return Potential - Gold Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45, duration: 0.5 }}
+        className="card-quantum-gold"
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <TrendingUp className="w-5 h-5 text-amber-400" />
+          <h3 className="text-lg font-semibold gradient-text-gold">Return Potential</h3>
+        </div>
+        <p className="text-sm text-gray-300 mb-4">
+          Post-quantum cybersecurity is entering a supercycle driven by regulatory mandates (NIST 2030 deprecation, DORA, Executive Orders).
+          Comparable exits in the cybersecurity space demonstrate the magnitude of opportunity.
+        </p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { company: 'Symantec', amount: '$10.7B', acquirer: 'Broadcom', year: '2019' },
+            { company: 'McAfee', amount: '$14B', acquirer: 'PE Consortium', year: '2021' },
+            { company: 'Mandiant', amount: '$5.4B', acquirer: 'Google', year: '2022' },
+            { company: 'Splunk', amount: '$28B', acquirer: 'Cisco', year: '2023' },
+          ].map((exit, i) => (
+            <motion.div
+              key={exit.company}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 + i * 0.06 }}
+              className="p-3 rounded-lg bg-amber-500/[0.04] border border-amber-500/15 text-center"
+            >
+              <p className="text-xs text-gray-500 font-mono">{exit.company}</p>
+              <p className="text-xl font-bold text-amber-400 font-mono">{exit.amount}</p>
+              <p className="text-[10px] text-gray-500 mt-1">{exit.acquirer} ({exit.year})</p>
+            </motion.div>
+          ))}
+        </div>
+        <div className="mt-4 p-3 rounded-lg bg-amber-500/[0.06] border border-amber-500/20">
+          <p className="text-xs text-amber-400/90 text-center font-mono">
+            PQC-specific: PQShield raised $70M (Series B) and SandboxAQ $950M total, validating massive market appetite for post-quantum security
+          </p>
+        </div>
       </motion.div>
     </SlideWrapper>
   )

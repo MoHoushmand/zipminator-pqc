@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useSession } from 'next-auth/react'
 import { BlueprintSidebar } from '@/components/blueprint/BlueprintSidebar'
 import { BlueprintSection } from '@/components/blueprint/BlueprintSection'
 import { BlueprintScenarioToggle, type BpScenario } from '@/components/blueprint/BlueprintScenarioToggle'
@@ -23,6 +24,7 @@ const PASS = 'zip2026bp'
 const STORAGE_KEY = 'blueprint-pitch-auth'
 
 export default function BlueprintPage() {
+  const { data: session } = useSession()
   const [authed, setAuthed] = useState(false)
   const [input, setInput] = useState('')
   const [passError, setPassError] = useState(false)
@@ -31,8 +33,13 @@ export default function BlueprintPage() {
   const observerRef = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
-    if (sessionStorage.getItem(STORAGE_KEY) === '1') setAuthed(true)
-  }, [])
+    if (session?.user) {
+      setAuthed(true)
+      sessionStorage.setItem(STORAGE_KEY, '1')
+    } else if (sessionStorage.getItem(STORAGE_KEY) === '1') {
+      setAuthed(true)
+    }
+  }, [session])
 
   const handleIntersect = useCallback((entries: IntersectionObserverEntry[]) => {
     for (const entry of entries) {

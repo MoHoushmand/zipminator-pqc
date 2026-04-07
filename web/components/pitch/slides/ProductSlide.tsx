@@ -173,7 +173,7 @@ export default function ProductSlide({ scenario: _scenario }: { scenario?: Scena
       </motion.div>
 
       {/* Product cards: 2 columns */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-10">
         {SUPER_APP_MODULES.map((mod, index) => {
           const Icon = MODULE_ICON_MAP[mod.icon] || Shield
           return (
@@ -214,6 +214,164 @@ export default function ProductSlide({ scenario: _scenario }: { scenario?: Scena
           )
         })}
       </div>
+
+      {/* ─── Module Specifications ─── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+        className="mb-8"
+      >
+        <div className="section-divider-gold mb-6" />
+        <h3 className="gradient-text-gold text-lg font-semibold mb-4 flex items-center gap-2">
+          <Layers className="w-5 h-5 text-amber-400" />
+          Detailed Module Specifications
+        </h3>
+        <div className="card-quantum-gold p-6">
+          <table className="table-quantum w-full text-sm">
+            <thead>
+              <tr>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Module</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Encryption</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Protocol</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Platform</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['PQC Messenger', 'ML-KEM-768 + AES-256-GCM', 'Double Ratchet (PQC)', 'iOS, Android, Desktop', 'In Progress'],
+                ['Quantum VoIP', 'ML-KEM-768 + ChaCha20-Poly1305', 'SRTP with PQC key exchange', 'iOS, Android, Desktop', 'In Progress'],
+                ['Q-VPN', 'ML-KEM-768 + WireGuard', 'Modified WireGuard with PQC handshake', 'All platforms', 'In Progress'],
+                ['ZipBrowser', 'ML-KEM-768 + TLS 1.3', 'Hybrid PQC/classical TLS', 'macOS (Tauri 2.x)', 'Shipped'],
+                ['Quantum Mail', 'ML-KEM-768 + S/MIME', 'PQC-encrypted SMTP/IMAP', 'Web, Desktop', 'Planned'],
+                ['QRNG Engine', 'N/A (entropy source)', 'IBM Quantum 156-qubit', 'All platforms', 'Shipped'],
+                ['PII Anonymizer', 'ML-KEM-768 (at rest)', 'NLP-based detection + PQC vault', 'All platforms', 'Shipped'],
+                ['AI Assistant', 'ML-KEM-768 (context encryption)', 'On-device inference + PQC API', 'All platforms', 'In Progress'],
+                ['Q-Sense Mesh', 'ML-KEM-768 + ML-DSA-65', 'Mesh networking with PQC signatures', 'IoT, Mobile', 'Planned'],
+              ].map((row, i) => (
+                <tr key={i} className="border-t border-white/5">
+                  <td className="py-2 px-3 text-white font-medium">{row[0]}</td>
+                  <td className="py-2 px-3 text-amber-300 font-mono text-xs">{row[1]}</td>
+                  <td className="py-2 px-3 text-gray-400 text-xs">{row[2]}</td>
+                  <td className="py-2 px-3 text-gray-500 text-xs">{row[3]}</td>
+                  <td className="py-2 px-3">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                      row[4] === 'Shipped' ? 'bg-green-500/15 text-green-400 border border-green-500/25' :
+                      row[4] === 'In Progress' ? 'bg-yellow-500/15 text-yellow-400 border border-yellow-500/25' :
+                      'bg-gray-500/15 text-gray-400 border border-gray-500/25'
+                    }`}>
+                      {row[4]}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
+      {/* ─── Integration Architecture ─── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8 }}
+        className="mb-8"
+      >
+        <h3 className="gradient-text-gold text-lg font-semibold mb-4 flex items-center gap-2">
+          <Shield className="w-5 h-5 text-amber-400" />
+          Integration Architecture
+        </h3>
+        <div className="card-quantum-gold p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-3">Developer Integration</h4>
+              <div className="space-y-3">
+                {[
+                  { label: 'REST API', desc: 'Full PQC encryption, key management, and vault operations via authenticated REST endpoints. OpenAPI 3.1 spec included.' },
+                  { label: 'SDK (Python)', desc: 'PyO3 bindings to Rust crypto core. pip install zipminator for direct ML-KEM-768 operations in Python applications.' },
+                  { label: 'SDK (TypeScript)', desc: 'WASM-compiled crypto core for browser and Node.js environments. Tree-shakeable, zero native dependencies.' },
+                  { label: 'CLI Tool', desc: 'zipminator-cli for CI/CD pipeline integration. Encrypt/decrypt, key rotation, and vault management from terminal.' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5" />
+                    <div>
+                      <span className="text-xs font-mono text-amber-300">{item.label}</span>
+                      <p className="text-xs text-gray-500 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-3">Enterprise Features</h4>
+              <div className="space-y-3">
+                {[
+                  { label: 'SSO/SAML', desc: 'Enterprise single sign-on with PQC-signed assertion tokens. Okta, Azure AD, and LDAP integration.' },
+                  { label: 'Audit Logging', desc: 'Every cryptographic operation logged with tamper-proof PQC signatures. DORA Art. 7 compliant key lifecycle tracking.' },
+                  { label: 'Multi-tenant', desc: 'Isolated key namespaces per tenant. Hardware-backed key storage with automatic rotation policies.' },
+                  { label: 'On-Premise', desc: 'Air-gapped deployment option for defense and government. Includes local QRNG hardware support.' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5" />
+                    <div>
+                      <span className="text-xs font-mono text-amber-300">{item.label}</span>
+                      <p className="text-xs text-gray-500 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ─── Comparative Analysis ─── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.9 }}
+        className="mb-4"
+      >
+        <h3 className="gradient-text-gold text-lg font-semibold mb-4 flex items-center gap-2">
+          <Layers className="w-5 h-5 text-amber-400" />
+          Competitive Comparison
+        </h3>
+        <div className="card-quantum-gold p-6">
+          <table className="table-quantum w-full text-sm">
+            <thead>
+              <tr>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Feature</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Zipminator</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Signal + VPN + PGP</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Enterprise PQC SDK</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['PQC Messaging', '\u2713 Native ML-KEM', '\u2717 Classical only', '\u2717 No messaging'],
+                ['PQC VPN', '\u2713 WireGuard + ML-KEM', '\u2717 Classical WireGuard', '\u2717 SDK only'],
+                ['PQC Browser', '\u2713 Tauri 2.x + hybrid TLS', '\u2717 N/A', '\u2717 N/A'],
+                ['QRNG Entropy', '\u2713 IBM 156-qubit', '\u2717 OS CSPRNG only', '\u2717 Optional add-on'],
+                ['PII Detection', '\u2713 NLP-based auto-scan', '\u2717 N/A', '\u2717 N/A'],
+                ['Unified Platform', '\u2713 Single app, 9 modules', '\u2717 3-5 separate tools', '\u2717 Library only'],
+                ['European Data Sovereignty', '\u2713 Norwegian jurisdiction', 'Varies', '\u2717 Mostly US-based'],
+                ['Price (Pro tier)', '$99/mo', '$200-500/mo combined', '$500-2000/mo'],
+              ].map((row, i) => (
+                <tr key={i} className="border-t border-white/5">
+                  <td className="py-2 px-3 text-white font-medium">{row[0]}</td>
+                  <td className="py-2 px-3 text-emerald-400 text-xs">{row[1]}</td>
+                  <td className="py-2 px-3 text-gray-500 text-xs">{row[2]}</td>
+                  <td className="py-2 px-3 text-gray-500 text-xs">{row[3]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="text-[10px] text-gray-600 mt-3 font-mono">
+            Comparison based on publicly available feature sets. &quot;Enterprise PQC SDK&quot; represents generic PQC library vendors (e.g., PQShield, SandboxAQ SDK offerings).
+          </p>
+        </div>
+      </motion.div>
     </SlideWrapper>
   )
 }

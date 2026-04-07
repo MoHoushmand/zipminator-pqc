@@ -335,6 +335,156 @@ export default function BusinessModelSlide({ scenario = 'all' }: { scenario?: Sc
           </div>
         ))}
       </motion.div>
+
+      {/* Gold divider */}
+      <div className="section-divider-gold" />
+
+      {/* Revenue Streams Gold Cards */}
+      <motion.div {...fadeUp(0.24)} className="mb-6">
+        <h3 className="text-lg font-display font-bold text-white mb-4">
+          Revenue <span className="gradient-text-gold">Streams</span>
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            {
+              stream: 'SaaS Subscriptions',
+              icon: CreditCard,
+              share: '45%',
+              detail: 'Consumer and SMB monthly/annual subscriptions across Free, Pro ($29/mo), and Business ($99/mo) tiers',
+              metric: '$29-99/mo ARPU',
+            },
+            {
+              stream: 'Enterprise Contracts',
+              icon: Star,
+              share: '30%',
+              detail: 'Annual contracts with dedicated QRNG endpoints, SSO integration, compliance reporting, and SLA guarantees',
+              metric: '$50K-500K/yr ACV',
+            },
+            {
+              stream: 'API/QCaaS Platform',
+              icon: Zap,
+              share: '15%',
+              detail: 'Pay-per-use API access for developers embedding PQC into their own products. Usage-based billing per cryptographic operation.',
+              metric: '$0.001/operation',
+            },
+            {
+              stream: 'Grants & Research',
+              icon: MapPin,
+              share: '10%',
+              detail: 'Innovation Norway, NATO DIANA, EU Quantum Flagship, Norwegian Quantum Initiative. Non-dilutive funding.',
+              metric: 'Up to $2M/grant',
+            },
+          ].map((rs, i) => {
+            const Icon = rs.icon
+            return (
+              <motion.div
+                key={rs.stream}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.26 + i * 0.05 }}
+                className="card-quantum-gold"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <Icon className="w-5 h-5 text-amber-400" />
+                  <h4 className="text-xs font-semibold text-white">{rs.stream}</h4>
+                </div>
+                <p className="text-2xl font-bold font-mono gradient-text-gold mb-2">{rs.share}</p>
+                <p className="text-[11px] text-gray-400 leading-relaxed mb-3">{rs.detail}</p>
+                <div className="rounded-lg bg-amber-500/[0.06] border border-amber-500/10 px-3 py-1.5">
+                  <span className="text-[10px] font-mono text-amber-300">{rs.metric}</span>
+                </div>
+              </motion.div>
+            )
+          })}
+        </div>
+      </motion.div>
+
+      {/* Unit Economics Table */}
+      <motion.div {...fadeUp(0.3)} className="card-quantum-gold mb-6">
+        <div className="flex items-center gap-3 mb-4">
+          <TrendingUp className="w-5 h-5 text-amber-400" />
+          <h3 className="font-semibold text-white text-sm">Unit Economics (Projected)</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="table-quantum">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Consumer (Pro)</th>
+                <th>Business</th>
+                <th>Enterprise</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { metric: 'Monthly Price', consumer: '$29/mo', business: '$99/mo', enterprise: 'Custom', notes: 'Annual discount: 20%' },
+                { metric: 'CAC (Target)', consumer: '$50', business: '$200', enterprise: '$5,000', notes: 'Organic + content marketing weighted' },
+                { metric: 'LTV (36-mo)', consumer: '$1,044', business: '$3,564', enterprise: '$150K+', notes: 'Assumes 85% annual retention' },
+                { metric: 'LTV:CAC Ratio', consumer: '20.9x', business: '17.8x', enterprise: '30x+', notes: 'Target: >3x at scale' },
+                { metric: 'Gross Margin', consumer: '85%', business: '80%', enterprise: '70%', notes: 'QRNG compute cost at enterprise tier' },
+                { metric: 'Payback Period', consumer: '1.7 mo', business: '2.0 mo', enterprise: '6-12 mo', notes: 'Cash-flow positive fast' },
+              ].map((row, i) => (
+                <tr key={i}>
+                  <td className="font-semibold text-white text-xs">{row.metric}</td>
+                  <td className="font-mono text-xs text-amber-300">{row.consumer}</td>
+                  <td className="font-mono text-xs text-amber-300">{row.business}</td>
+                  <td className="font-mono text-xs text-amber-300">{row.enterprise}</td>
+                  <td className="text-[11px] text-gray-500 italic">{row.notes}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-[10px] text-gray-600 mt-3 italic">
+          All unit economics are projected targets, not actuals. Labeled accordingly per data integrity rules.
+        </p>
+      </motion.div>
+
+      {/* Pricing Architecture */}
+      <motion.div {...fadeUp(0.34)} className="card-quantum-gold">
+        <div className="flex items-center gap-3 mb-4">
+          <CreditCard className="w-5 h-5 text-amber-400" />
+          <h3 className="font-semibold text-white text-sm">Pricing Architecture: Land, Expand, Platform</h3>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[
+            {
+              phase: 'Land',
+              price: '$0',
+              title: 'Free Tier',
+              detail: 'PQC messenger + basic VPN. Enough to demonstrate value and create habit. Freemium funnel targeting individual security-conscious users.',
+              color: 'border-green-500/20 bg-green-500/[0.04]',
+              textColor: 'text-green-400',
+            },
+            {
+              phase: 'Expand',
+              price: '$29-99/mo',
+              title: 'Pro + Business',
+              detail: 'Full 9-module super-app access. Browser, email, VoIP, self-destruct vault, L10 anonymizer. Team management for Business tier.',
+              color: 'border-amber-500/20 bg-amber-500/[0.04]',
+              textColor: 'text-amber-400',
+            },
+            {
+              phase: 'Platform',
+              price: 'Custom',
+              title: 'Enterprise + API',
+              detail: 'Dedicated QRNG endpoints, SSO/SCIM, compliance dashboards, SLA. QCaaP API for developers building PQC into their products.',
+              color: 'border-quantum-500/20 bg-quantum-500/[0.04]',
+              textColor: 'text-quantum-400',
+            },
+          ].map((tier) => (
+            <div key={tier.phase} className={`rounded-xl border p-4 ${tier.color}`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className={`text-xs font-mono font-bold ${tier.textColor}`}>{tier.phase}</span>
+                <span className="text-lg font-bold font-mono gradient-text-gold">{tier.price}</span>
+              </div>
+              <p className="text-xs font-semibold text-white mb-1">{tier.title}</p>
+              <p className="text-[11px] text-gray-400 leading-relaxed">{tier.detail}</p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </SlideWrapper>
   )
 }

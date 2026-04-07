@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
 import dynamic from 'next/dynamic'
 
 const SB1PitchDeck = dynamic(
@@ -12,13 +13,19 @@ const PASS = 'zip2026sp1'
 const STORAGE_KEY = 'sb1-pitch-auth'
 
 export default function SpareBank1PitchPage() {
+  const { data: session } = useSession()
   const [authed, setAuthed] = useState(false)
   const [input, setInput] = useState('')
   const [error, setError] = useState(false)
 
   useEffect(() => {
-    if (sessionStorage.getItem(STORAGE_KEY) === '1') setAuthed(true)
-  }, [])
+    if (session?.user) {
+      setAuthed(true)
+      sessionStorage.setItem(STORAGE_KEY, '1')
+    } else if (sessionStorage.getItem(STORAGE_KEY) === '1') {
+      setAuthed(true)
+    }
+  }, [session])
 
   if (authed) return <SB1PitchDeck />
 

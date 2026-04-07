@@ -385,7 +385,7 @@ export default function WhyNowSlide({ scenario: _scenario }: { scenario?: Scenar
       {/* Bottom stats with green opportunity card */}
       <motion.div
         {...fadeUp(0.9)}
-        className="grid grid-cols-3 gap-3"
+        className="grid grid-cols-3 gap-3 mb-10"
       >
         {BOTTOM_STATS.map((stat, i) => (
           <motion.div
@@ -402,6 +402,149 @@ export default function WhyNowSlide({ scenario: _scenario }: { scenario?: Scenar
             <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mt-1">{stat.label}</p>
           </motion.div>
         ))}
+      </motion.div>
+
+      {/* ─── Regulatory Deadlines Table ─── */}
+      <motion.div {...fadeUp(0.95)} className="mb-8">
+        <div className="section-divider-gold mb-6" />
+        <h3 className="gradient-text-gold text-lg font-semibold mb-4 flex items-center gap-2">
+          <Scale className="w-5 h-5 text-amber-400" />
+          Regulatory Deadlines: Global PQC Mandates
+        </h3>
+        <div className="card-quantum-gold p-6">
+          <table className="table-quantum w-full text-sm">
+            <thead>
+              <tr>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Deadline</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Authority</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Mandate</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Scope</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Penalty</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['Jul 2025', 'EU', 'DORA Enforcement', 'All EU financial entities', 'Up to 2% global turnover'],
+                ['Dec 2025', 'NIST', 'Deprecate RSA/ECDH in new systems', 'US federal agencies', 'Non-compliance audit findings'],
+                ['2026', 'EU', 'Cyber Resilience Act', 'All connected products in EU', 'Up to \u20AC15M or 2.5% turnover'],
+                ['Jan 2027', 'NSA', 'CNSA 2.0 for new NSS equipment', 'US national security systems + NATO allies', 'Procurement disqualification'],
+                ['2030', 'NIST', 'Disallow RSA/ECC for new systems', 'All US federal systems', 'Full system replacement'],
+                ['2033', 'NSA', 'CNSA 2.0 software migration', 'All NSS software', 'Operational shutdown risk'],
+                ['2035', 'NSA/NIST', 'Complete PQC transition', 'All US national security + federal systems', 'System decommissioning'],
+              ].map((row, i) => (
+                <tr key={i} className="border-t border-white/5">
+                  <td className="py-2 px-3 text-amber-300 font-mono font-semibold text-xs">{row[0]}</td>
+                  <td className="py-2 px-3 text-white font-medium text-xs">{row[1]}</td>
+                  <td className="py-2 px-3 text-white text-xs">{row[2]}</td>
+                  <td className="py-2 px-3 text-gray-400 text-xs">{row[3]}</td>
+                  <td className="py-2 px-3 text-red-400 text-xs font-mono">{row[4]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="text-[10px] text-gray-600 mt-3 font-mono">
+            Sources: NIST SP 800-227, NSA CNSA 2.0 Suite, EU DORA Regulation, EU Cyber Resilience Act
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ─── Quantum Computing Progress ─── */}
+      <motion.div {...fadeUp(1.0)} className="mb-8">
+        <h3 className="gradient-text-gold text-lg font-semibold mb-4 flex items-center gap-2">
+          <Atom className="w-5 h-5 text-amber-400" />
+          Quantum Computing Progress: Approaching the Cryptographic Threshold
+        </h3>
+        <div className="card-quantum-gold p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-3">Qubit Milestones</h4>
+              <div className="space-y-2">
+                {[
+                  { year: '2019', qubits: '53', provider: 'Google (Sycamore)', event: 'Quantum supremacy claim' },
+                  { year: '2022', qubits: '433', provider: 'IBM (Osprey)', event: 'Largest superconducting processor' },
+                  { year: '2023', qubits: '1,121', provider: 'IBM (Condor)', event: '1000+ qubit milestone' },
+                  { year: '2024', qubits: '1,180', provider: 'IBM (Flamingo)', event: 'Modular architecture' },
+                  { year: '2025', qubits: '4,158', provider: 'IBM (Starling)', event: 'Error-corrected logical qubits' },
+                  { year: '2029', qubits: '100K+', provider: 'IBM Roadmap', event: 'Projected fault-tolerant era' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 py-1.5 border-b border-white/5 last:border-0">
+                    <span className="text-xs font-mono text-amber-400 w-10 shrink-0">{item.year}</span>
+                    <span className="text-sm font-mono text-white w-14 shrink-0 text-right">{item.qubits}</span>
+                    <span className="text-xs text-gray-400 flex-1">{item.provider}</span>
+                    <span className="text-[10px] text-gray-600 font-mono">{item.event}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-3">Breaking RSA: Shrinking Requirements</h4>
+              <div className="space-y-3">
+                {[
+                  { year: '2012', estimate: '1 billion physical qubits', reduction: 'Baseline' },
+                  { year: '2019', estimate: '20 million physical qubits', reduction: '50x reduction' },
+                  { year: '2023', estimate: '<1 million physical qubits', reduction: '1000x reduction' },
+                  { year: '2025', estimate: '<100K logical qubits', reduction: 'New error correction' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-3 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5">
+                    <span className="text-xs font-mono text-red-400 shrink-0">{item.year}</span>
+                    <div className="flex-1">
+                      <p className="text-xs text-white">{item.estimate}</p>
+                      <p className="text-[10px] text-gray-500 font-mono">{item.reduction}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-400 leading-relaxed mt-3">
+                Each generation of algorithmic improvements dramatically reduces the qubit
+                count needed to break current cryptography. The goalposts are moving toward
+                us, not away.
+              </p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ─── Window of Opportunity ─── */}
+      <motion.div {...fadeUp(1.1)} className="mb-4">
+        <div className="card-quantum-gold p-6">
+          <h3 className="gradient-text-gold text-lg font-semibold mb-4 text-center">
+            Window of Opportunity: 2025-2027
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            {[
+              {
+                title: 'First Mover Advantage',
+                desc: 'NIST standards finalized in 2024. The market is nascent. 91% of businesses have no PQC migration plan. Early entrants will define the category and capture enterprise relationships before competition materializes.',
+              },
+              {
+                title: 'Regulatory Tailwind',
+                desc: 'DORA (Jul 2025), CNSA 2.0 (Jan 2027), and EU CRA (2026) create mandatory adoption timelines. Organizations must act, not evaluate. The question is not "if" but "who provides the solution."',
+              },
+              {
+                title: 'Norwegian Quantum Initiative',
+                desc: 'NOK 1.75B ($175M) government program launches in 2026. Grant funding, research partnerships, and sovereign cloud infrastructure create a unique ecosystem advantage for Norwegian-based PQC companies.',
+              },
+            ].map((card, i) => (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.15 + i * 0.08 }}
+                className="p-4 rounded-xl bg-white/[0.03] border border-amber-500/15"
+              >
+                <h4 className="text-sm font-semibold text-amber-300 mb-2">{card.title}</h4>
+                <p className="text-xs text-gray-400 leading-relaxed">{card.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-white font-medium">
+              The window to establish market leadership in PQC is{' '}
+              <span className="text-amber-400 font-semibold">18-24 months</span>.
+              After that, enterprise procurement cycles lock in vendor relationships for 5-10 years.
+            </p>
+          </div>
+        </div>
       </motion.div>
     </SlideWrapper>
   )

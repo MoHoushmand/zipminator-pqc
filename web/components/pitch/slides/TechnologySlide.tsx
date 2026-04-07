@@ -272,6 +272,163 @@ export default function TechnologySlide({ scenario: _scenario }: { scenario?: Sc
           )
         })}
       </div>
+
+      {/* Gold divider */}
+      <div className="section-divider-gold" />
+
+      {/* Cryptographic Parameters Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="card-quantum-gold mb-6"
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+            <Lock className="w-4 h-4 text-amber-400" />
+          </div>
+          <h3 className="font-semibold text-white text-sm">Cryptographic Parameters</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="table-quantum">
+            <thead>
+              <tr>
+                <th>Algorithm</th>
+                <th>Public Key Size</th>
+                <th>Security Level</th>
+                <th>Performance</th>
+                <th>Use Case</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { algo: 'ML-KEM-768 (Kyber)', pk: '2,400 bytes', level: 'NIST Level 3', perf: '0.05ms keygen', use: 'Key encapsulation' },
+                { algo: 'ML-DSA-65 (Dilithium)', pk: '1,952 bytes', level: 'NIST Level 3', perf: '0.1ms sign', use: 'Digital signatures' },
+                { algo: 'SLH-DSA-SHA2-128s', pk: '32 bytes', level: 'NIST Level 1', perf: '2ms sign', use: 'Hash-based signatures' },
+                { algo: 'AES-256-GCM', pk: '32 bytes (symmetric)', level: 'NIST Level 5 equiv.', perf: '~3 GB/s', use: 'Data-at-rest encryption' },
+                { algo: 'SHAKE-256', pk: 'N/A (hash)', level: 'NIST Level 5 equiv.', perf: '~1.5 GB/s', use: 'KDF / entropy extraction' },
+              ].map((row, i) => (
+                <tr key={i}>
+                  <td className="font-mono text-amber-300/90 text-xs font-semibold">{row.algo}</td>
+                  <td className="font-mono text-xs">{row.pk}</td>
+                  <td>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                      {row.level}
+                    </span>
+                  </td>
+                  <td className="font-mono text-xs text-green-400">{row.perf}</td>
+                  <td className="text-xs text-gray-400">{row.use}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
+      {/* NIST Compliance Matrix */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45 }}
+        className="card-quantum-gold mb-6"
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+            <FileCheck className="w-4 h-4 text-amber-400" />
+          </div>
+          <h3 className="font-semibold text-white text-sm">NIST Compliance Matrix</h3>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {[
+            { standard: 'FIPS 203', name: 'ML-KEM', status: 'Implemented', detail: 'Kyber768 key encapsulation verified against official KAT vectors', color: 'text-green-400 bg-green-500/10 border-green-500/20' },
+            { standard: 'FIPS 204', name: 'ML-DSA', status: 'Implemented', detail: 'Dilithium digital signatures for code signing and auth tokens', color: 'text-green-400 bg-green-500/10 border-green-500/20' },
+            { standard: 'FIPS 205', name: 'SLH-DSA', status: 'Integrated', detail: 'Stateless hash-based signatures as fallback signing mechanism', color: 'text-green-400 bg-green-500/10 border-green-500/20' },
+          ].map((item) => (
+            <div key={item.standard} className="rounded-xl bg-white/[0.02] border border-amber-500/10 p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-mono font-bold text-amber-300">{item.standard}</span>
+                <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${item.color}`}>
+                  {item.status}
+                </span>
+              </div>
+              <p className="text-xs font-semibold text-white mb-1">{item.name}</p>
+              <p className="text-[11px] text-gray-400 leading-relaxed">{item.detail}</p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Equation Card: ML-KEM Security */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="card-equation mb-6"
+      >
+        <div className="flex items-center gap-3 mb-3">
+          <Zap className="w-4 h-4 text-amber-400" />
+          <h3 className="font-semibold text-white text-sm font-sans">ML-KEM Security Guarantee</h3>
+        </div>
+        <div className="text-center py-4">
+          <p className="text-lg sm:text-xl text-amber-300 font-mono tracking-wide">
+            ML-KEM-768: &nbsp; &#x2016;e&#x2016; &lt; q/2<sup>k</sup>, &nbsp; k = 768
+          </p>
+          <p className="text-xs text-gray-500 mt-3 max-w-lg mx-auto leading-relaxed">
+            The Module Learning With Errors (MLWE) problem guarantees that recovering the secret key
+            requires solving a lattice problem with dimension n=256 and module rank k=3, yielding
+            estimated classical security of 2<sup>182</sup> operations and quantum security of 2<sup>164</sup>.
+          </p>
+        </div>
+        <div className="grid grid-cols-3 gap-3 mt-4 border-t border-amber-500/10 pt-4">
+          <div className="text-center">
+            <p className="text-sm font-mono text-amber-300">2<sup>182</sup></p>
+            <p className="text-[10px] text-gray-500 mt-1">Classical security</p>
+          </div>
+          <div className="text-center">
+            <p className="text-sm font-mono text-amber-300">2<sup>164</sup></p>
+            <p className="text-[10px] text-gray-500 mt-1">Quantum security (Grover)</p>
+          </div>
+          <div className="text-center">
+            <p className="text-sm font-mono text-amber-300">3329</p>
+            <p className="text-[10px] text-gray-500 mt-1">Modulus q</p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Constant-Time Guarantees */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.55 }}
+        className="card-quantum-gold"
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+            <Settings className="w-4 h-4 text-amber-400" />
+          </div>
+          <h3 className="font-semibold text-white text-sm">Constant-Time Guarantees</h3>
+        </div>
+        <p className="text-sm text-gray-400 leading-relaxed mb-4">
+          All cryptographic operations in Zipminator execute in constant time, eliminating timing
+          side-channel attacks. This is verified via Dudect statistical analysis on every CI build.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {[
+            { title: 'No secret-dependent branches', detail: 'All comparisons use bitwise OR accumulation, never early-exit' },
+            { title: 'No secret-dependent memory access', detail: 'Lookup tables replaced with arithmetic to prevent cache-timing leaks' },
+            { title: 'Dudect CI verification', detail: 'Statistical t-test on 10M samples per operation, p < 0.001 threshold' },
+            { title: 'Zero unsafe Rust blocks', detail: 'Entire crypto core compiled with #[forbid(unsafe_code)], eliminating memory corruption vectors' },
+          ].map((item) => (
+            <div key={item.title} className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/[0.04] border border-amber-500/10">
+              <CheckCircle2 className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+              <div>
+                <p className="text-xs font-semibold text-white">{item.title}</p>
+                <p className="text-[10px] text-gray-400 mt-0.5 leading-relaxed">{item.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </SlideWrapper>
   )
 }

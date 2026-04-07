@@ -273,7 +273,7 @@ export default function CompanySlide({ scenario: _scenario }: { scenario?: Scena
       {/* Social Impact callout */}
       <motion.div
         {...fadeUp(0.8)}
-        className="flex items-start gap-3 px-5 py-4 rounded-xl bg-purple-500/[0.06] border border-purple-500/20"
+        className="flex items-start gap-3 px-5 py-4 rounded-xl bg-purple-500/[0.06] border border-purple-500/20 mb-8"
       >
         <Heart className="w-5 h-5 text-purple-400 shrink-0 mt-0.5" />
         <div>
@@ -284,6 +284,142 @@ export default function CompanySlide({ scenario: _scenario }: { scenario?: Scena
             Freemium tier ensures quantum-safe privacy for all users regardless of ability to pay.
             Healthcare and social services sectors receive priority pricing and onboarding support.
           </p>
+        </div>
+      </motion.div>
+
+      {/* ─── Corporate Structure ─── */}
+      <motion.div {...fadeUp(0.85)} className="mb-8">
+        <div className="section-divider-gold mb-6" />
+        <h3 className="gradient-text-gold text-lg font-semibold mb-4 flex items-center gap-2">
+          <Building2 className="w-5 h-5 text-amber-400" />
+          Corporate Structure
+        </h3>
+        <div className="card-quantum-gold p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-3">Legal Entity</h4>
+              <table className="table-quantum w-full text-sm">
+                <tbody>
+                  {[
+                    ['Company Name', 'QDaria AS'],
+                    ['Type', 'Aksjeselskap (Norwegian LLC)'],
+                    ['Jurisdiction', 'Norway (Br\u00f8nn\u00f8ysund Register)'],
+                    ['Founded', '2024'],
+                    ['HQ', 'Oslo, Norway'],
+                    ['Sector', 'Cybersecurity / Quantum Computing'],
+                  ].map((row, i) => (
+                    <tr key={i} className="border-t border-white/5">
+                      <td className="py-2 px-3 text-gray-400 text-xs font-mono">{row[0]}</td>
+                      <td className="py-2 px-3 text-white font-medium text-sm">{row[1]}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-3">Regulatory Compliance</h4>
+              <div className="space-y-3">
+                {[
+                  { label: 'GDPR', detail: 'Full compliance under Norwegian Data Protection Authority (Datatilsynet)' },
+                  { label: 'DORA', detail: 'Art. 6 encryption documentation, Art. 7 key lifecycle management' },
+                  { label: 'NIS2', detail: 'Network and Information Security Directive readiness' },
+                  { label: 'Schrems II', detail: 'European data sovereignty, no US data transfer required' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-xs font-mono text-amber-300">{item.label}</span>
+                      <p className="text-xs text-gray-500 leading-relaxed">{item.detail}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ─── IP Portfolio ─── */}
+      <motion.div {...fadeUp(0.9)} className="mb-8">
+        <h3 className="gradient-text-gold text-lg font-semibold mb-4 flex items-center gap-2">
+          <Layers className="w-5 h-5 text-amber-400" />
+          Intellectual Property Portfolio
+        </h3>
+        <div className="card-quantum-gold p-6">
+          <table className="table-quantum w-full text-sm">
+            <thead>
+              <tr>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Asset</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Type</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Status</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['PQC Entropy Pool Architecture', 'Patent (Provisional)', 'Filed 2025', 'Hybrid QRNG + OS entropy aggregation with health monitoring and automatic failover'],
+                ['Zipminator Super-App Framework', 'Trade Secret', 'Active', 'Unified 9-module PQC security platform architecture with shared crypto core'],
+                ['Constant-Time Kyber768 Rust Core', 'Copyright + Trade Secret', 'Active', 'Zero-dependency ML-KEM-768 implementation verified against NIST KAT vectors'],
+              ].map((row, i) => (
+                <tr key={i} className="border-t border-white/5">
+                  <td className="py-2 px-3 text-white font-medium">{row[0]}</td>
+                  <td className="py-2 px-3 text-amber-300 font-mono text-xs">{row[1]}</td>
+                  <td className="py-2 px-3">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-500/15 text-amber-400 border border-amber-500/25">
+                      {row[2]}
+                    </span>
+                  </td>
+                  <td className="py-2 px-3 text-gray-400 text-xs leading-relaxed">{row[3]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="text-[10px] text-gray-600 mt-3 font-mono">
+            Additional IP: 300K+ LOC proprietary codebase, 26 integrated technology stacks, domain portfolio (zipminator.zip, qdaria.com)
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ─── Advisory Network ─── */}
+      <motion.div {...fadeUp(0.95)} className="mb-4">
+        <h3 className="gradient-text-gold text-lg font-semibold mb-4 flex items-center gap-2">
+          <Rocket className="w-5 h-5 text-amber-400" />
+          Advisory Network &amp; Strategic Partnerships
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            {
+              title: 'Quantum Research',
+              detail: 'Partnerships with IBM Quantum Network and qBraid for hardware access. Targeting collaboration with Norwegian University of Science and Technology (NTNU) quantum computing group.',
+              status: 'Active',
+            },
+            {
+              title: 'Defense & Government',
+              detail: 'Positioned for NATO DIANA accelerator program. Norwegian Defence Research Establishment (FFI) engagement planned. Arctic data sovereignty alignment with Nordic defense priorities.',
+              status: 'Pipeline',
+            },
+            {
+              title: 'Financial Sector',
+              detail: 'DORA compliance creates mandatory PQC adoption timeline for all EU financial institutions by 2027. Early conversations with Nordic banking consortium for pilot programs.',
+              status: 'Pipeline',
+            },
+          ].map((card, i) => (
+            <motion.div
+              key={card.title}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.0 + i * 0.08 }}
+              className="card-quantum-gold p-5"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-semibold text-white">{card.title}</h4>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/25">
+                  {card.status}
+                </span>
+              </div>
+              <p className="text-xs text-gray-400 leading-relaxed">{card.detail}</p>
+            </motion.div>
+          ))}
         </div>
       </motion.div>
     </SlideWrapper>

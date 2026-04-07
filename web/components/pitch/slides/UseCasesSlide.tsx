@@ -299,6 +299,144 @@ export default function UseCasesSlide({ scenario: _scenario }: { scenario?: Scen
           One platform to protect them all. Per NSA CNSA 2.0 mandate timelines, migration must begin now.
         </p>
       </motion.div>
+
+      {/* Gold divider */}
+      <div className="section-divider-gold" />
+
+      {/* Industry Deep-Dives */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.75 }}
+        className="mb-6"
+      >
+        <h3 className="text-xl font-display font-bold text-white mb-2">
+          Industry <span className="gradient-text-gold">Deep-Dives</span>
+        </h3>
+        <p className="text-sm text-gray-400 mb-6">Sector-specific use cases, regulatory drivers, and market sizing</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            {
+              title: 'Banking & Finance',
+              icon: Landmark,
+              useCase: 'Quantum-proof transaction signing, trading algorithm protection, and client data vaults',
+              regulation: 'PCI-DSS v4.0 mandates PQC readiness assessment by 2026. SWIFT exploring PQC for cross-border payments.',
+              market: '$4.2B',
+              marketLabel: 'PQC banking segment by 2032',
+              color: 'text-green-400',
+              bg: 'bg-green-500/10',
+              border: 'border-green-500/20',
+            },
+            {
+              title: 'Healthcare',
+              icon: Heart,
+              useCase: 'Patient records with 50+ year confidentiality windows. Genomic data protection against future decryption.',
+              regulation: 'HIPAA requires "reasonable safeguards" evolving to include PQC. EU Health Data Space mandates encryption.',
+              market: '$2.8B',
+              marketLabel: 'Healthcare PQC by 2032',
+              color: 'text-red-400',
+              bg: 'bg-red-500/10',
+              border: 'border-red-500/20',
+            },
+            {
+              title: 'Government & Defense',
+              icon: Shield,
+              useCase: 'Classified communications, intelligence sharing, and diplomatic cables protected against nation-state quantum adversaries',
+              regulation: 'NSA CNSA 2.0 mandates PQC for all National Security Systems by 2027. OMB M-23-02 requires inventory.',
+              market: '$5.1B',
+              marketLabel: 'Gov/defense PQC by 2032',
+              color: 'text-blue-400',
+              bg: 'bg-blue-500/10',
+              border: 'border-blue-500/20',
+            },
+            {
+              title: 'Critical Infrastructure',
+              icon: Zap,
+              useCase: 'SCADA/ICS protection for power grids, water systems, and telecom backbones. Prevent harvest-now attacks on 30+ year infrastructure.',
+              regulation: 'DHS CISA advisory on PQC migration. NERC CIP-013 supply chain security. EU NIS2 Directive.',
+              market: '$3.5B',
+              marketLabel: 'Infrastructure PQC by 2032',
+              color: 'text-orange-400',
+              bg: 'bg-orange-500/10',
+              border: 'border-orange-500/20',
+            },
+            {
+              title: 'Legal & Professional Services',
+              icon: Scale,
+              useCase: 'Attorney-client privilege, M&A deal rooms, trade secret protection with decades-long confidentiality requirements',
+              regulation: 'ABA Ethics Opinion on evolving tech competence. Trade Secrets Act requires "reasonable measures."',
+              market: '$1.2B',
+              marketLabel: 'Legal PQC by 2032',
+              color: 'text-purple-400',
+              bg: 'bg-purple-500/10',
+              border: 'border-purple-500/20',
+            },
+          ].map((sector, i) => {
+            const Icon = sector.icon
+            return (
+              <motion.div
+                key={sector.title}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 + i * 0.06 }}
+                className="card-quantum-gold"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className={`w-10 h-10 rounded-xl ${sector.bg} border ${sector.border} flex items-center justify-center`}>
+                    <Icon className={`w-5 h-5 ${sector.color}`} />
+                  </div>
+                  <h4 className="text-sm font-semibold text-white">{sector.title}</h4>
+                </div>
+                <p className="text-xs text-gray-300 leading-relaxed mb-3">{sector.useCase}</p>
+                <div className="rounded-lg bg-amber-500/[0.04] border border-amber-500/10 p-2.5 mb-3">
+                  <p className="text-[10px] font-mono text-amber-400/80 uppercase tracking-wider mb-1">Regulatory Driver</p>
+                  <p className="text-[11px] text-gray-400 leading-relaxed">{sector.regulation}</p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-gray-500 font-mono uppercase">Est. Market</span>
+                  <div className="text-right">
+                    <span className="text-sm font-bold font-mono gradient-text-gold">{sector.market}</span>
+                    <span className="text-[9px] text-gray-500 ml-1">{sector.marketLabel}</span>
+                  </div>
+                </div>
+              </motion.div>
+            )
+          })}
+        </div>
+      </motion.div>
+
+      {/* Customer Journey */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.1 }}
+        className="card-quantum-gold"
+      >
+        <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+          <Target className="w-4 h-4 text-amber-400" />
+          Customer Adoption Journey
+        </h3>
+        <div className="flex flex-col sm:flex-row items-stretch gap-2">
+          {[
+            { step: '1', title: 'Discover', detail: 'Free tier trial, PQC health check reveals exposure', color: 'border-amber-500/30 bg-amber-500/[0.06]' },
+            { step: '2', title: 'Adopt', detail: 'Deploy messenger + VPN, first team protected in <1 hour', color: 'border-amber-500/30 bg-amber-500/[0.06]' },
+            { step: '3', title: 'Expand', detail: 'Add browser, email, VoIP modules. Enterprise SSO integration.', color: 'border-amber-500/30 bg-amber-500/[0.06]' },
+            { step: '4', title: 'Platform', detail: 'API/SDK access, build PQC into own products via QCaaP', color: 'border-amber-500/30 bg-amber-500/[0.06]' },
+          ].map((phase, i) => (
+            <div key={phase.step} className="flex-1 flex items-start gap-3">
+              <div className={`flex flex-col items-center rounded-xl border px-4 py-3 flex-1 ${phase.color}`}>
+                <span className="text-lg font-bold font-mono gradient-text-gold">{phase.step}</span>
+                <p className="text-xs font-semibold text-white mt-1">{phase.title}</p>
+                <p className="text-[10px] text-gray-400 mt-1 text-center leading-relaxed">{phase.detail}</p>
+              </div>
+              {i < 3 && (
+                <span className="hidden sm:flex items-center text-amber-500/40 text-lg self-center">&rarr;</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </SlideWrapper>
   )
 }

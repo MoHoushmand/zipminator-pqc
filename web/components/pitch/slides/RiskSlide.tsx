@@ -297,10 +297,141 @@ export default function RiskSlide({ scenario: _scenario = 'base' }: { scenario?:
       {/* Bottom Note */}
       <motion.p
         {...fadeUp(0.4)}
-        className="text-center text-xs text-gray-500 mt-6 font-mono"
+        className="text-center text-xs text-gray-500 mt-6 mb-6 font-mono"
       >
         Risk matrix reviewed quarterly. Crypto-agile architecture is the primary systemic hedge.
       </motion.p>
+
+      {/* ── NEW: Risk Matrix Table ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45, duration: 0.5 }}
+        className="card-quantum-gold mb-6"
+      >
+        <h3 className="text-base font-semibold gradient-text-gold mb-4 flex items-center gap-2">
+          <ShieldAlert className="w-5 h-5 text-amber-400" />
+          Comprehensive Risk Matrix
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="table-quantum">
+            <thead>
+              <tr>
+                <th>Risk Category</th>
+                <th>Likelihood</th>
+                <th>Impact</th>
+                <th>Severity</th>
+                <th>Primary Mitigation</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { cat: 'Technology Risk', like: 'Low', impact: 'High', sev: 'Elevated', mit: 'Crypto-agile architecture; swap algorithms without code changes' },
+                { cat: 'Market Risk', like: 'Medium', impact: 'Medium', sev: 'Elevated', mit: 'NIST 2035 mandate creates guaranteed demand curve' },
+                { cat: 'Regulatory Risk', like: 'Medium', impact: 'High', sev: 'Critical', mit: 'DORA-native design; FIPS 203 alignment from day one' },
+                { cat: 'Competition Risk', like: 'High', impact: 'Medium', sev: 'Elevated', mit: 'Super-app moat; 8-pillar integration competitors cannot replicate quickly' },
+                { cat: 'Funding Risk', like: 'Medium', impact: 'High', sev: 'Critical', mit: 'Grants-first strategy reduces equity dependency; 18mo runway target' },
+                { cat: 'Team / Key Person Risk', like: 'Medium', impact: 'High', sev: 'Critical', mit: 'Documentation-first culture; bus factor improvements via hiring' },
+              ].map((row) => (
+                <tr key={row.cat}>
+                  <td className="font-semibold text-white text-xs">{row.cat}</td>
+                  <td>
+                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
+                      row.like === 'High' ? 'bg-red-500/20 text-red-400' :
+                      row.like === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                      'bg-green-500/20 text-green-400'
+                    }`}>{row.like}</span>
+                  </td>
+                  <td>
+                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
+                      row.impact === 'High' ? 'bg-red-500/20 text-red-400' :
+                      row.impact === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                      'bg-green-500/20 text-green-400'
+                    }`}>{row.impact}</span>
+                  </td>
+                  <td>
+                    <span className={`text-[10px] font-mono font-bold ${
+                      row.sev === 'Critical' ? 'text-red-400' : 'text-yellow-400'
+                    }`}>{row.sev}</span>
+                  </td>
+                  <td className="text-xs">{row.mit}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
+      {/* ── NEW: Mitigation Strategies Gold Cards ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+        className="grid sm:grid-cols-3 gap-4 mb-6"
+      >
+        <div className="card-quantum-gold">
+          <ShieldAlert className="w-6 h-6 text-amber-400 mb-3" />
+          <h4 className="text-sm font-semibold gradient-text-gold mb-2">Crypto Agility</h4>
+          <p className="text-xs text-gray-400 leading-relaxed">
+            Algorithm-agnostic core allows hot-swapping cryptographic primitives if NIST standards are updated or vulnerabilities are discovered. Zero downtime migration path.
+          </p>
+        </div>
+        <div className="card-quantum-gold">
+          <CheckCircle2 className="w-6 h-6 text-amber-400 mb-3" />
+          <h4 className="text-sm font-semibold gradient-text-gold mb-2">Compliance by Design</h4>
+          <p className="text-xs text-gray-400 leading-relaxed">
+            DORA Art. 6/7 compliance built into architecture from inception. Audit trails, key lifecycle management, and cryptographic policy documentation are first-class features.
+          </p>
+        </div>
+        <div className="card-quantum-gold">
+          <TrendingUp className="w-6 h-6 text-amber-400 mb-3" />
+          <h4 className="text-sm font-semibold gradient-text-gold mb-2">Market Timing Hedge</h4>
+          <p className="text-xs text-gray-400 leading-relaxed">
+            Grants-first strategy provides 18-24 months of runway independent of market conditions. Revenue validation before equity dilution ensures raise from strength.
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ── NEW: DORA Compliance Section ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.55, duration: 0.5 }}
+        className="card-quantum-gold"
+      >
+        <h3 className="text-base font-semibold gradient-text-gold mb-4 flex items-center gap-2">
+          <AlertTriangle className="w-5 h-5 text-amber-400" />
+          DORA Compliance (Norwegian Law Since July 2025)
+        </h3>
+        <p className="text-xs text-gray-400 mb-4 leading-relaxed">
+          The Digital Operational Resilience Act requires all financial entities in Norway/EU to implement
+          documented cryptographic policies, key lifecycle management, and periodic updates based on
+          cryptanalysis developments. Non-compliance carries fines up to 2% of global turnover.
+        </p>
+        <table className="table-quantum">
+          <thead>
+            <tr>
+              <th>DORA Article</th>
+              <th>Requirement</th>
+              <th>Zipminator Response</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              { art: 'Art. 6.1', req: 'Document encryption policies for data at rest, transit, and use', resp: 'Built-in policy engine with exportable compliance reports' },
+              { art: 'Art. 6.4', req: 'Periodic cryptographic updates based on cryptanalysis', resp: 'Crypto-agile architecture; OTA algorithm updates without downtime' },
+              { art: 'Art. 7', req: 'Full cryptographic key lifecycle management', resp: 'Automated key rotation, hardware-backed storage, audit trail' },
+              { art: 'Art. 50', req: 'Enforcement and penalties', resp: 'Continuous compliance monitoring dashboard for enterprises' },
+            ].map((row) => (
+              <tr key={row.art}>
+                <td className="font-mono font-bold text-amber-400 text-xs">{row.art}</td>
+                <td className="text-xs">{row.req}</td>
+                <td className="text-xs font-semibold text-white">{row.resp}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </motion.div>
     </SlideWrapper>
   )
 }

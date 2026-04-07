@@ -338,7 +338,7 @@ export default function FundingStrategySlide({ scenario: _scenario = 'base' }: {
       </motion.div>
 
       {/* Comparable Raises */}
-      <motion.div {...fadeUp(0.2)} className="card-quantum">
+      <motion.div {...fadeUp(0.2)} className="card-quantum mb-6">
         <h3 className="text-base font-semibold text-white mb-4 flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-quantum-400" />
           Market Context &mdash; Comparable Raises
@@ -358,6 +358,156 @@ export default function FundingStrategySlide({ scenario: _scenario = 'base' }: {
             </div>
           ))}
         </div>
+      </motion.div>
+
+      {/* ── NEW: Grant Pipeline ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25, duration: 0.5 }}
+        className="card-quantum-gold mb-6"
+      >
+        <h3 className="text-base font-semibold gradient-text-gold mb-2 flex items-center gap-2">
+          <Award className="w-5 h-5 text-amber-400" />
+          Full Grant Pipeline (10 Institutions)
+        </h3>
+        <p className="text-[10px] font-mono text-amber-400/60 uppercase tracking-wider mb-4">
+          All amounts are target ranges, not confirmed awards
+        </p>
+        <div className="overflow-x-auto">
+          <table className="table-quantum">
+            <thead>
+              <tr>
+                <th>Institution</th>
+                <th>Program</th>
+                <th>Target Amount</th>
+                <th>Timeline</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { inst: 'Innovation Norway', program: 'Startup Grant / Market Validation', amount: 'NOK 1-3M', timeline: 'Q2 2026', status: 'Preparing' },
+                { inst: 'Research Council (NFR)', program: 'IPN / Researcher Project', amount: 'NOK 3-8M', timeline: 'Q3 2026', status: 'Preparing' },
+                { inst: 'NFR (IKTPLUSS)', program: 'ICT & Digital Innovation', amount: 'NOK 5-12M', timeline: 'Q4 2026', status: 'Planned' },
+                { inst: 'EU Horizon Europe', program: 'EIC Accelerator / Pathfinder', amount: 'EUR 1-2.5M', timeline: 'Q2 2027', status: 'Planned' },
+                { inst: 'DARPA / NSF (US)', program: 'PQC Migration Programs', amount: '$500K-2M', timeline: 'Q3 2027', status: 'Planned' },
+                { inst: 'NATO DIANA', program: 'Deep Tech Accelerator', amount: 'EUR 100-300K', timeline: 'Q1 2027', status: 'Planned' },
+                { inst: 'Innovasjon Norge NORD', program: 'Northern Norway Growth', amount: 'NOK 500K-1.5M', timeline: 'Q3 2026', status: 'Planned' },
+                { inst: 'Helgeland (Regional)', program: 'Regional Development Fund', amount: 'NOK 200-500K', timeline: 'Q2 2026', status: 'Preparing' },
+                { inst: 'Nordland FK', program: 'County Innovation Fund', amount: 'NOK 200-800K', timeline: 'Q2 2026', status: 'Preparing' },
+                { inst: 'Sparebankstiftelsen', program: 'Innovation & Technology', amount: 'NOK 100-500K', timeline: 'Q3 2026', status: 'Planned' },
+              ].map((row) => (
+                <tr key={row.inst}>
+                  <td className="font-semibold text-white text-xs">{row.inst}</td>
+                  <td className="text-xs">{row.program}</td>
+                  <td className="font-mono text-xs text-amber-400">{row.amount}</td>
+                  <td className="font-mono text-xs">{row.timeline}</td>
+                  <td>
+                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
+                      row.status === 'Preparing' ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
+                    }`}>
+                      {row.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
+      {/* ── NEW: Funding Rounds Timeline ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="card-quantum-gold mb-6"
+      >
+        <h3 className="text-base font-semibold gradient-text-gold mb-4 flex items-center gap-2">
+          <Rocket className="w-5 h-5 text-amber-400" />
+          Funding Rounds Timeline
+        </h3>
+        <div className="grid sm:grid-cols-3 gap-4">
+          {[
+            {
+              round: 'Pre-Seed',
+              timing: 'Q2-Q3 2026',
+              target: 'Projected: $250K-500K',
+              source: 'Grants + Angels',
+              milestone: 'MVP shipped, first 100 users',
+              valuation: 'Projected: $2-4M',
+              color: 'border-green-500/30',
+              dotColor: 'bg-green-400',
+            },
+            {
+              round: 'Seed',
+              timing: 'Q1-Q2 2027',
+              target: 'Projected: $1-3M',
+              source: 'Nordic VC + Grants',
+              milestone: '1K+ users, $100K+ ARR',
+              valuation: 'Projected: $8-15M',
+              color: 'border-quantum-500/30',
+              dotColor: 'bg-quantum-400',
+            },
+            {
+              round: 'Series A',
+              timing: 'Q1-Q2 2028',
+              target: 'Projected: $5-15M',
+              source: 'International VC',
+              milestone: '10K+ users, $1M+ ARR',
+              valuation: 'Projected: $30-60M',
+              color: 'border-amber-500/30',
+              dotColor: 'bg-amber-400',
+            },
+          ].map((item, i) => (
+            <div key={item.round} className={`rounded-xl bg-white/[0.03] border-t-2 ${item.color} p-4 relative`}>
+              {i < 2 && (
+                <ArrowRight className="hidden sm:block absolute -right-5 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-600 z-20" />
+              )}
+              <div className="flex items-center gap-2 mb-2">
+                <span className={`w-2.5 h-2.5 rounded-full ${item.dotColor}`} />
+                <span className="text-xs font-mono text-gray-500">{item.timing}</span>
+              </div>
+              <h4 className="text-lg font-bold text-white mb-1">{item.round}</h4>
+              <p className="text-xl font-bold gradient-text-gold font-mono mb-2">{item.target}</p>
+              <p className="text-xs text-gray-400 mb-1">Source: {item.source}</p>
+              <p className="text-xs text-gray-400 mb-1">Milestone: {item.milestone}</p>
+              <p className="text-xs font-mono text-gray-500">{item.valuation}</p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* ── NEW: Use of Funds ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35, duration: 0.5 }}
+        className="card-quantum-gold"
+      >
+        <h3 className="text-base font-semibold gradient-text-gold mb-4 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-amber-400" />
+          Projected Use of Funds (Seed Round)
+        </h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { category: 'Engineering', pct: '50%', detail: 'Core team hires, Rust + mobile dev', icon: '⚙️' },
+            { category: 'Security & Compliance', pct: '20%', detail: 'Pen testing, FIPS readiness, audits', icon: '🛡️' },
+            { category: 'Go-to-Market', pct: '15%', detail: 'Developer advocacy, content, events', icon: '🚀' },
+            { category: 'Operations', pct: '15%', detail: 'Infrastructure, legal, admin', icon: '🏢' },
+          ].map((item) => (
+            <div key={item.category} className="rounded-lg bg-amber-500/[0.04] border border-amber-500/10 px-4 py-4 text-center">
+              <p className="text-2xl mb-1">{item.icon}</p>
+              <p className="text-2xl font-bold gradient-text-gold font-mono">{item.pct}</p>
+              <p className="text-xs font-semibold text-white mt-1">{item.category}</p>
+              <p className="text-[10px] text-gray-500 mt-1">{item.detail}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] font-mono text-gray-500 mt-3 text-center">
+          Projected allocation, subject to adjustment based on actual funding secured
+        </p>
       </motion.div>
     </SlideWrapper>
   )

@@ -165,8 +165,111 @@ export default function ContactSlide({ scenario: _scenario = 'base' }: { scenari
           </div>
         </motion.div>
 
+        {/* Next Steps - Gold Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="card-quantum-gold w-full max-w-2xl mb-8"
+        >
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Handshake className="w-5 h-5 text-amber-400" />
+            <h3 className="text-lg font-semibold gradient-text-gold">Ready to Move Forward?</h3>
+          </div>
+          <p className="text-sm text-gray-300 mb-4 text-center">
+            The quantum migration deadline is 2030. Early movers capture the market.
+            Here is how we can start working together today.
+          </p>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="p-3 rounded-lg bg-amber-500/[0.04] border border-amber-500/15 text-center">
+              <span className="text-lg font-bold text-amber-400 font-mono">1</span>
+              <p className="text-sm font-semibold text-white mt-1">Schedule Call</p>
+              <p className="text-[10px] text-gray-400 mt-1">30-min intro with CEO</p>
+            </div>
+            <div className="p-3 rounded-lg bg-amber-500/[0.04] border border-amber-500/15 text-center">
+              <span className="text-lg font-bold text-amber-400 font-mono">2</span>
+              <p className="text-sm font-semibold text-white mt-1">Live Demo</p>
+              <p className="text-[10px] text-gray-400 mt-1">Hands-on platform walkthrough</p>
+            </div>
+            <div className="p-3 rounded-lg bg-amber-500/[0.04] border border-amber-500/15 text-center">
+              <span className="text-lg font-bold text-amber-400 font-mono">3</span>
+              <p className="text-sm font-semibold text-white mt-1">Term Sheet</p>
+              <p className="text-[10px] text-gray-400 mt-1">Align on structure and close</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Resources Table */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35, duration: 0.5 }}
+          className="w-full max-w-2xl mb-8"
+        >
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <FileText className="w-4 h-4 text-amber-400" />
+            <h3 className="text-sm font-semibold gradient-text-gold">Resources &amp; Materials</h3>
+          </div>
+          <div className="table-quantum">
+            <table className="w-full text-sm">
+              <thead>
+                <tr>
+                  <th className="text-left py-2 px-3 text-gray-400 font-mono text-xs">Resource</th>
+                  <th className="text-left py-2 px-3 text-gray-400 font-mono text-xs">Description</th>
+                  <th className="text-right py-2 px-3 text-gray-400 font-mono text-xs">Access</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { resource: 'GitHub Repository', desc: 'Open-source Kyber768 Rust core + full platform', access: 'github.com/qdaria' },
+                  { resource: 'Technical Documentation', desc: 'Architecture guides, API reference, crypto specs', access: 'docs.zipminator.zip' },
+                  { resource: 'Live Demo', desc: 'Interactive platform demo with all 8 modules', access: 'demo.zipminator.zip' },
+                  { resource: 'Jupyter Book', desc: 'PQC education, benchmarks, NIST KAT verification', access: 'book.zipminator.zip' },
+                  { resource: 'Investor Data Room', desc: 'Financials, cap table, grant applications', access: 'Available on request' },
+                  { resource: 'Security Audit Reports', desc: 'Third-party pen test results, KAT verification', access: 'Available on NDA' },
+                ].map((row, i) => (
+                  <tr key={i} className="border-t border-white/5">
+                    <td className="py-2 px-3 text-white font-semibold">{row.resource}</td>
+                    <td className="py-2 px-3 text-gray-400 text-xs">{row.desc}</td>
+                    <td className="py-2 px-3 text-right text-quantum-400 font-mono text-xs">{row.access}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+
+        {/* Appendix Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="w-full max-w-2xl mb-8"
+        >
+          <div className="section-divider-gold mb-4" />
+          <div className="card-quantum-gold">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <Landmark className="w-5 h-5 text-amber-400" />
+              <h3 className="text-lg font-semibold gradient-text-gold">Appendix</h3>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+              {[
+                { label: 'NIST FIPS 203', detail: 'ML-KEM specification' },
+                { label: 'DORA Regulation', detail: 'EU digital resilience act' },
+                { label: 'Rust Crypto Core', detail: '268 tests passing' },
+                { label: 'Grant Pipeline', detail: '10 institutions targeted' },
+              ].map((item, i) => (
+                <div key={i} className="p-3 rounded-lg bg-amber-500/[0.04] border border-amber-500/15">
+                  <p className="text-sm font-semibold text-amber-400">{item.label}</p>
+                  <p className="text-[10px] text-gray-500 mt-1">{item.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
         {/* Thank You + Branding */}
-        <motion.div {...fadeUp(0.25)} className="space-y-3">
+        <motion.div {...fadeUp(0.45)} className="space-y-3">
           <p className="text-lg text-gray-300 font-display">Thank you.</p>
           <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
             <span className="w-1.5 h-1.5 rounded-full bg-quantum-500" />
@@ -177,7 +280,7 @@ export default function ContactSlide({ scenario: _scenario = 'base' }: { scenari
         </motion.div>
 
         {/* Norway Quantum Initiative Footer Badge */}
-        <motion.div {...fadeUp(0.28)} className="mt-6">
+        <motion.div {...fadeUp(0.48)} className="mt-6">
           <div className="inline-flex items-center gap-2 text-xs text-gray-500 font-mono">
             <Landmark className="w-3.5 h-3.5 text-gray-500" />
             Backed by Norway&apos;s NOK 1.75B Quantum Initiative

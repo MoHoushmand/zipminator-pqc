@@ -143,6 +143,130 @@ export default function TitleSlide({ scenario: _scenario }: { scenario?: Scenari
           SEED ROUND 2026 &middot; QUANTUM-SAFE FROM DAY ONE
         </motion.p>
       </motion.div>
+
+      {/* ─── Key Differentiators ─── */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.85, duration: 0.6 }}
+        className="relative z-10 w-full max-w-5xl mx-auto mt-16"
+      >
+        <h3 className="text-sm font-mono uppercase tracking-widest text-amber-400/80 mb-6 text-center">
+          Key Differentiators
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            {
+              icon: Shield,
+              title: 'NIST FIPS 203 Native',
+              desc: 'ML-KEM-768 (Kyber768) implemented in constant-time Rust. Verified against all 100 NIST KAT test vectors. No wrappers, no liboqs dependency.',
+            },
+            {
+              icon: Cpu,
+              title: 'Quantum Entropy',
+              desc: '156-qubit IBM Quantum processors (Marrakesh/Fez) supply true quantum randomness via qBraid API, with OS CSPRNG fallback for 100% uptime.',
+            },
+            {
+              icon: Lock,
+              title: 'Zero-Knowledge Architecture',
+              desc: 'End-to-end encryption with no server-side key access. All cryptographic operations execute client-side in sandboxed Rust/WASM modules.',
+            },
+            {
+              icon: Leaf,
+              title: 'Green by Design',
+              desc: 'Norwegian data centers run on 98% renewable hydroelectric power. Single-app consolidation reduces compute footprint by an estimated 60-75%.',
+            },
+          ].map((card, i) => (
+            <motion.div
+              key={card.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 + i * 0.08, duration: 0.5 }}
+              className="card-quantum-gold p-5"
+            >
+              <card.icon className="w-6 h-6 text-amber-400 mb-3" />
+              <h4 className="text-sm font-semibold text-white mb-2">{card.title}</h4>
+              <p className="text-xs text-gray-400 leading-relaxed">{card.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* ─── Platform Overview ─── */}
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.2, duration: 0.6 }}
+        className="relative z-10 w-full max-w-4xl mx-auto mt-12"
+      >
+        <div className="card-quantum-gold p-6">
+          <h3 className="gradient-text-gold text-lg font-semibold mb-4">Platform Overview</h3>
+          <table className="table-quantum w-full text-sm">
+            <thead>
+              <tr>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Metric</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Value</th>
+                <th className="text-left py-2 px-3 text-amber-400/80 font-mono text-xs uppercase tracking-wider">Context</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['Crypto Standard', 'NIST FIPS 203 (ML-KEM-768)', 'Finalized August 2024'],
+                ['Security Modules', '9 integrated pillars', 'Messenger, VoIP, VPN, Browser, Mail, QRNG, PII, AI, Mesh'],
+                ['Codebase', '300K+ lines of code', 'Rust, TypeScript, Python, Swift, Kotlin'],
+                ['Test Coverage', '268+ Rust tests passing', 'Includes fuzz testing and NIST KAT validation'],
+                ['Quantum Hardware', '156-qubit IBM processors', 'qBraid API with OS entropy fallback'],
+                ['Energy Source', '98% renewable', 'Norwegian hydroelectric data centers'],
+                ['Target Market', '$2.8-4.6B by 2030', 'PQC market (projected)'],
+              ].map((row, i) => (
+                <tr key={i} className="border-t border-white/5">
+                  <td className="py-2 px-3 text-white font-medium">{row[0]}</td>
+                  <td className="py-2 px-3 text-amber-300 font-mono">{row[1]}</td>
+                  <td className="py-2 px-3 text-gray-500 text-xs">{row[2]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
+      {/* ─── Security Level Equation ─── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.4, duration: 0.5 }}
+        className="relative z-10 w-full max-w-3xl mx-auto mt-10 mb-4"
+      >
+        <div className="card-equation p-6 text-center">
+          <h4 className="text-xs font-mono uppercase tracking-widest text-amber-400/70 mb-4">
+            Kyber768 Security Level
+          </h4>
+          <div className="text-2xl sm:text-3xl font-mono text-white mb-3">
+            Security Level = 2<sup className="text-amber-400">n</sup>{' '}
+            <span className="text-gray-500 text-lg">where</span>{' '}
+            <span className="text-amber-400">n = 768</span>
+          </div>
+          <p className="text-sm text-gray-400 leading-relaxed max-w-xl mx-auto mt-3">
+            ML-KEM-768 provides NIST Category 3 security, equivalent to AES-192.
+            This means 2<sup>192</sup> classical operations to break, making it resistant
+            to both classical brute-force and Grover&apos;s quantum search algorithm
+            (which only halves the effective key length).
+          </p>
+          <div className="flex items-center justify-center gap-6 mt-4 text-xs font-mono">
+            <span className="text-gray-500">
+              Classical: <span className="text-red-400">2^192 ops</span>
+            </span>
+            <span className="text-gray-600">|</span>
+            <span className="text-gray-500">
+              Quantum (Grover): <span className="text-amber-400">2^96 ops</span>
+            </span>
+            <span className="text-gray-600">|</span>
+            <span className="text-gray-500">
+              Category: <span className="text-emerald-400">NIST Level 3</span>
+            </span>
+          </div>
+        </div>
+      </motion.div>
     </SlideWrapper>
   )
 }

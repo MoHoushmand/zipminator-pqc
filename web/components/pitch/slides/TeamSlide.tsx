@@ -296,7 +296,7 @@ export default function TeamSlide({ scenario: _scenario }: { scenario?: Scenario
       </motion.div>
 
       {/* Hiring Legend + Build Cost */}
-      <motion.div {...fadeUp(0.25)} className="flex flex-wrap items-center justify-between gap-4">
+      <motion.div {...fadeUp(0.25)} className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
           {Object.entries(PRIORITY_STYLES).map(([key, style]) => (
             <span key={key} className="flex items-center gap-1.5">
@@ -308,6 +308,126 @@ export default function TeamSlide({ scenario: _scenario }: { scenario?: Scenario
         <p className="text-xs font-mono text-gray-500">
           Total build cost: <span className="text-quantum-400 font-semibold">{TEAM_TOTAL.buildCost}</span>
         </p>
+      </motion.div>
+
+      {/* ── NEW: Core Competencies ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="card-quantum-gold mb-6"
+      >
+        <h3 className="text-base font-semibold gradient-text-gold mb-4 flex items-center gap-2">
+          <Award className="w-5 h-5 text-amber-400" />
+          Core Competencies Mapped to Product Pillars
+        </h3>
+        <table className="table-quantum">
+          <thead>
+            <tr>
+              <th>Competency</th>
+              <th>Product Pillar</th>
+              <th>Team Coverage</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              { comp: 'Post-Quantum Cryptography', pillar: 'Pillar 1: PQC Core (ML-KEM-768)', coverage: 'Founder + 2 Crypto Engineers' },
+              { comp: 'Systems / Rust Engineering', pillar: 'Pillar 2: VPN / Pillar 3: Browser', coverage: '3 Systems Engineers' },
+              { comp: 'Mobile Development', pillar: 'Pillar 4: Messenger / Pillar 5: Email', coverage: '2 Mobile Engineers' },
+              { comp: 'Cloud Security', pillar: 'Pillar 6: Vault / Pillar 7: SDK', coverage: '2 Backend Engineers' },
+              { comp: 'Quantum Entropy / QRNG', pillar: 'Pillar 8: Entropy Pool', coverage: 'Founder + Research Partner' },
+              { comp: 'UX / Design Systems', pillar: 'All Consumer Products', coverage: '1 Designer + Contractor' },
+              { comp: 'DevOps / Infrastructure', pillar: 'Platform Operations', coverage: '1 SRE + Automation' },
+            ].map((row) => (
+              <tr key={row.comp}>
+                <td className="font-semibold text-white">{row.comp}</td>
+                <td>{row.pillar}</td>
+                <td className="font-mono text-xs">{row.coverage}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </motion.div>
+
+      {/* ── NEW: Advisory Network ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35, duration: 0.5 }}
+        className="card-quantum-gold mb-6"
+      >
+        <h3 className="text-base font-semibold gradient-text-gold mb-4 flex items-center gap-2">
+          <UserCheck className="w-5 h-5 text-amber-400" />
+          Advisory Network (Target Profiles)
+        </h3>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {[
+            { domain: 'Quantum Cryptography', target: 'NTNU / UiO professor with NIST PQC standardization experience', status: 'Identifying' },
+            { domain: 'Nordic VC / Deep Tech', target: 'Partner at Northzone, Viking Venture, or Alliance VC with cybersecurity portfolio', status: 'Networking' },
+            { domain: 'Defense / NATO Procurement', target: 'Former Norwegian MOD or NATO C3 Agency official', status: 'Identifying' },
+            { domain: 'Enterprise Security (CISO)', target: 'Current or former CISO at Nordic enterprise (DNB, Equinor, Telenor)', status: 'Networking' },
+          ].map((advisor) => (
+            <div key={advisor.domain} className="rounded-lg bg-white/[0.03] border border-amber-500/10 px-4 py-3">
+              <div className="flex items-center justify-between mb-1">
+                <h4 className="text-sm font-semibold text-white">{advisor.domain}</h4>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  {advisor.status}
+                </span>
+              </div>
+              <p className="text-xs text-gray-400 leading-relaxed">{advisor.target}</p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* ── NEW: Hiring Roadmap ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+        className="card-quantum-gold"
+      >
+        <h3 className="text-base font-semibold gradient-text-gold mb-4 flex items-center gap-2">
+          <Briefcase className="w-5 h-5 text-amber-400" />
+          Hiring Roadmap
+        </h3>
+        <table className="table-quantum">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Timeline</th>
+              <th>Priority</th>
+              <th>Rationale</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              { role: 'Senior Rust/Crypto Engineer', timeline: 'Q2 2026', priority: 'Critical', rationale: 'Core PQC engine, VPN tunnel, browser crypto' },
+              { role: 'Mobile Engineer (React Native)', timeline: 'Q2 2026', priority: 'Critical', rationale: 'Messenger + Email app delivery' },
+              { role: 'Backend Engineer (Python/FastAPI)', timeline: 'Q3 2026', priority: 'High', rationale: 'API layer, Vault service, SDK endpoints' },
+              { role: 'UX/UI Designer', timeline: 'Q3 2026', priority: 'High', rationale: 'QDaria design system, consumer experience' },
+              { role: 'DevOps / SRE', timeline: 'Q4 2026', priority: 'Medium', rationale: 'CI/CD, monitoring, infrastructure scaling' },
+              { role: 'Security Engineer', timeline: 'Q1 2027', priority: 'High', rationale: 'Pen testing, FIPS readiness, compliance audit' },
+              { role: 'Product Manager', timeline: 'Q2 2027', priority: 'Medium', rationale: 'Feature prioritization, user research, roadmap' },
+              { role: 'Sales Engineer (Enterprise)', timeline: 'Q3 2027', priority: 'Medium', rationale: 'Enterprise pilot deployments, technical sales' },
+            ].map((row) => (
+              <tr key={row.role}>
+                <td className="font-semibold text-white">{row.role}</td>
+                <td className="font-mono text-xs">{row.timeline}</td>
+                <td>
+                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
+                    row.priority === 'Critical' ? 'bg-red-500/20 text-red-400' :
+                    row.priority === 'High' ? 'bg-amber-500/20 text-amber-400' :
+                    'bg-gray-500/20 text-gray-400'
+                  }`}>
+                    {row.priority}
+                  </span>
+                </td>
+                <td className="text-xs">{row.rationale}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </motion.div>
     </SlideWrapper>
   )

@@ -22,7 +22,7 @@ GitHub
 
 **Please describe the nature of your copyright ownership or authorization to act on the owner's behalf.**
 
-I am Daniel Mo Houshmand, CEO and sole founder of QDaria AS (Norwegian org. number: [YOUR ORG NUMBER]), and the original author of the Zipminator-PQC software. I created this software beginning in January 2023 under the GitHub organization QDaria (https://github.com/QDaria/zipminator, created January 8, 2023). The private development repository is at https://github.com/MoHoushmand/zipminator-pqc (created November 4, 2025). All code, architecture, and documentation in these repositories is my original work, authored by me under the email addresses dmo.houshmand@gmail.com and mos@example.com, as verifiable in the git commit history.
+I am Daniel Mo Houshmand, CEO and sole founder of QDaria AS (Norwegian org. number: [YOUR ORG NUMBER]), and the original author of the Zipminator-PQC software. I created this software beginning in January 2023 under the GitHub organization QDaria (https://github.com/QDaria/zipminator, created January 8, 2023). The canonical development repository is at https://github.com/MoHoushmand/zipminator-pqc (created November 4, 2025, made public April 12, 2026). All code, architecture, and documentation in these repositories is my original work, authored by me under the email addresses dmo.houshmand@gmail.com and mos@example.com, as verifiable in the git commit history. Independent provenance is established via Zenodo DOI (minted on public release tag) and OpenTimestamps Bitcoin-blockchain proofs (see .ots/ directory in the repository). Three patent applications covering the underlying methods are filed at Patentstyret (Norwegian Patent Office): application 20260384 (priority 2026-03-24), plus two additional applications filed 2026-04-05.
 
 **Please provide a detailed description of the original copyrighted work that has allegedly been infringed. If possible, include a URL to where it is posted online.**
 
@@ -36,7 +36,7 @@ The original copyrighted work is Zipminator-PQC, a post-quantum cryptography pla
 - Comprehensive test suite (441 Rust tests, 429 Python tests)
 
 The original public repository: https://github.com/QDaria/zipminator (created January 8, 2023)
-The original private development repository: https://github.com/MoHoushmand/zipminator-pqc (created November 4, 2025)
+The canonical development repository (public): https://github.com/MoHoushmand/zipminator-pqc (created November 4, 2025, made public April 12, 2026)
 
 The work is licensed under Apache License 2.0, which requires attribution, preservation of copyright notices, and preservation of the license text in any redistribution.
 

@@ -1,9 +1,17 @@
 **To:** eprint-editor@iacr.org
-**Subject:** Request to resubmit xxxx/108710 with substantial cryptographic strengthening
+**Subject:** Request to resubmit <!-- TODO: replace with real submission ID, e.g. 2026/NNN, from IACR rejection email on other Mac -->YYYY/NNN with substantial cryptographic strengthening
+
+<!--
+ACTION BEFORE SENDING:
+1. Find the original rejection email from eprint-editor@iacr.org (on the other Mac).
+2. Replace both YYYY/NNN placeholders below with the actual submission ID from that email.
+3. Verify the editors named (Dr. Bos, Dr. Celi, Dr. Kannwischer) match who signed the rejection.
+4. Confirm the attached PDF is paper1-quantum-anonymization.pdf with the IND-ANON, composition, and UC additions referenced below.
+-->
 
 Dear Editors (Dr. Bos, Dr. Celi, Dr. Kannwischer),
 
-Thank you for your review of submission xxxx/108710 ("Quantum-Certified Anonymization: Irreversibility Beyond Computational Hardness"). I appreciate the feedback that the original contribution to cryptology was unclear, and I have substantially revised the paper to address this.
+Thank you for your review of submission YYYY/NNN ("Quantum-Certified Anonymization: Irreversibility Beyond Computational Hardness"). I appreciate the feedback that the original contribution to cryptology was unclear, and I have substantially revised the paper to address this.
 
 The original submission positioned the work primarily as an anonymization system using known primitives (OTP + QRNG). The revised version adds three new cryptographic contributions that did not appear in the original:
 

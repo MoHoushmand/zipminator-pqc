@@ -244,6 +244,7 @@ def key_size_comparison() -> None:
     _require_widgets()
     try:
         import plotly.graph_objects as go
+        import plotly.io as pio
     except ImportError:
         raise ImportError(
             "plotly is required for key_size_comparison. "
@@ -258,8 +259,8 @@ def key_size_comparison() -> None:
     ct_sizes = [256, 512, 768, 1088, 1568]
 
     fig = go.Figure()
-    fig.add_trace(go.Bar(name="Public Key", x=algorithms, y=pk_sizes, marker_color="#6366f1"))
-    fig.add_trace(go.Bar(name="Secret Key", x=algorithms, y=sk_sizes, marker_color="#10b981"))
+    fig.add_trace(go.Bar(name="Public Key", x=algorithms, y=pk_sizes, marker_color="#22d3ee"))
+    fig.add_trace(go.Bar(name="Secret Key", x=algorithms, y=sk_sizes, marker_color="#34d399"))
     fig.add_trace(go.Bar(name="Ciphertext", x=algorithms, y=ct_sizes, marker_color="#f59e0b"))
     fig.update_layout(
         title="Key & Ciphertext Sizes (bytes)",
@@ -268,7 +269,10 @@ def key_size_comparison() -> None:
         height=400,
         font=dict(family="JetBrains Mono, monospace"),
     )
-    fig.show()
+    # Render as text/html so myst-nb 0.17 (which drops application/vnd.plotly.v1+json)
+    # still embeds the interactive chart. notebook_connected emits a <script> tag
+    # pointing at the Plotly CDN.
+    fig.show(renderer="notebook_connected")
 
 
 def entropy_monitor() -> None:

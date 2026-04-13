@@ -18,16 +18,24 @@ uv pip install maturin
 
 ## Product Identity
 
-Zipminator is the world's first PQC super-app — a QCaaS/QCaaP cybersecurity platform with 8 pillars of military-grade encryption infrastructure. It shields device network traffic, stored credentials, and data at rest from both classical and quantum adversaries. It is encryption infrastructure, NOT antivirus/EDR.
+Zipminator is the world's first PQC super-app, a QCaaS/QCaaP cybersecurity platform with 9 pillars of military-grade encryption infrastructure. It shields device network traffic, stored credentials, and data at rest from both classical and quantum adversaries. It is encryption infrastructure, NOT antivirus/EDR.
+
+The 9 pillars (canonical list in `docs/guides/FEATURES.md`): Quantum Vault & Self-Destruct Storage; PQC Messenger; Quantum VoIP & Video; Q-VPN (PQ-WireGuard); 10-Level Anonymization Suite; Q-AI PQC AI Assistant; Quantum-Secure Email; ZipBrowser (PQC AI Browser); Q-Mesh (Quantum-Secured WiFi Sensing).
 
 ## Mandatory Session-Start Reads (EVERY session)
 
 Before answering ANY prompt, read these files to understand the product:
 
-1. `docs/guides/FEATURES.md` — Product spec (8 pillars, code-verified status, pricing)
-2. `docs/guides/architecture.md` — System architecture (crypto core, layers)
-3. `docs/guides/implementation_plan.md` — Roadmap (9 phases, completion %)
-4. `MEMORY.md` (auto-loaded) — Cross-session state
+1. `docs/guides/FEATURES.md`, Product spec (9 pillars, code-verified status, pricing)
+2. `docs/guides/architecture.md`, System architecture (crypto core, layers)
+3. `docs/guides/implementation_plan.md`, Roadmap (9 phases, completion %)
+4. `MEMORY.md` (auto-loaded), Cross-session state
+
+## IP and Research References
+
+- `@docs/ip/`: 3 patents (patent-1-quantum-anonymization, patent-2-csi-entropy-puek, patent-3-che-are-provenance), USPTO provisional filing guide, DMCA takedown notes
+- `@docs/research/`: 3 matching research papers (paper-1/2/3), `eprint/`, `quantum-anonymization-paper.md`, `quantum-safe-banking-sb1-intelligence-brief.md`
+- Do not inline the contents of these folders into this CLAUDE.md; link by path when referencing them
 
 After EVERY response that changes code or status:
 

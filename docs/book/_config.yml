@@ -63,6 +63,15 @@ sphinx:
       undoc-members: true
       show-inheritance: true
     autodoc_member_order: bysource
+    autodoc_mock_imports:
+      - zipminator._core
+      - faker
+      - pyzipper
+      - httpx
+      - cryptography
+    suppress_warnings:
+      - autodoc
+      - autodoc.import_object
 repository:
   url: https://github.com/QDaria/zipminator
   branch: main

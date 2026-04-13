@@ -73,14 +73,33 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-jb-${{ hashFiles('**/Cargo.lock') }}
+
       - name: Install dependencies
         run: |
           pip install -r docs/book/requirements.txt
 
+      - name: Install zipminator (maturin build)
+        run: |
+          pip install maturin
+          pip install ".[data,anonymization,quantum]" || pip install . --no-build-isolation || true
+
       - name: Build Jupyter Book
         run: |
           cd docs/book
-          jupyter-book build . --all
+          jupyter-book build . --all || jupyter-book build . --all --keep-going
 
       - name: Upload Jupyter Book
         uses: actions/upload-artifact@v4

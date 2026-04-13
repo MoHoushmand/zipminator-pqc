@@ -29,8 +29,6 @@ This page provides auto-generated API documentation for Zipminator's Python clas
     :show-inheritance:
 ```
 
----
-
 ## Anonymization
 
 ### AnonymizationEngine (10-Level System)
@@ -50,8 +48,6 @@ This page provides auto-generated API documentation for Zipminator's Python clas
     :undoc-members:
     :show-inheritance:
 ```
-
----
 
 ## PII Scanning
 
@@ -81,8 +77,6 @@ This page provides auto-generated API documentation for Zipminator's Python clas
     :members:
     :undoc-members:
 ```
-
----
 
 ## Data Protection
 
@@ -119,8 +113,6 @@ This page provides auto-generated API documentation for Zipminator's Python clas
     :undoc-members:
     :show-inheritance:
 ```
-
----
 
 ## Subscription & Access Control
 

@@ -228,9 +228,9 @@ Subagents with `isolation: "worktree"` get their own git branch. Safe parallel e
 
 - **think** (~4K tokens): routine debugging, quick fixes
 - **megathink** (~10K tokens): API design, performance optimization, architecture review
-- **ultrathink** (~32K tokens): system architecture, critical production bugs, crypto code, security audits
+- **ultrathink** (up to 128K tokens on this machine): system architecture, critical production bugs, crypto code, security audits
 - Trigger via keywords in prompt. Toggle with `Tab` key.
-- Force via env: `export CLAUDE_REASONING_EFFORT=high`
+- Global shell default (see `~/.zshrc`): `claude` launches with `--effort max` + `MAX_THINKING_TOKENS=128000`, so the full 128K budget is available every session without needing to type `ccmax`. The stock API ultrathink tier is ~32K; the 128K here is a per-shell override.
 
 ### Plan Mode
 

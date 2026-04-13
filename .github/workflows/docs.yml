@@ -8,6 +8,7 @@ on:
       - 'src/**'
       - 'docs/**'
       - 'README.md'
+      - '.github/workflows/docs.yml'
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -119,7 +120,7 @@ jobs:
     name: Deploy Documentation
     runs-on: ubuntu-latest
     needs: [rust-docs, jupyter-book]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     permissions:
       pages: write
       id-token: write

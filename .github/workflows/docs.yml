@@ -95,7 +95,7 @@ jobs:
       - name: Install zipminator (maturin build)
         run: |
           pip install maturin ipykernel
-          pip install ".[data,anonymization,quantum]" || pip install . --no-build-isolation || true
+          pip install ".[data,anonymization,quantum,jupyter,benchmark]"
 
       - name: Register zipminator-pqc Jupyter kernel
         run: |
@@ -104,9 +104,18 @@ jobs:
       - name: Build Jupyter Book
         run: |
           cd docs/book
-          jupyter-book build . --all --keep-going || true
-          # Verify HTML was produced even if some pages errored
+          jupyter-book build . --all --keep-going
           test -f _build/html/index.html
+          # Fail the job if any notebook produced an error log
+          if ls _build/html/reports/notebooks/*.err.log >/dev/null 2>&1; then
+            echo "::error::One or more notebooks failed to execute. See logs:"
+            for f in _build/html/reports/notebooks/*.err.log; do
+              echo "::group::$(basename "$f")"
+              cat "$f"
+              echo "::endgroup::"
+            done
+            exit 1
+          fi
 
       - name: Upload Jupyter Book
         uses: actions/upload-artifact@v4

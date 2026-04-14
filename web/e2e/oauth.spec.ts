@@ -1,81 +1,74 @@
 import { test, expect } from '@playwright/test';
+import fs from 'node:fs';
+import path from 'node:path';
 
-const BASE_URL = process.env.WEB_URL || 'http://localhost:3099';
+const AUTH_DIR = path.join(__dirname, '.auth');
+const PROVIDERS = ['github', 'google', 'linkedin'] as const;
+type Provider = typeof PROVIDERS[number];
 
-const TEST_ACCOUNTS = [
-  { email: 'mo@qdaria.com', name: 'Mo' },
-  { email: 'houshmand.81@gmail.com', name: 'H81' },
-  { email: 'dmo.houshmand@gmail.com', name: 'DMO' },
-];
-
-test.describe('OAuth Flow', () => {
+test.describe('OAuth login page (unauthenticated)', () => {
   test('login page renders with OAuth providers', async ({ page }) => {
-    await page.goto(`${BASE_URL}/auth/login`);
+    await page.goto('/auth/login');
 
-    // Verify login form exists
-    await expect(page.locator('input[type="email"], input[name="email"]')).toBeVisible();
+    const emailInput = page.locator('input[type="email"], input[name="email"]').first();
+    await expect(emailInput).toBeVisible({ timeout: 15_000 });
 
-    // Verify OAuth provider buttons (GitHub, Google, LinkedIn)
-    const githubBtn = page.locator('text=GitHub').or(page.locator('[aria-label*="GitHub"]'));
-    const googleBtn = page.locator('text=Google').or(page.locator('[aria-label*="Google"]'));
-
-    // At least one OAuth provider should be visible
-    const hasGithub = await githubBtn.isVisible().catch(() => false);
-    const hasGoogle = await googleBtn.isVisible().catch(() => false);
-    expect(hasGithub || hasGoogle).toBe(true);
-
-    await page.screenshot({ path: 'test-results/e2e/web-login.png' });
-  });
-
-  for (const account of TEST_ACCOUNTS) {
-    test(`email login attempt: ${account.name}`, async ({ page }) => {
-      await page.goto(`${BASE_URL}/auth/login`);
-
-      // Fill email field
-      const emailInput = page.locator('input[type="email"], input[name="email"]');
-      await emailInput.fill(account.email);
-
-      // Fill password field if visible
-      const passwordInput = page.locator('input[type="password"]');
-      if (await passwordInput.isVisible()) {
-        await passwordInput.fill('test-password-placeholder');
-      }
-
-      // Submit
-      const submitBtn = page.locator('button[type="submit"]').or(page.locator('text=Sign in'));
-      if (await submitBtn.isVisible()) {
-        await submitBtn.click();
-        await page.waitForTimeout(2000); // Wait for auth response
-      }
-
-      // Capture state (success or error)
-      await page.screenshot({
-        path: `test-results/e2e/web-login-${account.name.toLowerCase()}.png`
-      });
+    const providerTriggers = PROVIDERS.map((p) => {
+      const label = p[0].toUpperCase() + p.slice(1);
+      return page
+        .getByRole('button', { name: new RegExp(label, 'i') })
+        .or(page.getByRole('link', { name: new RegExp(label, 'i') }))
+        .first();
     });
-  }
 
-  test('OAuth redirect to GitHub works', async ({ page }) => {
-    await page.goto(`${BASE_URL}/auth/login`);
+    const visible = await Promise.all(
+      providerTriggers.map((t) => t.isVisible().catch(() => false)),
+    );
+    const visibleCount = visible.filter(Boolean).length;
+    expect(visibleCount, 'at least one OAuth provider trigger must be visible').toBeGreaterThan(0);
 
-    const githubBtn = page.locator('text=GitHub').or(page.locator('[aria-label*="GitHub"]'));
-    if (await githubBtn.isVisible()) {
-      // Click and verify redirect to GitHub OAuth
-      const [popup] = await Promise.all([
-        page.waitForEvent('popup').catch(() => null),
-        githubBtn.click(),
-      ]);
+    await page.screenshot({ path: 'e2e/screenshots/oauth-login.png' });
+  });
+});
 
-      if (popup) {
-        // Verify we're on GitHub's auth page
-        await expect(popup).toHaveURL(/github\.com/);
-        await popup.screenshot({ path: 'test-results/e2e/web-github-oauth.png' });
-        await popup.close();
-      } else {
-        // May have navigated in same window
-        await page.waitForTimeout(2000);
-        await page.screenshot({ path: 'test-results/e2e/web-github-redirect.png' });
-      }
-    }
+for (const provider of PROVIDERS) {
+  const statePath = path.join(AUTH_DIR, `${provider}.json`);
+
+  test.describe(`OAuth authenticated session (${provider})`, () => {
+    test.skip(
+      !fs.existsSync(statePath),
+      `Seed state missing. Run: pnpm exec playwright test e2e/_seed-auth.spec.ts --project=seed --headed`,
+    );
+    test.use({ storageState: statePath });
+
+    test(`${provider}: /api/me returns authenticated user`, async ({ request }) => {
+      const res = await request.get('/api/me');
+      expect(res.status(), `/api/me for ${provider}`).toBe(200);
+      const body = await res.json();
+      expect(body.user, 'user payload present').toBeTruthy();
+      expect(body.user.email || body.user.name, 'user has email or name').toBeTruthy();
+      expect(body.provider, 'session records the provider').toBe(provider);
+    });
+
+    test(`${provider}: /dashboard renders with session`, async ({ page }) => {
+      await page.goto('/dashboard', { waitUntil: 'domcontentloaded' });
+      await expect(page.getByTestId('dashboard-root')).toBeVisible({ timeout: 15_000 });
+      await page.screenshot({ path: `e2e/screenshots/dashboard-${provider}.png` });
+    });
+  });
+}
+
+test.describe('OAuth redirect (live provider)', () => {
+  test.skip(
+    process.env.MARATHON_ALLOW_LIVE_OAUTH !== '1',
+    'Live OAuth redirect test disabled in marathon loop (uses seeded storageState). Set MARATHON_ALLOW_LIVE_OAUTH=1 to run locally.',
+  );
+
+  test('GitHub trigger redirects to github.com', async ({ page }) => {
+    await page.goto('/auth/login');
+    const gh = page.getByRole('button', { name: /github/i }).first();
+    await gh.click();
+    await page.waitForURL(/github\.com/, { timeout: 15_000 });
+    await page.screenshot({ path: 'e2e/screenshots/oauth-github-redirect.png' });
   });
 });

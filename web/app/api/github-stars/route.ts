@@ -12,16 +12,13 @@ export async function GET() {
   }
 
   try {
-    // Check if the user has starred the repo using GitHub API
-    // The user's GitHub access token is available via the OAuth session
-    const token = (session as any).accessToken
-
-    if (!token) {
+    if (session.provider !== 'github' || !session.accessToken) {
       return NextResponse.json({
         starred: false,
         error: 'No GitHub access token. Sign in with GitHub first.',
       })
     }
+    const token = session.accessToken
 
     const res = await fetch(
       `https://api.github.com/user/starred/${REPO_OWNER}/${REPO_NAME}`,

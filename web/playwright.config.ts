@@ -18,7 +18,15 @@ export default defineConfig({
   },
   projects: [
     {
+      name: 'seed',
+      testMatch: /_seed-auth\.spec\.ts/,
+      use: { browserName: 'chromium', headless: false },
+      retries: 0,
+      timeout: 10 * 60_000,
+    },
+    {
       name: 'chromium',
+      testIgnore: /_seed-auth\.spec\.ts/,
       use: { browserName: 'chromium' },
     },
   ],

@@ -32,3 +32,9 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Playwright seeded OAuth storage (never commit real session state)
+e2e/.auth/*.json
+!e2e/.auth/.gitignore
+/test-results/
+/playwright-report/

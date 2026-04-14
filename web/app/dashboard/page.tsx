@@ -49,7 +49,7 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="min-h-screen pt-20 bg-grid-pattern flex">
+        <div data-testid="dashboard-root" className="min-h-screen pt-20 bg-grid-pattern flex">
             {/* Sidebar */}
             <aside className="w-64 fixed left-0 top-20 bottom-0 bg-gray-950/80 backdrop-blur-2xl border-r border-white/[0.06] hidden lg:block overflow-y-auto">
                 <div className="p-5 pb-32">

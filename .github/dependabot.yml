@@ -1,8 +1,8 @@
 version: 2
 updates:
-  # Rust dependencies (core library)
+  # Rust workspace (crates/*)
   - package-ecosystem: "cargo"
-    directory: "/src/rust"
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -17,38 +17,31 @@ updates:
       prefix: "chore(deps)"
       include: "scope"
     groups:
+      rust-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
       cryptography:
+        applies-to: version-updates
         patterns:
           - "sha3"
           - "subtle"
           - "rand*"
           - "getrandom"
+          - "pyo3"
+          - "aws-lc-*"
+          - "rustls*"
+          - "webpki*"
+          - "quinn*"
       development:
+        applies-to: version-updates
         patterns:
           - "criterion"
           - "proptest"
 
-  # Rust dependencies (CLI)
+  # Tauri browser crate (separate workspace)
   - package-ecosystem: "cargo"
-    directory: "/cli"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 10
-    reviewers:
-      - "MoHoushmand"
-    labels:
-      - "dependencies"
-      - "rust"
-      - "cli"
-    commit-message:
-      prefix: "chore(deps)"
-      include: "scope"
-
-  # Rust dependencies (NIST KAT)
-  - package-ecosystem: "cargo"
-    directory: "/compliance/nist-kat"
+    directory: "/browser/src-tauri"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -59,11 +52,14 @@ updates:
     labels:
       - "dependencies"
       - "rust"
-      - "compliance"
+      - "tauri"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
 
-  # Python dependencies
+  # Python SDK
   - package-ecosystem: "pip"
-    directory: "/cli"
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "tuesday"
@@ -87,12 +83,75 @@ updates:
           - "cryptography"
           - "pycryptodome"
 
+  # FastAPI backend
+  - package-ecosystem: "pip"
+    directory: "/api"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "MoHoushmand"
+    labels:
+      - "dependencies"
+      - "python"
+      - "api"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+
+  # Next.js web dashboard
+  - package-ecosystem: "npm"
+    directory: "/web"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "MoHoushmand"
+    labels:
+      - "dependencies"
+      - "javascript"
+      - "web"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    groups:
+      next-ecosystem:
+        patterns:
+          - "next"
+          - "next-*"
+          - "@next/*"
+          - "react"
+          - "react-*"
+          - "@types/react*"
+
+  # Expo mobile app
+  - package-ecosystem: "npm"
+    directory: "/mobile"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "MoHoushmand"
+    labels:
+      - "dependencies"
+      - "javascript"
+      - "mobile"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "wednesday"
+      day: "thursday"
       time: "09:00"
     open-pull-requests-limit: 5
     reviewers:
@@ -106,10 +165,10 @@ updates:
 
   # Docker
   - package-ecosystem: "docker"
-    directory: "/docker"
+    directory: "/"
     schedule:
       interval: "weekly"
-      day: "thursday"
+      day: "friday"
       time: "09:00"
     open-pull-requests-limit: 5
     reviewers:
@@ -120,27 +179,3 @@ updates:
     commit-message:
       prefix: "chore(docker)"
       include: "scope"
-
-  # NPM (if demo exists)
-  - package-ecosystem: "npm"
-    directory: "/demo"
-    schedule:
-      interval: "weekly"
-      day: "friday"
-      time: "09:00"
-    open-pull-requests-limit: 10
-    reviewers:
-      - "MoHoushmand"
-    labels:
-      - "dependencies"
-      - "javascript"
-      - "demo"
-    commit-message:
-      prefix: "chore(deps)"
-      include: "scope"
-    ignore:
-      # Ignore major version updates for stable dependencies
-      - dependency-name: "react"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "electron"
-        update-types: ["version-update:semver-major"]

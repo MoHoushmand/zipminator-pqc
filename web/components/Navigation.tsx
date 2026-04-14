@@ -96,6 +96,7 @@ const Navigation = () => {
               alt="Zipminator"
               width={40}
               height={40}
+              style={{ width: 'auto', height: 'auto' }}
               className="transform group-hover:scale-110 transition-transform duration-200"
               priority
             />
@@ -104,6 +105,7 @@ const Navigation = () => {
               alt="Zipminator"
               width={140}
               height={24}
+              style={{ width: 'auto', height: 'auto' }}
               className="hidden sm:block"
               priority
             />

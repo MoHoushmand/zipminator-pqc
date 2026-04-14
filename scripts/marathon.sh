@@ -57,11 +57,6 @@ mkdir -p "$(dirname "$STATE_FILE")"
 export MARATHON_PRESET_FILE="$PRESET_FILE"
 python3 - <<'PY'
 import json, os, re, sys
-try:
-    import yaml
-except ImportError:
-    print("marathon: PyYAML required (pip install pyyaml or micromamba)", file=sys.stderr)
-    sys.exit(2)
 
 preset_path = os.environ["MARATHON_PRESET_FILE"]
 repo = os.environ["REPO_ROOT"]
@@ -71,9 +66,26 @@ m = re.match(r"^---\n(.*?)\n---\n", text, re.DOTALL)
 if not m:
     print("marathon: preset missing YAML front-matter", file=sys.stderr)
     sys.exit(2)
-fm = (yaml.safe_load(m.group(1)) or {}).get("marathon", {})
 
-env_required = fm.get("env_required", [])
+def parse_block_list(front_matter, key):
+    pat = re.compile(
+        r"^(?P<indent> *)" + re.escape(key) + r":\s*\n(?P<body>(?:\1 +-[^\n]*\n?)+)",
+        re.MULTILINE,
+    )
+    match = pat.search(front_matter)
+    if not match:
+        return []
+    items = []
+    for line in match.group("body").splitlines():
+        stripped = line.strip()
+        if stripped.startswith("-"):
+            item = stripped[1:].strip().strip("'").strip('"')
+            if item:
+                items.append(item)
+    return items
+
+front = m.group(1)
+env_required = parse_block_list(front, "env_required")
 env_file = os.path.join(repo, "web", ".env.local")
 env_vars = {}
 if os.path.isfile(env_file):
@@ -90,7 +102,7 @@ if missing:
     print(f"marathon: missing env in web/.env.local: {missing}", file=sys.stderr)
     sys.exit(2)
 
-plugins_required = fm.get("plugins_required", [])
+plugins_required = parse_block_list(front, "plugins_required")
 settings_path = os.path.expanduser("~/.claude/settings.json")
 if plugins_required and os.path.isfile(settings_path):
     data = json.load(open(settings_path))

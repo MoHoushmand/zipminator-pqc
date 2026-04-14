@@ -148,70 +148,26 @@ cd web && npm run dev    # runs on port 3099
 
 ---
 
-## Orchestration: Ruflo v3.5 (Always-On)
+## Orchestration (actually installed)
 
-Ruflo (formerly claude-flow) is the default orchestration layer. It starts automatically and self-updates daily.
+No MCP servers are currently registered (`claude mcp list` confirms empty at user, project, and local scopes). Orchestration comes from Claude Code native features plus installed plugins.
 
-### Setup (run once)
+### What's actually running
+
+- **Native Claude Code**: agent teams (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), worktree isolation, extended thinking (128K via `MAX_THINKING_TOKENS`), parallel `Agent` dispatch, `TaskCreate`/`TaskUpdate`, plan mode.
+- **Plugins enabled** (52 total, see `~/.claude/settings.json`): `ecc` (everything-claude-code), `superpowers` (claude-plugins-official), `andrej-karpathy-skills`, `agent-sdk-dev`, `plugin-dev`, `hookify`, `pr-review-toolkit`, `mcp-server-dev`, `vercel`, 12 language LSPs.
+- **User skills** (`~/.claude/skills/`): `quantum-peer-reviewer`, `research-paper-writer`, `skill-artisan`.
+- **RALPH loop**: documented in `docs/guides/claude-flow-v3/`; `scripts/ralph-loop.sh` is the active iteration driver. Ruflo CLI commands in that guide are historical reference only.
+
+### If ruflo is ever needed later
+
+One command re-enables it:
 
 ```bash
-# Add ruflo as MCP server
 claude mcp add ruflo -- npx ruflo@latest mcp start
-
-# Also add ruv-swarm for enhanced coordination
-claude mcp add ruv-swarm -- npx ruv-swarm mcp start
 ```
 
-### Daily Auto-Update (runs on session start)
-
-```bash
-# Update ruflo to latest (currently v3.5.48)
-npx ruflo@latest update check && npx ruflo@latest update apply
-# Update claude-flow alias too
-npm update -g ruflo claude-flow 2>/dev/null || true
-```
-
-### Ruflo v3.5 Key Features (changelog v3.0 -> v3.5.48)
-
-- 215 MCP tools via FastMCP 3.x
-- 60+ specialized agent types
-- IPFS plugin marketplace (20 official plugins)
-- AgentDB with HNSW indexing (150x-12,500x faster search)
-- Flash Attention (2.49x-7.47x speedup)
-- ContinueGate safety mechanism
-- Rust WASM policy kernel with SIMD128 acceleration
-- Agent Booster token optimization (30-50% savings)
-- Model routing: auto-select haiku/sonnet/opus by task complexity
-- Coverage-based agent routing via RuVector
-- Hive-Mind consensus: Byzantine, Raft, Gossip, CRDT, Quorum
-- Self-learning hooks with pretrain pipeline
-- Background daemon with 12 analysis/optimization workers
-
-### Ruflo CLI Quick Reference
-
-```bash
-ruflo swarm init --v3-mode              # Initialize V3 swarm
-ruflo agent spawn -t coder              # Spawn agent by type
-ruflo hooks pretrain                    # Bootstrap learning from repo
-ruflo hooks route "implement feature"   # Route to optimal agent
-ruflo hooks model-route "task"          # Pick optimal Claude model
-ruflo hooks token-optimize              # 30-50% token savings
-ruflo memory search -q "pattern"        # Semantic memory search
-ruflo doctor                            # System health check
-ruflo plugins list                      # Browse 20 official plugins
-ruflo neural train                      # Train on repo patterns
-ruflo hive-mind init -t hierarchical-mesh  # Queen-led consensus
-```
-
-### Ruflo Hooks (self-learning workflow)
-
-```bash
-ruflo hooks pre-task --description "[task]"     # Before work
-ruflo hooks post-edit --file "[file]"           # After editing
-ruflo hooks post-task --task-id "[task]"         # After work
-ruflo hooks session-end --export-metrics true    # End session
-ruflo hooks metrics                             # View learning dashboard
-```
+Do not run until a concrete task needs hive-mind consensus (paper review, parallel security audit). For normal coding work, native parallel `Agent` + worktree isolation matches what ruflo's queen-worker pattern delivers with fewer moving parts.
 
 ---
 
@@ -279,12 +235,9 @@ Available on Max plan with Opus 4.6. Disable with `CLAUDE_CODE_DISABLE_1M_CONTEX
 - `!<command>` -- execute shell command
 - `& <task>` -- background task
 
-### MCP Servers (always active)
+### MCP Servers (not currently registered)
 
-- `ruflo` -- Agent orchestration, swarm coordination, 215 MCP tools
-- `ruv-swarm` -- Enhanced coordination, DAA agents, neural patterns
-- `playwright` -- Browser automation, screenshots, visual verification (#2 most popular MCP)
-- `context7` -- Up-to-date library documentation lookup (#1 most popular MCP, prevents hallucination)
+`claude mcp list` returns empty. Playwright and context7 are available as plugin-provided tools (`plugin:ecc:playwright`, `plugin:ecc:context7`), not as separately registered MCP servers. Register ruflo/ruv-swarm only when a concrete task needs them.
 
 ---
 
@@ -351,10 +304,8 @@ Before delivering ANY result:
 
 1. Read CLAUDE.md + MEMORY.md
 2. Check git status for uncommitted work
-3. Run ruflo hooks session-restore
-4. Update ruflo to latest version
-5. Load relevant task tracker state
-6. Run quick verification sweep (cargo test, npm build)
+3. Load relevant task tracker state
+4. Run quick verification sweep (cargo test, npm build)
 
 ### AskUserQuestion (DEFAULT behavior)
 
@@ -386,12 +337,11 @@ For quality-critical code: Session A implements, Session B reviews (fresh contex
 
 When launching `claude` or `claude --dangerously-skip-permissions`:
 
-1. ruflo auto-updates to latest version
-2. Source activate-all.sh for env vars
-3. Agent teams enabled
-4. Ultrathink available via keyword
-5. RALPH loop active for all tasks
-6. AskUserQuestion enabled as default interaction pattern
+1. Source activate-all.sh for env vars
+2. Agent teams enabled
+3. Ultrathink available via keyword (128K default budget)
+4. RALPH loop active for all tasks
+5. AskUserQuestion enabled as default interaction pattern
 
 ---
 
@@ -419,11 +369,10 @@ This exports:
 - Do NOT push unless explicitly asked
 
 ### Session-start checklist
-1. MEMORY.md — auto-loaded (no action needed)
-2. CLAUDE.md + `.claude/rules/*.md` — auto-loaded
+1. MEMORY.md, auto-loaded (no action needed)
+2. CLAUDE.md + `.claude/rules/*.md`, auto-loaded
 3. `micromamba activate zip-pqc` before any Python command
-4. `git status` — check for uncommitted work
-5. Ruflo version check
+4. `git status`, check for uncommitted work
 
 ### PR policy
 - PRs are NOT default for this project (solo dev on main)

@@ -35,7 +35,7 @@ function QuantumParticles() {
     <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
-        color="#6366f1"
+        color="#22D3EE"
         size={0.02}
         sizeAttenuation={true}
         depthWrite={false}
@@ -113,7 +113,7 @@ function QuantumLines() {
         />
       </bufferGeometry>
       <lineBasicMaterial
-        color="#6366f1"
+        color="#22D3EE"
         transparent
         opacity={0.15}
         blending={THREE.AdditiveBlending}

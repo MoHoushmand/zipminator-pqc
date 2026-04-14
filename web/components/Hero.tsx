@@ -1,271 +1,115 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { ArrowRight, Shield, Zap, Book, Cpu, BookOpen } from 'lucide-react'
+import { motion, useReducedMotion } from 'framer-motion'
+import { ArrowRight, Shield, BookOpen } from 'lucide-react'
 import Link from 'next/link'
-import QuantumBackground from './QuantumBackground'
-import { SITE_CONFIG } from '@/lib/constants'
+import dynamic from 'next/dynamic'
 
-const Hero = () => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
-      },
-    },
-  }
+const QuantumBackground = dynamic(
+  () => import('./QuantumBackground'),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 quantum-bg opacity-90 pointer-events-none"
+      />
+    ),
+  },
+)
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: [0.22, 1, 0.36, 1],
-      },
-    },
-  }
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.12, delayChildren: 0.15 },
+  },
+}
 
-  const statCardVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.6,
-        ease: [0.22, 1, 0.36, 1],
-      },
-    },
-  }
+const itemVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const },
+  },
+}
+
+export const Hero = () => {
+  const prefersReducedMotion = useReducedMotion()
+  const initial = prefersReducedMotion ? 'visible' : 'hidden'
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-32 pt-24">
-      {/* Animated Quantum Background */}
-      <QuantumBackground />
-
-      {/* Radial Gradient Overlay */}
+    <section className="relative min-h-[88vh] flex items-center justify-center overflow-hidden pt-24 pb-20">
+      {!prefersReducedMotion && <QuantumBackground />}
+      {prefersReducedMotion && (
+        <div aria-hidden="true" className="absolute inset-0 quantum-bg pointer-events-none" />
+      )}
       <div className="absolute inset-0 bg-gradient-radial from-quantum-900/20 via-transparent to-transparent pointer-events-none z-[1]" />
 
-      {/* Content */}
       <div className="container-custom relative z-10">
         <motion.div
           variants={containerVariants}
-          initial="hidden"
+          initial={initial}
           animate="visible"
-          className="max-w-5xl mx-auto text-center"
+          className="max-w-4xl mx-auto text-center"
         >
-          {/* Badge */}
+          {/* Eyebrow */}
           <motion.div variants={itemVariants} className="inline-block mb-8">
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-quantum-900/40 to-purple-900/40 border border-quantum-400/30 rounded-full px-5 py-2.5 backdrop-blur-sm shadow-lg shadow-quantum-500/20 hover:shadow-quantum-500/40 transition-shadow duration-300">
-              <Shield className="w-4 h-4 text-quantum-400 animate-pulse" />
-              <span className="text-sm font-semibold bg-gradient-to-r from-quantum-300 to-purple-300 bg-clip-text text-transparent">
-                NIST FIPS 203 Approved Post-Quantum Cryptography
+            <div className="inline-flex items-center gap-2 rounded-full border border-quantum-500/30 bg-quantum-900/40 px-4 py-2 backdrop-blur-sm">
+              <Shield className="w-4 h-4 text-quantum-400" aria-hidden="true" />
+              <span className="text-xs sm:text-sm font-semibold tracking-wider uppercase text-quantum-400">
+                NIST FIPS 203 post-quantum cryptography
               </span>
             </div>
           </motion.div>
 
-          {/* Main Headline */}
+          {/* Headline */}
           <motion.h1
             variants={itemVariants}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-[1.05] tracking-tight"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-6 leading-[1.05] tracking-tight"
           >
-            <span className="block bg-gradient-to-r from-quantum-300 via-quantum-400 to-purple-400 bg-clip-text text-transparent drop-shadow-2xl">
-              The Quantum-Secure
-            </span>
-            <span className="block text-white drop-shadow-lg mt-2">
-              Encryption Platform
-            </span>
+            <span className="block gradient-text drop-shadow-2xl">The quantum-secure</span>
+            <span className="block text-white drop-shadow-lg mt-2">encryption platform.</span>
           </motion.h1>
-
-          {/* Release Badges Row */}
-          <motion.div
-            variants={itemVariants}
-            className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-8"
-          >
-            <Link
-              href="/blueprint#roadmap"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-gray-300 hover:border-green-400/40 hover:text-white transition-colors"
-            >
-              <span className="w-2 h-2 rounded-full bg-green-400" aria-hidden="true" />
-              TestFlight Build 43
-            </Link>
-            <a
-              href={SITE_CONFIG.links.pypi}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-gray-300 hover:border-blue-400/40 hover:text-white transition-colors"
-            >
-              <span className="w-2 h-2 rounded-full bg-blue-400" aria-hidden="true" />
-              SDK v0.5.0 on PyPI
-            </a>
-            <Link
-              href="/blueprint#patents"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-gray-300 hover:border-amber-400/40 hover:text-white transition-colors"
-            >
-              <span className="w-2 h-2 rounded-full bg-amber-400" aria-hidden="true" />
-              3 patents, 46 claims
-            </Link>
-          </motion.div>
 
           {/* Subheadline */}
           <motion.p
             variants={itemVariants}
-            className="text-lg md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
+            className="text-base sm:text-lg md:text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed"
           >
-            Real quantum entropy from{' '}
-            <span className="text-quantum-400 font-bold">156-qubit quantum hardware</span>
-            {' '}combined with{' '}
-            <span className="text-quantum-400 font-bold">NIST FIPS 203 Kyber768</span>
-            {' '}cryptography for quantum-resistant security
+            Real quantum entropy from 156-qubit hardware, sealed with ML-KEM-768. One SDK
+            protects messaging, voice, VPN, email, storage, and browsing.
           </motion.p>
 
-          {/* CTA Buttons */}
+          {/* CTAs */}
           <motion.div
             variants={itemVariants}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link
               href="#waitlist"
-              className="btn-primary flex items-center space-x-2 group relative overflow-hidden px-8 py-4 text-lg font-semibold shadow-xl shadow-quantum-500/30 hover:shadow-quantum-500/50"
+              className="btn-primary group flex items-center gap-2 px-8 py-4 text-base sm:text-lg shadow-xl shadow-quantum-500/30 hover:shadow-quantum-500/50 w-full sm:w-auto justify-center"
             >
-              <span className="relative z-10">Join the Beta</span>
-              <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
-              <div className="absolute inset-0 bg-gradient-to-r from-quantum-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </Link>
-            <Link
-              href="/features"
-              className="btn-secondary flex items-center space-x-2 group px-8 py-4 text-lg font-semibold hover:border-quantum-400 transition-all duration-300"
-            >
-              <Book className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
-              <span>Explore Features</span>
+              <span>Join the beta</span>
+              <ArrowRight
+                className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                aria-hidden="true"
+              />
             </Link>
             <Link
               href="/docs"
-              className="btn-secondary flex items-center space-x-2 group px-8 py-4 text-lg font-semibold hover:border-quantum-400 transition-all duration-300"
+              className="btn-secondary group flex items-center gap-2 px-8 py-4 text-base sm:text-lg w-full sm:w-auto justify-center"
             >
-              <BookOpen className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+              <BookOpen
+                className="w-5 h-5 group-hover:rotate-6 transition-transform"
+                aria-hidden="true"
+              />
               <span>Read the docs</span>
             </Link>
           </motion.div>
-
-          {/* Key Stats Cards */}
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-              visible: {
-                transition: {
-                  staggerChildren: 0.1,
-                  delayChildren: 0.8,
-                },
-              },
-            }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto"
-          >
-            {/* Speed Card */}
-            <motion.div
-              variants={statCardVariants}
-              whileHover={{
-                scale: 1.05,
-                transition: { duration: 0.2 },
-              }}
-              className="card-quantum text-center group relative overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative z-10">
-                <div className="w-14 h-14 bg-gradient-to-br from-quantum-900/60 to-purple-900/60 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-quantum-500/20">
-                  <Zap className="w-7 h-7 text-quantum-400" />
-                </div>
-                <div className="text-3xl font-bold bg-gradient-to-br from-quantum-400 to-purple-400 bg-clip-text text-transparent mb-2">
-                  0.034ms
-                </div>
-                <div className="text-gray-400 font-medium">Encryption Speed</div>
-              </div>
-            </motion.div>
-
-            {/* Hardware Card */}
-            <motion.div
-              variants={statCardVariants}
-              whileHover={{
-                scale: 1.05,
-                transition: { duration: 0.2 },
-              }}
-              className="card-quantum text-center group relative overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative z-10">
-                <div className="w-14 h-14 bg-gradient-to-br from-quantum-900/60 to-purple-900/60 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-quantum-500/20">
-                  <Cpu className="w-7 h-7 text-quantum-400" />
-                </div>
-                <div className="text-3xl font-bold bg-gradient-to-br from-quantum-400 to-purple-400 bg-clip-text text-transparent mb-2">
-                  156 Qubits
-                </div>
-                <div className="text-gray-400 font-medium">Quantum Hardware Entropy</div>
-              </div>
-            </motion.div>
-
-            {/* Security Card */}
-            <motion.div
-              variants={statCardVariants}
-              whileHover={{
-                scale: 1.05,
-                transition: { duration: 0.2 },
-              }}
-              className="card-quantum text-center group relative overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative z-10">
-                <div className="w-14 h-14 bg-gradient-to-br from-quantum-900/60 to-purple-900/60 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-quantum-500/20">
-                  <Shield className="w-7 h-7 text-quantum-400" />
-                </div>
-                <div className="text-3xl font-bold bg-gradient-to-br from-quantum-400 to-purple-400 bg-clip-text text-transparent mb-2">
-                  NIST Level 3
-                </div>
-                <div className="text-gray-400 font-medium">Security Standard</div>
-              </div>
-            </motion.div>
-          </motion.div>
         </motion.div>
       </div>
-
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
-      >
-        <div className="flex flex-col items-center space-y-2">
-          <span className="text-sm text-gray-400 font-medium">Scroll to explore</span>
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-            className="w-6 h-10 border-2 border-quantum-500/50 rounded-full flex items-start justify-center p-2 backdrop-blur-sm bg-quantum-900/20"
-          >
-            <motion.div
-              animate={{
-                opacity: [0.4, 1, 0.4],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-              className="w-1.5 h-1.5 bg-quantum-500 rounded-full shadow-lg shadow-quantum-500/50"
-            />
-          </motion.div>
-        </div>
-      </motion.div>
     </section>
   )
 }
-
-export default Hero

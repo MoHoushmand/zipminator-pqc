@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter, JetBrains_Mono, Outfit, Geist } from 'next/font/google'
+import { Fraunces, DM_Sans, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
@@ -9,23 +9,22 @@ import Script from 'next/script'
 import { GA_TRACKING_ID } from '@/lib/analytics'
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const inter = Inter({
+const fraunces = Fraunces({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-fraunces',
+  display: 'swap',
+  axes: ['opsz'],
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-dm-sans',
   display: 'swap',
 })
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
-  variable: '--font-mono',
-  display: 'swap',
-})
-
-const outfit = Outfit({
-  subsets: ['latin'],
-  variable: '--font-outfit',
+  variable: '--font-jetbrains-mono',
   display: 'swap',
 })
 
@@ -103,7 +102,7 @@ export const viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#6366f1',
+  themeColor: '#22D3EE',
 }
 
 const organizationSchema = {
@@ -153,9 +152,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn("dark scroll-smooth", "font-sans", geist.variable)}>
+    <html lang="en" suppressHydrationWarning className={cn("dark scroll-smooth", fraunces.variable, dmSans.variable, jetbrainsMono.variable)}>
       <head>
-        <meta name="theme-color" content="#6366f1" />
+        <meta name="theme-color" content="#22D3EE" />
         <meta name="color-scheme" content="dark light" />
 
         {GA_TRACKING_ID && (
@@ -198,7 +197,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} ${outfit.variable} font-sans bg-gray-950 text-white antialiased`}>
+      <body className="font-sans text-white antialiased quantum-bg min-h-screen">
         <SessionProvider>
           <ThemeProvider>
             <Navigation />

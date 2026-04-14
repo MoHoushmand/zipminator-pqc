@@ -96,6 +96,10 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.json',
   category: 'technology',
+  other: {
+    'color-scheme': 'dark light',
+    language: 'English',
+  },
 }
 
 export const viewport = {
@@ -153,10 +157,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={cn("dark scroll-smooth", fraunces.variable, dmSans.variable, jetbrainsMono.variable)}>
-      <head>
-        <meta name="theme-color" content="#22D3EE" />
-        <meta name="color-scheme" content="dark light" />
-
+      <body className="font-sans text-white antialiased quantum-bg min-h-screen">
         {GA_TRACKING_ID && (
           <>
             <Script
@@ -179,9 +180,6 @@ export default function RootLayout({
             />
           </>
         )}
-        <meta name="language" content="English" />
-        <link rel="canonical" href="https://zipminator.zip" />
-
         <Script
           id="organization-schema"
           type="application/ld+json"
@@ -196,8 +194,6 @@ export default function RootLayout({
             __html: JSON.stringify(softwareSchema),
           }}
         />
-      </head>
-      <body className="font-sans text-white antialiased quantum-bg min-h-screen">
         <SessionProvider>
           <ThemeProvider>
             <Navigation />

@@ -5,7 +5,7 @@
 
 use pyo3::prelude::*;
 use pyo3::exceptions::PyValueError;
-use pyo3::types::PyBytes;
+use pyo3::types::{PyBytes, PyDict};
 use crate::kyber768::{Kyber768, PublicKey, SecretKey, Ciphertext};
 
 /// Python wrapper for PublicKey
@@ -22,12 +22,12 @@ impl PyPublicKey {
     fn from_bytes(data: &[u8]) -> PyResult<Self> {
         PublicKey::from_bytes(data)
             .map(|inner| PyPublicKey { inner })
-            .map_err(|e| PyValueError::new_err(e))
+            .map_err(PyValueError::new_err)
     }
 
     /// Get public key as bytes
-    fn to_bytes(&self, py: Python) -> PyObject {
-        PyBytes::new(py, &self.inner.data).into()
+    fn to_bytes<'py>(&self, py: Python<'py>) -> Bound<'py, PyBytes> {
+        PyBytes::new(py, &self.inner.data)
     }
 
     /// Get size of public key
@@ -55,12 +55,12 @@ impl PySecretKey {
     fn from_bytes(data: &[u8]) -> PyResult<Self> {
         SecretKey::from_bytes(data)
             .map(|inner| PySecretKey { inner })
-            .map_err(|e| PyValueError::new_err(e))
+            .map_err(PyValueError::new_err)
     }
 
     /// Get secret key as bytes
-    fn to_bytes(&self, py: Python) -> PyObject {
-        PyBytes::new(py, self.inner.as_bytes()).into()
+    fn to_bytes<'py>(&self, py: Python<'py>) -> Bound<'py, PyBytes> {
+        PyBytes::new(py, self.inner.as_bytes())
     }
 
     /// Get size of secret key
@@ -88,12 +88,12 @@ impl PyCiphertext {
     fn from_bytes(data: &[u8]) -> PyResult<Self> {
         Ciphertext::from_bytes(data)
             .map(|inner| PyCiphertext { inner })
-            .map_err(|e| PyValueError::new_err(e))
+            .map_err(PyValueError::new_err)
     }
 
     /// Get ciphertext as bytes
-    fn to_bytes(&self, py: Python) -> PyObject {
-        PyBytes::new(py, &self.inner.data).into()
+    fn to_bytes<'py>(&self, py: Python<'py>) -> Bound<'py, PyBytes> {
+        PyBytes::new(py, &self.inner.data)
     }
 
     /// Get size of ciphertext
@@ -167,11 +167,11 @@ fn keypair_from_seed(seed: &[u8]) -> PyResult<(PyPublicKey, PySecretKey)> {
 ///     >>> len(ss)
 ///     32
 #[pyfunction]
-fn encapsulate(pk: &PyPublicKey, py: Python) -> (PyCiphertext, PyObject) {
+fn encapsulate<'py>(pk: &PyPublicKey, py: Python<'py>) -> (PyCiphertext, Bound<'py, PyBytes>) {
     let (ct, ss) = Kyber768::encapsulate(&pk.inner);
     (
         PyCiphertext { inner: ct },
-        PyBytes::new(py, &ss.data).into(),
+        PyBytes::new(py, &ss.data),
     )
 }
 
@@ -184,7 +184,11 @@ fn encapsulate(pk: &PyPublicKey, py: Python) -> (PyCiphertext, PyObject) {
 /// Returns:
 ///     tuple: (Ciphertext, bytes) - ciphertext and 32-byte shared secret
 #[pyfunction]
-fn encapsulate_with_coins(pk: &PyPublicKey, coins: &[u8], py: Python) -> PyResult<(PyCiphertext, PyObject)> {
+fn encapsulate_with_coins<'py>(
+    pk: &PyPublicKey,
+    coins: &[u8],
+    py: Python<'py>,
+) -> PyResult<(PyCiphertext, Bound<'py, PyBytes>)> {
     if coins.len() != 32 {
         return Err(PyValueError::new_err("Coins must be exactly 32 bytes"));
     }
@@ -193,7 +197,7 @@ fn encapsulate_with_coins(pk: &PyPublicKey, coins: &[u8], py: Python) -> PyResul
     let (ct, ss) = Kyber768::encapsulate_with_coins(&pk.inner, &coins_array);
     Ok((
         PyCiphertext { inner: ct },
-        PyBytes::new(py, &ss.data).into(),
+        PyBytes::new(py, &ss.data),
     ))
 }
 
@@ -214,9 +218,13 @@ fn encapsulate_with_coins(pk: &PyPublicKey, coins: &[u8], py: Python) -> PyResul
 ///     >>> ss1 == ss2
 ///     True
 #[pyfunction]
-fn decapsulate(ct: &PyCiphertext, sk: &PySecretKey, py: Python) -> PyObject {
+fn decapsulate<'py>(
+    ct: &PyCiphertext,
+    sk: &PySecretKey,
+    py: Python<'py>,
+) -> Bound<'py, PyBytes> {
     let ss = Kyber768::decapsulate(&ct.inner, &sk.inner);
-    PyBytes::new(py, &ss.data).into()
+    PyBytes::new(py, &ss.data)
 }
 
 /// Get the size constants for Kyber-768
@@ -224,33 +232,28 @@ fn decapsulate(ct: &PyCiphertext, sk: &PySecretKey, py: Python) -> PyObject {
 /// Returns:
 ///     dict: Dictionary with size constants
 #[pyfunction]
-fn get_constants() -> PyResult<Py<PyAny>> {
-    Python::with_gil(|py| {
-        let dict = pyo3::types::PyDict::new(py);
-        dict.set_item("public_key_bytes", crate::constants::KYBER768_PUBLICKEYBYTES)?;
-        dict.set_item("secret_key_bytes", crate::constants::KYBER768_SECRETKEYBYTES)?;
-        dict.set_item("ciphertext_bytes", crate::constants::KYBER768_CIPHERTEXTBYTES)?;
-        dict.set_item("shared_secret_bytes", crate::constants::KYBER768_SHAREDSECRETBYTES)?;
-        dict.set_item("kyber_k", crate::constants::KYBER_K)?;
-        dict.set_item("kyber_n", crate::constants::KYBER_N)?;
-        dict.set_item("kyber_q", crate::constants::KYBER_Q)?;
-        Ok(dict.into())
-    })
+fn get_constants(py: Python<'_>) -> PyResult<Bound<'_, PyDict>> {
+    let dict = PyDict::new(py);
+    dict.set_item("public_key_bytes", crate::constants::KYBER768_PUBLICKEYBYTES)?;
+    dict.set_item("secret_key_bytes", crate::constants::KYBER768_SECRETKEYBYTES)?;
+    dict.set_item("ciphertext_bytes", crate::constants::KYBER768_CIPHERTEXTBYTES)?;
+    dict.set_item("shared_secret_bytes", crate::constants::KYBER768_SHAREDSECRETBYTES)?;
+    dict.set_item("kyber_k", crate::constants::KYBER_K)?;
+    dict.set_item("kyber_n", crate::constants::KYBER_N)?;
+    dict.set_item("kyber_q", crate::constants::KYBER_Q)?;
+    Ok(dict)
 }
 
 /// Initialize the Zipminator PQC Python module
 #[pymodule]
-fn _core(_py: Python, m: &PyModule) -> PyResult<()> {
-    // Add version info
+fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add("__doc__", "CRYSTALS-Kyber-768 Post-Quantum Cryptography")?;
 
-    // Add classes
     m.add_class::<PyPublicKey>()?;
     m.add_class::<PySecretKey>()?;
     m.add_class::<PyCiphertext>()?;
 
-    // Add functions
     m.add_function(wrap_pyfunction!(keypair, m)?)?;
     m.add_function(wrap_pyfunction!(keypair_from_seed, m)?)?;
     m.add_function(wrap_pyfunction!(encapsulate, m)?)?;

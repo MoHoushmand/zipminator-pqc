@@ -9,7 +9,7 @@ description = "CRYSTALS-Kyber-768 implementation in Rust for Zipminator PQC Plat
 
 [dependencies]
 # PyO3 for Python bindings (optional, enabled by default)
-pyo3 = { version = "0.20", features = ["extension-module", "abi3-py38"], optional = true }
+pyo3 = { version = "0.24", features = ["extension-module", "abi3-py38"], optional = true }
 
 # Cryptographic primitives
 sha3 = "0.10"

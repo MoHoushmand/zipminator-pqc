@@ -4,7 +4,19 @@ import Google from "next-auth/providers/google"
 import LinkedIn from "next-auth/providers/linkedin"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  providers: [Google, GitHub, LinkedIn],
+  trustHost: true,
+  secret: process.env.AUTH_SECRET,
+  providers: [
+    GitHub({
+      authorization: { params: { scope: "read:user user:email" } },
+    }),
+    Google({
+      authorization: { params: { scope: "openid email profile" } },
+    }),
+    LinkedIn({
+      authorization: { params: { scope: "openid profile email" } },
+    }),
+  ],
   pages: {
     signIn: "/auth/login",
     error: "/auth/error",
@@ -26,11 +38,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return true
     },
+    signIn() {
+      return true
+    },
     jwt({ token, user, account }) {
       if (user?.id) token.id = user.id
-      // Persist the GitHub access token for star checking
-      if (account?.provider === "github" && account.access_token) {
-        token.githubAccessToken = account.access_token
+      if (account?.access_token) {
+        token.accessToken = account.access_token
+      }
+      if (account?.provider) {
+        token.provider = account.provider
       }
       return token
     },
@@ -38,9 +55,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (session.user && token.id) {
         session.user.id = token.id as string
       }
-      // Pass GitHub access token to session for star verification API
-      if (token.githubAccessToken) {
-        ;(session as any).accessToken = token.githubAccessToken
+      if (token.accessToken) {
+        session.accessToken = token.accessToken as string
+      }
+      if (token.provider) {
+        session.provider = token.provider as string
       }
       return session
     },

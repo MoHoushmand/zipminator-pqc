@@ -392,6 +392,15 @@ old-json-files/
 archive/
 deprecated/
 
+# Marathon runtime state (committed: state, config; ignored: logs, snapshots)
+.marathon/iter-*/
+.marathon/*.log
+.marathon/.marathon-heartbeat
+.marathon/.last-iter
+.marathon/.stalled
+.marathon/.abort
+web/e2e/.auth/*.json
+
 # -----------------------------------------------------------------------------
 # Keep Important Files (Negation Patterns)
 # -----------------------------------------------------------------------------

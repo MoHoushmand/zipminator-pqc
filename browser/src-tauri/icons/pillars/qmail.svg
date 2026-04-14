@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- marathon:placeholder -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="qmail">
+  <g fill="none" stroke="currentColor" stroke-width="24" stroke-linejoin="round" stroke-linecap="round">
+    <rect x="152" y="280" width="720" height="464" rx="32" ry="32"/>
+    <path d="M152 320 L512 600 L872 320"/>
+    <path d="M152 744 L420 520"/>
+    <path d="M872 744 L604 520"/>
+    <circle cx="512" cy="160" r="48"/>
+    <path d="M512 208 L512 272" />
+  </g>
+</svg>

@@ -199,16 +199,37 @@ export const USE_CASES = [
 // ---------------------------------------------------------------------------
 // S9: 9 Pillars
 // ---------------------------------------------------------------------------
-export const PILLARS = [
-  { name: 'Quantum Vault', completion: 100, tech: ['Rust', 'ML-KEM-768', 'DoD 5220.22-M'], desc: 'AES-256-GCM + PQC key agreement, zero telemetry, self-destruct', color: '#22D3EE', tests: 109, comparable: 'Boxcryptor, Tresorit', compVal: '$30-100M' },
-  { name: 'Q-Messenger', completion: 100, tech: ['WebRTC', 'Double Ratchet', 'ML-KEM'], desc: 'Post-quantum double ratchet messaging with live signaling server', color: '#F59E0B', tests: 6, comparable: 'Signal, Wire, Element', compVal: '$1-5B' },
-  { name: 'VoIP & Video', completion: 100, tech: ['WebRTC', 'PQ-SRTP', 'Flutter'], desc: 'End-to-end quantum-secure voice/video with PQ-SRTP frame encryption', color: '#34D399', tests: 33, comparable: 'Silent Phone, Opal', compVal: '$100-500M' },
-  { name: 'Q-VPN', completion: 100, tech: ['PQ-WireGuard', 'PUEK', 'Mesh'], desc: 'Quantum-safe VPN with location-locked keys and PQ-WireGuard handshakes', color: '#A78BFA', tests: 15, comparable: 'NordVPN, Mullvad', compVal: '$1-6B' },
-  { name: 'Anonymization', completion: 100, tech: ['10-Level', 'QRNG-OTP', 'k-Anon', 'DP'], desc: '10-level anonymization from regex to quantum OTP; L10 is physics-proven irreversible', color: '#FB7185', tests: 109, comparable: 'Anonos, Privitar, Mostly AI', compVal: '$50-500M' },
-  { name: 'Q-AI', completion: 100, tech: ['Privacy ML', 'RuView', 'CSI'], desc: 'Quantum-aware AI with PQC tunnel, prompt guard, and automatic PII scanning', color: '#6366f1', tests: 85, comparable: 'Venice AI, Jan.ai', compVal: '$100M-1B' },
-  { name: 'Q-Email', completion: 100, tech: ['PQC SMTP/IMAP', 'PII Scanner', 'Self-Destruct'], desc: 'Quantum-secure email with QRNG-seeded keys and auto PII detection', color: '#22c55e', tests: 15, comparable: 'ProtonMail, Tuta', compVal: '$1-5B' },
-  { name: 'ZipBrowser', completion: 100, tech: ['Tauri 2.x', 'ML-KEM HTTPS', 'Kill Switch'], desc: 'PQC desktop browser with 7 privacy subsystems; PQC TLS + built-in VPN', color: '#f97316', tests: 103, comparable: 'Brave, Arc', compVal: '$500M-3B' },
-  { name: 'Q-Mesh', completion: 100, tech: ['ESP32-S3', 'CSI Entropy', 'RuView'], desc: 'WiFi mesh with CSI entropy harvesting, PUEK, and QRNG mesh keys', color: '#ef4444', tests: 106, comparable: 'Origin Wireless', compVal: '$200M-1B' },
+export const PILLAR_SLUGS = [
+  'qvault', 'qmessenger', 'qvoip', 'qvpn', 'qanonymizer',
+  'qai', 'qmail', 'qbrowser', 'qmesh',
+] as const
+export type PillarSlug = (typeof PILLAR_SLUGS)[number]
+
+export interface Pillar {
+  slug: PillarSlug
+  iconPath: string
+  name: string
+  /** Hand-authored baseline. Runtime override in `pillars.json` via scripts/compute-pillar-completion.ts. */
+  completion: number
+  tech: string[]
+  desc: string
+  color: string
+  tests: number
+  comparable: string
+  compVal: string
+  legacyNames?: readonly string[]
+}
+
+export const PILLARS: Pillar[] = [
+  { slug: 'qvault',      iconPath: '/logos/pillars/qvault.svg',      name: 'Quantum Vault', completion: 100, tech: ['Rust', 'ML-KEM-768', 'DoD 5220.22-M'], desc: 'AES-256-GCM + PQC key agreement, zero telemetry, self-destruct', color: '#22D3EE', tests: 109, comparable: 'Boxcryptor, Tresorit', compVal: '$30-100M', legacyNames: ['Quantum Vault + Self-Destruct Storage'] },
+  { slug: 'qmessenger',  iconPath: '/logos/pillars/qmessenger.svg',  name: 'Q-Messenger', completion: 100, tech: ['WebRTC', 'Double Ratchet', 'ML-KEM'], desc: 'Post-quantum double ratchet messaging with live signaling server', color: '#F59E0B', tests: 6, comparable: 'Signal, Wire, Element', compVal: '$1-5B', legacyNames: ['PQC Messenger'] },
+  { slug: 'qvoip',       iconPath: '/logos/pillars/qvoip.svg',       name: 'VoIP & Video', completion: 100, tech: ['WebRTC', 'PQ-SRTP', 'Flutter'], desc: 'End-to-end quantum-secure voice/video with PQ-SRTP frame encryption', color: '#34D399', tests: 33, comparable: 'Silent Phone, Opal', compVal: '$100-500M', legacyNames: ['Quantum VoIP & Video'] },
+  { slug: 'qvpn',        iconPath: '/logos/pillars/qvpn.svg',        name: 'Q-VPN', completion: 100, tech: ['PQ-WireGuard', 'PUEK', 'Mesh'], desc: 'Quantum-safe VPN with location-locked keys and PQ-WireGuard handshakes', color: '#A78BFA', tests: 15, comparable: 'NordVPN, Mullvad', compVal: '$1-6B', legacyNames: ['Q-VPN (PQ-WireGuard)'] },
+  { slug: 'qanonymizer', iconPath: '/logos/pillars/qanonymizer.svg', name: 'Anonymization', completion: 100, tech: ['10-Level', 'QRNG-OTP', 'k-Anon', 'DP'], desc: '10-level anonymization from regex to quantum OTP; L10 is physics-proven irreversible', color: '#FB7185', tests: 109, comparable: 'Anonos, Privitar, Mostly AI', compVal: '$50-500M', legacyNames: ['10-Level Anonymization Suite'] },
+  { slug: 'qai',         iconPath: '/logos/pillars/qai.svg',         name: 'Q-AI', completion: 100, tech: ['Privacy ML', 'RuView', 'CSI'], desc: 'Quantum-aware AI with PQC tunnel, prompt guard, and automatic PII scanning', color: '#6366f1', tests: 85, comparable: 'Venice AI, Jan.ai', compVal: '$100M-1B', legacyNames: ['Q-AI PQC AI Assistant'] },
+  { slug: 'qmail',       iconPath: '/logos/pillars/qmail.svg',       name: 'Q-Email', completion: 100, tech: ['PQC SMTP/IMAP', 'PII Scanner', 'Self-Destruct'], desc: 'Quantum-secure email with QRNG-seeded keys and auto PII detection', color: '#22c55e', tests: 15, comparable: 'ProtonMail, Tuta', compVal: '$1-5B', legacyNames: ['Quantum-Secure Email'] },
+  { slug: 'qbrowser',    iconPath: '/logos/pillars/qbrowser.svg',    name: 'ZipBrowser', completion: 100, tech: ['Tauri 2.x', 'ML-KEM HTTPS', 'Kill Switch'], desc: 'PQC desktop browser with 7 privacy subsystems; PQC TLS + built-in VPN', color: '#f97316', tests: 103, comparable: 'Brave, Arc', compVal: '$500M-3B', legacyNames: ['ZipBrowser'] },
+  { slug: 'qmesh',       iconPath: '/logos/pillars/qmesh.svg',       name: 'Q-Mesh', completion: 100, tech: ['ESP32-S3', 'CSI Entropy', 'RuView'], desc: 'WiFi mesh with CSI entropy harvesting, PUEK, and QRNG mesh keys', color: '#ef4444', tests: 106, comparable: 'Origin Wireless', compVal: '$200M-1B', legacyNames: ['Q-Mesh'] },
 ]
 
 // ---------------------------------------------------------------------------

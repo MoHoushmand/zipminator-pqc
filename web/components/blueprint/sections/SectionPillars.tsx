@@ -13,6 +13,7 @@ import {
 import { PILLARS } from '@/lib/blueprint-data'
 import { SECTION_PROSE } from '@/lib/blueprint-prose'
 import { ProseBlock, CalloutBlock, Subsection } from '@/components/blueprint/BlueprintSection'
+import { PillarIcon } from '@/components/blueprint/pillar-icon'
 
 const completePillars = PILLARS.filter((p) => p.completion === 100).length
 const avgCompletion = Math.round(
@@ -80,10 +81,13 @@ export const SectionPillars = () => {
             backdropFilter: 'blur(8px)',
           }}
         >
-          {/* Name */}
-          <h4 className="mb-1 text-base font-semibold text-slate-100">
-            {pillar.name}
-          </h4>
+          {/* Header: icon + name */}
+          <div className="mb-1 flex items-center gap-3">
+            <PillarIcon slug={pillar.slug} color={pillar.color} size={40} />
+            <h4 className="text-base font-semibold text-slate-100">
+              {pillar.name}
+            </h4>
+          </div>
 
           {/* Description */}
           <p className="mb-4 text-sm leading-relaxed text-slate-400">

@@ -1,0 +1,43 @@
+# cargo-audit configuration
+#
+# Ignored advisories fall into three categories:
+#   1. Upstream-blocked: transitive dep from Tauri 2 / wry; fix requires
+#      upstream migration (tracked in Tauri 3 roadmap)
+#   2. False-positive: advisory metadata matches our version but the
+#      vulnerable API (rand::rng()) does not exist in that major
+#   3. Scheduled migration: planned swap to the maintained successor
+#
+# Vulnerabilities (non-warning advisories) are never ignored.
+
+[advisories]
+ignore = [
+    # --- upstream-blocked (Tauri 2 / wry -> gtk-rs v3) ---
+    "RUSTSEC-2024-0411", # gdkwayland-sys unmaintained
+    "RUSTSEC-2024-0412", # gdk unmaintained
+    "RUSTSEC-2024-0413", # atk unmaintained
+    "RUSTSEC-2024-0414", # gdkx11-sys unmaintained
+    "RUSTSEC-2024-0415", # gtk unmaintained
+    "RUSTSEC-2024-0416", # atk-sys unmaintained
+    "RUSTSEC-2024-0417", # gdkx11 unmaintained
+    "RUSTSEC-2024-0418", # gdk-sys unmaintained
+    "RUSTSEC-2024-0419", # gtk3-macros unmaintained
+    "RUSTSEC-2024-0420", # gtk-sys unmaintained
+    "RUSTSEC-2024-0429", # glib (Tauri transitive)
+    "RUSTSEC-2025-0057", # fxhash unmaintained (selectors transitive)
+    "RUSTSEC-2025-0075", # unic-char-range unmaintained
+    "RUSTSEC-2025-0080", # unic-common unmaintained
+    "RUSTSEC-2025-0081", # unic-char-property unmaintained
+    "RUSTSEC-2025-0098", # unic-ucd-version unmaintained
+    "RUSTSEC-2025-0100", # unic-ucd-ident unmaintained
+    "RUSTSEC-2025-0134", # rustls-pemfile unmaintained
+    "RUSTSEC-2024-0370", # proc-macro-error unmaintained
+    "RUSTSEC-2024-0436", # paste unmaintained
+
+    # --- false-positive: rand::rng() is a 0.9 API; 0.7/0.8 cannot trigger ---
+    # Patched copy of rand 0.9.x is pinned to 0.9.3 in Cargo.lock.
+    "RUSTSEC-2026-0097",
+
+    # --- scheduled migration ---
+    "RUSTSEC-2024-0381", # pqcrypto-kyber -> pqcrypto-mlkem
+    "RUSTSEC-2016-0004", # libusb (feature-gated behind `qrng-usb`)
+]

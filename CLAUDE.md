@@ -65,8 +65,10 @@ Format: `[Pillar N] X% -> Y% | tests: pass/fail | gap: description`
 - `api/`, FastAPI REST backend
 - `web/`, Next.js 16 dashboard (port 3099)
 - `tests/`, All tests (Python, Rust, integration)
-- `mobile/`, Expo React Native app
+- `app/`, Flutter mobile app (canonical, v0.5.0+44, iOS + Android + macOS + Linux; 46+ TestFlight builds)
+- `mobile/`, legacy Expo React Native starter (not canonical, kept for reference; do not extend)
 - `browser/`, Tauri 2.x PQC browser (DMG at `target/release/bundle/dmg/`)
+- `browser/app/`, legacy nested Flutter starter (not canonical, kept for reference; do not extend)
 - `docs/guides/`, Documentation
 - `docs/guides/FEATURES.md`, canonical product spec (single source of truth for pillar status)
 - `grants/`, Grant templates (10 institutions)
@@ -91,8 +93,11 @@ cd api && uv pip install -r requirements.txt && uvicorn src.main:app
 # Web
 cd web && pnpm install && pnpm dev
 
-# Mobile
-cd mobile && pnpm install && npx expo start
+# Mobile (Flutter canonical)
+cd app && flutter pub get && flutter run
+
+# Legacy Expo (not canonical; kept for reference only)
+# cd mobile && pnpm install && npx expo start
 
 # Full stack
 docker-compose up
@@ -105,7 +110,7 @@ cargo test --workspace          # Rust tests (268 passed, includes browser/src-t
 micromamba activate zip-pqc && pytest tests/
 cargo fuzz run fuzz_keygen      # Fuzzing
 cd web && pnpm build            # Next.js build check
-cd mobile && pnpm test          # Expo tests (11/11 suites)
+cd app && flutter test          # Flutter unit + widget tests (canonical mobile)
 ```
 
 ## Web Dev Server
@@ -138,7 +143,7 @@ Core protocol in `.claude/rules/tdd-ralph.md`. Project-specific quality gates th
 
 - `cargo test --workspace` (Rust, 268 tests)
 - `cd web && pnpm build` (web, if touched)
-- `cd mobile && pnpm test` (mobile, if touched)
+- `cd app && flutter test` (mobile Flutter, if touched)
 - `cd browser/src-tauri && cargo test` (browser, if touched)
 - `cargo clippy --workspace -- -D warnings`
 - Playwright screenshot for any UI change

@@ -1,0 +1,4 @@
+app_identifier("com.qdaria.zipminator")
+apple_id(ENV["APPLE_ID"])
+team_id("5EK49H64WB")
+itc_team_id(ENV["ITC_TEAM_ID"])

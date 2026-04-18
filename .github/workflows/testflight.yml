@@ -1,0 +1,85 @@
+name: iOS TestFlight
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'crates/zipminator-app/**'
+      - '.github/workflows/testflight.yml'
+  workflow_dispatch:
+    inputs:
+      changelog:
+        description: 'TestFlight changelog note'
+        required: false
+        default: 'Internal build'
+
+concurrency:
+  group: ios-testflight-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  testflight:
+    name: Build & upload to TestFlight
+    if: ${{ vars.IOS_TESTFLIGHT_ENABLED == 'true' }}
+    runs-on: macos-latest
+    timeout-minutes: 60
+    env:
+      ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+      ASC_API_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
+      ASC_API_KEY_CONTENT: ${{ secrets.ASC_API_KEY_CONTENT }}
+      BUILD_NUMBER: ${{ github.run_number }}
+      CHANGELOG: ${{ inputs.changelog || 'Internal build' }}
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Set up Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-ios,x86_64-apple-ios,aarch64-apple-ios-sim
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: crates -> target
+
+      - name: Set up Ruby (fastlane)
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: app/ios
+
+      - name: Flutter pub get
+        working-directory: app
+        run: flutter pub get
+
+      - name: Pod install
+        working-directory: app/ios
+        run: pod install --repo-update
+
+      - name: Fastlane verify (wiring check)
+        working-directory: app/ios
+        run: bundle exec fastlane verify
+
+      - name: Fastlane beta (build + upload)
+        working-directory: app/ios
+        run: bundle exec fastlane beta
+
+      - name: Upload IPA artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zipminator-ios-ipa
+          path: app/build/ios/ipa/*.ipa
+          if-no-files-found: warn
+          retention-days: 14

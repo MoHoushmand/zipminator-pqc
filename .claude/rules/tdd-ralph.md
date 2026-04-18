@@ -31,4 +31,4 @@ Every code modification follows Red/Green/Refactor. No exceptions.
 
 ## Iteration Cap
 Max 12 RALPH iterations per task. If still failing, escalate to user.
-Script: `bash docs/guides/claude-flow-v3/scripts/ralph-loop.sh`
+Script: `bash scripts/marathon.sh --prompt-version v6.1` (project shim into `~/.claude/scripts/marathon.sh`)

@@ -172,35 +172,6 @@ jobs:
           cargo test --release -p zipminator-core -- --nocapture 2>&1 | tail -5
           echo "Load test completed successfully"
 
-  # NOTE: Claude Flow notification pattern is duplicated across 8+ workflows.
-  # TODO: Extract into a reusable composite action at .github/actions/claude-flow-notify/action.yml
-  hooks-integration:
-    name: Claude Flow Hooks Integration
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install Claude Flow
-        run: npm install -g claude-flow@alpha
-
-      - name: Pre-task hook
-        run: npx claude-flow@alpha hooks pre-task --description "Integration tests"
-
-      - name: Run integration tests
-        run: |
-          npx claude-flow@alpha hooks notify --message "Running integration test suite"
-
-      - name: Post-task hook
-        if: always()
-        run: npx claude-flow@alpha hooks post-task --task-id "integration-tests"
-
   # Summary job
   integration-summary:
     name: Integration Test Summary

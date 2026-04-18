@@ -31,7 +31,7 @@ docs/research/paper-2-csi-entropy-puek/main.tex
 5. quantum-assurance-validator — entropy measurement claims
 6. verification-quality — code-backed claims truth scoring
 7. agentic-jujutsu — adversarial (sample size, correlation, static env)
-8. hive-mind-advanced — Byzantine consensus final gate
+8. quantum-peer-reviewer — 8-agent Byzantine consensus final gate
 9. reasoningbank-intelligence + agentdb-advanced — cross-session learning
 
 ## Phase 0: BLOCKING — Score Baseline + Figure Crisis
@@ -114,7 +114,7 @@ Create 9 figures as TikZ/pgfplots LaTeX code, compile to PDF:
 - GPT-5.4 via OpenRouter: independent full-paper review
 - Gemini 3.1 Pro Preview: structural and novelty assessment
 - Grok 4: third opinion (every 3rd cycle)
-- hive-mind-advanced: Byzantine 2/3 consensus
+- quantum-peer-reviewer skill: Byzantine 2/3 consensus
 - Playwright: verify all 9 figures render correctly in compiled PDF
 - Compile: pdflatex + bibtex clean
 

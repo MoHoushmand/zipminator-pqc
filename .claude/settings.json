@@ -1,14 +1,5 @@
 {
   "env": {
-    "CLAUDE_FLOW_AUTO_COMMIT": "true",
-    "CLAUDE_FLOW_AUTO_PUSH": "false",
-    "CLAUDE_FLOW_HOOKS_ENABLED": "true",
-    "CLAUDE_FLOW_TELEMETRY_ENABLED": "true",
-    "CLAUDE_FLOW_REMOTE_EXECUTION": "true",
-    "CLAUDE_FLOW_CHECKPOINTS_ENABLED": "true",
-    "RUFLO_INTELLIGENCE_PIPELINE": "true",
-    "RUFLO_AGENT_BOOSTER": "true",
-    "RUFLO_MODEL_ROUTING": "auto",
     "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "128000",
     "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
     "DISABLE_COST_WARNINGS": "1",
@@ -16,7 +7,7 @@
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1",
     "CLAUDE_CODE_DISABLE_TERMINAL_TITLE": "0"
   },
-  "includeCoAuthoredBy": true,
+  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Bash(npm:*)",
@@ -91,9 +82,6 @@
       "mcp__plugin_everything-claude-code_memory:*",
       "mcp__plugin_everything-claude-code_exa:*",
       "mcp__plugin_everything-claude-code_sequential-thinking:*",
-      "mcp__claude-flow_alpha:*",
-      "mcp__ruflo:*",
-      "mcp__ruv-swarm:*",
       "mcp__notebooklm-mcp:*",
       "mcp__ios-simulator:*",
       "mcp__claude_ai_Canva:*",
@@ -111,12 +99,22 @@
     ]
   },
   "enabledMcpjsonServers": [
-    "claude-flow",
-    "ruv-swarm",
     "context7",
     "playwright"
   ],
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/python-env-guard.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [

@@ -26,10 +26,10 @@ This architecture outlines the systematic progression to build a world-class, "i
 *   **Docs**: Embed the animations within the interactive documentation guides.
 *   **JupyterLab**: Preload the `micromamba env zip-pqc`.
 
-## Iteration 6: Task Mastering & Hive-Mind Parallelization
-*   **Execution**: Engage open-claw (implicitly) for long-running, deep-focused sessions with 100% accuracy and zero hallucinations (`@zero-hallucination.md`).
-*   **Parallelism**: Use `hive-mind-advanced`, `pair-programming`, and `stream-chain` to parallelize data compression tasks.
-*   **Testing**: Implement robust `@hive-tdd.md` and `@tdd-ralph.md` testing mechanisms.
+## Iteration 6: Task Mastering & Parallel Orchestration
+*   **Execution**: Engage long-running, deep-focused sessions with 100% accuracy and zero hallucinations (`@zero-hallucination.md`).
+*   **Parallelism**: Use native `Task` tool dispatch plus `superpowers:dispatching-parallel-agents` (and `pair-programming` / `stream-chain` skills) to parallelize data compression tasks.
+*   **Testing**: Implement thorough `@tdd-ralph.md` testing mechanisms.
 
 ## Iteration 7: Gamified Anonymization & Security Layers
 *   **Security Context**: Integrate `@02-security-pqc.md` and `@context-management.md`.

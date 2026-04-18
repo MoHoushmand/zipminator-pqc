@@ -32,7 +32,7 @@ benchmarks
 old-json-files
 notebooks
 .claude
-.hive-mind
+.marathon
 .swarm
 *.md
 LICENSE

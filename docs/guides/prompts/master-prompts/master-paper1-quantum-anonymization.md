@@ -30,7 +30,7 @@ docs/research/paper-1-quantum-anonymization/main-popets.tex
 5. research-paper-writer — formatting, LaTeX quality, venue compliance
 6. verification-quality — truth scoring on every code-backed claim
 7. agentic-jujutsu — 3 hostile Reviewer 2 personas
-8. hive-mind-advanced — Byzantine 2/3 consensus final gate
+8. quantum-peer-reviewer — 8-agent Byzantine 2/3 consensus final gate
 9. reasoningbank-intelligence — store/retrieve learned patterns across iterations
 10. agentdb-advanced — persistent memory for multi-session improvement
 
@@ -70,7 +70,7 @@ docs/research/paper-1-quantum-anonymization/main-popets.tex
 - GPT-5.4 via OpenRouter: independent adversarial review
 - Gemini 3.1 Pro Preview: 1M-context structural review
 - Grok 4: third opinion on novelty claims
-- Invoke hive-mind-advanced with Byzantine 2/3 consensus
+- Invoke quantum-peer-reviewer skill with Byzantine 2/3 consensus
 - Visual figure inspection (Playwright) — all 12 figures readable, professional
 - Compile: pdflatex + bibtex clean (zero warnings)
 - Store learnings via reasoningbank-intelligence + agentdb-advanced

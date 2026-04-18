@@ -175,7 +175,7 @@ Create a script `docs/book/scripts/add_show_config.py` that walks all .ipynb fil
 - `.claude/rules/tdd-ralph.md` — RALPH protocol, quality gates
 - `.claude/rules/model-routing.md` — Opus for CSS/design work
 - `.claude/rules/zero-hallucination.md` — verify all claims
-- `docs/guides/claude-flow-v3/scripts/ralph-loop.sh` — automation
+- `scripts/marathon.sh` (shim into `~/.claude/scripts/marathon.sh`) — automation
 - `CLAUDE.md` — session defaults (auto-commit, no PR, solo dev on main)
 - `docs/book/scripts/quality_check.py` — automated quality validation
 - `docs/book/scripts/tag_cells.py` — cell tag maintenance

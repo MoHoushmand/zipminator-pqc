@@ -40,7 +40,7 @@ if [[ -n "$TASK" ]]; then
 fi
 
 # Log decision
-LOG_DIR="${ZIPMINATOR_ROOT:-.}/.claude-flow/metrics"
+LOG_DIR="${ZIPMINATOR_ROOT:-.}/.marathon/metrics"
 mkdir -p "$LOG_DIR" 2>/dev/null || true
 echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) tier=$TIER file=$FILE task=$TASK" >> "$LOG_DIR/model-routing.log" 2>/dev/null || true
 

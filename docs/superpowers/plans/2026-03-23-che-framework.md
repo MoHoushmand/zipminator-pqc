@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 >
-> **Orchestration:** Use `/hive-mind-advanced` queen-led coordination with agent teams. Each workstream is a dedicated worker. Route per `.claude/rules/model-routing.md`: crypto/ARE = Opus, Python/tests = Sonnet, docs/config = Haiku.
+> **Orchestration:** Native Task-tool parallel dispatch + `superpowers:dispatching-parallel-agents` + `quantum-peer-reviewer` skill for Byzantine 2/3 consensus gates. Each workstream is a dedicated worker. Route per `.claude/rules/model-routing.md`: crypto/ARE = Opus, Python/tests = Sonnet, docs/config = Haiku.
 >
 > **Quality protocol per task:** RALPH loop (R-A-L-P-H) with max 12 iterations. After each RALPH completion, run `/verification-quality` (truth score threshold 0.95). On FAIL, rewind and retry.
 >
@@ -1533,12 +1533,12 @@ git commit -m "test(che): full integration suite and NIST benchmark results"
 
 ---
 
-## Execution Orchestration (Hive-Mind)
+## Execution Orchestration (Parallel Agent Teams)
 
 ```
-Queen Prompt:
-  You are the Hive Queen for CHE Framework implementation.
-  Use /hive-mind-advanced with hierarchical-mesh topology.
+Coordinator Prompt:
+  You are the coordinator for CHE Framework implementation.
+  Use native Task tool + superpowers:dispatching-parallel-agents.
 
   Read context:
   - docs/superpowers/plans/2026-03-23-che-framework.md (this plan)

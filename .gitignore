@@ -155,6 +155,9 @@ app/macos/Flutter/ephemeral/
 node_modules/
 .next/
 dist/
+!browser/dist/
+!browser/dist/.gitkeep
+!browser/dist/index.html
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

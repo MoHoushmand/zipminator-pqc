@@ -157,6 +157,8 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#6366f1" />
         <meta name="color-scheme" content="dark light" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
 
         {GA_TRACKING_ID && (
           <>

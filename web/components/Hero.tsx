@@ -3,8 +3,10 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, Shield, Zap, Book, Cpu, BookOpen } from 'lucide-react'
 import Link from 'next/link'
-import QuantumBackground from './QuantumBackground'
+import dynamic from 'next/dynamic'
 import { SITE_CONFIG } from '@/lib/constants'
+
+const QuantumBackground = dynamic(() => import('./QuantumBackground'), { ssr: false })
 
 const Hero = () => {
   const containerVariants = {

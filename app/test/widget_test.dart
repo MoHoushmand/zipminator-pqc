@@ -8,7 +8,7 @@ import 'test_helpers.dart';
 void main() {
   setUpAll(() => setUpTestEnvironment());
 
-  testWidgets('App renders with Quantum Vault as initial route', (
+  testWidgets('App navigates to Quantum Vault via nav tab', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(ProviderScope(
@@ -16,7 +16,8 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     await tester.pump(const Duration(milliseconds: 100));
 
-    // Verify the Vault screen is shown (initial route)
+    await tapNavTab(tester, 'Vault');
+
     expect(find.text('Quantum Vault'), findsOneWidget);
     expect(find.text('ML-KEM-768 File Encryption'), findsOneWidget);
   });
@@ -45,13 +46,15 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     await tester.pump(const Duration(milliseconds: 100));
 
-    // Should show bottom NavigationBar with 4 primary tabs + More overflow
+    // Should show bottom NavigationBar with 4 primary tabs + More overflow.
+    // 'Vault'/'Messenger'/'VoIP'/'VPN' also appear in the home-screen pillar
+    // grid, so scope the assertions to the NavigationBar descendants.
     expect(find.byType(NavigationBar), findsOneWidget);
-    expect(find.text('Vault'), findsOneWidget);
-    expect(find.text('Messenger'), findsOneWidget);
-    expect(find.text('VoIP'), findsOneWidget);
-    expect(find.text('VPN'), findsOneWidget);
-    expect(find.text('More'), findsOneWidget);
+    final bar = find.byType(NavigationBar);
+    expect(find.descendant(of: bar, matching: find.text('Vault')), findsOneWidget);
+    expect(find.descendant(of: bar, matching: find.text('Messenger')), findsOneWidget);
+    expect(find.descendant(of: bar, matching: find.text('VoIP')), findsOneWidget);
+    expect(find.descendant(of: bar, matching: find.text('More')), findsOneWidget);
 
     // Reset view
     tester.view.resetPhysicalSize();
@@ -85,6 +88,8 @@ void main() {
         overrides: testOverrides, child: const ZipminatorApp()));
     await tester.pump(const Duration(seconds: 1));
     await tester.pump(const Duration(milliseconds: 100));
+
+    await tapNavTab(tester, 'Vault');
 
     // Key management is in a collapsible section
     expect(find.text('Key Management'), findsOneWidget);

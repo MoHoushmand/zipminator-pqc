@@ -22,13 +22,11 @@ void main() {
   group('Q-AI Screen', () {
     testWidgets('shows provider and model selectors', (tester) async {
       await pumpDesktop(tester);
-      await tester.tap(find.text('Q-AI'));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tapNavTab(tester, 'Q-AI');
 
       expect(find.text('Q-AI Assistant'), findsWidgets);
-      // Provider chips (default is On-Device)
-      expect(find.text('On-Device'), findsOneWidget);
+      // Provider chips (default is On-Device, displayName is 'On-Device (Gemma 4)')
+      expect(find.text('On-Device (Gemma 4)'), findsOneWidget);
       expect(find.text('Claude'), findsOneWidget);
       expect(find.text('Gemini'), findsOneWidget);
     });
@@ -38,9 +36,7 @@ void main() {
   group('Email Screen', () {
     testWidgets('shows tabbed interface with Inbox and Compose', (tester) async {
       await pumpDesktop(tester);
-      await tester.tap(find.text('Email'));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tapNavTab(tester, 'Email');
 
       expect(find.text('Quantum Mail'), findsWidgets);
       // Tab bar with Inbox and Compose (Compose may appear as tab + button)
@@ -50,9 +46,7 @@ void main() {
 
     testWidgets('email screen has Quantum Mail title', (tester) async {
       await pumpDesktop(tester);
-      await tester.tap(find.text('Email'));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tapNavTab(tester, 'Email');
 
       // Email screen shows Quantum Mail and has both tabs
       expect(find.text('Quantum Mail'), findsWidgets);
@@ -64,9 +58,7 @@ void main() {
   group('Browser Screen', () {
     testWidgets('shows PQC proxy toggle and privacy controls', (tester) async {
       await pumpDesktop(tester);
-      await tester.tap(find.text('Browser'));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tapNavTab(tester, 'Browser');
 
       // Browser shows floating privacy chips (may appear multiple times)
       expect(find.text('PQC'), findsWidgets);
@@ -80,14 +72,19 @@ void main() {
     testWidgets('shows all 8 pillar labels in NavigationRail', (tester) async {
       await pumpDesktop(tester);
 
-      expect(find.text('Vault'), findsOneWidget);
-      expect(find.text('Messenger'), findsOneWidget);
-      expect(find.text('VoIP'), findsOneWidget);
-      expect(find.text('VPN'), findsOneWidget);
-      expect(find.text('Anonymizer'), findsOneWidget);
-      expect(find.text('Q-AI'), findsOneWidget);
-      expect(find.text('Email'), findsOneWidget);
-      expect(find.text('Browser'), findsOneWidget);
+      // Labels also appear in the home-screen pillar grid; scope to the rail.
+      final rail = find.byType(NavigationRail);
+      expect(rail, findsOneWidget);
+      for (final label in const [
+        'Vault', 'Messenger', 'VoIP', 'VPN',
+        'Anonymizer', 'Q-AI', 'Email', 'Browser',
+      ]) {
+        expect(
+          find.descendant(of: rail, matching: find.text(label)),
+          findsOneWidget,
+          reason: 'NavigationRail should contain "$label"',
+        );
+      }
     });
   });
 

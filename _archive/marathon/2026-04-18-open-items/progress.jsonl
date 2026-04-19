@@ -1,0 +1,12 @@
+{"event":"run_start","ts":"2026-04-19T20:03:39Z","run_id":"20260419-200339-4239da","wave":1,"tracks":["E","B","S","V"]}
+{"event":"iter","ts":"2026-04-19T18:11:16Z","track":"E","iter":1,"red":true,"green":true,"refactor":true,"commit":"ba5550056c26cf799a5811ae9db2b0e1005f40a0"}
+{"event":"iter","ts":"2026-04-19T18:11:19Z","track":"S","iter":1,"red":true,"green":true,"refactor":true,"commit":"dc8d7664012d0ec1ed6ef7e9ef8c9f78199109b5"}
+{"event":"iter","ts":"2026-04-19T18:11:29Z","track":"V","iter":1,"red":true,"green":true,"refactor":true,"commit":"e6fc1c5b70febe35f2e5dd8f21665c3e9c356671","flag":"macos_kernel_blocked"}
+{"event":"iter","ts":"2026-04-19T18:11:32Z","track":"B","iter":1,"red":true,"green":true,"refactor":true,"commit":"f79ec69e89ee437b3893200cec577f210d4efcd7"}
+{"event":"wave_merged","ts":"2026-04-19T18:13:13Z","wave":1,"tracks":["E","B","S","V"],"integration_branch":"chore/claude-root-consolidation"}
+{"event":"wave_start","ts":"2026-04-19T18:13:33Z","wave":2,"tracks":["M","G"]}
+{"event":"iter","ts":"2026-04-19T18:21:41Z","track":"M","iter":1,"red":false,"green":false,"refactor":false,"commit":"19096358f457a58910f046e2748f4d7a480a76a1","flag":"flutter_sdk_unavailable_locally","ci_deferred":true}
+{"ts":"2026-04-19T20:28:00Z","event":"wave_merged","wave":"wave_2","tracks":["M","G"],"merge_target":"chore/claude-root-consolidation"}
+{"ts":"2026-04-19T20:30:00Z","event":"gates_recorded","gates":{"cargo_test":"pass","web_build":"pass","clippy":"pass","flutter_test":"ci_deferred"}}
+{"ts":"2026-04-19T20:30:30Z","event":"run_paused_pending_ci","reason":"flutter_test requires CI runner with Flutter SDK; sentinel withheld per zero-hallucination rule","pending_gates":["flutter_test"]}
+{"ts":"2026-04-19T23:16:32Z","event":"flutter_test_passed","count":55,"fixed":["tapNavTab overflow sheet","On-Device (Gemma 4) label","QDaria Q-AI Personal Assistant appBar title","VPN mobile overflow","NavigationBar descendant scoping"]}

@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-04-19
+
+### Added
+- First stable v1.0.0 of the Zipminator PQC super-app covering all 9 pillars: Quantum Vault and Self-Destruct Storage; PQC Messenger; Quantum VoIP and Video; Q-VPN (PQ-WireGuard); 10-Level Anonymization Suite; Q-AI PQC AI Assistant; Quantum-Secure Email; ZipBrowser (PQC AI Browser); Q-Mesh (Quantum-Secured WiFi Sensing).
+- Flutter super-app `app/` promoted to canonical mobile surface (iOS, Android, macOS, Linux, Windows) with 47 TestFlight builds since first submission.
+- Rust workspace `crates/zipminator-core` exposes a from-scratch ML-KEM-768 implementation with NTT, Montgomery and Barrett reductions, `subtle` constant-time guards, and `zeroize` key hygiene.
+- PyO3 Python bindings published to PyPI under `zipminator` with extras for `data`, `anonymization`, `cli`, `quantum`, `jupyter`, `email`, `benchmark`, `dev`, `all`.
+- Tauri 2.x desktop browser shell under `browser/` with DMG output at `target/release/bundle/dmg/`.
+- Quantum entropy harvester aggregating IBM Quantum (Fez, Marrakesh), qBraid, and Rigetti with OS fallback.
+
+### Changed
+- Marketing and product documentation consolidated under `docs/guides/FEATURES.md` as the single source of truth for pillar status and pricing.
+- `mobile/` (Expo React Native) and `browser/app/` (nested Flutter starter) marked legacy and frozen for reference only; all new mobile work lives in `app/`.
+
+### Security
+- Implements NIST FIPS 203 (ML-KEM-768). Verified against NIST KAT test vectors via deterministic DRBG.
+- Implements NIST FIPS 204 (ML-DSA-65) for signatures and prepares for FIPS 205 (SLH-DSA) on high-assurance paths.
+- No FIPS 140-3 CMVP certificate yet; CMVP submission is planned but not scheduled in this release.
+
+### Known Limitations
+- Q-VPN PQ-WireGuard kernel integration is userspace-only in v1.0.0; kernel module lands in v1.1.
+- TestFlight external testing build is 47; App Store public release follows in a point release.
+- Q-Mesh WiFi CSI backend requires supported chipset (Intel AX200+ or Atheros QCA).
+
 ## [0.5.0] - 2026-04-02
 
 ### Added
@@ -101,6 +125,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cargo workspace with `zipminator-core` crate
 - Basic Kyber768 key generation
 
+[1.0.0]: https://github.com/QDaria/zipminator/compare/v0.5.0...v1.0.0
+[0.5.0]: https://github.com/QDaria/zipminator/compare/v0.5.0b1...v0.5.0
 [0.5.0b1]: https://github.com/QDaria/zipminator/compare/v0.2.0...v0.5.0b1
 [0.2.0]: https://github.com/QDaria/zipminator/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/QDaria/zipminator/releases/tag/v0.1.0

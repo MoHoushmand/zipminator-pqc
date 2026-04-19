@@ -392,6 +392,7 @@ web/screenshots/
 web/test-results/
 .vercel
 _screenshots/
+docs/screenshots/
 docs/book/_build/
 .playwright-mcp/
 web/screenshots/

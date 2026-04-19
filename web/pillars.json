@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-04-19T16:23:15.045Z",
+  "iter_dir": "/tmp/team-p-iter",
+  "weights": {
+    "tests_pass_ratio": 0.35,
+    "features_shipped_ratio": 0.25,
+    "lighthouse_target_met": 0.15,
+    "a11y_violations_zero": 0.1,
+    "type_safety": 0.15
+  },
+  "composite_avg": 0.15,
+  "pillars": [
+    {
+      "slug": "qvault",
+      "tests_pass_ratio": 0,
+      "features_shipped_ratio": 0,
+      "lighthouse_target_met": 0,
+      "a11y_violations_zero": 0,
+      "type_safety": 1,
+      "composite": 0.15
+    },
+    {
+      "slug": "qmessenger",
+      "tests_pass_ratio": 0,
+      "features_shipped_ratio": 0,
+      "lighthouse_target_met": 0,
+      "a11y_violations_zero": 0,
+      "type_safety": 1,
+      "composite": 0.15
+    },
+    {
+      "slug": "qvoip",
+      "tests_pass_ratio": 0,
+      "features_shipped_ratio": 0,
+      "lighthouse_target_met": 0,
+      "a11y_violations_zero": 0,
+      "type_safety": 1,
+      "composite": 0.15
+    },
+    {
+      "slug": "qvpn",
+      "tests_pass_ratio": 0,
+      "features_shipped_ratio": 0,
+      "lighthouse_target_met": 0,
+      "a11y_violations_zero": 0,
+      "type_safety": 1,
+      "composite": 0.15
+    },
+    {
+      "slug": "qanonymizer",
+      "tests_pass_ratio": 0,
+      "features_shipped_ratio": 0,
+      "lighthouse_target_met": 0,
+      "a11y_violations_zero": 0,
+      "type_safety": 1,
+      "composite": 0.15
+    },
+    {
+      "slug": "qai",
+      "tests_pass_ratio": 0,
+      "features_shipped_ratio": 0,
+      "lighthouse_target_met": 0,
+      "a11y_violations_zero": 0,
+      "type_safety": 1,
+      "composite": 0.15
+    },
+    {
+      "slug": "qmail",
+      "tests_pass_ratio": 0,
+      "features_shipped_ratio": 0,
+      "lighthouse_target_met": 0,
+      "a11y_violations_zero": 0,
+      "type_safety": 1,
+      "composite": 0.15
+    },
+    {
+      "slug": "qbrowser",
+      "tests_pass_ratio": 0,
+      "features_shipped_ratio": 0,
+      "lighthouse_target_met": 0,
+      "a11y_violations_zero": 0,
+      "type_safety": 1,
+      "composite": 0.15
+    },
+    {
+      "slug": "qmesh",
+      "tests_pass_ratio": 0,
+      "features_shipped_ratio": 0,
+      "lighthouse_target_met": 0,
+      "a11y_violations_zero": 0,
+      "type_safety": 1,
+      "composite": 0.15
+    }
+  ]
+}

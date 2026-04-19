@@ -14,23 +14,32 @@ import { PILLARS } from '@/lib/blueprint-data'
 import { SECTION_PROSE } from '@/lib/blueprint-prose'
 import { ProseBlock, CalloutBlock, Subsection } from '@/components/blueprint/BlueprintSection'
 import { PillarIcon } from '@/components/blueprint/pillar-icon'
+import { getLiveCompletion } from '@/lib/pillars-live'
 
-const completePillars = PILLARS.filter((p) => p.completion === 100).length
+// Resolve each pillar's completion once: live value from pillars.json when
+// present and signal-bearing, otherwise fall back to the hand-authored
+// baseline in blueprint-data.ts.
+const RESOLVED = PILLARS.map((p) => {
+  const live = getLiveCompletion(p.slug)
+  return { ...p, completion: live ?? p.completion }
+})
+
+const completePillars = RESOLVED.filter((p) => p.completion === 100).length
 const avgCompletion = Math.round(
-  PILLARS.reduce((sum, p) => sum + p.completion, 0) / PILLARS.length
+  RESOLVED.reduce((sum, p) => sum + p.completion, 0) / RESOLVED.length
 )
 
 const stackData = [
   {
     name: 'Pillars',
-    ...Object.fromEntries(PILLARS.map((p, i) => [`p${i}`, p.completion / 9])),
+    ...Object.fromEntries(RESOLVED.map((p, i) => [`p${i}`, p.completion / 9])),
   },
 ]
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (!active || !payload?.length) return null
   const idx = Number(payload[0].dataKey.replace('p', ''))
-  const pillar = PILLARS[idx]
+  const pillar = RESOLVED[idx]
   if (!pillar) return null
   return (
     <div
@@ -65,9 +74,10 @@ export const SectionPillars = () => {
 
     {/* --- 3x3 Pillar Grid --- */}
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {PILLARS.map((pillar, i) => (
+      {RESOLVED.map((pillar, i) => (
         <motion.div
           key={pillar.name}
+          data-slug={pillar.slug}
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -84,6 +94,7 @@ export const SectionPillars = () => {
           {/* Header: icon + name */}
           <div className="mb-1 flex items-center gap-3">
             <PillarIcon slug={pillar.slug} color={pillar.color} size={40} />
+            <span className="sr-only">{pillar.name}</span>
             <h4 className="text-base font-semibold text-slate-100">
               {pillar.name}
             </h4>
@@ -184,7 +195,7 @@ export const SectionPillars = () => {
             hide
           />
           <Tooltip content={<CustomTooltip />} cursor={false} />
-          {PILLARS.map((pillar, i) => (
+          {RESOLVED.map((pillar, i) => (
             <Bar
               key={pillar.name}
               dataKey={`p${i}`}
@@ -192,7 +203,7 @@ export const SectionPillars = () => {
               radius={
                 i === 0
                   ? [4, 0, 0, 4]
-                  : i === PILLARS.length - 1
+                  : i === RESOLVED.length - 1
                     ? [0, 4, 4, 0]
                     : [0, 0, 0, 0]
               }
@@ -205,7 +216,7 @@ export const SectionPillars = () => {
 
       {/* Legend */}
       <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5">
-        {PILLARS.map((p) => (
+        {RESOLVED.map((p) => (
           <div key={p.name} className="flex items-center gap-1.5">
             <span
               className="inline-block h-2.5 w-2.5 rounded-sm"

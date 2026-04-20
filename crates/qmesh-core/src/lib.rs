@@ -1,4 +1,21 @@
+//! Q-Mesh (Pillar 9) core library.
+//!
+//! Provides:
+//! - A software-mocked CSI (Channel State Information) frame source for
+//!   WiFi-sensing development without hardware.
+//! - An ML-KEM-768 handshake wrapper re-exporting NIST FIPS 203 primitives
+//!   from `zipminator-core`.
+//! - HKDF-SHA256 session-key derivation with `zeroize`-on-drop hygiene.
+//! - A Rényi-entropy (order 2) estimator over quantized CSI magnitudes.
+//!
+//! Iter 1 scaffolds the module tree and commits a failing handshake test.
+//! Iters 2-5 implement the bodies in Red/Green/Refactor order.
+
 pub mod csi;
+pub mod entropy;
+pub mod handshake;
+pub mod kdf;
+pub mod session;
 
 #[cfg(test)]
 mod tests {

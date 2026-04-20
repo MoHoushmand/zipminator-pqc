@@ -54,6 +54,30 @@ void main() {
         expect(n, greaterThanOrEqualTo(0));
       }
     });
+
+    test('iOS Info.plist reads version from Flutter build variables', () {
+      // This guards against a common release slip: a manual edit of
+      // Info.plist that hardcodes CFBundleShortVersionString, which would
+      // silently desync iOS TestFlight build numbers from the pubspec bump.
+      final info = File('ios/Runner/Info.plist');
+      expect(info.existsSync(), isTrue);
+      final contents = info.readAsStringSync();
+      expect(contents, contains(r'$(FLUTTER_BUILD_NAME)'),
+          reason:
+              'ios/Runner/Info.plist must read CFBundleShortVersionString from \$(FLUTTER_BUILD_NAME)');
+      expect(contents, contains(r'$(FLUTTER_BUILD_NUMBER)'),
+          reason:
+              'ios/Runner/Info.plist must read CFBundleVersion from \$(FLUTTER_BUILD_NUMBER)');
+    });
+
+    test('Android applicationId matches expected package', () {
+      // Guard against accidental applicationId rename that would break
+      // Play Store track continuity.
+      final gradle = File('android/app/build.gradle.kts');
+      expect(gradle.existsSync(), isTrue);
+      expect(gradle.readAsStringSync(),
+          contains('applicationId = "com.qdaria.zipminator"'));
+    });
   });
 }
 

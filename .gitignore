@@ -394,6 +394,7 @@ deprecated/
 
 # Marathon runtime state (committed: state, config; ignored: logs, snapshots)
 .marathon/iter-*/
+.marathon/worktrees/
 .marathon/*.log
 .marathon/.marathon-heartbeat
 .marathon/.last-iter

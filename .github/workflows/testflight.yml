@@ -1,0 +1,92 @@
+name: TestFlight Upload
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  testflight:
+    name: Build and upload to TestFlight
+    runs-on: macos-14
+    timeout-minutes: 60
+
+    env:
+      ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+      ASC_API_KEY_ISSUER_ID: ${{ secrets.ASC_API_KEY_ISSUER_ID }}
+      ASC_API_KEY_CONTENT: ${{ secrets.ASC_API_KEY_CONTENT }}
+      MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+      FASTLANE_SKIP_UPDATE_CHECK: "1"
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: false
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-testflight-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-testflight-
+
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            app/.dart_tool/
+            ~/.pub-cache/
+          key: ${{ runner.os }}-flutter-testflight-${{ hashFiles('app/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-testflight-
+
+      - name: Cache Ruby gems (fastlane)
+        uses: actions/cache@v4
+        with:
+          path: app/ios/vendor/bundle
+          key: ${{ runner.os }}-fastlane-${{ hashFiles('app/ios/Gemfile') }}
+          restore-keys: |
+            ${{ runner.os }}-fastlane-
+
+      - name: Install Flutter dependencies
+        working-directory: app
+        run: flutter pub get
+
+      - name: Install CocoaPods dependencies
+        working-directory: app/ios
+        run: pod install
+
+      - name: Install fastlane
+        run: |
+          bundle config set --local path 'vendor/bundle'
+          bundle install --gemfile=app/ios/Gemfile --jobs=4 --retry=3
+        env:
+          BUNDLE_GEMFILE: app/ios/Gemfile
+
+      - name: Run fastlane beta
+        working-directory: app/ios
+        run: bundle exec fastlane beta
+        env:
+          BUNDLE_GEMFILE: ${{ github.workspace }}/app/ios/Gemfile

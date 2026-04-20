@@ -150,6 +150,21 @@ bash scripts/release-mobile.sh
 The script does NOT upload. Uploads are manual to keep release gates in a
 human-verified path.
 
+## Prerequisites (Mac release host)
+
+Install once:
+
+1. Xcode full install (`xcode-select -p` must point at `/Applications/Xcode.app/...`, not `/Library/Developer/CommandLineTools`).
+2. Android Studio + Android SDK (Platform API 34+, Build-Tools 34+).
+3. `export ANDROID_HOME="$HOME/Library/Android/sdk"` in shell profile.
+4. `flutter doctor` reports all green.
+5. `brew install bundletool` for Play Store dry-run.
+6. Apple Developer account + signing certificates installed in the login keychain.
+
+A CI-style subagent host that lacks Android SDK or Xcode can still run the
+`flutter analyze` and `flutter test` gates; the AAB and IPA builds will fail
+early with a clear error and no partial artifacts.
+
 ## Known gotchas
 
 - First-time `flutter pub get` on a fresh worktree may fail with
@@ -162,3 +177,6 @@ human-verified path.
   the Play Store flags a mismatch.
 - iOS archive requires Apple Developer Team ID in `ios/Runner.xcodeproj`
   build settings. A missing team ID surfaces as "No signing identity found".
+- Running `flutter build appbundle` without the Android SDK aborts with
+  "No Android SDK found. Try setting the ANDROID_HOME environment variable."
+  This is a pre-check failure, not a partial build; no cleanup needed.

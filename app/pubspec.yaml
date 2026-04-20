@@ -85,6 +85,10 @@ dev_dependencies:
   build_runner: ^2.12.2
   integration_test:
     sdk: flutter
+  # Release-gate tests: reading pubspec.yaml under test/release_version_test.dart.
+  yaml: ^3.1.2
+  # Used directly by test/integration/two_peer_signaling_test.dart via the `test` package entry.
+  test: ^1.25.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

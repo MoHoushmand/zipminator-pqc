@@ -5,25 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.1+45] - 2026-04-20 (mobile release track)
-
-### Added
-- `scripts/release-mobile.sh` wrapper: chains `flutter pub get`, scoped
-  `flutter analyze`, `flutter test`, `flutter build appbundle --release`,
-  and `bundletool validate`. Supports `--skip-aab` and `--ios` flags.
-- `docs/guides/mobile-release.md` playbook with RELEASE_CHECKLIST,
-  Android signing via `android/key.properties`, Play Store dry-run
-  via bundletool, and iOS TestFlight upload notes.
-- `app/test/release_version_test.dart` TDD gate: asserts pubspec version
-  is strictly increasing over last shipped 0.5.0+44, iOS Info.plist
-  reads from `$(FLUTTER_BUILD_NAME)` / `$(FLUTTER_BUILD_NUMBER)`, and
-  Android applicationId stays `com.qdaria.zipminator`.
-
-### Changed
-- `app/pubspec.yaml`: bump version from `0.5.0+44` to `0.5.1+45`.
-- `app/pubspec.yaml`: promote `yaml` and `test` to explicit
-  dev_dependencies so the release gate test passes analyzer hygiene.
-
 ## [1.0.0] - 2026-04-19
 
 ### Added

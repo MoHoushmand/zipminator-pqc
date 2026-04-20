@@ -1,0 +1,22 @@
+# PQ-WireGuard client template (Linux, wg-quick compatible layout).
+#
+# Provisioned variables:
+#   {{CLIENT_PQ_PRIVKEY_PATH}}   absolute path to initiator static secret-key file (mode 0600)
+#   {{CLIENT_INTERFACE_ADDR}}    e.g. 10.42.0.2/24
+#   {{CLIENT_DNS}}               optional, e.g. 10.42.0.1 (or delete the line)
+#   {{SERVER_PQ_PUBKEY_B64}}     base64(ML-KEM-768 public key) of the responder
+#   {{SERVER_ENDPOINT}}          e.g. vpn.example.com:51820
+#   {{SERVER_ALLOWED_IPS}}       e.g. 10.42.0.0/24 (or 0.0.0.0/0 for full-tunnel)
+#
+# Handshake contract: see server.conf.tmpl header.
+
+[Interface]
+Address = {{CLIENT_INTERFACE_ADDR}}
+DNS = {{CLIENT_DNS}}
+PqPrivateKeyFile = {{CLIENT_PQ_PRIVKEY_PATH}}
+
+[Peer]
+PqPublicKey = {{SERVER_PQ_PUBKEY_B64}}
+Endpoint = {{SERVER_ENDPOINT}}
+AllowedIPs = {{SERVER_ALLOWED_IPS}}
+PersistentKeepalive = 25

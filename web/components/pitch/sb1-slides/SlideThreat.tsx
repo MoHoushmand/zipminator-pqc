@@ -257,13 +257,13 @@ export const SlideThreat: React.FC<SlideThreatProps> = ({ scenario }) => {
                     contentStyle={TOOLTIP_STYLE.contentStyle}
                     labelStyle={TOOLTIP_STYLE.labelStyle}
                     itemStyle={TOOLTIP_STYLE.itemStyle}
-                    formatter={(value: number, name: string) => {
+                    formatter={(value, name) => {
                       const labels: Record<string, string> = {
                         harvested: 'Høstet',
                         vulnerable: 'Sårbar',
                         migrated: 'Migrert',
                       };
-                      return [`${value}%`, labels[name] ?? name];
+                      return [`${value}%`, labels[String(name)] ?? name];
                     }}
                   />
                   <Legend

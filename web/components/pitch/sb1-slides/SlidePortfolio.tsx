@@ -136,7 +136,7 @@ export const SlidePortfolio: React.FC<SlidePortfolioProps> = ({ scenario: initia
                       contentStyle={TOOLTIP_STYLE.contentStyle}
                       labelStyle={TOOLTIP_STYLE.labelStyle}
                       itemStyle={TOOLTIP_STYLE.itemStyle}
-                      formatter={(value: number, name: string) => [
+                      formatter={(value, name) => [
                         `${value}`,
                         name === 'klassisk' ? 'Klassisk forvaltning' : 'Kvantum-optimalisert',
                       ]}
@@ -229,7 +229,7 @@ export const SlidePortfolio: React.FC<SlidePortfolioProps> = ({ scenario: initia
                       contentStyle={TOOLTIP_STYLE.contentStyle}
                       labelStyle={TOOLTIP_STYLE.labelStyle}
                       itemStyle={TOOLTIP_STYLE.itemStyle}
-                      formatter={(value: number) => [`${value}x speedup`, 'Dokumentert']}
+                      formatter={(value) => [`${value}x speedup`, 'Dokumentert']}
                     />
                     <Bar dataKey="speedup" name="Speedup" radius={[3, 3, 0, 0]}>
                       {speedupComparisons.map((entry, index) => (

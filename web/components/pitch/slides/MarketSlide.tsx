@@ -179,9 +179,14 @@ export default function MarketSlide({ scenario: _scenario }: { scenario?: Scenar
                   <Tooltip content={<CustomTooltip />} />
                   <Legend
                     wrapperStyle={{ fontSize: 11, color: '#9ca3af', paddingTop: 8 }}
-                    payload={[
-                      { value: '2034 TAM Projection', type: 'rect', color: '#6366f1' },
-                    ]}
+                    content={
+                      <div style={{ display: 'flex', justifyContent: 'center', gap: 16, paddingTop: 8 }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                          <span style={{ width: 10, height: 10, backgroundColor: '#6366f1' }} />
+                          2034 TAM Projection
+                        </span>
+                      </div>
+                    }
                   />
                   <Bar dataKey="tam2034" radius={[6, 6, 0, 0]} maxBarSize={50} animationDuration={1200} label={<BarValueLabel />}>
                     {chartData.map((_, i) => (
@@ -249,9 +254,14 @@ export default function MarketSlide({ scenario: _scenario }: { scenario?: Scenar
                   <Legend
                     verticalAlign="bottom"
                     wrapperStyle={{ fontSize: 11, color: '#9ca3af', paddingTop: 8 }}
-                    payload={[
-                      { value: 'PQC TAM', type: 'circle', color: '#6366f1' },
-                    ]}
+                    content={
+                      <div style={{ display: 'flex', justifyContent: 'center', gap: 16, paddingTop: 8 }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                          <span style={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#6366f1' }} />
+                          PQC TAM
+                        </span>
+                      </div>
+                    }
                   />
                   <Area
                     type="monotone"

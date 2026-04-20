@@ -233,7 +233,7 @@ export default function RoadmapSlide({ scenario: _scenario }: { scenario?: Scena
               />
               <Tooltip
                 {...TOOLTIP_STYLE}
-                formatter={(value: number, name: string) => [
+                formatter={(value, name) => [
                   `${value}%`,
                   name === 'completed' ? 'Done' : 'Remaining',
                 ]}

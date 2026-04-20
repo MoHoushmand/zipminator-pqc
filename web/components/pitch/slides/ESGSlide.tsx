@@ -169,7 +169,7 @@ export default function ESGSlide({ scenario: _scenario }: { scenario?: Scenario 
             <Tooltip
               contentStyle={TOOLTIP_STYLE.contentStyle}
               labelStyle={TOOLTIP_STYLE.labelStyle}
-              formatter={(value: number) => [`${value}%`, 'Renewable Energy']}
+              formatter={(value) => [`${value}%`, 'Renewable Energy']}
             />
             <Bar
               dataKey="renewable"

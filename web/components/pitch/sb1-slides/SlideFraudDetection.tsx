@@ -135,7 +135,7 @@ export const SlideFraudDetection: React.FC<SlideFraudDetectionProps> = ({
                   />
                   <Tooltip
                     {...TOOLTIP_STYLE}
-                    formatter={(value: number, name: string) => [
+                    formatter={(value, name) => [
                       `NOK ${value}M`,
                       name === 'tap' ? 'Tap' : 'Forhindret',
                     ]}
@@ -203,7 +203,7 @@ export const SlideFraudDetection: React.FC<SlideFraudDetectionProps> = ({
                   <Legend
                     wrapperStyle={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}
                   />
-                  <Tooltip {...TOOLTIP_STYLE} formatter={(v: number) => `${v}%`} />
+                  <Tooltip {...TOOLTIP_STYLE} formatter={(v) => `${v}%`} />
                 </RadarChart>
               </ResponsiveContainer>
               </div>
@@ -247,7 +247,7 @@ export const SlideFraudDetection: React.FC<SlideFraudDetectionProps> = ({
                   />
                   <Tooltip
                     {...TOOLTIP_STYLE}
-                    formatter={(value: number, name: string) => [
+                    formatter={(value, name) => [
                       `NOK ${value}M`,
                       name === 'utenKvantum' ? 'Uten kvantum' : 'Med kvantum',
                     ]}

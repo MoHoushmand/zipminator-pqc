@@ -166,10 +166,18 @@ export default function CompetitiveSlide({ scenario: _scenario }: { scenario?: S
             <Legend
               verticalAlign="bottom"
               wrapperStyle={{ fontSize: 11, color: '#9ca3af', paddingTop: 8 }}
-              payload={[
-                { value: 'Zipminator', type: 'rect', color: '#6366f1' },
-                { value: 'Competitors', type: 'rect', color: '#4b5563' },
-              ]}
+              content={
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 16, paddingTop: 8 }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ width: 10, height: 10, backgroundColor: '#6366f1' }} />
+                    Zipminator
+                  </span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ width: 10, height: 10, backgroundColor: '#4b5563' }} />
+                    Competitors
+                  </span>
+                </div>
+              }
             />
             <Bar dataKey="score" radius={[0, 4, 4, 0]} animationDuration={1200}>
               {COMPETITORS.map((comp) => (

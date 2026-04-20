@@ -166,11 +166,22 @@ export default function TractionSlide({ scenario: _scenario }: { scenario?: Scen
               <Legend
                 verticalAlign="bottom"
                 wrapperStyle={{ fontSize: 11, color: '#9ca3af', paddingTop: 8 }}
-                payload={[
-                  { value: 'Complete', type: 'rect', color: '#22c55e' },
-                  { value: 'In Progress', type: 'rect', color: '#6366f1' },
-                  { value: 'Planned', type: 'rect', color: '#6b7280' },
-                ]}
+                content={
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: 16, paddingTop: 8 }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ width: 10, height: 10, backgroundColor: '#22c55e' }} />
+                      Complete
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ width: 10, height: 10, backgroundColor: '#6366f1' }} />
+                      In Progress
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ width: 10, height: 10, backgroundColor: '#6b7280' }} />
+                      Planned
+                    </span>
+                  </div>
+                }
               />
               <Bar dataKey="progress" radius={[0, 6, 6, 0]} maxBarSize={28} animationDuration={1200}>
                 {DEVELOPMENT_TIMELINE.map((entry, index) => {

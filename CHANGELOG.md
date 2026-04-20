@@ -56,12 +56,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `crates/zipminator-mesh/` six physical-cryptography modules:
-  - `csi_entropy.rs` — Von Neumann debiased CSI entropy harvester
-  - `puek.rs` — Physical Unclonable Environment Key via SVD eigenstructure
-  - `em_canary.rs` — 4-level electromagnetic threat escalation
-  - `vital_auth.rs` — WiFi-derived biometric continuous authentication
-  - `topo_auth.rs` — Graph-topology-invariant mesh authentication
-  - `spatiotemporal.rs` — Presence-proof non-repudiation signatures
+  - `csi_entropy.rs`, Von Neumann debiased CSI entropy harvester
+  - `puek.rs`, Physical Unclonable Environment Key via SVD eigenstructure
+  - `em_canary.rs`, 4-level electromagnetic threat escalation
+  - `vital_auth.rs`, WiFi-derived biometric continuous authentication
+  - `topo_auth.rs`, Graph-topology-invariant mesh authentication
+  - `spatiotemporal.rs`, Presence-proof non-repudiation signatures
 - 106 mesh tests (90 unit + 16 integration)
 - Total workspace test count: 513
 
@@ -125,8 +125,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cargo workspace with `zipminator-core` crate
 - Basic Kyber768 key generation
 
-[1.0.0]: https://github.com/QDaria/zipminator/compare/v0.5.0...v1.0.0
-[0.5.0]: https://github.com/QDaria/zipminator/compare/v0.5.0b1...v0.5.0
-[0.5.0b1]: https://github.com/QDaria/zipminator/compare/v0.2.0...v0.5.0b1
-[0.2.0]: https://github.com/QDaria/zipminator/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/QDaria/zipminator/releases/tag/v0.1.0
+[1.0.0]: https://github.com/MoHoushmand/zipminator-pqc/compare/v0.5.0...v1.0.0
+[0.5.0]: https://github.com/MoHoushmand/zipminator-pqc/compare/v0.5.0b1...v0.5.0
+[0.5.0b1]: https://github.com/MoHoushmand/zipminator-pqc/compare/v0.2.0...v0.5.0b1
+[0.2.0]: https://github.com/MoHoushmand/zipminator-pqc/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/MoHoushmand/zipminator-pqc/releases/tag/v0.1.0

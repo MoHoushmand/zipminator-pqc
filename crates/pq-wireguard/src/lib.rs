@@ -1,6 +1,7 @@
 //! PQ-WireGuard userspace handshake scaffold. Implements NIST FIPS 203 (ML-KEM-768) wrapping over WireGuard Noise_IK pattern. This crate is userspace-only; kernel-module glue lives in a separate crate (deferred).
 
 pub mod handshake;
+pub mod wire;
 
 #[cfg(test)]
 mod tests {
@@ -79,5 +80,84 @@ mod tests {
         assert_eq!(ss_r.len(), SHARED_SECRET_BYTES);
         // Constant-time equality check; bool conversion only after the CT op.
         assert!(bool::from(ss_i.ct_eq(&ss_r)));
+    }
+
+    // --- ITER 2 new tests: wire format serialization -------------------------
+
+    use super::wire::{MessageType, WireMessage, INITIATION_WIRE_LEN, RESPONSE_WIRE_LEN};
+    use super::handshake::MSG_TYPE_INITIATION;
+
+    /// Deterministic ciphertext filler so the fixture is stable across runs.
+    /// NOT a valid KEM ciphertext; iter 2 only validates byte layout.
+    fn deterministic_kem_ciphertext() -> Vec<u8> {
+        // 1088 bytes of (i % 251) — avoids trivial all-zero patterns.
+        (0..pqcrypto_kyber::kyber768::ciphertext_bytes())
+            .map(|i| (i % 251) as u8)
+            .collect()
+    }
+
+    fn deterministic_initiation() -> WireMessage {
+        WireMessage {
+            message_type: MessageType::Initiation,
+            sender_index: 0x11223344,
+            receiver_index: 0,
+            kem_ciphertext: deterministic_kem_ciphertext(),
+        }
+    }
+
+    #[test]
+    fn wire_initiation_round_trip_is_identity() {
+        let msg = deterministic_initiation();
+        let bytes = msg.to_bytes();
+        assert_eq!(bytes.len(), INITIATION_WIRE_LEN);
+        assert_eq!(bytes[0], MSG_TYPE_INITIATION);
+
+        let decoded = WireMessage::from_bytes(&bytes).expect("round-trip");
+        assert_eq!(decoded.message_type, MessageType::Initiation);
+        assert_eq!(decoded.sender_index, 0x11223344);
+        assert_eq!(decoded.receiver_index, 0);
+        assert_eq!(decoded.kem_ciphertext, deterministic_kem_ciphertext());
+    }
+
+    #[test]
+    fn wire_initiation_matches_committed_fixture() {
+        // The committed fixture lives at tests/vpn/fixtures/initiation.hex
+        // (repo-root relative). Dart's iter-5 widget test will load the same
+        // file and expect the same bytes.
+        let expected_hex = include_str!(
+            "../../../tests/vpn/fixtures/initiation.hex"
+        );
+        let expected_bytes = hex::decode(expected_hex.trim()).expect("valid hex fixture");
+        let actual_bytes = deterministic_initiation().to_bytes();
+        assert_eq!(
+            actual_bytes, expected_bytes,
+            "wire format drift: fixture must be regenerated if layout changed"
+        );
+    }
+
+    #[test]
+    fn wire_response_encodes_with_empty_kem_ciphertext() {
+        let msg = WireMessage {
+            message_type: MessageType::Response,
+            sender_index: 0xDEADBEEF,
+            receiver_index: 0x11223344,
+            kem_ciphertext: Vec::new(),
+        };
+        let bytes = msg.to_bytes();
+        assert_eq!(bytes.len(), RESPONSE_WIRE_LEN);
+        assert_eq!(bytes[0], 2); // MSG_TYPE_RESPONSE
+
+        let decoded = WireMessage::from_bytes(&bytes).expect("round-trip");
+        assert_eq!(decoded.message_type, MessageType::Response);
+        assert_eq!(decoded.sender_index, 0xDEADBEEF);
+        assert_eq!(decoded.receiver_index, 0x11223344);
+        assert!(decoded.kem_ciphertext.is_empty());
+    }
+
+    #[test]
+    fn wire_rejects_truncated_initiation() {
+        let mut bytes = deterministic_initiation().to_bytes();
+        bytes.truncate(bytes.len() - 1);
+        assert!(WireMessage::from_bytes(&bytes).is_err());
     }
 }

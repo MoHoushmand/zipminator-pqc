@@ -79,7 +79,10 @@ mod tests {
         assert_eq!(ss_i.len(), SHARED_SECRET_BYTES);
         assert_eq!(ss_r.len(), SHARED_SECRET_BYTES);
         // Constant-time equality check; bool conversion only after the CT op.
-        assert!(bool::from(ss_i.ct_eq(&ss_r)));
+        // Deref through Zeroizing<[u8; 32]> to hand ct_eq plain byte slices.
+        let ai: &[u8] = &*ss_i;
+        let br: &[u8] = &*ss_r;
+        assert!(bool::from(ai.ct_eq(br)));
     }
 
     // --- ITER 2 new tests: wire format serialization -------------------------
@@ -159,5 +162,134 @@ mod tests {
         let mut bytes = deterministic_initiation().to_bytes();
         bytes.truncate(bytes.len() - 1);
         assert!(WireMessage::from_bytes(&bytes).is_err());
+    }
+
+    // --- ITER 3 new tests: HKDF chain, response MAC, zeroize -----------------
+    //
+    // These tests pin the iter-3 contract that turns the iter-1 `&'static str`
+    // errors into a `thiserror`-derived enum, wraps all post-handshake secret
+    // material in `Zeroizing<[u8; 32]>` so it is explicitly wiped on drop, and
+    // introduces a 32-byte response MAC derived from the HKDF-SHA-256 chain.
+    //
+    // The response MAC stays inside `Handshake` state: the wire layout remains
+    // frozen at `RESPONSE_WIRE_LEN = 12` (iter 2 fixture stability). The
+    // initiator re-derives the MAC locally from its own copy of the shared
+    // secret and compares with `subtle::ConstantTimeEq` before transitioning.
+
+    use super::handshake::{Error as HandshakeError, TransportSecret};
+    use zeroize::Zeroizing;
+
+    /// Compile-time check that `TransportSecret` is `Zeroizing<[u8; N]>` so
+    /// the returned secret is wiped on drop. `Zeroizing` is a transparent
+    /// smart pointer that derefs to `[u8; N]`, so the bound also asserts the
+    /// byte length is `SHARED_SECRET_BYTES`.
+    #[test]
+    fn transport_secret_is_zeroize_wrapped() {
+        fn assert_is_zeroizing(_: &Zeroizing<[u8; SHARED_SECRET_BYTES]>) {}
+        let mut responder = Handshake::new_responder();
+        let pk = responder.static_public().unwrap();
+        let mut initiator = Handshake::new_initiator_for(&pk).unwrap();
+        let resp_msg = responder.after(&mut initiator);
+        initiator.consume_response(&resp_msg).unwrap();
+        let ts: TransportSecret = initiator.transport_secret().unwrap();
+        assert_is_zeroizing(&ts);
+    }
+
+    #[test]
+    fn directional_transport_keys_are_distinct() {
+        // i2r and r2i keys (initiator-to-responder, responder-to-initiator)
+        // must differ from each other AND from the raw ML-KEM shared secret.
+        // Anything less and we'd be reusing the same key in both directions,
+        // which breaks AEAD nonce disjointness guarantees.
+        let mut responder = Handshake::new_responder();
+        let pk = responder.static_public().unwrap();
+        let mut initiator = Handshake::new_initiator_for(&pk).unwrap();
+        let resp_msg = responder.after(&mut initiator);
+        initiator.consume_response(&resp_msg).unwrap();
+
+        let k_i2r_init = initiator.send_key_i2r().expect("initiator has i2r key");
+        let k_r2i_init = initiator.send_key_r2i().expect("initiator has r2i key");
+        let k_i2r_resp = responder.send_key_i2r().expect("responder has i2r key");
+        let k_r2i_resp = responder.send_key_r2i().expect("responder has r2i key");
+
+        // Cross-party equality (the whole point of a KEM handshake).
+        assert!(bool::from(k_i2r_init.ct_eq(&*k_i2r_resp)));
+        assert!(bool::from(k_r2i_init.ct_eq(&*k_r2i_resp)));
+        // Within-party direction separation.
+        assert!(!bool::from(k_i2r_init.ct_eq(&*k_r2i_init)));
+        // And neither directional key equals the raw shared secret (would mean
+        // HKDF didn't actually run).
+        let raw = initiator.raw_shared_secret_for_tests().unwrap();
+        assert!(!bool::from(k_i2r_init.ct_eq(&*raw)));
+        assert!(!bool::from(k_r2i_init.ct_eq(&*raw)));
+    }
+
+    #[test]
+    fn consume_response_rejects_tampered_mac() {
+        // Flipping a single byte of the responder's MAC must cause the
+        // initiator to reject the response with a typed error. Constant-time
+        // comparison is verified indirectly: the test exercises the error
+        // path via `subtle::ConstantTimeEq` under the hood.
+        let mut responder = Handshake::new_responder();
+        let pk = responder.static_public().unwrap();
+        let mut initiator = Handshake::new_initiator_for(&pk).unwrap();
+        let init_msg = initiator.create_initiation().unwrap();
+        responder.consume_initiation(&init_msg).unwrap();
+        let mut resp = responder.create_response().unwrap();
+
+        // Flip one byte of the MAC carried alongside the response.
+        let mac = resp.response_mac.expect("response carries a MAC in iter 3");
+        let mut tampered = mac;
+        tampered[0] ^= 0x01;
+        resp.response_mac = Some(tampered);
+
+        match initiator.consume_response(&resp) {
+            Err(HandshakeError::InvalidResponseMac) => (),
+            other => panic!("expected InvalidResponseMac, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn consume_response_accepts_correct_mac() {
+        // Positive path: the responder's derived MAC matches the initiator's
+        // independently-derived MAC, and the handshake reaches Established.
+        let mut responder = Handshake::new_responder();
+        let pk = responder.static_public().unwrap();
+        let mut initiator = Handshake::new_initiator_for(&pk).unwrap();
+        let init_msg = initiator.create_initiation().unwrap();
+        responder.consume_initiation(&init_msg).unwrap();
+        let resp = responder.create_response().unwrap();
+        assert!(resp.response_mac.is_some(), "iter-3 response carries a MAC");
+        initiator.consume_response(&resp).expect("valid MAC accepted");
+        assert_eq!(initiator.state(), HandshakeState::Established);
+    }
+
+    #[test]
+    fn handshake_errors_are_typed() {
+        // Responder rejecting an `Initiation` with the wrong ciphertext length
+        // must return a typed variant, not a string. This gives callers a
+        // stable discriminator for logging/metrics.
+        let mut responder = Handshake::new_responder();
+        let bad = super::handshake::HandshakeMessage {
+            message_type: super::handshake::MSG_TYPE_INITIATION,
+            kem_ciphertext: vec![0u8; 7], // obviously wrong length
+            response_mac: None,
+        };
+        match responder.consume_initiation(&bad) {
+            Err(HandshakeError::BadCiphertextLength { .. }) => (),
+            other => panic!("expected BadCiphertextLength, got {other:?}"),
+        }
+    }
+
+    // Tiny test helper. Mirrors a standard dance: initiator.create_initiation
+    // -> responder.consume_initiation -> responder.create_response. Returns
+    // the response the caller hands to `consume_response`. Kept inside the
+    // test module so clippy::items-after-test-module stays clean.
+    impl Handshake {
+        fn after(&mut self, initiator: &mut Handshake) -> super::handshake::HandshakeMessage {
+            let init_msg = initiator.create_initiation().expect("initiation");
+            self.consume_initiation(&init_msg).expect("consume init");
+            self.create_response().expect("response")
+        }
     }
 }

@@ -11,8 +11,9 @@ description = "Userspace PQ-WireGuard handshake over NIST FIPS 203 (ML-KEM-768).
 # NIST FIPS 203 (ML-KEM-768) via the same upstream used by zipminator-core.
 # Keeping the dep here (rather than re-exporting through zipminator-core) keeps
 # this crate lean; we do not pull in AES/x25519/pyo3/libusb transitively.
-pqcrypto-kyber = { version = "0.8", default-features = false, features = ["std"] }
-pqcrypto-traits = "0.3"
+# Pinned exact per crypto-dependency discipline (.claude/rules/02-security-pqc.md).
+pqcrypto-kyber = { version = "=0.8.1", default-features = false, features = ["std"] }
+pqcrypto-traits = "=0.3.5"
 
 # Key-derivation chain and constant-time primitives.
 hkdf = "0.12"

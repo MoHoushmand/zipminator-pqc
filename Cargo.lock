@@ -3992,7 +3992,17 @@ dependencies = [
 
 [[package]]
 name = "qmesh-core"
-version = "0.1.0"
+version = "1.0.0"
+dependencies = [
+ "hkdf",
+ "rand 0.8.5",
+ "rand_chacha 0.3.1",
+ "sha2",
+ "subtle",
+ "thiserror 1.0.69",
+ "zeroize",
+ "zipminator-core",
+]
 
 [[package]]
 name = "quick-error"

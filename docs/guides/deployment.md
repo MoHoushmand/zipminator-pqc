@@ -420,3 +420,12 @@ annotations:
 | `GET /ready` | Readiness -- confirms all dependencies are available | Every 10s |
 
 Use these for Kubernetes probes, load balancer health checks, and external uptime monitoring.
+
+---
+
+## Mobile Releases
+
+Mobile releases (Flutter canonical under `app/`) have their own playbook at
+[`mobile-release.md`](./mobile-release.md). Use `scripts/release-mobile.sh`
+to run the pre-upload gates and build the Android AAB; iOS TestFlight
+upload remains a manual Transporter or `xcrun altool` step.

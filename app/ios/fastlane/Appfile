@@ -1,0 +1,10 @@
+app_identifier("com.qdaria.zipminator")
+apple_id("mo@qdaria.com")
+
+# TODO: replace with the App Store Connect team ID (numeric) from
+# https://appstoreconnect.apple.com -> Users and Access -> Team ID
+itc_team_id("TODO_ITC_TEAM_ID")
+
+# TODO: replace with the Apple Developer Portal team ID from
+# https://developer.apple.com/account -> Membership Details -> Team ID
+team_id("TODO_DEVELOPER_TEAM_ID")

@@ -1,0 +1,34 @@
+# PQ-WireGuard server template (Linux, wg-quick compatible layout).
+#
+# Provisioned variables:
+#   {{SERVER_PQ_PUBKEY_B64}}     base64(ML-KEM-768 public key, 1184 bytes)
+#   {{SERVER_PQ_PRIVKEY_PATH}}   absolute path to responder static secret-key file (mode 0600)
+#   {{SERVER_LISTEN_PORT}}       UDP port, default 51820
+#   {{SERVER_INTERFACE_ADDR}}    e.g. 10.42.0.1/24
+#   {{CLIENT_PQ_PUBKEY_B64}}     base64(ML-KEM-768 public key) for a single client peer
+#   {{CLIENT_ALLOWED_IPS}}       e.g. 10.42.0.2/32
+#
+# Handshake contract (enforced by crates/pq-wireguard):
+#   - FIPS 203 ML-KEM-768 encapsulation (init -> resp) and decapsulation (resp).
+#   - HKDF-SHA-256 chain over the 32-byte KEM shared secret yields:
+#       k_send_i2r, k_send_r2i, response_mac (all 32 bytes).
+#   - Constant-time MAC verification via subtle::ConstantTimeEq.
+#
+# See README.md in this directory for how to render this template and bring up
+# the interface. This file is a template; do not commit a rendered version
+# containing real keys.
+
+[Interface]
+Address = {{SERVER_INTERFACE_ADDR}}
+ListenPort = {{SERVER_LISTEN_PORT}}
+# PQ-WireGuard extension: path to ML-KEM-768 responder secret key. The
+# userspace binary reads this instead of the classical WireGuard PrivateKey.
+# File must be mode 0600 and owned by root.
+PqPrivateKeyFile = {{SERVER_PQ_PRIVKEY_PATH}}
+# Classical-only WireGuard would set PrivateKey here; PQ-WireGuard does not
+# accept a Curve25519 PrivateKey line (hybrid mode is a later iter).
+
+[Peer]
+PqPublicKey = {{CLIENT_PQ_PUBKEY_B64}}
+AllowedIPs = {{CLIENT_ALLOWED_IPS}}
+PersistentKeepalive = 25

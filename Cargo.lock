@@ -3781,7 +3781,17 @@ dependencies = [
 
 [[package]]
 name = "pq-wireguard"
-version = "0.1.0"
+version = "1.0.0"
+dependencies = [
+ "hex",
+ "hkdf",
+ "pqcrypto-kyber",
+ "pqcrypto-traits",
+ "sha2",
+ "subtle",
+ "thiserror 1.0.69",
+ "zeroize",
+]
 
 [[package]]
 name = "pqcrypto-internals"

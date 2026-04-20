@@ -5,6 +5,7 @@
 //! status and metrics.
 
 pub mod ai;
+pub mod mobile;
 pub mod privacy;
 pub mod proxy;
 #[cfg(feature = "vpn")]

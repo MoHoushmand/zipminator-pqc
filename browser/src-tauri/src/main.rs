@@ -17,6 +17,8 @@ use tauri::Manager;
 
 // AI sidebar commands (Domain 4)
 use zipbrowser::ai;
+// Mobile WebView bridge (Pillar 8 mobile target)
+use zipbrowser::mobile;
 
 fn main() {
     // Initialize structured logging (tracing for domain modules, env_logger for shell).
@@ -182,6 +184,8 @@ fn main() {
             ai::sidebar::ai_clear_history,
             ai::sidebar::ai_download_model,
             ai::sidebar::ai_load_model,
+            // ── Mobile WebView PQC proxy (Pillar 8 mobile target) ──────────
+            mobile::pqc_proxy_command,
         ])
         .run(tauri::generate_context!())
         .expect("error running Zipminator");

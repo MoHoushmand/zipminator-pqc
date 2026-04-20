@@ -5,9 +5,13 @@ import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import SessionProvider from '@/components/auth/SessionProvider'
 import ThemeProvider from '@/components/ThemeProvider'
-import Script from 'next/script'
+import NextScript from 'next/script'
 import { GA_TRACKING_ID } from '@/lib/analytics'
 import { cn } from "@/lib/utils";
+
+// next/script ScriptProps has narrowing incompatible with React 19 JSX runtime.
+// Widen at module boundary; runtime behavior unchanged.
+const Script = NextScript as unknown as React.FC<React.ComponentProps<typeof NextScript> & Record<string, unknown>>
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 

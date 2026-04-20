@@ -1,8 +1,27 @@
 [package]
 name = "pq-wireguard"
-version = "0.1.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Userspace PQ-WireGuard handshake over NIST FIPS 203 (ML-KEM-768). Linux/Android target; no custom crypto."
 
 [dependencies]
+# NIST FIPS 203 (ML-KEM-768) via the same upstream used by zipminator-core.
+# Keeping the dep here (rather than re-exporting through zipminator-core) keeps
+# this crate lean; we do not pull in AES/x25519/pyo3/libusb transitively.
+pqcrypto-kyber = { version = "0.8", default-features = false, features = ["std"] }
+pqcrypto-traits = "0.3"
+
+# Key-derivation chain and constant-time primitives.
+hkdf = "0.12"
+sha2 = "0.10"
+subtle = "2.5"
+zeroize = { version = "1", features = ["derive"] }
+
+# Structured errors (no panics on protocol paths).
+thiserror = "1.0"
 
 [dev-dependencies]
+hex = "0.4"

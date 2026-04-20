@@ -139,15 +139,26 @@ export default function ProductSlide({ scenario: _scenario }: { scenario?: Scena
               />
               <Tooltip
                 {...TOOLTIP_STYLE}
-                formatter={(value: number) => [`${value}%`, 'Progress']}
+                formatter={(value) => [`${value}%`, 'Progress']}
               />
               <Legend
                 wrapperStyle={{ fontSize: 10, fontFamily: 'monospace' }}
-                payload={[
-                  { value: 'Shipped', type: 'rect', color: PHASE_COLORS.done },
-                  { value: 'In Progress', type: 'rect', color: PHASE_COLORS.progress },
-                  { value: 'Planned', type: 'rect', color: PHASE_COLORS.planned },
-                ]}
+                content={
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: 12, fontFamily: 'monospace', fontSize: 10, color: '#9ca3af' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ width: 10, height: 10, backgroundColor: PHASE_COLORS.done }} />
+                      Shipped
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ width: 10, height: 10, backgroundColor: PHASE_COLORS.progress }} />
+                      In Progress
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ width: 10, height: 10, backgroundColor: PHASE_COLORS.planned }} />
+                      Planned
+                    </span>
+                  </div>
+                }
               />
               <Bar
                 dataKey="progress"

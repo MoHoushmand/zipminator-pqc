@@ -337,7 +337,7 @@ export const SlideDORA: React.FC<SlideDORAProps> = ({ scenario: initialScenario 
                     contentStyle={TOOLTIP_STYLE.contentStyle}
                     labelStyle={TOOLTIP_STYLE.labelStyle}
                     itemStyle={TOOLTIP_STYLE.itemStyle}
-                    formatter={(value: number) => [`NOK ${value} MNOK`, 'Maks bot']}
+                    formatter={(value) => [`NOK ${value} MNOK`, 'Maks bot']}
                     cursor={{ fill: 'rgba(251,113,133,0.05)' }}
                   />
                   <Bar dataKey="fineMax" radius={[3, 3, 0, 0]}>

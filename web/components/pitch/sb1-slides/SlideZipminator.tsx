@@ -252,7 +252,7 @@ export const SlideZipminator: React.FC<SlideZiminatorProps> = ({ scenario: initi
                       contentStyle={TOOLTIP_STYLE.contentStyle}
                       labelStyle={TOOLTIP_STYLE.labelStyle}
                       itemStyle={TOOLTIP_STYLE.itemStyle}
-                      formatter={(value: number, name: string) => [
+                      formatter={(value, name) => [
                         `${value} MNOK`,
                         name === 'kostnad' ? 'Implementeringskostnad' : 'Besparelse/gevinst',
                       ]}

@@ -97,7 +97,7 @@ export const SectionComparables = () => (
           />
           <Tooltip
             contentStyle={TOOLTIP_STYLE}
-            formatter={(value: number) => [fmtVal(value), 'Valuation']}
+            formatter={(value) => [fmtVal(Number(value)), 'Valuation']}
             labelStyle={{ color: '#f1f5f9', fontWeight: 600 }}
           />
           <Bar dataKey="valuation" radius={[0, 6, 6, 0]} barSize={28}>

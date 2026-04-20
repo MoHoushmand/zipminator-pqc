@@ -100,7 +100,7 @@ export const SlideMarketSize: React.FC<SlideMarketSizeProps> = ({ scenario: scen
                 />
                 <Tooltip
                   {...TOOLTIP_STYLE}
-                  formatter={(value: number, name: string) => [`$${value}B`, name === 'pqc' ? 'PQC' : 'QCaaS']}
+                  formatter={(value, name) => [`$${value}B`, name === 'pqc' ? 'PQC' : 'QCaaS']}
                 />
                 <Area
                   type="monotone"
@@ -152,7 +152,7 @@ export const SlideMarketSize: React.FC<SlideMarketSizeProps> = ({ scenario: scen
                 </Pie>
                 <Tooltip
                   {...TOOLTIP_STYLE}
-                  formatter={(value: number) => [`$${(value / 1000).toFixed(1)}B`, '']}
+                  formatter={(value) => [`$${(Number(value) / 1000).toFixed(1)}B`, '']}
                 />
                 <Legend
                   iconType="circle"
@@ -206,7 +206,7 @@ export const SlideMarketSize: React.FC<SlideMarketSizeProps> = ({ scenario: scen
                 />
                 <Tooltip
                   {...TOOLTIP_STYLE}
-                  formatter={(value: number) => [`${value}% CAGR`, 'CAGR']}
+                  formatter={(value) => [`${value}% CAGR`, 'CAGR']}
                 />
                 <Bar dataKey="cagr" radius={[0, 4, 4, 0]}>
                   {cagrComparison.map((entry, index) => (

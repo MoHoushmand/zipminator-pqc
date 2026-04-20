@@ -136,7 +136,7 @@ export default function FundingStrategySlide({ scenario: _scenario = 'base' }: {
               {GRANT_AMOUNTS_NUMERIC.map((entry, index) => (
                 <Cell key={index} fill={`url(#gradRegion-${entry.region})`} />
               ))}
-              <LabelList dataKey="amount" position="right" style={{ fill: '#d1d5db', fontSize: 11, fontFamily: 'monospace' }} formatter={(v: number) => `$${v}M`} />
+              <LabelList dataKey="amount" position="right" style={{ fill: '#d1d5db', fontSize: 11, fontFamily: 'monospace' }} formatter={(v) => `$${v}M`} />
             </Bar>
           </BarChart>
         </ResponsiveContainer>

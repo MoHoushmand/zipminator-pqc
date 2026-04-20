@@ -115,11 +115,11 @@ export const SlideRiskModeling: React.FC<SlideRiskModelingProps> = ({ scenario: 
                       />
                       <Tooltip
                         {...TOOLTIP_STYLE}
-                        formatter={(value: number, name: string) => [
+                        formatter={(value, name) => [
                           `${value}%`,
                           name === 'klassisk' ? 'Klassisk' : 'Kvantum',
                         ]}
-                        labelFormatter={(label: number) => `${label}K simuleringer`}
+                        labelFormatter={(label) => `${label}K simuleringer`}
                       />
                       <Line type="monotone" dataKey="klassisk" stroke="#FB7185" strokeWidth={2} dot={false} name="klassisk" />
                       <Line type="monotone" dataKey="kvantum" stroke="#34D399" strokeWidth={2} dot={false} name="kvantum" />
@@ -149,7 +149,7 @@ export const SlideRiskModeling: React.FC<SlideRiskModelingProps> = ({ scenario: 
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" horizontal={false} />
                       <XAxis type="number" tick={{ fill: '#94A3B8', fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }} tickFormatter={(v: number) => `${v}`} />
                       <YAxis dataKey="entity" type="category" width={58} tick={{ fill: '#94A3B8', fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }} />
-                      <Tooltip {...TOOLTIP_STYLE} formatter={(value: number) => [`NOK ${value} mrd.`, 'Utlån']} />
+                      <Tooltip {...TOOLTIP_STYLE} formatter={(value) => [`NOK ${value} mrd.`, 'Utlån']} />
                       <Bar dataKey="utlaan" radius={[0, 3, 3, 0]}>
                         {sb1EntityExposure.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} fillOpacity={0.8} />
@@ -179,7 +179,7 @@ export const SlideRiskModeling: React.FC<SlideRiskModelingProps> = ({ scenario: 
                           <Cell key={`cell-${index}`} fill={entry.color} fillOpacity={0.85} />
                         ))}
                       </Pie>
-                      <Tooltip {...TOOLTIP_STYLE} formatter={(value: number, name: string) => [`${value}%`, name]} />
+                      <Tooltip {...TOOLTIP_STYLE} formatter={(value, name) => [`${value}%`, name]} />
                       <Legend wrapperStyle={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace", color: '#94A3B8' }} iconSize={8} />
                     </PieChart>
                   </ResponsiveContainer>

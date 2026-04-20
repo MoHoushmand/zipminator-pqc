@@ -281,7 +281,7 @@ export const SectionValuation = ({ scenario }: Props) => {
             />
             <Tooltip
               contentStyle={TOOLTIP_STYLE}
-              formatter={(value: number, name: string) => [`$${value}M`, name]}
+              formatter={(value, name) => [`$${value}M`, name]}
             />
             <Legend
               wrapperStyle={{ fontFamily: 'var(--font-jetbrains), monospace', fontSize: 11 }}

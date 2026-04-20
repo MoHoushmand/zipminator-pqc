@@ -219,14 +219,22 @@ export default function UseCasesSlide({ scenario: _scenario }: { scenario?: Scen
               />
               <Tooltip
                 {...TOOLTIP_STYLE}
-                formatter={(value: number) => [`${value}/100`, 'Priority Score']}
+                formatter={(value) => [`${value}/100`, 'Priority Score']}
               />
               <Legend
                 wrapperStyle={{ fontSize: 10, fontFamily: 'monospace' }}
-                payload={[
-                  { value: 'Primary Target (65+)', type: 'rect', color: '#22c55e' },
-                  { value: 'Secondary Target (<65)', type: 'rect', color: '#818cf8' },
-                ]}
+                content={
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: 12, fontFamily: 'monospace', fontSize: 10, color: '#9ca3af' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ width: 10, height: 10, backgroundColor: '#22c55e' }} />
+                      Primary Target (65+)
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ width: 10, height: 10, backgroundColor: '#818cf8' }} />
+                      Secondary Target (&lt;65)
+                    </span>
+                  </div>
+                }
               />
               <Bar
                 dataKey="value"

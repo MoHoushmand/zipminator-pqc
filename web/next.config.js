@@ -5,8 +5,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // TODO(zip-604): remove once chore/type-recovery-609 lands (Recharts 3.x + jest-dom setup fix)
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   images: {
     remotePatterns: [

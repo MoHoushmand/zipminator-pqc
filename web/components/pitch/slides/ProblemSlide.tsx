@@ -91,7 +91,7 @@ export default function ProblemSlide({ scenario: _scenario }: { scenario?: Scena
               <Tooltip
                 contentStyle={TOOLTIP_STYLE.contentStyle}
                 labelStyle={TOOLTIP_STYLE.labelStyle}
-                formatter={(value: number, name: string) => [`${value}%`, name]}
+                formatter={(value, name) => [`${value}%`, name]}
               />
               <Legend
                 verticalAlign="bottom"

@@ -199,7 +199,7 @@ export const SectionIPScoring = () => {
             <YAxis type="category" dataKey="asset" width={140} tick={{ fill: '#e2e8f0', fontSize: 11 }} />
             <Tooltip
               contentStyle={{ background: 'rgba(17,24,39,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#e2e8f0', fontSize: 12 }}
-              formatter={(value: number) => [fmtVal(value), '']}
+              formatter={(value) => [fmtVal(Number(value)), '']}
             />
             <Bar dataKey="high" name="High" fill="#34D399" fillOpacity={0.3} radius={[0, 4, 4, 0]} barSize={24}>
               {PORTFOLIO_VALUATION.map((entry) => (

@@ -15,6 +15,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
+import type { PieLabelRenderProps } from 'recharts'
 
 const MODULE_WEIGHTS = [
   { name: 'Messenger', value: 18, color: '#6366f1' },
@@ -28,35 +29,24 @@ const MODULE_WEIGHTS = [
 ]
 
 const RADIAN = Math.PI / 180
-function renderCustomLabel({
-  cx,
-  cy,
-  midAngle,
-  outerRadius,
-  name,
-  percent,
-}: {
-  cx: number
-  cy: number
-  midAngle: number
-  outerRadius: number
-  name: string
-  percent: number
-}) {
-  const radius = outerRadius + 18
-  const x = cx + radius * Math.cos(-midAngle * RADIAN)
-  const y = cy + radius * Math.sin(-midAngle * RADIAN)
+function renderCustomLabel(props: PieLabelRenderProps) {
+  const { cx = 0, cy = 0, midAngle = 0, outerRadius = 0, name = '', percent = 0 } = props
+  const cxNum = Number(cx)
+  const cyNum = Number(cy)
+  const radius = Number(outerRadius) + 18
+  const x = cxNum + radius * Math.cos(-Number(midAngle) * RADIAN)
+  const y = cyNum + radius * Math.sin(-Number(midAngle) * RADIAN)
   return (
     <text
       x={x}
       y={y}
       fill="#9ca3af"
-      textAnchor={x > cx ? 'start' : 'end'}
+      textAnchor={x > cxNum ? 'start' : 'end'}
       dominantBaseline="central"
       fontSize={10}
       fontFamily="monospace"
     >
-      {name} ({(percent * 100).toFixed(0)}%)
+      {String(name)} ({(Number(percent) * 100).toFixed(0)}%)
     </text>
   )
 }
@@ -132,7 +122,7 @@ export default function SolutionSlide({ scenario: _scenario }: { scenario?: Scen
               </Pie>
               <Tooltip
                 {...TOOLTIP_STYLE}
-                formatter={(value: number, name: string) => [`${value}%`, name]}
+                formatter={(value, name) => [`${value}%`, name]}
               />
               <Legend
                 verticalAlign="bottom"

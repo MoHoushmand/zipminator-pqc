@@ -206,11 +206,11 @@ export default function WhyNowSlide({ scenario: _scenario }: { scenario?: Scenar
               />
               <Tooltip
                 {...TOOLTIP_STYLE}
-                formatter={(value: number, name: string) => {
+                formatter={(value, name) => {
                   const band = RISK_BANDS[name as keyof typeof RISK_BANDS]
                   return [`${value}%`, band?.name ?? name]
                 }}
-                labelFormatter={(label: number) => `Year ${label}`}
+                labelFormatter={(label) => `Year ${label}`}
               />
               <Legend
                 verticalAlign="top"

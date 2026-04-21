@@ -575,6 +575,19 @@ Matrix: ubuntu-latest + macos-latest for Flutter; ubuntu-latest for Rust bridge.
 
 ---
 
+## Mobile Release Gate
+
+Before shipping a new Flutter mobile build to TestFlight or Play Store internal, all four gates below must be green. This is the canonical checklist for the `app/` pillar; no mobile release proceeds with any gate red.
+
+| # | Gate | Verification |
+|---|------|--------------|
+| 1 | 60 tests pass | `cd app && flutter test` green (60/60 widget + unit tests; 72 static `test(...)`/`testWidgets(...)` invocations across 14 files) |
+| 2 | Version pinned | `app/pubspec.yaml` reads `version: 0.5.1+45` (or the target build); iOS CFBundleVersion is overridden by `BUILD_NUMBER=${{ github.run_number }}` in CI |
+| 3 | CHANGELOG entry | `app/CHANGELOG.md` has a section matching the `pubspec.yaml` version with a bulleted list of changes |
+| 4 | TestFlight workflow green | `.github/workflows/testflight.yml` run succeeds on `macos-latest`: `bundle exec fastlane verify` then `bundle exec fastlane beta` under `app/ios/`; gated by repo variable `IOS_TESTFLIGHT_ENABLED=true` |
+
+---
+
 ## Open Work Matrix (canonical list of remaining engineering work)
 
 Six orthogonal tracks. Each runs in its own git worktree under `~/dev/qdaria/products/zipminator-<track>/` and owns a disjoint file-glob set. The marathon dispatches one worktree-isolated agent per track per iteration.

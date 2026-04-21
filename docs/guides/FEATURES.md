@@ -262,7 +262,7 @@ Six new modules in `crates/zipminator-mesh/` implementing physical-layer crypto 
 6. **Spatiotemporal Non-Repudiation** (`spatiotemporal.rs`) — Presence-proof signatures combining CSI fingerprint + vital signs + timestamp for undeniable physical attestation
 
 - **What else works**: Entropy bridge crate with HKDF-SHA256 key derivation from quantum pool; MeshKey (16-byte PSK) and SipHashKey types with zeroize-on-drop; FilePoolSource and MemoryEntropySource; MeshProvisioner with `provision_nvs_binary()` generating ESP32-S3-compatible blobs (magic header, mesh_id, PSK, SipHash key, SHA-256 checksum)
-- **Tests**: 106 Rust tests in mesh crate (90 unit + 16 integration); 513 total workspace tests passing
+- **Tests**: 174 mesh tests passing across qmesh-core + zipminator-mesh (verified 2026-04-21): qmesh-core 25/25 (21 unit + 4 integration), zipminator-mesh 149/149 (118 unit + 16 provisioner + 15 physical-crypto integration); clippy clean on qmesh-core; 513 total workspace tests passing
 - **Wave 2 (in progress)**: Attestation wire format, provisioner extensions for new module keys
 - **Wave 3 (research-phase)**: Ghost Protocol, TEMPEST countermeasures, ZKP presence proofs, RF Shroud
 - **Remaining integration**: Cross-repo integration script linking Zipminator QRNG output to RuView's `scripts/provision.py`; shared NVS key management; OTA key rotation over mesh
@@ -507,7 +507,8 @@ Settings screen: theme toggle (dark/light), Rust bridge version, crypto engine i
 | Rust core (integration) | 16 | `cargo test -p zipminator-core --test integration_test` | |
 | Rust core (physical_crypto) | 15 | `cargo test -p zipminator-core --test physical_crypto_integration` | |
 | Rust core (cross_module) | 5 | `cargo test -p zipminator-core --test cross_module_integration` | |
-| Rust mesh | 118 | `cargo test -p zipminator-mesh` | was 50, now 118 (Wave 1 + Wave 2) |
+| Rust mesh | 149 | `cargo test -p zipminator-mesh` | 118 unit + 16 provisioner + 15 physical_crypto_integration (verified 2026-04-21) |
+| Rust qmesh-core | 25 | `cargo test -p qmesh-core` | 21 unit + 4 session_integration (verified 2026-04-21, clippy clean) |
 | Rust app bridge | 15 | `cargo test -p zipminator-app` | FRB producer side |
 | Rust FRB bridge | 0 | `cargo test -p rust_lib_zipminator` | flutter_rust_bridge consumer, no local tests |
 | Rust NIST KAT | 5 | `cargo test -p nist-kat` | |

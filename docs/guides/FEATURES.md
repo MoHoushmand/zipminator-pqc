@@ -202,6 +202,10 @@
 | **Tests** | `tests/email_transport/test_smtp_receive.py`, `test_imap_serve.py`, `test_pqc_envelope.py`, `tests/email_keydir/test_keydir.py`, `tests/email_kms/test_kms.py`, `mobile/src/services/__tests__/ZipMailService.test.ts`, `EmailCryptoService.test.ts`, `KmsService.test.ts` |
 | **Mail server config** | `email/mailserver/config/postfix/master.cf`, `email/mailserver/config/dovecot/dovecot.conf`, `10-ssl.conf`, `10-mail.conf`, `10-auth.conf` |
 
+### Open Email Items
+
+- Verified 2026-04-21 (marathon 20260421-144639-ac5f48/email): `tests/email_transport/test_pqc_envelope.py` + `tests/mail/*` + `tests/test_email_transport.py` = 41 passed, 10 skipped under zip-pqc env. Gap: no automated DKIM signing test asserts that outbound mail gets a valid `DKIM-Signature` header from the OpenDKIM config at `email/mailserver/config/dkim/` (opendkim.conf, signing.table, key.table); next step is a pytest case that boots the mailserver container (or mocks OpenDKIM milter), sends a message via SMTP, and verifies the resulting header parses and signs the configured domain.
+
 ---
 
 ## Pillar 8: ZipBrowser — PQC AI Browser (85%)

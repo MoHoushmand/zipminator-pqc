@@ -60,15 +60,24 @@ def test_dashboard_mail_page_exists() -> None:
     assert DASHBOARD_PAGE.is_file(), f"missing dashboard page: {DASHBOARD_PAGE}"
 
 
-def test_dashboard_mail_page_is_next16_server_component() -> None:
-    """The page must be a default-export async function (Next.js 16 RSC)."""
+def test_dashboard_mail_page_is_next16_component() -> None:
+    """The page must be a default-export Next.js 16 component.
+
+    Either an async Server Component or a `'use client'` Client Component
+    is valid. Mail UI needs interactivity (state, motion), so it is a
+    Client Component.
+    """
     text = _read(DASHBOARD_PAGE)
     assert "export default" in text
-    assert "async function" in text or "async (" in text or "async " in text
-    # The page sits under a route group `(dashboard)` so the rendered URL
-    # is /mail; the page must reference the PQC mail feature.
+    is_server_component = (
+        "async function" in text or "async (" in text or "async " in text
+    )
+    is_client_component = "'use client'" in text or '"use client"' in text
+    assert is_server_component or is_client_component, (
+        "mail page must be either async RSC or 'use client' Client Component"
+    )
     assert "ML-KEM-768" in text or "PQC" in text, (
-        "dashboard mail page must reference PQC / ML-KEM-768"
+        "mail page must reference PQC / ML-KEM-768"
     )
 
 

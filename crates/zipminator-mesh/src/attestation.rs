@@ -729,7 +729,7 @@ mod tests {
 
     #[test]
     fn roundtrip_anomaly_event() {
-        let dev = 3.14159;
+        let dev = 2.5_f64;
         let ts = 1_710_000_000_000u64;
         let msg = AttestationMessage::builder().anomaly_event(dev, ts).build();
 

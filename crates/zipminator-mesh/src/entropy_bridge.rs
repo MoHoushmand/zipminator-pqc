@@ -341,7 +341,7 @@ mod tests {
     fn test_file_backed_bridge() {
         let dir = tempfile::tempdir().unwrap();
         let pool_path = dir.path().join("test_pool.bin");
-        std::fs::write(&pool_path, &make_entropy(256)).unwrap();
+        std::fs::write(&pool_path, make_entropy(256)).unwrap();
 
         let source = FilePoolSource::new(&pool_path).unwrap();
         let mut bridge = EntropyBridge::new(source);

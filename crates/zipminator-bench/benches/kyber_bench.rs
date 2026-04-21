@@ -47,8 +47,8 @@ fn bench_full_operation(c: &mut Criterion) {
 fn bench_ntt(c: &mut Criterion) {
     use zipminator_core::ntt::ntt;
     let mut poly = [0i16; 256];
-    for i in 0..256 {
-        poly[i] = (i as i16) % 3329;
+    for (i, slot) in poly.iter_mut().enumerate() {
+        *slot = (i as i16) % 3329;
     }
 
     c.bench_function("ntt_forward", |b| {

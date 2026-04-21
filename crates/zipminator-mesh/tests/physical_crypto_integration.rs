@@ -647,7 +647,7 @@ fn test_full_pipeline_csi_puek_spatiotemporal() {
     csi_source.read_entropy(&mut entropy_buf).unwrap();
 
     // Step 2: PUEK enrollment and key derivation
-    let csi_magnitudes = make_csi_magnitudes(25, 10, 3.14);
+    let csi_magnitudes = make_csi_magnitudes(25, 10, 2.5);
     let enrollment = enroll(&csi_magnitudes, 5, SecurityProfile::Office).unwrap();
     let verifier = PuekVerifier::new(enrollment);
     let eigenmodes = compute_eigenmodes(&csi_magnitudes).unwrap();

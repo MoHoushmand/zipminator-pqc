@@ -332,9 +332,11 @@ mod tests {
     #[test]
     fn test_pool_refill_on_low_entropy() {
         let device = Box::new(MockQrngDevice::new());
-        let mut config = EntropyPoolConfig::default();
-        config.min_bytes = 256;
-        config.refill_threshold = 512;
+        let config = EntropyPoolConfig {
+            min_bytes: 256,
+            refill_threshold: 512,
+            ..Default::default()
+        };
 
         let pool = EntropyPool::new(device, config).unwrap();
 
@@ -349,9 +351,11 @@ mod tests {
     #[test]
     fn test_invalid_config() {
         let device = Box::new(MockQrngDevice::new());
-        let mut config = EntropyPoolConfig::default();
-        config.min_bytes = 10000;
-        config.max_bytes = 1000; // Invalid: min > max
+        let config = EntropyPoolConfig {
+            min_bytes: 10000,
+            max_bytes: 1000, // Invalid: min > max
+            ..Default::default()
+        };
 
         let result = EntropyPool::new(device, config);
         assert!(matches!(result, Err(QrngError::InitializationFailed(_))));

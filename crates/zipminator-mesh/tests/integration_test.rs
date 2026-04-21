@@ -59,7 +59,7 @@ fn test_end_to_end_key_pair() {
 fn test_small_pool_fails() {
     let dir = tempdir().unwrap();
     let path = dir.path().join("tiny.bin");
-    fs::write(&path, &[0u8; 16]).unwrap();
+    fs::write(&path, [0u8; 16]).unwrap();
 
     let source = FilePoolSource::new(&path).unwrap();
     let mut bridge = EntropyBridge::new(source);
@@ -78,7 +78,7 @@ fn test_small_pool_fails() {
 fn test_empty_pool_file() {
     let dir = tempdir().unwrap();
     let path = dir.path().join("empty.bin");
-    fs::write(&path, &[]).unwrap();
+    fs::write(&path, [0u8; 0]).unwrap();
 
     let source = FilePoolSource::new(&path).unwrap();
     let mut bridge = EntropyBridge::new(source);

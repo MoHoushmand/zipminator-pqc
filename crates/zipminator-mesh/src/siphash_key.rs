@@ -90,8 +90,8 @@ mod tests {
     fn test_k0_k1_extraction() {
         let mut raw = [0u8; SIPHASH_KEY_SIZE];
         // k0 = 0x0807060504030201 (LE), k1 = 0x100f0e0d0c0b0a09 (LE)
-        for i in 0..16 {
-            raw[i] = (i + 1) as u8;
+        for (i, byte) in raw.iter_mut().enumerate() {
+            *byte = (i + 1) as u8;
         }
         let key = SipHashKey::from_bytes(&raw).unwrap();
         assert_eq!(key.k0(), u64::from_le_bytes([1, 2, 3, 4, 5, 6, 7, 8]));

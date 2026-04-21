@@ -31,8 +31,8 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install maturin
-        run: pip install maturin
+      - name: Install maturin (with ziglang for Linux manylinux builds)
+        run: pip install maturin ziglang
 
       - name: Build wheels (Linux)
         if: runner.os == 'Linux'

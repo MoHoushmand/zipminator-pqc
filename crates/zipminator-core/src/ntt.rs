@@ -138,8 +138,8 @@ mod tests {
         // original * MONT mod q, where MONT = 2^16 mod q = 2285.
         // This is expected behavior and matches the reference implementation.
         let mut poly = [0i16; KYBER_N];
-        for i in 0..KYBER_N {
-            poly[i] = (i as i16) % KYBER_Q;
+        for (i, slot) in poly.iter_mut().enumerate() {
+            *slot = (i as i16) % KYBER_Q;
         }
         let original = poly;
 
@@ -164,7 +164,7 @@ mod tests {
     fn test_montgomery_reduce() {
         let a = 12345i32;
         let reduced = montgomery_reduce(a);
-        assert!(reduced < KYBER_Q && reduced >= -KYBER_Q);
+        assert!((-KYBER_Q..KYBER_Q).contains(&reduced));
     }
 
     #[test]

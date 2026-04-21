@@ -565,8 +565,6 @@ impl Drop for QuantumEntropyPool {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[test]
     fn test_entropy_pool_create_open() {
         // Test implementation would go here

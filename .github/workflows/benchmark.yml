@@ -26,6 +26,11 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Install GTK system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglib2.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev
+
       - name: Cache Cargo dependencies
         uses: actions/cache@v4
         with:
@@ -92,6 +97,12 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Setup Python venv
+        run: |
+          python -m venv .venv
+          echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
+          echo "$PWD/.venv/bin" >> $GITHUB_PATH
+
       - name: Install dependencies
         run: |
           pip install maturin pytest pytest-benchmark
@@ -128,12 +139,10 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install valgrind
-        run: sudo apt-get update && sudo apt-get install -y valgrind
-
-      - name: Install heaptrack
+      - name: Install system deps (valgrind, heaptrack, GTK)
         run: |
-          sudo apt-get install -y heaptrack
+          sudo apt-get update
+          sudo apt-get install -y valgrind heaptrack libglib2.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev
 
       - name: Build with debug symbols
         run: cargo build --workspace --release

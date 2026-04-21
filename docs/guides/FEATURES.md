@@ -221,7 +221,7 @@
   - PQC-encrypted password vault (Argon2)
   - Audit logging
 - **AI sidebar**: Integrated via Recipe W (registered Tauri command + React component rendered in SidebarSlot)
-- **Tests**: 157 Rust tests passing
+- **Tests**: Browser: 179 tests passing (verified 2026-04-21) — 154 lib unit + 17 bin unit + 7 mobile_config integration + 1 compile-doc-test; clippy clean with `-D warnings`
 - **Gap**: Uses system WebView (not custom browser engine; limitation documented in ADR)
 
 ### File Paths

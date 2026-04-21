@@ -195,11 +195,11 @@ impl CsiEntropySource {
             .create(true)
             .append(true)
             .open(path)
-            .map_err(|e| EntropyBridgeError::Io(e))?;
+            .map_err(EntropyBridgeError::Io)?;
 
         let bytes_written = self.entropy_buffer.len();
         file.write_all(&self.entropy_buffer)
-            .map_err(|e| EntropyBridgeError::Io(e))?;
+            .map_err(EntropyBridgeError::Io)?;
 
         self.entropy_buffer.clear();
         Ok(bytes_written)

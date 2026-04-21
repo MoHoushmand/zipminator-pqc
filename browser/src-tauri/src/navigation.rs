@@ -52,8 +52,6 @@ pub fn normalize_url(input: &str) -> String {
 pub fn classify_security(url: &str) -> SecurityLevel {
     if url.starts_with("https://") {
         SecurityLevel::Classical
-    } else if url.starts_with("about:") || url.starts_with("data:") {
-        SecurityLevel::None
     } else {
         SecurityLevel::None
     }

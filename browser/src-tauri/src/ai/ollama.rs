@@ -33,6 +33,7 @@ struct GenerateRequest<'a> {
 struct GenerateResponse {
     response: String,
     #[serde(default)]
+    #[allow(dead_code)]
     done: bool,
 }
 
@@ -56,6 +57,7 @@ struct ChatRequest<'a> {
 struct ChatResponse {
     message: OllamaMessage,
     #[serde(default)]
+    #[allow(dead_code)]
     done: bool,
 }
 

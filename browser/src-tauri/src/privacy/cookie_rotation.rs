@@ -158,6 +158,7 @@ pub struct CookieRotator {
     entropy: Arc<QrngReader>,
     jars: RwLock<HashMap<String, Arc<CookieJar>>>,
     /// Rotation interval.
+    #[allow(dead_code)]
     interval: Duration,
     /// Domains whose first-party cookies are fully protected.
     trusted_domains: RwLock<HashSet<String>>,

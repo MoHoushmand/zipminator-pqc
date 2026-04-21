@@ -22,6 +22,7 @@ use serde::{Deserialize, Serialize};
 use tracing::{info, warn};
 
 /// Minimum cache size kept in memory (bytes).
+#[allow(dead_code)]
 const CACHE_SIZE: usize = 4096;
 
 /// Whether the entropy came from the quantum pool or the OS CSPRNG.

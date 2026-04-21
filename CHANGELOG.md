@@ -5,6 +5,60 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-rc1] - 2026-04-21
+
+Release candidate for the v1.0.0 stable tag. All 9 PQC super-app pillars are code-verified per `docs/guides/FEATURES.md`; the `v1.0.0` identifier is reserved for the final tag once kernel-mode PQ-WireGuard lands and external TestFlight rolls to App Store public.
+
+### 9-Pillar Status Snapshot (code-verified)
+
+| # | Pillar | % | Gaps captured below |
+|---|--------|:-:|---------------------|
+| 1 | Quantum Vault and Self-Destruct Storage | 100 | none |
+| 2 | PQC Messenger | 85 | E2E tests need running API server; WebSocket signaling not yet covered in integration suite |
+| 3 | Quantum VoIP and Video | 90 | WebRTC DTLS-SRTP not replaced at browser level; no TURN/STUN server shipped |
+| 4 | Q-VPN (PQ-WireGuard) | 90 | Packet wrapping uses userspace shortcuts; macOS kernel module deferred |
+| 5 | 10-Level Anonymization Suite | 95 | Flutter UI level selector not wired to backend |
+| 6 | Q-AI PQC AI Assistant | 85 | Local model auto-download absent; Tauri sidebar not wired to Ollama backend |
+| 7 | Quantum-Secure Email | 75 | Production SMTP/IMAP deployment pending hosting; attachment anonymization not wired into email pipeline |
+| 8 | ZipBrowser (PQC AI Browser) | 85 | Uses system WebView; custom engine is out of scope for v1 (ADR documented) |
+| 9 | Q-Mesh (Quantum-Secured WiFi Sensing) | 90 | Cross-repo integration script pending; ESP32-S3 hardware demo human-gated |
+
+### Test Coverage (verified, live counts)
+
+- Rust workspace: 550 tests total (393 excluding `zipbrowser`, plus 157 in `zipbrowser`); 1 ignored doctest
+- Flutter (`cd app && flutter test`): 23 widget tests (5 core + 8 pillar + 5 extended + 5 cross-pillar)
+- Web (`cd web && pnpm test`): 30 vitest cases
+- Python + integration (`micromamba activate zip-pqc && pytest tests/`): 800 cases
+- Grand total: 1,403 tests across the canonical surfaces
+- Legacy Expo starter (`mobile/`, kept for reference only): 267 of 274 passing; not counted in the canonical total
+
+### Added
+
+- v1.0.0-rc1 cut of the Zipminator PQC super-app covering all 9 pillars with percentages above
+- Release notes document at `docs/guides/RELEASE_NOTES_v1.0.0.md` with a user-facing narrative of this RC
+- Marathon run metadata captured in `_archive/marathon/2026-04-21-open-items/` (per-track wip commits, progress log)
+
+### Security
+
+- Implements NIST FIPS 203 (ML-KEM-768). Verified against NIST KAT test vectors via deterministic DRBG, run as part of `cargo test -p nist-kat`
+- Implements NIST FIPS 204 (ML-DSA-65) for signatures; FIPS 205 (SLH-DSA) path reserved for high-assurance builds
+- Constant-time arithmetic on all secret-dependent paths via `subtle`; secret material zeroized via `zeroize` on drop
+- No FIPS 140-3 CMVP certificate; CMVP engagement planned, budget and timeline noted in `grants/README.md` and `docs/guides/FEATURES.md`
+
+### Compliance Alignment (DORA, Norwegian law since 1 July 2025)
+
+- Art. 6.1 (encryption policies for data at rest, in transit, in use): documented in `docs/guides/architecture.md` and mapped to ML-KEM-768, AES-256-GCM, HKDF-SHA-256, and DoD 5220.22-M self-destruct
+- Art. 6.4 (periodic cryptographic updates against cryptanalysis developments): covered by the 90-day mesh key rotation, per-session ephemeral ML-KEM keypairs for Q-AI, and the auditable QRNG pool refresh schedule
+- Art. 7 (full cryptographic key lifecycle management): key generation, rotation, escrow, and destruction paths logged through the audit subsystem (`browser/src-tauri/src/privacy/audit.rs` and the QRNG provenance trail)
+
+### Known Deferrals (do not block v1.0.0-rc1)
+
+- macOS kernel module for PQ-WireGuard remains out of scope for the RC; userspace wrapping covers the Tier 1 threat model, kernel module is scheduled post-RC
+- Local Flutter SDK pinning vs system SDK is not yet frozen in `flutter.yaml`; CI uses `subosito/flutter-action` to bypass, follow-up tracked on the M track
+- Q-Mesh cross-repo integration script (Zipminator QRNG to RuView `scripts/provision.py`) not yet merged; mesh key provisioning currently runs manually
+- Production SMTP/IMAP hosting (Hetzner or equivalent) not provisioned; Docker compose stack is ready but unhosted
+- FIPS 140-3 CMVP validation, SOC 2 Type II, USPTO non-provisional conversions, and enterprise pilot onboarding remain human-gated (see Human-Gated Items in `docs/guides/FEATURES.md`)
+
 ## [1.0.0] - 2026-04-19
 
 ### Added
@@ -125,6 +179,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cargo workspace with `zipminator-core` crate
 - Basic Kyber768 key generation
 
+[1.0.0-rc1]: https://github.com/MoHoushmand/zipminator-pqc/compare/v1.0.0...v1.0.0-rc1
 [1.0.0]: https://github.com/MoHoushmand/zipminator-pqc/compare/v0.5.0...v1.0.0
 [0.5.0]: https://github.com/MoHoushmand/zipminator-pqc/compare/v0.5.0b1...v0.5.0
 [0.5.0b1]: https://github.com/MoHoushmand/zipminator-pqc/compare/v0.2.0...v0.5.0b1

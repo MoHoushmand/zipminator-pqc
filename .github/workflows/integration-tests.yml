@@ -70,11 +70,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install maturin pytest
+          pip install maturin pytest pytest-asyncio
           # Runtime deps needed at test-collection time
           pip install fastapi httpx uvicorn pandas numpy requests \
                       websockets python-multipart aiosmtpd pyyaml click \
-                      python-dotenv faker pyzipper cryptography
+                      python-dotenv faker pyzipper cryptography asyncpg
           cargo build --workspace --release
 
       - name: Build Python bindings

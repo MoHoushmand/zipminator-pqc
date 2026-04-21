@@ -105,11 +105,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install maturin pytest pytest-benchmark
+          pip install maturin pytest pytest-asyncio pytest-benchmark
           # Runtime deps needed at test-collection time
           pip install fastapi httpx uvicorn pandas numpy requests \
                       websockets python-multipart aiosmtpd pyyaml click \
-                      python-dotenv faker pyzipper cryptography
+                      python-dotenv faker pyzipper cryptography asyncpg
 
       - name: Build Python package
         run: maturin develop --release

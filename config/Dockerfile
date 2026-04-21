@@ -10,6 +10,8 @@ LABEL description="Quantum-safe cryptography CLI with NIST Kyber768"
 RUN apk add --no-cache \
     musl-dev \
     pkgconf \
+    pkgconfig \
+    glib-dev \
     openssl-dev \
     curl \
     ca-certificates

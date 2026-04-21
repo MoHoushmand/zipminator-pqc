@@ -38,7 +38,7 @@ landing-page/
 │   └── logos/               # QDaria and Zipminator brand assets
 │       ├── QDwordmark2.svg
 │       ├── QDaria_logo_teal Large.png
-│       ├── Q|Daria>.svg
+│       ├── QDaria.svg
 │       ├── Q|D>.svg
 │       ├── Z.svg            # Zipminator logomark
 │       └── zipminator.svg   # Zipminator full logo

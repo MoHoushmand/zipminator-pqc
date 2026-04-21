@@ -73,8 +73,8 @@ mod tests {
         let body = b"Confidential email content".to_vec();
         let headers = b"From: alice@qdaria.com\nTo: bob@qdaria.com".to_vec();
 
-        let envelope = encrypt_email(kp.public_key, body.clone(), headers.clone())
-            .expect("encrypt");
+        let envelope =
+            encrypt_email(kp.public_key, body.clone(), headers.clone()).expect("encrypt");
         assert!(!envelope.is_empty());
 
         let decrypted = decrypt_email(kp.secret_key, envelope, headers).expect("decrypt");

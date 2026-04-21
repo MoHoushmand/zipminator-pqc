@@ -128,10 +128,14 @@ impl MessageHeader {
         }
 
         let message_number = u32::from_be_bytes(
-            data[1..5].try_into().map_err(|_| "Header parse error: message_number")?,
+            data[1..5]
+                .try_into()
+                .map_err(|_| "Header parse error: message_number")?,
         );
         let previous_chain_length = u32::from_be_bytes(
-            data[5..9].try_into().map_err(|_| "Header parse error: previous_chain_length")?,
+            data[5..9]
+                .try_into()
+                .map_err(|_| "Header parse error: previous_chain_length")?,
         );
 
         let mut ephemeral_pk = [0u8; PK_BYTES];

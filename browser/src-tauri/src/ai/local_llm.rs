@@ -357,11 +357,7 @@ pub struct ChatMessage {
 /// {user}<|end|>
 /// <|assistant|>
 /// ```
-pub fn format_phi3_prompt(
-    system: &str,
-    history: &[ChatMessage],
-    user_message: &str,
-) -> String {
+pub fn format_phi3_prompt(system: &str, history: &[ChatMessage], user_message: &str) -> String {
     let mut prompt = format!("<|system|>\n{system}<|end|>\n");
 
     for msg in history {

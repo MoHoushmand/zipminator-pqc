@@ -106,9 +106,7 @@ impl SystemUrandomSource {
         let file = OpenOptions::new()
             .read(true)
             .open("/dev/urandom")
-            .map_err(|e| {
-                Error::NotAvailable(format!("Failed to open /dev/urandom: {}", e))
-            })?;
+            .map_err(|e| Error::NotAvailable(format!("Failed to open /dev/urandom: {}", e)))?;
 
         Ok(Self { file })
     }
@@ -183,10 +181,7 @@ impl EntropyManager {
 
                     if self.warn_on_fallback {
                         let old_info = self.sources[old_active_index].source_info();
-                        warn!(
-                            "Entropy source changed: {} → {}",
-                            old_info, new_info
-                        );
+                        warn!("Entropy source changed: {} → {}", old_info, new_info);
                     }
 
                     self.active_index = idx;

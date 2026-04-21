@@ -33,8 +33,7 @@ impl Default for ProxyConfig {
 }
 
 /// VPN connection status (mirrored in AppState for synchronous read by the status bar).
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct VpnState {
     pub connected: bool,
     pub server_location: Option<String>,
@@ -44,7 +43,6 @@ pub struct VpnState {
     #[serde(default)]
     pub always_on: bool,
 }
-
 
 /// QRNG entropy pool status.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -57,7 +55,6 @@ pub enum EntropyStatus {
     #[default]
     Unknown,
 }
-
 
 /// Bookmark entry.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -123,10 +120,7 @@ impl AppState {
         let data = std::fs::read_to_string(&path).map_err(|e| format!("Read: {}", e))?;
         let loaded: Vec<Bookmark> =
             serde_json::from_str(&data).map_err(|e| format!("Deserialize: {}", e))?;
-        let mut bookmarks = self
-            .bookmarks
-            .lock()
-            .map_err(|e| format!("Lock: {}", e))?;
+        let mut bookmarks = self.bookmarks.lock().map_err(|e| format!("Lock: {}", e))?;
         *bookmarks = loaded;
         Ok(())
     }

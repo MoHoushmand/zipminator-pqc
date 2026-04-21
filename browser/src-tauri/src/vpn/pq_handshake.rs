@@ -143,9 +143,7 @@ async fn write_tlv<W: AsyncWrite + Unpin>(
 ///
 /// Returns [`HandshakeError::TlvPayloadTooLarge`] if the declared length
 /// exceeds `MAX_TLV_PAYLOAD`.
-async fn read_tlv<R: AsyncRead + Unpin>(
-    reader: &mut R,
-) -> Result<(u8, Vec<u8>), HandshakeError> {
+async fn read_tlv<R: AsyncRead + Unpin>(reader: &mut R) -> Result<(u8, Vec<u8>), HandshakeError> {
     let mut header = [0u8; 3];
     reader.read_exact(&mut header).await?;
 
@@ -223,7 +221,10 @@ where
     );
 
     // 2. Send public key to server: TLV(0x01, pk).
-    debug!(pk_len = pk_bytes.len(), "PQ handshake: sending client public key");
+    debug!(
+        pk_len = pk_bytes.len(),
+        "PQ handshake: sending client public key"
+    );
     bytes_exchanged += write_tlv(stream, TLV_TYPE_PK, pk_bytes).await?;
 
     // 3. Receive KEM ciphertext from server: TLV(0x02, ct).
@@ -235,7 +236,10 @@ where
         });
     }
     bytes_exchanged += 3 + ct_payload.len();
-    debug!(ct_len = ct_payload.len(), "PQ handshake: received KEM ciphertext");
+    debug!(
+        ct_len = ct_payload.len(),
+        "PQ handshake: received KEM ciphertext"
+    );
 
     if ct_payload.len() != KYBER_CT_BYTES {
         return Err(HandshakeError::InvalidCiphertextLength(ct_payload.len()));
@@ -291,7 +295,10 @@ where
         });
     }
     bytes_exchanged += 3 + pk_payload.len();
-    debug!(pk_len = pk_payload.len(), "PQ handshake: received client public key");
+    debug!(
+        pk_len = pk_payload.len(),
+        "PQ handshake: received client public key"
+    );
 
     if pk_payload.len() != KYBER_PK_BYTES {
         return Err(HandshakeError::InvalidPublicKeyLength(pk_payload.len()));
@@ -315,7 +322,10 @@ where
 
     // 3. Send KEM ciphertext: TLV(0x02, ct).
     let ct_bytes = ct.as_bytes();
-    debug!(ct_len = ct_bytes.len(), "PQ handshake: sending KEM ciphertext");
+    debug!(
+        ct_len = ct_bytes.len(),
+        "PQ handshake: sending KEM ciphertext"
+    );
     bytes_exchanged += write_tlv(stream, TLV_TYPE_CT, ct_bytes).await?;
 
     // 4. Derive hybrid key.

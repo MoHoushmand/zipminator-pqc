@@ -3,10 +3,10 @@
 //! Exposes the CRYSTALS-Kyber-768 implementation to Python with
 //! high-performance Rust implementation under the hood.
 
-use pyo3::prelude::*;
+use crate::kyber768::{Ciphertext, Kyber768, PublicKey, SecretKey};
 use pyo3::exceptions::PyValueError;
+use pyo3::prelude::*;
 use pyo3::types::PyBytes;
-use crate::kyber768::{Kyber768, PublicKey, SecretKey, Ciphertext};
 
 /// Python wrapper for PublicKey
 #[pyclass(name = "PublicKey")]
@@ -120,10 +120,7 @@ impl PyCiphertext {
 #[pyfunction]
 fn keypair() -> (PyPublicKey, PySecretKey) {
     let (pk, sk) = Kyber768::keypair();
-    (
-        PyPublicKey { inner: pk },
-        PySecretKey { inner: sk },
-    )
+    (PyPublicKey { inner: pk }, PySecretKey { inner: sk })
 }
 
 /// Generate a keypair from a seed (deterministic)
@@ -146,10 +143,7 @@ fn keypair_from_seed(seed: &[u8]) -> PyResult<(PyPublicKey, PySecretKey)> {
     let mut seed_array = [0u8; 32];
     seed_array.copy_from_slice(seed);
     let (pk, sk) = Kyber768::keypair_from_seed(&seed_array);
-    Ok((
-        PyPublicKey { inner: pk },
-        PySecretKey { inner: sk },
-    ))
+    Ok((PyPublicKey { inner: pk }, PySecretKey { inner: sk }))
 }
 
 /// Encapsulate a shared secret using a public key
@@ -184,7 +178,11 @@ fn encapsulate(pk: &PyPublicKey, py: Python) -> (PyCiphertext, PyObject) {
 /// Returns:
 ///     tuple: (Ciphertext, bytes) - ciphertext and 32-byte shared secret
 #[pyfunction]
-fn encapsulate_with_coins(pk: &PyPublicKey, coins: &[u8], py: Python) -> PyResult<(PyCiphertext, PyObject)> {
+fn encapsulate_with_coins(
+    pk: &PyPublicKey,
+    coins: &[u8],
+    py: Python,
+) -> PyResult<(PyCiphertext, PyObject)> {
     if coins.len() != 32 {
         return Err(PyValueError::new_err("Coins must be exactly 32 bytes"));
     }
@@ -227,10 +225,22 @@ fn decapsulate(ct: &PyCiphertext, sk: &PySecretKey, py: Python) -> PyObject {
 fn get_constants() -> PyResult<Py<PyAny>> {
     Python::with_gil(|py| {
         let dict = pyo3::types::PyDict::new(py);
-        dict.set_item("public_key_bytes", crate::constants::KYBER768_PUBLICKEYBYTES)?;
-        dict.set_item("secret_key_bytes", crate::constants::KYBER768_SECRETKEYBYTES)?;
-        dict.set_item("ciphertext_bytes", crate::constants::KYBER768_CIPHERTEXTBYTES)?;
-        dict.set_item("shared_secret_bytes", crate::constants::KYBER768_SHAREDSECRETBYTES)?;
+        dict.set_item(
+            "public_key_bytes",
+            crate::constants::KYBER768_PUBLICKEYBYTES,
+        )?;
+        dict.set_item(
+            "secret_key_bytes",
+            crate::constants::KYBER768_SECRETKEYBYTES,
+        )?;
+        dict.set_item(
+            "ciphertext_bytes",
+            crate::constants::KYBER768_CIPHERTEXTBYTES,
+        )?;
+        dict.set_item(
+            "shared_secret_bytes",
+            crate::constants::KYBER768_SHAREDSECRETBYTES,
+        )?;
         dict.set_item("kyber_k", crate::constants::KYBER_K)?;
         dict.set_item("kyber_n", crate::constants::KYBER_N)?;
         dict.set_item("kyber_q", crate::constants::KYBER_Q)?;

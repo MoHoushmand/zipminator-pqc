@@ -34,22 +34,22 @@ type HmacSha256 = Hmac<Sha256>;
 #[repr(C, packed)]
 #[derive(Clone)]
 struct QEPHeader {
-    magic: [u8; 4],              // "QEP1"
-    version: u8,                 // 0x01
-    flags: u8,                   // Feature flags
-    reserved: u16,               // Reserved
-    timestamp: u64,              // Unix epoch
-    entropy_source: [u8; 16],    // "IBM Quantum"
-    backend_name: [u8; 32],      // e.g., "ibm_sherbrooke"
-    job_id: [u8; 64],            // IBM job UUID
-    num_shots: u32,              // Quantum shots
-    num_qubits: u8,              // Qubits per shot
-    bits_per_shot: u8,           // Bits per shot
-    total_bytes: u32,            // Total entropy bytes
-    consumed_bytes: u32,         // Consumed bytes
-    gcm_nonce: [u8; GCM_NONCE_SIZE],   // AES-GCM nonce
-    hmac_tag: [u8; HMAC_TAG_SIZE],     // HMAC-SHA256 tag
-    auth_tag: [u8; GCM_TAG_SIZE],      // AES-GCM auth tag
+    magic: [u8; 4],                  // "QEP1"
+    version: u8,                     // 0x01
+    flags: u8,                       // Feature flags
+    reserved: u16,                   // Reserved
+    timestamp: u64,                  // Unix epoch
+    entropy_source: [u8; 16],        // "IBM Quantum"
+    backend_name: [u8; 32],          // e.g., "ibm_sherbrooke"
+    job_id: [u8; 64],                // IBM job UUID
+    num_shots: u32,                  // Quantum shots
+    num_qubits: u8,                  // Qubits per shot
+    bits_per_shot: u8,               // Bits per shot
+    total_bytes: u32,                // Total entropy bytes
+    consumed_bytes: u32,             // Consumed bytes
+    gcm_nonce: [u8; GCM_NONCE_SIZE], // AES-GCM nonce
+    hmac_tag: [u8; HMAC_TAG_SIZE],   // HMAC-SHA256 tag
+    auth_tag: [u8; GCM_TAG_SIZE],    // AES-GCM auth tag
 }
 
 impl QEPHeader {
@@ -137,11 +137,17 @@ impl QEPHeader {
         pos += 4;
         header.consumed_bytes = u32::from_le_bytes(bytes[pos..pos + 4].try_into().unwrap());
         pos += 4;
-        header.gcm_nonce.copy_from_slice(&bytes[pos..pos + GCM_NONCE_SIZE]);
+        header
+            .gcm_nonce
+            .copy_from_slice(&bytes[pos..pos + GCM_NONCE_SIZE]);
         pos += GCM_NONCE_SIZE;
-        header.hmac_tag.copy_from_slice(&bytes[pos..pos + HMAC_TAG_SIZE]);
+        header
+            .hmac_tag
+            .copy_from_slice(&bytes[pos..pos + HMAC_TAG_SIZE]);
         pos += HMAC_TAG_SIZE;
-        header.auth_tag.copy_from_slice(&bytes[pos..pos + GCM_TAG_SIZE]);
+        header
+            .auth_tag
+            .copy_from_slice(&bytes[pos..pos + GCM_TAG_SIZE]);
 
         Ok(header)
     }
@@ -305,7 +311,9 @@ impl QuantumEntropyPool {
             .map_err(|_| EntropyPoolError::KeyDerivationFailed)?;
         mac.update(&hmac_data);
         let hmac_result = mac.finalize();
-        header.hmac_tag.copy_from_slice(hmac_result.into_bytes().as_slice());
+        header
+            .hmac_tag
+            .copy_from_slice(hmac_result.into_bytes().as_slice());
 
         // Write file with secure permissions
         let file_path = path.as_ref().to_path_buf();
@@ -398,18 +406,27 @@ impl QuantumEntropyPool {
         // Securely wipe consumed entropy (DoD 5220.22-M 3-pass)
         // Pass 0: all zeros (volatile writes to prevent optimizer elision)
         for byte in &mut self.decrypted_entropy[start_idx..end_idx] {
-            unsafe { std::ptr::write_volatile(byte, 0x00u8); }
+            unsafe {
+                std::ptr::write_volatile(byte, 0x00u8);
+            }
         }
         // Pass 1: all ones
         for byte in &mut self.decrypted_entropy[start_idx..end_idx] {
-            unsafe { std::ptr::write_volatile(byte, 0xFFu8); }
+            unsafe {
+                std::ptr::write_volatile(byte, 0xFFu8);
+            }
         }
         // Pass 2: random bytes via getrandom
         {
             let mut rand_buf = vec![0u8; num_bytes];
             let _ = getrandom::getrandom(&mut rand_buf);
-            for (dst, src) in self.decrypted_entropy[start_idx..end_idx].iter_mut().zip(rand_buf.iter()) {
-                unsafe { std::ptr::write_volatile(dst, *src); }
+            for (dst, src) in self.decrypted_entropy[start_idx..end_idx]
+                .iter_mut()
+                .zip(rand_buf.iter())
+            {
+                unsafe {
+                    std::ptr::write_volatile(dst, *src);
+                }
             }
             rand_buf.zeroize();
         }
@@ -493,11 +510,7 @@ impl QuantumEntropyPool {
         dest[..len].copy_from_slice(&bytes[..len]);
     }
 
-    fn write_pool_file(
-        path: &Path,
-        header: &QEPHeader,
-        encrypted_data: &[u8],
-    ) -> io::Result<()> {
+    fn write_pool_file(path: &Path, header: &QEPHeader, encrypted_data: &[u8]) -> io::Result<()> {
         let mut opts = OpenOptions::new();
         opts.create(true).write(true).truncate(true);
         #[cfg(unix)]

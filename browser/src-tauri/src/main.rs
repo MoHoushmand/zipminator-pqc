@@ -24,8 +24,9 @@ fn main() {
     // Initialize structured logging (tracing for domain modules, env_logger for shell).
     tracing_subscriber::fmt()
         .with_env_filter(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "zipbrowser=info,proxy=debug,vpn=info,privacy=info,ai=info".into()),
+            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
+                "zipbrowser=info,proxy=debug,vpn=info,privacy=info,ai=info".into()
+            }),
         )
         .init();
 
@@ -48,9 +49,10 @@ fn main() {
 
             // ── Domain 2: Start PQC HTTPS Proxy ───────────────────────────
             // Use a channel so the proxy port feeds back into AI sidebar state.
-            let data_dir = app.path().app_data_dir().unwrap_or_else(|_| {
-                std::env::temp_dir().join("zipbrowser")
-            });
+            let data_dir = app
+                .path()
+                .app_data_dir()
+                .unwrap_or_else(|_| std::env::temp_dir().join("zipbrowser"));
             let proxy_data_dir = data_dir.clone();
             let (port_tx, port_rx) = std::sync::mpsc::channel();
             tauri::async_runtime::spawn(async move {

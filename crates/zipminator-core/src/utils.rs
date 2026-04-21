@@ -1,7 +1,7 @@
 //! Utility functions for Kyber-768
 
+use sha3::digest::{ExtendableOutput, FixedOutput, Update, XofReader};
 use sha3::{Sha3_256, Sha3_512, Shake128, Shake256};
-use sha3::digest::{Update, FixedOutput, ExtendableOutput, XofReader};
 
 /// SHA3-256 hash
 pub fn sha3_256(data: &[u8]) -> [u8; 32] {

@@ -12,8 +12,7 @@ pub mod mock;
 use thiserror::Error;
 
 /// Health status of a QRNG device
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[derive(Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum HealthStatus {
     /// Device is healthy and operating normally
     #[default]
@@ -23,7 +22,6 @@ pub enum HealthStatus {
     /// Device has failed and cannot provide randomness
     Failed,
 }
-
 
 /// Errors that can occur during QRNG operations
 #[derive(Error, Debug)]

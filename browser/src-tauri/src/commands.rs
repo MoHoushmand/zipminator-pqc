@@ -47,7 +47,10 @@ pub fn set_active_tab(state: State<'_, AppState>, tab_id: String) -> Result<bool
 }
 
 #[tauri::command]
-pub fn set_active_tab_by_index(state: State<'_, AppState>, index: usize) -> Result<Option<String>, String> {
+pub fn set_active_tab_by_index(
+    state: State<'_, AppState>,
+    index: usize,
+) -> Result<Option<String>, String> {
     if index == 0 || index > 9 {
         return Err("Index must be 1-9".to_string());
     }
@@ -148,7 +151,12 @@ pub struct TabMetaUpdate {
 pub fn update_tab_meta(state: State<'_, AppState>, update: TabMetaUpdate) -> Result<(), String> {
     validate_id(&update.tab_id)?;
     let mut tabs = state.tabs.lock().map_err(|e| format!("Lock: {}", e))?;
-    tabs.update_tab_meta(&update.tab_id, update.title, update.favicon, update.security);
+    tabs.update_tab_meta(
+        &update.tab_id,
+        update.title,
+        update.favicon,
+        update.security,
+    );
     Ok(())
 }
 
@@ -165,11 +173,7 @@ pub fn set_tab_error(state: State<'_, AppState>, tab_id: String) -> Result<(), S
 // ---------------------------------------------------------------------------
 
 #[tauri::command]
-pub fn set_proxy_config(
-    state: State<'_, AppState>,
-    host: String,
-    port: u16,
-) -> Result<(), String> {
+pub fn set_proxy_config(state: State<'_, AppState>, host: String, port: u16) -> Result<(), String> {
     if host.is_empty() {
         return Err("Proxy host must not be empty".to_string());
     }
@@ -199,9 +203,7 @@ pub fn disable_proxy(state: State<'_, AppState>) -> Result<(), String> {
 }
 
 #[tauri::command]
-pub fn get_proxy_config(
-    state: State<'_, AppState>,
-) -> Result<crate::state::ProxyConfig, String> {
+pub fn get_proxy_config(state: State<'_, AppState>) -> Result<crate::state::ProxyConfig, String> {
     let proxy = state
         .proxy_config
         .lock()
@@ -305,10 +307,7 @@ impl TryFrom<VpnConnectRequest> for zipbrowser::vpn::config::VpnConfig {
 /// Connect the VPN tunnel.
 #[tauri::command]
 #[cfg(feature = "vpn")]
-pub async fn vpn_connect(
-    request: VpnConnectRequest,
-    app: AppHandle,
-) -> Result<(), String> {
+pub async fn vpn_connect(request: VpnConnectRequest, app: AppHandle) -> Result<(), String> {
     let config = zipbrowser::vpn::config::VpnConfig::try_from(request)?;
 
     let emit_fn: Arc<dyn Fn(&str, serde_json::Value) + Send + Sync> = {
@@ -354,10 +353,7 @@ pub async fn vpn_disconnect(app: AppHandle) -> Result<(), String> {
 /// This command stores the preference; it does not connect/disconnect the tunnel.
 #[tauri::command]
 pub async fn vpn_set_always_on(enabled: bool, state: State<'_, AppState>) -> Result<(), String> {
-    let mut vpn = state
-        .vpn_state
-        .lock()
-        .map_err(|e| format!("Lock: {}", e))?;
+    let mut vpn = state.vpn_state.lock().map_err(|e| format!("Lock: {}", e))?;
     vpn.always_on = enabled;
     log::info!("VPN always-on set to {}", enabled);
     Ok(())
@@ -410,10 +406,7 @@ pub fn get_entropy_status(state: State<'_, AppState>) -> Result<EntropyStatus, S
 
 #[tauri::command]
 pub fn get_bookmarks(state: State<'_, AppState>) -> Result<Vec<Bookmark>, String> {
-    let bookmarks = state
-        .bookmarks
-        .lock()
-        .map_err(|e| format!("Lock: {}", e))?;
+    let bookmarks = state.bookmarks.lock().map_err(|e| format!("Lock: {}", e))?;
     Ok(bookmarks.clone())
 }
 
@@ -433,10 +426,7 @@ pub fn add_bookmark(
         title,
         created_at: chrono::Utc::now().to_rfc3339(),
     };
-    let mut bookmarks = state
-        .bookmarks
-        .lock()
-        .map_err(|e| format!("Lock: {}", e))?;
+    let mut bookmarks = state.bookmarks.lock().map_err(|e| format!("Lock: {}", e))?;
     bookmarks.push(bookmark.clone());
     Ok(bookmark)
 }
@@ -444,10 +434,7 @@ pub fn add_bookmark(
 #[tauri::command]
 pub fn remove_bookmark(state: State<'_, AppState>, bookmark_id: String) -> Result<bool, String> {
     validate_id(&bookmark_id)?;
-    let mut bookmarks = state
-        .bookmarks
-        .lock()
-        .map_err(|e| format!("Lock: {}", e))?;
+    let mut bookmarks = state.bookmarks.lock().map_err(|e| format!("Lock: {}", e))?;
     let len_before = bookmarks.len();
     bookmarks.retain(|b| b.id != bookmark_id);
     Ok(bookmarks.len() < len_before)
@@ -455,10 +442,7 @@ pub fn remove_bookmark(state: State<'_, AppState>, bookmark_id: String) -> Resul
 
 #[tauri::command]
 pub fn is_bookmarked(state: State<'_, AppState>, url: String) -> Result<bool, String> {
-    let bookmarks = state
-        .bookmarks
-        .lock()
-        .map_err(|e| format!("Lock: {}", e))?;
+    let bookmarks = state.bookmarks.lock().map_err(|e| format!("Lock: {}", e))?;
     Ok(bookmarks.iter().any(|b| b.url == url))
 }
 
@@ -530,13 +514,10 @@ pub async fn scan_pqc_endpoint(host: String, port: u16) -> Result<PqcScanResult,
     let addr = format!("{}:{}", host, port);
 
     // Attempt TCP connection with timeout
-    let stream = tokio::time::timeout(
-        std::time::Duration::from_secs(5),
-        TcpStream::connect(&addr),
-    )
-    .await
-    .map_err(|_| format!("Connection to {} timed out", addr))?
-    .map_err(|e| format!("Connection failed: {}", e))?;
+    let stream = tokio::time::timeout(std::time::Duration::from_secs(5), TcpStream::connect(&addr))
+        .await
+        .map_err(|_| format!("Connection to {} timed out", addr))?
+        .map_err(|e| format!("Connection failed: {}", e))?;
 
     // For now, report connection success and use heuristic PQC detection
     // Full TLS probing via tokio-rustls can be added when the dependency is available

@@ -128,7 +128,7 @@ impl PqcSmtpClient {
         writeln!(raw, "X-PQC-Version: ML-KEM-768").unwrap();
         writeln!(raw, "X-PQC-Sender-Key: {sender_pk_b64}").unwrap();
         writeln!(raw).unwrap(); // blank line separates headers from body
-        // Write base64 in 76-char folded lines per RFC 2045
+                                // Write base64 in 76-char folded lines per RFC 2045
         for chunk in envelope_b64.as_bytes().chunks(76) {
             raw.extend_from_slice(chunk);
             raw.push(b'\n');
@@ -139,10 +139,7 @@ impl PqcSmtpClient {
 
     /// Send a pre-built message via SMTP. Requires the `smtp` feature.
     #[cfg(feature = "smtp")]
-    pub fn send(
-        config: &SmtpConfig,
-        message: &PqcEmailMessage,
-    ) -> Result<(), TransportError> {
+    pub fn send(config: &SmtpConfig, message: &PqcEmailMessage) -> Result<(), TransportError> {
         use lettre::transport::smtp::authentication::Credentials;
         use lettre::{SmtpTransport, Transport};
 
@@ -153,7 +150,9 @@ impl PqcSmtpClient {
         let transport = if config.use_tls {
             SmtpTransport::relay(&config.host)
         } else {
-            SmtpTransport::builder_dangerous(&config.host).port(config.port).build()
+            SmtpTransport::builder_dangerous(&config.host)
+                .port(config.port)
+                .build()
                 .map(|_| ()) // dummy to align types
                 .and_then(|_| SmtpTransport::relay(&config.host))
         }
@@ -163,9 +162,12 @@ impl PqcSmtpClient {
         .build();
 
         let email = lettre::message::Message::builder()
-            .from(config.from_address.parse().map_err(|_| {
-                TransportError::SmtpError("invalid from address".into())
-            })?)
+            .from(
+                config
+                    .from_address
+                    .parse()
+                    .map_err(|_| TransportError::SmtpError("invalid from address".into()))?,
+            )
             .body(message.raw.clone())
             .map_err(|e| TransportError::SmtpError(e.to_string()))?;
 
@@ -226,8 +228,7 @@ impl SelfDestructTimer {
 
         match self.wipe_method {
             WipeMethod::Delete => {
-                std::fs::remove_file(path)
-                    .map_err(|e| TransportError::WipeError(e.to_string()))?;
+                std::fs::remove_file(path).map_err(|e| TransportError::WipeError(e.to_string()))?;
             }
             WipeMethod::Overwrite3Pass => {
                 let len = std::fs::metadata(path)
@@ -245,8 +246,7 @@ impl SelfDestructTimer {
                 std::fs::write(path, &random_buf)
                     .map_err(|e| TransportError::WipeError(e.to_string()))?;
 
-                std::fs::remove_file(path)
-                    .map_err(|e| TransportError::WipeError(e.to_string()))?;
+                std::fs::remove_file(path).map_err(|e| TransportError::WipeError(e.to_string()))?;
             }
             WipeMethod::OverwriteRandom => {
                 let len = std::fs::metadata(path)
@@ -259,22 +259,16 @@ impl SelfDestructTimer {
                 std::fs::write(path, &random_buf)
                     .map_err(|e| TransportError::WipeError(e.to_string()))?;
 
-                std::fs::remove_file(path)
-                    .map_err(|e| TransportError::WipeError(e.to_string()))?;
+                std::fs::remove_file(path).map_err(|e| TransportError::WipeError(e.to_string()))?;
             }
         }
 
         Ok(())
     }
 
-    fn overwrite_file(
-        path: &std::path::Path,
-        len: usize,
-        byte: u8,
-    ) -> Result<(), TransportError> {
+    fn overwrite_file(path: &std::path::Path, len: usize, byte: u8) -> Result<(), TransportError> {
         let buf = vec![byte; len];
-        std::fs::write(path, &buf)
-            .map_err(|e| TransportError::WipeError(e.to_string()))
+        std::fs::write(path, &buf).map_err(|e| TransportError::WipeError(e.to_string()))
     }
 }
 
@@ -333,8 +327,7 @@ mod tests {
         let pk_bytes = pk.as_bytes();
 
         let envelope =
-            EmailCrypto::encrypt(pk_bytes, b"Hello PQC world", b"test-headers")
-                .expect("encrypt");
+            EmailCrypto::encrypt(pk_bytes, b"Hello PQC world", b"test-headers").expect("encrypt");
 
         let msg = PqcSmtpClient::build_message(
             "alice@qdaria.com",
@@ -358,17 +351,10 @@ mod tests {
         let (pk, _sk) = kyber768::keypair();
         let pk_bytes = pk.as_bytes();
 
-        let envelope =
-            EmailCrypto::encrypt(pk_bytes, b"secret", b"aad").expect("encrypt");
+        let envelope = EmailCrypto::encrypt(pk_bytes, b"secret", b"aad").expect("encrypt");
 
-        let msg = PqcSmtpClient::build_message(
-            "a@b.com",
-            "c@d.com",
-            "PQC",
-            &envelope,
-            pk_bytes,
-        )
-        .expect("build");
+        let msg = PqcSmtpClient::build_message("a@b.com", "c@d.com", "PQC", &envelope, pk_bytes)
+            .expect("build");
 
         let raw_str = String::from_utf8_lossy(&msg.raw);
         assert!(raw_str.contains("X-PQC-Version: ML-KEM-768"));
@@ -386,11 +372,7 @@ mod tests {
 
     #[test]
     fn test_self_destruct_timer_expiry() {
-        let timer = SelfDestructTimer::new(
-            "msg-001".into(),
-            1_000_000,
-            WipeMethod::Delete,
-        );
+        let timer = SelfDestructTimer::new("msg-001".into(), 1_000_000, WipeMethod::Delete);
 
         assert!(!timer.is_expired(999_999));
         assert!(timer.is_expired(1_000_000));
@@ -419,8 +401,7 @@ mod tests {
         // Test OverwriteRandom
         let rand_path = dir.join("rand_wipe.bin");
         std::fs::write(&rand_path, b"classified").unwrap();
-        let timer =
-            SelfDestructTimer::new("d3".into(), 0, WipeMethod::OverwriteRandom);
+        let timer = SelfDestructTimer::new("d3".into(), 0, WipeMethod::OverwriteRandom);
         timer.execute_wipe(&rand_path).expect("random wipe");
         assert!(!rand_path.exists());
 

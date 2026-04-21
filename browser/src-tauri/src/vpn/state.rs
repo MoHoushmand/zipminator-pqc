@@ -82,7 +82,7 @@ fn is_valid_transition(from: &VpnState, to: &VpnState) -> bool {
         | (Rekeying, Error(_))       // rekey failed
         | (Rekeying, Disconnected)   // user disconnects during rekey
         | (Error(_), Disconnected)   // reset after error
-        | (Error(_), Connecting)     // retry after error
+        | (Error(_), Connecting) // retry after error
     )
 }
 
@@ -126,10 +126,7 @@ impl VpnStateMachine {
     /// Returns [`StateError::InvalidTransition`] if the transition is not
     /// permitted by the state machine table.
     pub fn transition(&self, next_state: VpnState) -> Result<VpnState, StateError> {
-        let mut lock = self
-            .inner
-            .write()
-            .map_err(|_| StateError::LockPoisoned)?;
+        let mut lock = self.inner.write().map_err(|_| StateError::LockPoisoned)?;
 
         let current = lock.clone();
 
@@ -221,7 +218,8 @@ mod tests {
     fn error_then_reset() {
         let sm = VpnStateMachine::new();
         sm.transition(VpnState::Connecting).unwrap();
-        sm.transition(VpnState::Error("timeout".to_string())).unwrap();
+        sm.transition(VpnState::Error("timeout".to_string()))
+            .unwrap();
         sm.transition(VpnState::Disconnected).unwrap();
         assert_eq!(sm.current(), VpnState::Disconnected);
     }
@@ -278,7 +276,8 @@ mod tests {
     fn retry_after_error_via_connecting() {
         let sm = VpnStateMachine::new();
         sm.transition(VpnState::Connecting).unwrap();
-        sm.transition(VpnState::Error("handshake timed out".to_string())).unwrap();
+        sm.transition(VpnState::Error("handshake timed out".to_string()))
+            .unwrap();
         sm.transition(VpnState::Connecting).unwrap();
         sm.transition(VpnState::Connected).unwrap();
         assert_eq!(sm.current(), VpnState::Connected);

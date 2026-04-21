@@ -98,9 +98,9 @@ fn extract_phase_lsbs(frame: &[Complex<f32>; CSI_SUBCARRIERS]) -> Vec<bool> {
         .iter()
         .map(|c| {
             let phase = c.arg(); // -π to π
-            // Quantize to 0..255 range
-            let quantized = ((phase + std::f32::consts::PI) / (2.0 * std::f32::consts::PI) * 256.0)
-                as u8;
+                                 // Quantize to 0..255 range
+            let quantized =
+                ((phase + std::f32::consts::PI) / (2.0 * std::f32::consts::PI) * 256.0) as u8;
             // LSB extraction
             (quantized & 1) != 0
         })
@@ -235,9 +235,8 @@ mod tests {
     fn make_test_frame(seed: u32) -> [Complex<f32>; CSI_SUBCARRIERS] {
         let mut frame = [Complex::new(0.0f32, 0.0f32); CSI_SUBCARRIERS];
         for (i, c) in frame.iter_mut().enumerate() {
-            let angle =
-                ((seed as f32 * 0.1 + i as f32 * 0.7) % (2.0 * std::f32::consts::PI))
-                    - std::f32::consts::PI;
+            let angle = ((seed as f32 * 0.1 + i as f32 * 0.7) % (2.0 * std::f32::consts::PI))
+                - std::f32::consts::PI;
             let magnitude = 1.0 + (i as f32 * 0.01);
             *c = Complex::from_polar(magnitude, angle);
         }
@@ -297,7 +296,10 @@ mod tests {
             source.ingest_frame(&make_test_frame(seed));
         }
         let available = source.available().unwrap();
-        assert!(available > 0, "should have extracted some entropy from 100 CSI frames");
+        assert!(
+            available > 0,
+            "should have extracted some entropy from 100 CSI frames"
+        );
     }
 
     #[test]
@@ -341,7 +343,10 @@ mod tests {
         let mut buf2 = [0u8; 4];
         source1.read_entropy(&mut buf1).unwrap();
         source2.read_entropy(&mut buf2).unwrap();
-        assert_ne!(buf1, buf2, "different CSI data should produce different entropy");
+        assert_ne!(
+            buf1, buf2,
+            "different CSI data should produce different entropy"
+        );
     }
 
     #[test]
@@ -351,7 +356,10 @@ mod tests {
         assert_eq!(bits.len(), CSI_SUBCARRIERS);
         // Should have a mix of true and false (not all same)
         let true_count = bits.iter().filter(|&&b| b).count();
-        assert!(true_count > 0 && true_count < CSI_SUBCARRIERS, "phase LSBs should not be uniform");
+        assert!(
+            true_count > 0 && true_count < CSI_SUBCARRIERS,
+            "phase LSBs should not be uniform"
+        );
     }
 
     #[test]
@@ -368,7 +376,11 @@ mod tests {
 
         let written = source.flush_to_file(&pool_path).unwrap();
         assert_eq!(written, available_before);
-        assert_eq!(source.available().unwrap(), 0, "buffer should be empty after flush");
+        assert_eq!(
+            source.available().unwrap(),
+            0,
+            "buffer should be empty after flush"
+        );
 
         // File should contain exactly what was flushed
         let file_data = std::fs::read(&pool_path).unwrap();

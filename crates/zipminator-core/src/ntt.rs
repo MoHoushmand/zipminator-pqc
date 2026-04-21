@@ -150,7 +150,8 @@ mod tests {
         const MONT_POS: i32 = 2285; // 2^16 mod 3329
         for i in 0..KYBER_N {
             let result = ((poly[i] as i32 % KYBER_Q as i32) + KYBER_Q as i32) % KYBER_Q as i32;
-            let expected = ((original[i] as i32 * MONT_POS) % KYBER_Q as i32 + KYBER_Q as i32) % KYBER_Q as i32;
+            let expected = ((original[i] as i32 * MONT_POS) % KYBER_Q as i32 + KYBER_Q as i32)
+                % KYBER_Q as i32;
             assert_eq!(
                 result, expected,
                 "NTT->INVNTT scaling mismatch at index {}",

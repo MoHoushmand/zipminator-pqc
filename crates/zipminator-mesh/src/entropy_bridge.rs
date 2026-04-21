@@ -249,7 +249,9 @@ mod tests {
     fn test_derive_key_pair() {
         let source = MemoryEntropySource::new(make_entropy(128));
         let mut bridge = EntropyBridge::new(source);
-        let (mesh, siphash) = bridge.derive_mesh_key_pair(None).expect("should derive pair");
+        let (mesh, siphash) = bridge
+            .derive_mesh_key_pair(None)
+            .expect("should derive pair");
         assert!(!mesh.is_zero());
         assert!(!siphash.is_zero());
         // PSK and SipHash keys should differ (different HKDF info strings)

@@ -139,7 +139,8 @@ pub unsafe extern "C" fn zipminator_derive_srtp_keys(
         std::ptr::copy_nonoverlapping(material.master_salt.as_ptr(), out_salt, 14);
 
         0
-    })).unwrap_or(-2)
+    }))
+    .unwrap_or(-2)
 }
 
 // ── Frame encryption ─────────────────────────────────────────────────────
@@ -252,9 +253,9 @@ mod tests {
 
     // A fixed "shared secret" that simulates Kyber-768 output
     const TEST_SS: [u8; 32] = [
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
-        0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c,
-        0x1d, 0x1e, 0x1f, 0x20,
+        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+        0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e,
+        0x1f, 0x20,
     ];
 
     const ZERO_SS: [u8; 32] = [0u8; 32];
@@ -422,15 +423,19 @@ mod tests {
 
         let km = derive_srtp_keys(&TEST_SS);
         assert_eq!(out_key, km.master_key, "FFI key must match Rust API key");
-        assert_eq!(out_salt, km.master_salt, "FFI salt must match Rust API salt");
+        assert_eq!(
+            out_salt, km.master_salt,
+            "FFI salt must match Rust API salt"
+        );
     }
 
     #[test]
     fn ffi_returns_minus_one_on_null_secret() {
         let mut key = [0u8; 16];
         let mut salt = [0u8; 14];
-        let rc =
-            unsafe { zipminator_derive_srtp_keys(std::ptr::null(), key.as_mut_ptr(), salt.as_mut_ptr()) };
+        let rc = unsafe {
+            zipminator_derive_srtp_keys(std::ptr::null(), key.as_mut_ptr(), salt.as_mut_ptr())
+        };
         assert_eq!(rc, -1);
     }
 

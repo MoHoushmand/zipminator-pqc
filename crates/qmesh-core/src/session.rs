@@ -91,7 +91,10 @@ impl QMeshSession {
 
     /// Responder path: encapsulate against the peer's public key and
     /// return the ciphertext together with derived session keys.
-    pub fn encapsulate_to(&self, peer_pk: &PublicKey) -> Result<(Ciphertext, SessionKeys), SessionError> {
+    pub fn encapsulate_to(
+        &self,
+        peer_pk: &PublicKey,
+    ) -> Result<(Ciphertext, SessionKeys), SessionError> {
         let (ct, ss) = QMeshHandshake::encapsulate(peer_pk);
         let keys = derive_session_keys(ss.as_bytes(), self.psk.as_deref())?;
         Ok((ct, keys))

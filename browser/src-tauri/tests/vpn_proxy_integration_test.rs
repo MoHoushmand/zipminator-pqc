@@ -14,6 +14,7 @@
 
 // ── Pull in the library crate ───────────────────────────────────────────────
 
+use std::sync::Arc;
 use zipbrowser::proxy::server::{clear_vpn_tunnel_ip, set_vpn_tunnel_ip};
 use zipbrowser::vpn::{
     config::VpnConfig,
@@ -21,7 +22,6 @@ use zipbrowser::vpn::{
     state::{VpnState, VpnStateMachine},
     VpnManager,
 };
-use std::sync::Arc;
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -85,13 +85,16 @@ fn vpn_registry_survives_concurrent_access() {
 fn state_machine_connect_then_disconnect_cycle() {
     let sm = VpnStateMachine::new();
 
-    sm.transition(VpnState::Connecting).expect("Disconnected -> Connecting");
+    sm.transition(VpnState::Connecting)
+        .expect("Disconnected -> Connecting");
     assert_eq!(sm.current(), VpnState::Connecting);
 
-    sm.transition(VpnState::Connected).expect("Connecting -> Connected");
+    sm.transition(VpnState::Connected)
+        .expect("Connecting -> Connected");
     assert!(sm.is_tunnel_active());
 
-    sm.transition(VpnState::Disconnected).expect("Connected -> Disconnected");
+    sm.transition(VpnState::Disconnected)
+        .expect("Connected -> Disconnected");
     assert!(!sm.is_tunnel_active());
 }
 
@@ -102,7 +105,10 @@ fn state_machine_rekey_cycle_stays_active() {
     sm.transition(VpnState::Connected).unwrap();
     sm.transition(VpnState::Rekeying).unwrap();
     // Tunnel must still be considered active during a rekey.
-    assert!(sm.is_tunnel_active(), "tunnel should be active during rekeying");
+    assert!(
+        sm.is_tunnel_active(),
+        "tunnel should be active during rekeying"
+    );
     sm.transition(VpnState::Connected).unwrap();
     assert!(sm.is_tunnel_active());
 }
@@ -111,7 +117,8 @@ fn state_machine_rekey_cycle_stays_active() {
 fn state_machine_error_then_reset() {
     let sm = VpnStateMachine::new();
     sm.transition(VpnState::Connecting).unwrap();
-    sm.transition(VpnState::Error("handshake timeout".to_string())).unwrap();
+    sm.transition(VpnState::Error("handshake timeout".to_string()))
+        .unwrap();
     sm.transition(VpnState::Disconnected).unwrap();
     assert_eq!(sm.current(), VpnState::Disconnected);
 }
@@ -149,7 +156,10 @@ fn manager_status_disconnected_has_no_metrics() {
 async fn disconnect_when_already_disconnected_is_noop() {
     let mut mgr = VpnManager::new();
     let result = mgr.disconnect(noop_emit()).await;
-    assert!(result.is_ok(), "disconnecting an already-disconnected manager must succeed");
+    assert!(
+        result.is_ok(),
+        "disconnecting an already-disconnected manager must succeed"
+    );
     assert_eq!(mgr.current_state(), VpnState::Disconnected);
 }
 
@@ -181,12 +191,11 @@ async fn connect_emits_state_changed_events() {
     let counter = Arc::new(AtomicUsize::new(0));
     let counter_clone = counter.clone();
 
-    let emit_fn: Arc<dyn Fn(&str, serde_json::Value) + Send + Sync> =
-        Arc::new(move |event, _| {
-            if event == "vpn-state-changed" {
-                counter_clone.fetch_add(1, Ordering::SeqCst);
-            }
-        });
+    let emit_fn: Arc<dyn Fn(&str, serde_json::Value) + Send + Sync> = Arc::new(move |event, _| {
+        if event == "vpn-state-changed" {
+            counter_clone.fetch_add(1, Ordering::SeqCst);
+        }
+    });
 
     let mut mgr = VpnManager::new();
     // Use an invalid config that fails at validation (before any network I/O),
@@ -259,7 +268,10 @@ fn metrics_reset_on_disconnect() {
     let snap = m.snapshot();
     assert_eq!(snap.bytes_sent, 0, "bytes_sent must reset to 0");
     assert_eq!(snap.rekey_count, 0, "rekey_count must reset to 0");
-    assert!(snap.connected_since.is_none(), "connected_since must be None");
+    assert!(
+        snap.connected_since.is_none(),
+        "connected_since must be None"
+    );
 }
 
 #[test]

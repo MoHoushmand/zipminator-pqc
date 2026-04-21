@@ -120,10 +120,8 @@ impl MetricsCollector {
     pub fn record_pqc(&self, domain: &str, algorithm: &str, handshake_duration: Duration) {
         self.pqc_count.fetch_add(1, Ordering::Relaxed);
 
-        self.domain_status.insert(
-            domain.to_string(),
-            PqcStatus::Active(algorithm.to_string()),
-        );
+        self.domain_status
+            .insert(domain.to_string(), PqcStatus::Active(algorithm.to_string()));
 
         self.record_latency(domain, handshake_duration);
         self.touch(domain);
@@ -160,10 +158,8 @@ impl MetricsCollector {
     pub fn record_failure(&self, domain: &str, reason: &str) {
         self.failed_count.fetch_add(1, Ordering::Relaxed);
 
-        self.domain_status.insert(
-            domain.to_string(),
-            PqcStatus::Failed(reason.to_string()),
-        );
+        self.domain_status
+            .insert(domain.to_string(), PqcStatus::Failed(reason.to_string()));
         self.touch(domain);
 
         tracing::warn!(domain, reason, "connection failed");
@@ -214,7 +210,12 @@ impl MetricsCollector {
     }
 
     /// Build a Tauri event payload for a PQC connection.
-    pub fn pqc_event(&self, domain: &str, algorithm: &str, duration: Duration) -> PqcConnectionEvent {
+    pub fn pqc_event(
+        &self,
+        domain: &str,
+        algorithm: &str,
+        duration: Duration,
+    ) -> PqcConnectionEvent {
         PqcConnectionEvent {
             domain: domain.to_string(),
             algorithm: algorithm.to_string(),

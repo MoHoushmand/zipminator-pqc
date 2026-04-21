@@ -117,16 +117,8 @@ impl VpnMetrics {
             bytes_sent: self.inner.bytes_sent.load(Ordering::Relaxed),
             bytes_received: self.inner.bytes_received.load(Ordering::Relaxed),
             rekey_count: self.inner.rekey_count.load(Ordering::Relaxed),
-            last_rekey_at: *self
-                .inner
-                .last_rekey_at
-                .lock()
-                .expect("metrics lock"),
-            connected_since: *self
-                .inner
-                .connected_since_utc
-                .lock()
-                .expect("metrics lock"),
+            last_rekey_at: *self.inner.last_rekey_at.lock().expect("metrics lock"),
+            connected_since: *self.inner.connected_since_utc.lock().expect("metrics lock"),
         }
     }
 
@@ -140,11 +132,7 @@ impl VpnMetrics {
     /// forwarding it to the Tauri app handle.  This decouples the metrics
     /// module from the Tauri dependency so it can be unit-tested without a
     /// running Tauri application.
-    pub fn start_emitter<F>(
-        &self,
-        interval_secs: u64,
-        emit_fn: F,
-    ) -> tokio::task::JoinHandle<()>
+    pub fn start_emitter<F>(&self, interval_secs: u64, emit_fn: F) -> tokio::task::JoinHandle<()>
     where
         F: Fn(VpnMetricsSnapshot) + Send + 'static,
     {
@@ -257,8 +245,7 @@ mod tests {
         m.record_connected();
         m.add_bytes_sent(100);
 
-        let received: Arc<Mutex<Vec<VpnMetricsSnapshot>>> =
-            Arc::new(Mutex::new(Vec::new()));
+        let received: Arc<Mutex<Vec<VpnMetricsSnapshot>>> = Arc::new(Mutex::new(Vec::new()));
         let received_clone = received.clone();
 
         let handle = m.start_emitter(1, move |snap| {

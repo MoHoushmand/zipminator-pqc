@@ -55,9 +55,9 @@ pub struct EmCanaryPolicy {
 impl Default for EmCanaryPolicy {
     fn default() -> Self {
         Self {
-            elevated_threshold: 0.10,  // 10% deviation
-            high_threshold: 0.25,      // 25% deviation
-            critical_threshold: 0.50,  // 50% deviation
+            elevated_threshold: 0.10, // 10% deviation
+            high_threshold: 0.25,     // 25% deviation
+            critical_threshold: 0.50, // 50% deviation
             rekey_on_elevated: true,
             terminate_on_critical: true,
             max_consecutive_anomalies: 5,
@@ -135,7 +135,8 @@ impl EmCanaryController {
         };
 
         // Forced escalation on consecutive anomalies
-        let effective_threat = if self.consecutive_anomalies >= self.policy.max_consecutive_anomalies
+        let effective_threat = if self.consecutive_anomalies
+            >= self.policy.max_consecutive_anomalies
             && new_threat < ThreatLevel::Critical
         {
             ThreatLevel::Critical
@@ -295,7 +296,7 @@ mod tests {
 
         ctrl.on_anomaly(0.15); // count: 1
         ctrl.on_anomaly(0.15); // count: 2
-        ctrl.on_clear();       // resets counter
+        ctrl.on_clear(); // resets counter
 
         // Should not escalate because counter was reset
         let action = ctrl.on_anomaly(0.15); // count: 1

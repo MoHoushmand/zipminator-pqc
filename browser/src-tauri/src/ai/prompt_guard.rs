@@ -18,16 +18,31 @@ pub struct PromptGuardResult {
 /// Known injection patterns. Each entry is a case-insensitive substring
 /// matched against the user's input.
 const INJECTION_PATTERNS: &[(&str, &str)] = &[
-    ("ignore previous instructions", "Attempts to override system prompt"),
+    (
+        "ignore previous instructions",
+        "Attempts to override system prompt",
+    ),
     ("ignore all previous", "Attempts to override system prompt"),
-    ("disregard previous", "Attempts to disregard prior instructions"),
-    ("forget your instructions", "Attempts to erase system instructions"),
+    (
+        "disregard previous",
+        "Attempts to disregard prior instructions",
+    ),
+    (
+        "forget your instructions",
+        "Attempts to erase system instructions",
+    ),
     ("you are now", "Attempts to redefine assistant identity"),
     ("act as if you", "Attempts to redefine assistant behavior"),
     ("pretend you are", "Attempts to redefine assistant identity"),
-    ("system prompt", "Attempts to access or modify system prompt"),
+    (
+        "system prompt",
+        "Attempts to access or modify system prompt",
+    ),
     ("reveal your prompt", "Attempts to extract system prompt"),
-    ("show me your instructions", "Attempts to extract system prompt"),
+    (
+        "show me your instructions",
+        "Attempts to extract system prompt",
+    ),
     ("do anything now", "DAN (Do Anything Now) jailbreak"),
     ("jailbreak", "Explicit jailbreak attempt"),
     ("bypass your", "Attempts to bypass safety filters"),

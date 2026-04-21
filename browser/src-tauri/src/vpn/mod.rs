@@ -103,10 +103,7 @@ impl VpnManager {
 
     /// Return a status snapshot suitable for the `vpn_get_status` command.
     pub fn status(&self) -> VpnStatus {
-        let interface = self
-            .tunnel
-            .as_ref()
-            .map(|t| t.interface_name().to_string());
+        let interface = self.tunnel.as_ref().map(|t| t.interface_name().to_string());
         let metrics = if self.state_machine.is_tunnel_active() {
             Some(self.metrics.snapshot())
         } else {
@@ -228,8 +225,7 @@ impl VpnManager {
                     Ok(new_state) => {
                         emit_fn_rekey(
                             EVENT_STATE_CHANGED,
-                            serde_json::to_value(&new_state)
-                                .unwrap_or(serde_json::Value::Null),
+                            serde_json::to_value(&new_state).unwrap_or(serde_json::Value::Null),
                         );
                     }
                     Err(e) => {
@@ -249,8 +245,7 @@ impl VpnManager {
                     Ok(new_state) => {
                         emit_fn_rekey(
                             EVENT_STATE_CHANGED,
-                            serde_json::to_value(&new_state)
-                                .unwrap_or(serde_json::Value::Null),
+                            serde_json::to_value(&new_state).unwrap_or(serde_json::Value::Null),
                         );
                     }
                     Err(e) => {
@@ -264,12 +259,14 @@ impl VpnManager {
 
         // ── 8. Start metrics emitter task ──────────────────────────────
         let emit_fn_metrics = emit_fn.clone();
-        let metrics_handle = self.metrics.start_emitter(METRICS_INTERVAL_SECS, move |snap| {
-            emit_fn_metrics(
-                EVENT_METRICS_UPDATED,
-                serde_json::to_value(&snap).unwrap_or(serde_json::Value::Null),
-            );
-        });
+        let metrics_handle = self
+            .metrics
+            .start_emitter(METRICS_INTERVAL_SECS, move |snap| {
+                emit_fn_metrics(
+                    EVENT_METRICS_UPDATED,
+                    serde_json::to_value(&snap).unwrap_or(serde_json::Value::Null),
+                );
+            });
         self.metrics_task = Some(metrics_handle);
 
         info!("VPN tunnel fully established");
@@ -322,8 +319,7 @@ impl VpnManager {
         self.state_machine.force_disconnected();
         emit_fn(
             EVENT_STATE_CHANGED,
-            serde_json::to_value(VpnState::Disconnected)
-                .unwrap_or(serde_json::Value::Null),
+            serde_json::to_value(VpnState::Disconnected).unwrap_or(serde_json::Value::Null),
         );
 
         info!("VPN: disconnected");
@@ -337,9 +333,10 @@ impl VpnManager {
         next: VpnState,
         emit_fn: &Arc<dyn Fn(&str, serde_json::Value) + Send + Sync>,
     ) -> Result<VpnState, VpnError> {
-        let state = self.state_machine.transition(next).map_err(|e| {
-            VpnError::InvalidTransition(e.to_string())
-        })?;
+        let state = self
+            .state_machine
+            .transition(next)
+            .map_err(|e| VpnError::InvalidTransition(e.to_string()))?;
         emit_fn(
             EVENT_STATE_CHANGED,
             serde_json::to_value(&state).unwrap_or(serde_json::Value::Null),
@@ -347,10 +344,7 @@ impl VpnManager {
         Ok(state)
     }
 
-    fn cleanup_on_error(
-        &mut self,
-        emit_fn: &Arc<dyn Fn(&str, serde_json::Value) + Send + Sync>,
-    ) {
+    fn cleanup_on_error(&mut self, emit_fn: &Arc<dyn Fn(&str, serde_json::Value) + Send + Sync>) {
         if let Some(mut ks) = self.kill_switch.take() {
             let _ = ks.deactivate();
         }
@@ -455,8 +449,9 @@ mod tests {
     ) {
         let count = Arc::new(AtomicUsize::new(0));
         let count_clone = count.clone();
-        let emit: Arc<dyn Fn(&str, serde_json::Value) + Send + Sync> =
-            Arc::new(move |_, _| { count_clone.fetch_add(1, Ordering::SeqCst); });
+        let emit: Arc<dyn Fn(&str, serde_json::Value) + Send + Sync> = Arc::new(move |_, _| {
+            count_clone.fetch_add(1, Ordering::SeqCst);
+        });
         (emit, count)
     }
 
@@ -569,7 +564,10 @@ mod tests {
         };
         let k_a = super::derive_wg_session_key(&config_a);
         let k_b = super::derive_wg_session_key(&config_b);
-        assert_ne!(k_a, k_b, "different key pairs must produce different WG session keys");
+        assert_ne!(
+            k_a, k_b,
+            "different key pairs must produce different WG session keys"
+        );
     }
 
     #[test]
@@ -596,6 +594,9 @@ mod tests {
         let zero_wg = [0u8; 32];
         let hybrid_zero = pq_handshake::derive_hybrid_key(&zero_wg, &kyber_ss)
             .expect("hybrid derivation with zero WG key must succeed");
-        assert_ne!(hybrid, hybrid_zero, "non-zero WG key must produce different hybrid than zero WG key");
+        assert_ne!(
+            hybrid, hybrid_zero,
+            "non-zero WG key must produce different hybrid than zero WG key"
+        );
     }
 }

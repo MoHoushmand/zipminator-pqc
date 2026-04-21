@@ -1,6 +1,6 @@
 #![no_main]
 use libfuzzer_sys::fuzz_target;
-use zipminator_core::{Kyber768, Ciphertext, KYBER768_CIPHERTEXTBYTES};
+use zipminator_core::{Ciphertext, Kyber768, KYBER768_CIPHERTEXTBYTES};
 
 fuzz_target!(|data: &[u8]| {
     // Generate a valid keypair

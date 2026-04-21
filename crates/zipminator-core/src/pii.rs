@@ -22,9 +22,7 @@ use std::sync::OnceLock;
 
 // ── Pattern JSON embedded at compile time ────────────────────────────────────
 
-const PATTERNS_JSON: &str = include_str!(
-    "../../../src/zipminator/crypto/patterns/patterns.json"
-);
+const PATTERNS_JSON: &str = include_str!("../../../src/zipminator/crypto/patterns/patterns.json");
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -96,7 +94,13 @@ fn parse_patterns_json(json: &str) -> Vec<PatternDef> {
     let mut i = arr_start + 1;
     while i < bytes.len() {
         // Skip whitespace
-        while i < bytes.len() && (bytes[i] == b' ' || bytes[i] == b'\n' || bytes[i] == b'\r' || bytes[i] == b'\t' || bytes[i] == b',') {
+        while i < bytes.len()
+            && (bytes[i] == b' '
+                || bytes[i] == b'\n'
+                || bytes[i] == b'\r'
+                || bytes[i] == b'\t'
+                || bytes[i] == b',')
+        {
             i += 1;
         }
         if i >= bytes.len() || bytes[i] == b']' {
@@ -114,7 +118,9 @@ fn parse_patterns_json(json: &str) -> Vec<PatternDef> {
                         // Skip string contents (handle escapes)
                         i += 1;
                         while i < bytes.len() && bytes[i] != b'"' {
-                            if bytes[i] == b'\\' { i += 1; }
+                            if bytes[i] == b'\\' {
+                                i += 1;
+                            }
                             i += 1;
                         }
                     }
@@ -179,7 +185,10 @@ fn extract_json_int(obj: &str, key: &str) -> Option<u8> {
     let after_colon = after_key[colon_pos + 1..].trim_start();
 
     // Read digits
-    let digits: String = after_colon.chars().take_while(|c| c.is_ascii_digit()).collect();
+    let digits: String = after_colon
+        .chars()
+        .take_while(|c| c.is_ascii_digit())
+        .collect();
     digits.parse().ok()
 }
 
@@ -526,10 +535,7 @@ mod tests {
             .iter()
             .filter(|m| m.pattern_id == "us_ssn")
             .collect();
-        assert!(
-            ssn_matches.is_empty(),
-            "Should reject SSN with area 000"
-        );
+        assert!(ssn_matches.is_empty(), "Should reject SSN with area 000");
     }
 
     #[test]
@@ -540,10 +546,7 @@ mod tests {
             .iter()
             .filter(|m| m.pattern_id == "us_ssn")
             .collect();
-        assert!(
-            ssn_matches.is_empty(),
-            "Should reject SSN with area 666"
-        );
+        assert!(ssn_matches.is_empty(), "Should reject SSN with area 666");
     }
 
     #[test]
@@ -579,7 +582,10 @@ mod tests {
             .iter()
             .filter(|m| m.pattern_id == "us_phone")
             .collect();
-        assert!(!phone_matches.is_empty(), "Should detect US phone (10 digits)");
+        assert!(
+            !phone_matches.is_empty(),
+            "Should detect US phone (10 digits)"
+        );
     }
 
     #[test]
@@ -613,8 +619,14 @@ mod tests {
         let us_only = scan_text(text, &["us"]);
         let uk_only = scan_text(text, &["uk"]);
 
-        let us_ssn: Vec<_> = us_only.iter().filter(|m| m.pattern_id == "us_ssn").collect();
-        let uk_ssn: Vec<_> = uk_only.iter().filter(|m| m.pattern_id == "us_ssn").collect();
+        let us_ssn: Vec<_> = us_only
+            .iter()
+            .filter(|m| m.pattern_id == "us_ssn")
+            .collect();
+        let uk_ssn: Vec<_> = uk_only
+            .iter()
+            .filter(|m| m.pattern_id == "us_ssn")
+            .collect();
 
         assert!(!us_ssn.is_empty(), "US scan should find SSN");
         assert!(uk_ssn.is_empty(), "UK scan should not find US SSN");
@@ -625,10 +637,7 @@ mod tests {
         let text = "Email: user@example.com";
         let matches = scan_text(text, &[]);
         // Email patterns exist in US, UK, and UAE
-        let email_matches: Vec<_> = matches
-            .iter()
-            .filter(|m| m.category == "contact")
-            .collect();
+        let email_matches: Vec<_> = matches.iter().filter(|m| m.category == "contact").collect();
         assert!(
             email_matches.len() >= 3,
             "Empty filter should scan all countries, found {} email matches",
@@ -699,15 +708,15 @@ mod tests {
     fn test_luhn_valid_numbers() {
         assert!(luhn_validate("4532015112830366")); // Visa
         assert!(luhn_validate("5425233430109903")); // Mastercard
-        assert!(luhn_validate("79927398713"));       // Standard test
+        assert!(luhn_validate("79927398713")); // Standard test
     }
 
     #[test]
     fn test_luhn_invalid_numbers() {
         assert!(!luhn_validate("4532015112830361")); // Bad check digit
         assert!(!luhn_validate("1234567890123456")); // Random
-        assert!(!luhn_validate("0"));                 // Too short
-        assert!(!luhn_validate(""));                  // Empty
+        assert!(!luhn_validate("0")); // Too short
+        assert!(!luhn_validate("")); // Empty
     }
 
     // ── JSON serialization ───────────────────────────────────────────────────

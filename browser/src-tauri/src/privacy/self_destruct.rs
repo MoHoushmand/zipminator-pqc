@@ -50,7 +50,9 @@ pub fn secure_delete_file(file_path: &Path) -> Result<SelfDestructResult, String
 
     if cfg!(unix) {
         let path_str = canonical.to_string_lossy();
-        let forbidden = ["/bin", "/sbin", "/usr", "/etc", "/var", "/System", "/Library"];
+        let forbidden = [
+            "/bin", "/sbin", "/usr", "/etc", "/var", "/System", "/Library",
+        ];
         for prefix in &forbidden {
             if path_str.starts_with(prefix) {
                 return Err(format!("Refusing to destroy system path: {}", path_str));
@@ -71,12 +73,10 @@ pub fn secure_delete_file(file_path: &Path) -> Result<SelfDestructResult, String
         .map_err(|e| format!("Pass 2 (ones) failed: {e}"))?;
 
     // ── Pass 3: random ───────────────────────────────────────────────
-    overwrite_random(&canonical, file_size)
-        .map_err(|e| format!("Pass 3 (random) failed: {e}"))?;
+    overwrite_random(&canonical, file_size).map_err(|e| format!("Pass 3 (random) failed: {e}"))?;
 
     // ── Delete ───────────────────────────────────────────────────────
-    fs::remove_file(&canonical)
-        .map_err(|e| format!("File deletion failed: {e}"))?;
+    fs::remove_file(&canonical).map_err(|e| format!("File deletion failed: {e}"))?;
 
     let verified_deleted = !canonical.exists();
 
@@ -112,8 +112,7 @@ fn overwrite_random(path: &Path, size: u64) -> std::io::Result<()> {
     let mut remaining = size;
     while remaining > 0 {
         let n = std::cmp::min(remaining, chunk as u64) as usize;
-        getrandom::getrandom(&mut buf[..n])
-            .map_err(std::io::Error::other)?;
+        getrandom::getrandom(&mut buf[..n]).map_err(std::io::Error::other)?;
         f.write_all(&buf[..n])?;
         remaining -= n as u64;
     }
@@ -123,10 +122,7 @@ fn overwrite_random(path: &Path, size: u64) -> std::io::Result<()> {
 }
 
 fn open_for_overwrite(path: &Path) -> std::io::Result<File> {
-    OpenOptions::new()
-        .write(true)
-        .truncate(true)
-        .open(path)
+    OpenOptions::new().write(true).truncate(true).open(path)
 }
 
 fn write_full(f: &mut File, total: u64, buf: &[u8]) -> std::io::Result<()> {
@@ -188,7 +184,10 @@ mod tests {
 
     #[test]
     fn self_destruct_empty_file() {
-        let path = tempfile::NamedTempFile::new().unwrap().into_temp_path().to_path_buf();
+        let path = tempfile::NamedTempFile::new()
+            .unwrap()
+            .into_temp_path()
+            .to_path_buf();
         // Create an empty file.
         fs::write(&path, b"").unwrap();
         assert!(path.exists());
@@ -200,7 +199,10 @@ mod tests {
 
     #[test]
     fn self_destruct_large_file() {
-        let path = tempfile::NamedTempFile::new().unwrap().into_temp_path().to_path_buf();
+        let path = tempfile::NamedTempFile::new()
+            .unwrap()
+            .into_temp_path()
+            .to_path_buf();
         // 256 KiB file — larger than the 64 KiB chunk size.
         let data = vec![0xABu8; 256 * 1024];
         fs::write(&path, &data).unwrap();

@@ -3,8 +3,11 @@
 //! Implements operations on polynomials in R_q = Z_q[X]/(X^n + 1)
 
 use crate::constants::*;
-use crate::ntt::{ntt, invntt, basemul_ntt, montgomery_reduce, barrett_reduce};
-use sha3::{Shake256, digest::{Update, ExtendableOutput, XofReader}};
+use crate::ntt::{barrett_reduce, basemul_ntt, invntt, montgomery_reduce, ntt};
+use sha3::{
+    digest::{ExtendableOutput, Update, XofReader},
+    Shake256,
+};
 
 /// Polynomial in R_q
 #[derive(Clone, Copy)]

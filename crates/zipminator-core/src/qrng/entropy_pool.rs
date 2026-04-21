@@ -126,7 +126,10 @@ impl EntropyPool {
             thread::sleep(Duration::from_millis(10));
         }
 
-        info!("Entropy pool initialized with {} bytes", pool.available_bytes());
+        info!(
+            "Entropy pool initialized with {} bytes",
+            pool.available_bytes()
+        );
         Ok(pool)
     }
 
@@ -168,8 +171,11 @@ impl EntropyPool {
                                 let mut stats_lock = stats.lock().unwrap();
                                 stats_lock.total_refills += 1;
 
-                                debug!("Refilled {} bytes, pool now contains {} bytes",
-                                       bytes_to_add, buf.len());
+                                debug!(
+                                    "Refilled {} bytes, pool now contains {} bytes",
+                                    bytes_to_add,
+                                    buf.len()
+                                );
                             }
                             Err(e) => {
                                 error!("Failed to refill entropy pool: {}", e);
@@ -224,8 +230,10 @@ impl EntropyPool {
         // Trigger refill if below threshold
         let available = self.available_bytes();
         if available < self.config.refill_threshold {
-            debug!("Pool below threshold ({} < {}), requesting refill",
-                   available, self.config.refill_threshold);
+            debug!(
+                "Pool below threshold ({} < {}), requesting refill",
+                available, self.config.refill_threshold
+            );
             self.request_refill(self.config.refill_chunk_size)?;
         }
 
@@ -246,7 +254,11 @@ impl EntropyPool {
                 // Update stats
                 self.stats.lock().unwrap().total_bytes_served += requested as u64;
 
-                debug!("Served {} bytes, {} remaining in pool", requested, buf.len());
+                debug!(
+                    "Served {} bytes, {} remaining in pool",
+                    requested,
+                    buf.len()
+                );
                 return Ok(());
             }
 

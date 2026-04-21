@@ -58,12 +58,13 @@ pub fn classify_security(url: &str) -> SecurityLevel {
 }
 
 /// Navigate the active tab or a specific tab to a URL.
-pub fn navigate_tab(state: &AppState, tab_id: &str, raw_input: &str) -> Result<NavigationResult, String> {
+pub fn navigate_tab(
+    state: &AppState,
+    tab_id: &str,
+    raw_input: &str,
+) -> Result<NavigationResult, String> {
     let url = normalize_url(raw_input);
-    let mut tabs = state
-        .tabs
-        .lock()
-        .map_err(|e| format!("Lock tabs: {}", e))?;
+    let mut tabs = state.tabs.lock().map_err(|e| format!("Lock tabs: {}", e))?;
 
     tabs.navigate(tab_id, &url);
 
@@ -83,10 +84,7 @@ pub fn navigate_tab(state: &AppState, tab_id: &str, raw_input: &str) -> Result<N
 
 /// Navigate back in the specified tab.
 pub fn go_back(state: &AppState, tab_id: &str) -> Result<Option<NavigationResult>, String> {
-    let mut tabs = state
-        .tabs
-        .lock()
-        .map_err(|e| format!("Lock tabs: {}", e))?;
+    let mut tabs = state.tabs.lock().map_err(|e| format!("Lock tabs: {}", e))?;
 
     if let Some(url) = tabs.go_back(tab_id) {
         let security = classify_security(&url);
@@ -104,10 +102,7 @@ pub fn go_back(state: &AppState, tab_id: &str) -> Result<Option<NavigationResult
 
 /// Navigate forward in the specified tab.
 pub fn go_forward(state: &AppState, tab_id: &str) -> Result<Option<NavigationResult>, String> {
-    let mut tabs = state
-        .tabs
-        .lock()
-        .map_err(|e| format!("Lock tabs: {}", e))?;
+    let mut tabs = state.tabs.lock().map_err(|e| format!("Lock tabs: {}", e))?;
 
     if let Some(url) = tabs.go_forward(tab_id) {
         let security = classify_security(&url);
@@ -125,10 +120,7 @@ pub fn go_forward(state: &AppState, tab_id: &str) -> Result<Option<NavigationRes
 
 /// Reload the current page in a tab. Returns the URL to reload.
 pub fn reload_tab(state: &AppState, tab_id: &str) -> Result<String, String> {
-    let mut tabs = state
-        .tabs
-        .lock()
-        .map_err(|e| format!("Lock tabs: {}", e))?;
+    let mut tabs = state.tabs.lock().map_err(|e| format!("Lock tabs: {}", e))?;
 
     if let Some(found) = tabs.get_tabs().iter().find(|t| t.id == tab_id) {
         let url = found.url.clone();
@@ -174,7 +166,10 @@ mod tests {
 
     #[test]
     fn test_classify_security() {
-        assert_eq!(classify_security("https://example.com"), SecurityLevel::Classical);
+        assert_eq!(
+            classify_security("https://example.com"),
+            SecurityLevel::Classical
+        );
         assert_eq!(classify_security("http://example.com"), SecurityLevel::None);
         assert_eq!(classify_security("about:blank"), SecurityLevel::None);
     }

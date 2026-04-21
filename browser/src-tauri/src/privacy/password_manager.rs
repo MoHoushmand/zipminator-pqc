@@ -207,7 +207,10 @@ impl PasswordVault {
 
     /// Whether the vault is currently unlocked.
     pub fn is_unlocked(&self) -> bool {
-        self.state.read().expect("vault state lock poisoned").is_some()
+        self.state
+            .read()
+            .expect("vault state lock poisoned")
+            .is_some()
     }
 
     // ── Entry operations ──────────────────────────────────────────────────
@@ -419,8 +422,8 @@ fn argon2_derive(password: &[u8], salt_str: &str) -> Result<Vec<u8>, VaultError>
         .map_err(|e| VaultError::Corrupted(format!("argon2 params: {e}")))?;
     let argon2 = Argon2::new(argon2::Algorithm::Argon2id, argon2::Version::V0x13, params);
 
-    let salt = Salt::from_b64(salt_str)
-        .map_err(|e| VaultError::Corrupted(format!("salt decode: {e}")))?;
+    let salt =
+        Salt::from_b64(salt_str).map_err(|e| VaultError::Corrupted(format!("salt decode: {e}")))?;
 
     let mut output = vec![0u8; 32];
     argon2
@@ -557,13 +560,15 @@ mod tests {
         let vault = make_vault(&dir);
         vault.create(b"pw").unwrap();
 
-        let entry = vault.add_entry(PlainEntry {
-            domain: "x.com".to_string(),
-            username: "u".to_string(),
-            password: b"p".to_vec(),
-            notes: None,
-            totp_secret: None,
-        }).unwrap();
+        let entry = vault
+            .add_entry(PlainEntry {
+                domain: "x.com".to_string(),
+                username: "u".to_string(),
+                password: b"p".to_vec(),
+                notes: None,
+                totp_secret: None,
+            })
+            .unwrap();
 
         vault.delete_entry(&entry.id).unwrap();
         assert!(vault.list_entries().unwrap().is_empty());
@@ -596,21 +601,25 @@ mod tests {
         let vault = make_vault(&dir);
         vault.create(b"pw").unwrap();
 
-        vault.add_entry(PlainEntry {
-            domain: "github.com".to_string(),
-            username: "u1".to_string(),
-            password: b"p1".to_vec(),
-            notes: None,
-            totp_secret: None,
-        }).unwrap();
+        vault
+            .add_entry(PlainEntry {
+                domain: "github.com".to_string(),
+                username: "u1".to_string(),
+                password: b"p1".to_vec(),
+                notes: None,
+                totp_secret: None,
+            })
+            .unwrap();
 
-        vault.add_entry(PlainEntry {
-            domain: "gitlab.com".to_string(),
-            username: "u2".to_string(),
-            password: b"p2".to_vec(),
-            notes: None,
-            totp_secret: None,
-        }).unwrap();
+        vault
+            .add_entry(PlainEntry {
+                domain: "gitlab.com".to_string(),
+                username: "u2".to_string(),
+                password: b"p2".to_vec(),
+                notes: None,
+                totp_secret: None,
+            })
+            .unwrap();
 
         let results = vault.find_for_domain("github.com").unwrap();
         assert_eq!(results.len(), 1);

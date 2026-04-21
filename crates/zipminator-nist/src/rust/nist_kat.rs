@@ -34,7 +34,7 @@ fn hex_to_bytes(hex: &str) -> Result<Vec<u8>, String> {
 
     let mut bytes = Vec::with_capacity(hex.len() / 2);
     for i in (0..hex.len()).step_by(2) {
-        let byte_str = &hex[i..i+2];
+        let byte_str = &hex[i..i + 2];
         let byte = u8::from_str_radix(byte_str, 16)
             .map_err(|e| format!("Invalid hex at position {}: {}", i, e))?;
         bytes.push(byte);
@@ -44,23 +44,27 @@ fn hex_to_bytes(hex: &str) -> Result<Vec<u8>, String> {
 
 /// Convert bytes to hex string
 fn bytes_to_hex(data: &[u8]) -> String {
-    data.iter()
-        .map(|b| format!("{:02x}", b))
-        .collect()
+    data.iter().map(|b| format!("{:02x}", b)).collect()
 }
 
 /// Compare byte arrays with detailed error reporting
 fn compare_bytes(name: &str, actual: &[u8], expected: &[u8]) -> bool {
     if actual.len() != expected.len() {
-        eprintln!("ERROR: {} length mismatch. Expected {} bytes, got {}",
-                  name, expected.len(), actual.len());
+        eprintln!(
+            "ERROR: {} length mismatch. Expected {} bytes, got {}",
+            name,
+            expected.len(),
+            actual.len()
+        );
         return false;
     }
 
     for (i, (a, e)) in actual.iter().zip(expected.iter()).enumerate() {
         if a != e {
-            eprintln!("ERROR: {} mismatch at byte {}. Expected {:02x}, got {:02x}",
-                      name, i, e, a);
+            eprintln!(
+                "ERROR: {} mismatch at byte {}. Expected {:02x}, got {:02x}",
+                name, i, e, a
+            );
 
             // Show context around error
             let start = i.saturating_sub(8);
@@ -82,7 +86,10 @@ pub fn run_kat_test(test: &KATVector) -> Result<(), String> {
 
     // Initialize deterministic RNG with seed
     if test.seed.len() != 48 {
-        return Err(format!("Invalid seed length: {} (expected 48)", test.seed.len()));
+        return Err(format!(
+            "Invalid seed length: {} (expected 48)",
+            test.seed.len()
+        ));
     }
     let mut seed_array = [0u8; 48];
     seed_array.copy_from_slice(&test.seed);
@@ -154,8 +161,7 @@ pub fn run_kat_test(test: &KATVector) -> Result<(), String> {
 
 /// Load KAT vectors from NIST format file
 pub fn load_kat_vectors(filename: &Path) -> Result<Vec<KATVector>, String> {
-    let file = File::open(filename)
-        .map_err(|e| format!("Could not open file: {}", e))?;
+    let file = File::open(filename).map_err(|e| format!("Could not open file: {}", e))?;
     let reader = BufReader::new(file);
 
     let mut vectors = Vec::new();

@@ -7,14 +7,10 @@
 
 use num_complex::Complex;
 use zipminator_mesh::csi_entropy::{CsiEntropySource, CSI_SUBCARRIERS};
-use zipminator_mesh::em_canary::{
-    EmCanaryController, EmCanaryPolicy, ThreatAction, ThreatLevel,
-};
+use zipminator_mesh::em_canary::{EmCanaryController, EmCanaryPolicy, ThreatAction, ThreatLevel};
 use zipminator_mesh::entropy_bridge::PoolEntropySource;
 use zipminator_mesh::mesh_key::MeshKey;
-use zipminator_mesh::puek::{
-    compute_eigenmodes, enroll, PuekVerifier, SecurityProfile,
-};
+use zipminator_mesh::puek::{compute_eigenmodes, enroll, PuekVerifier, SecurityProfile};
 use zipminator_mesh::spatiotemporal::{
     sign_with_presence, verify_with_presence, SpatiotemporalAttestation,
 };
@@ -28,8 +24,7 @@ use zipminator_mesh::EntropyBridge;
 fn make_csi_frame(seed: u32) -> [Complex<f32>; CSI_SUBCARRIERS] {
     let mut frame = [Complex::new(0.0f32, 0.0f32); CSI_SUBCARRIERS];
     for (i, c) in frame.iter_mut().enumerate() {
-        let angle = ((seed as f32 * 0.1 + i as f32 * 0.7)
-            % (2.0 * std::f32::consts::PI))
+        let angle = ((seed as f32 * 0.1 + i as f32 * 0.7) % (2.0 * std::f32::consts::PI))
             - std::f32::consts::PI;
         let magnitude = 1.0 + (i as f32 * 0.01);
         *c = Complex::from_polar(magnitude, angle);
@@ -44,8 +39,7 @@ fn make_csi_magnitudes(n_frames: usize, n_subcarriers: usize, seed: f64) -> Vec<
             (0..n_subcarriers)
                 .map(|s| {
                     let base = (s as f64 + 1.0) * 10.0;
-                    let variation =
-                        ((f as f64 * 0.1 + seed) * (s as f64 + 1.0)).sin() * 0.5;
+                    let variation = ((f as f64 * 0.1 + seed) * (s as f64 + 1.0)).sin() * 0.5;
                     base + variation
                 })
                 .collect()
@@ -65,8 +59,8 @@ fn make_biometric(breathing: f32, heart: f32) -> BiometricProfile {
 /// Create a biometric profile with a stressed signature (coercion detection).
 fn make_stressed_biometric() -> BiometricProfile {
     BiometricProfile {
-        breathing_rate: 30.0,  // hyperventilation
-        heart_rate: 140.0,     // tachycardia
+        breathing_rate: 30.0, // hyperventilation
+        heart_rate: 140.0,    // tachycardia
         micro_movement_signature: [0.9, 0.8, 0.9, 0.8, 0.9, 0.8, 0.9, 0.8], // trembling
     }
 }
@@ -173,10 +167,7 @@ fn test_puek_enroll_verify_derive() {
     // If the synthetic data happens to be similar, use a direct verification test
     if sim < 0.75 {
         let result = verifier.verify_and_derive(&orthogonal_eigenmodes, b"puek-salt");
-        assert!(
-            result.is_err(),
-            "different environment must be rejected"
-        );
+        assert!(result.is_err(), "different environment must be rejected");
     } else {
         // Synthetic data too similar; directly test rejection with known-different values
         let enrollment2 = enroll(&csi_data, 5, SecurityProfile::Custom(0.9999)).unwrap();
@@ -329,9 +320,16 @@ fn test_topology_key_stability() {
         (c2, make_mesh_key(0x33)),
     ];
 
-    let k1 = topo1.derive_topology_key(&keys1, b"stability-salt").unwrap();
-    let k2 = topo2.derive_topology_key(&keys2, b"stability-salt").unwrap();
-    assert_eq!(k1, k2, "same topology + same keys + same salt must produce same key");
+    let k1 = topo1
+        .derive_topology_key(&keys1, b"stability-salt")
+        .unwrap();
+    let k2 = topo2
+        .derive_topology_key(&keys2, b"stability-salt")
+        .unwrap();
+    assert_eq!(
+        k1, k2,
+        "same topology + same keys + same salt must produce same key"
+    );
 
     // Different topology (line instead of triangle) must produce different key
     let mut line_topo = MeshTopology::new();
@@ -396,10 +394,7 @@ fn test_topology_node_addition_changes_key() {
         .derive_topology_key(&keys4, b"node-change-salt")
         .unwrap();
 
-    assert_ne!(
-        k3, k4,
-        "adding a 4th node must change the topology key"
-    );
+    assert_ne!(k3, k4, "adding a 4th node must change the topology key");
 
     // Verify fingerprints are also different
     assert_ne!(
@@ -470,8 +465,7 @@ fn test_spatiotemporal_timestamp_validation() {
     // Future timestamp outside window
     let attestation_future = make_attestation(now_ms + 120_000);
     let sig_future = sign_with_presence(payload, &key, attestation_future).unwrap();
-    let result =
-        verify_with_presence(payload, &sig_future, &key, Some(window_ms), Some(now_ms));
+    let result = verify_with_presence(payload, &sig_future, &key, Some(window_ms), Some(now_ms));
     assert!(
         result.is_err(),
         "future timestamp outside window must return error"
@@ -495,8 +489,7 @@ fn test_combined_puek_and_vital_auth() {
 
     // Step 3: Use the PUEK-derived key as the initial key for a Vital Auth session
     let enrolled_bio = make_biometric(15.0, 68.0);
-    let mut session =
-        VitalAuthSession::new(enrolled_bio, *puek_key.as_bytes(), 0.4);
+    let mut session = VitalAuthSession::new(enrolled_bio, *puek_key.as_bytes(), 0.4);
     assert!(session.is_alive());
 
     // Step 4: Successful biometric updates evolve the key
@@ -679,7 +672,6 @@ fn test_full_pipeline_csi_puek_spatiotemporal() {
     let sig = sign_with_presence(payload, puek_key.as_bytes(), attestation).unwrap();
 
     // Step 4: Verify the spatiotemporal signature
-    let valid =
-        verify_with_presence(payload, &sig, puek_key.as_bytes(), None, None).unwrap();
+    let valid = verify_with_presence(payload, &sig, puek_key.as_bytes(), None, None).unwrap();
     assert!(valid, "full-pipeline spatiotemporal signature must verify");
 }

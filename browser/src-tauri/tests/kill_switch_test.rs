@@ -26,7 +26,8 @@ fn disabled_ks_activate_is_noop() {
 #[test]
 fn disabled_ks_deactivate_is_noop() {
     let mut ks = KillSwitch::new("utun0", false);
-    ks.deactivate().expect("disabled KS deactivate must not error");
+    ks.deactivate()
+        .expect("disabled KS deactivate must not error");
     assert!(!ks.is_active());
 }
 
@@ -129,9 +130,11 @@ fn pf_rules_block_all_and_pass_tunnel() {
 #[ignore = "requires root to invoke pfctl"]
 fn privileged_macos_activate_deactivate() {
     let mut ks = KillSwitch::new("utun0", true);
-    ks.activate().expect("pfctl activation should succeed with root");
+    ks.activate()
+        .expect("pfctl activation should succeed with root");
     assert!(ks.is_active());
-    ks.deactivate().expect("pfctl deactivation should succeed with root");
+    ks.deactivate()
+        .expect("pfctl deactivation should succeed with root");
     assert!(!ks.is_active());
 }
 
@@ -143,9 +146,11 @@ fn privileged_macos_activate_deactivate() {
 #[ignore = "requires root to invoke iptables"]
 fn privileged_linux_activate_deactivate() {
     let mut ks = KillSwitch::new("tun0", true);
-    ks.activate().expect("iptables activation should succeed with root");
+    ks.activate()
+        .expect("iptables activation should succeed with root");
     assert!(ks.is_active());
-    ks.deactivate().expect("iptables deactivation should succeed with root");
+    ks.deactivate()
+        .expect("iptables deactivation should succeed with root");
     assert!(!ks.is_active());
 }
 
@@ -189,7 +194,11 @@ fn enabled_ks_fails_gracefully_without_root() {
             let _ = ks.deactivate();
         }
         Err(e) => {
-            assert!(!ks.is_active(), "is_active must be false after failed activation: {}", e);
+            assert!(
+                !ks.is_active(),
+                "is_active must be false after failed activation: {}",
+                e
+            );
         }
     }
 }
@@ -235,7 +244,8 @@ fn kill_switch_stays_on_tunnel_drop() {
     sm.transition(VpnState::Connected).unwrap();
 
     // Simulate unexpected tunnel drop: state goes to Error.
-    sm.transition(VpnState::Error("connection reset".to_string())).unwrap();
+    sm.transition(VpnState::Error("connection reset".to_string()))
+        .unwrap();
 
     // Kill switch must NOT be deactivated automatically on error.
     // (In production, only explicit disconnect deactivates it.)

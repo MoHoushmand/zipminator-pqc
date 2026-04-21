@@ -10,8 +10,8 @@
 //! * Rekey (repeated handshake) produces distinct keys each time.
 
 use zipbrowser::vpn::pq_handshake::{
-    client_handshake, derive_hybrid_key, server_handshake, HandshakeError,
-    KYBER_CT_BYTES, KYBER_PK_BYTES,
+    client_handshake, derive_hybrid_key, server_handshake, HandshakeError, KYBER_CT_BYTES,
+    KYBER_PK_BYTES,
 };
 
 use tokio::io::duplex;
@@ -60,8 +60,18 @@ async fn two_sessions_produce_distinct_hybrid_keys() {
     let (mut c2, mut s2) = duplex(65536);
 
     let ((r1, _), (r2, _)) = tokio::join!(
-        async { (client_handshake(&mut c1, &wg_key).await, server_handshake(&mut s1, &wg_key).await) },
-        async { (client_handshake(&mut c2, &wg_key).await, server_handshake(&mut s2, &wg_key).await) },
+        async {
+            (
+                client_handshake(&mut c1, &wg_key).await,
+                server_handshake(&mut s1, &wg_key).await,
+            )
+        },
+        async {
+            (
+                client_handshake(&mut c2, &wg_key).await,
+                server_handshake(&mut s2, &wg_key).await,
+            )
+        },
     );
 
     assert_ne!(
@@ -142,10 +152,7 @@ async fn server_rejects_wrong_tlv_type() {
         server_handshake(&mut server_end, &wg_key),
     );
 
-    assert!(
-        server_result.is_err(),
-        "server must reject wrong TLV type"
-    );
+    assert!(server_result.is_err(), "server must reject wrong TLV type");
     if let Err(HandshakeError::UnexpectedTlvType { expected, got }) = server_result {
         assert_eq!(expected, 0x01);
         assert_eq!(got, 0x02);
@@ -177,7 +184,10 @@ async fn server_rejects_wrong_pk_length() {
         server_handshake(&mut server_end, &wg_key),
     );
 
-    assert!(server_result.is_err(), "server must reject wrong key length");
+    assert!(
+        server_result.is_err(),
+        "server must reject wrong key length"
+    );
 }
 
 /// Bytes exchanged counter is consistent with Kyber sizes:
@@ -217,7 +227,10 @@ fn hkdf_changes_with_wg_key() {
     let wg_a = [0xaau8; 32];
     let wg_b = [0xbbu8; 32];
     let ss = [0xccu8; 32];
-    assert_ne!(derive_hybrid_key(&wg_a, &ss).unwrap(), derive_hybrid_key(&wg_b, &ss).unwrap());
+    assert_ne!(
+        derive_hybrid_key(&wg_a, &ss).unwrap(),
+        derive_hybrid_key(&wg_b, &ss).unwrap()
+    );
 }
 
 #[test]
@@ -225,7 +238,10 @@ fn hkdf_changes_with_kyber_secret() {
     let wg = [0xddu8; 32];
     let ss_a = [0x01u8; 32];
     let ss_b = [0x02u8; 32];
-    assert_ne!(derive_hybrid_key(&wg, &ss_a).unwrap(), derive_hybrid_key(&wg, &ss_b).unwrap());
+    assert_ne!(
+        derive_hybrid_key(&wg, &ss_a).unwrap(),
+        derive_hybrid_key(&wg, &ss_b).unwrap()
+    );
 }
 
 #[test]

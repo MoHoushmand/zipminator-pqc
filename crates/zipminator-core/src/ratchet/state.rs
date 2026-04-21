@@ -15,10 +15,8 @@ use crate::ratchet::header::{CT_BYTES, PK_BYTES};
 pub const MAX_SKIP: u32 = 1000;
 
 /// A 32-byte secret that zeroes itself when dropped.
-#[derive(Clone, Zeroize, ZeroizeOnDrop)]
-#[derive(Default)]
+#[derive(Clone, Zeroize, ZeroizeOnDrop, Default)]
 pub struct SecretKey32(pub [u8; 32]);
-
 
 /// Holds the raw bytes of a Kyber768 keypair so we can zeroize them.
 #[derive(Zeroize, ZeroizeOnDrop)]
@@ -183,7 +181,9 @@ mod tests {
         let key = SkipKey::new(&pk, 5);
         let msg_key = [42u8; 32];
 
-        state.store_skipped_key(key.clone(), msg_key).expect("store");
+        state
+            .store_skipped_key(key.clone(), msg_key)
+            .expect("store");
         let retrieved = state.take_skipped_key(&key).expect("take");
         assert_eq!(retrieved, msg_key);
         // Second take should return None

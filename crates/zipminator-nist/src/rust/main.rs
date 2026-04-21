@@ -1,7 +1,7 @@
 //! NIST KAT Test Runner for Kyber-768
 
+use nist_kat::{generate_sample_vectors, load_kat_vectors, run_kat_test};
 use std::path::Path;
-use nist_kat::{load_kat_vectors, generate_sample_vectors, run_kat_test};
 
 fn main() {
     println!("==================================================");
@@ -51,8 +51,15 @@ fn main() {
     println!("==================================================");
     println!("Total Tests:  {}", passed + failed);
     println!("Passed:       {} ✓", passed);
-    println!("Failed:       {}{}", failed, if failed > 0 { " ✗" } else { "" });
-    println!("Success Rate: {:.1}%", 100.0 * passed as f64 / (passed + failed) as f64);
+    println!(
+        "Failed:       {}{}",
+        failed,
+        if failed > 0 { " ✗" } else { "" }
+    );
+    println!(
+        "Success Rate: {:.1}%",
+        100.0 * passed as f64 / (passed + failed) as f64
+    );
     println!("==================================================");
 
     std::process::exit(if failed == 0 { 0 } else { 1 });

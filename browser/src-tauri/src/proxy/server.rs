@@ -208,18 +208,16 @@ async fn proxy_request(
     state: ProxyState,
 ) -> Result<Response<Full<Bytes>>, Infallible> {
     match *req.method() {
-        Method::CONNECT => {
-            match handle_connect(req, state).await {
-                Ok(resp) => Ok(resp),
-                Err(e) => {
-                    tracing::error!(error = %e, "CONNECT failed");
-                    Ok(error_response(
-                        StatusCode::BAD_GATEWAY,
-                        &format!("tunnel failed: {e}"),
-                    ))
-                }
+        Method::CONNECT => match handle_connect(req, state).await {
+            Ok(resp) => Ok(resp),
+            Err(e) => {
+                tracing::error!(error = %e, "CONNECT failed");
+                Ok(error_response(
+                    StatusCode::BAD_GATEWAY,
+                    &format!("tunnel failed: {e}"),
+                ))
             }
-        }
+        },
         _ => {
             // Plain HTTP: respond with a redirect-to-HTTPS or a warning.
             tracing::warn!(
@@ -275,17 +273,13 @@ async fn handle_connect(
         Ok(conn) => {
             // Record metrics.
             if conn.pqc_status.is_pqc() {
-                state.metrics.record_pqc(
-                    &host,
-                    &conn.kx_algorithm,
-                    conn.handshake_duration,
-                );
+                state
+                    .metrics
+                    .record_pqc(&host, &conn.kx_algorithm, conn.handshake_duration);
             } else {
-                state.metrics.record_classical(
-                    &host,
-                    &conn.kx_algorithm,
-                    conn.handshake_duration,
-                );
+                state
+                    .metrics
+                    .record_classical(&host, &conn.kx_algorithm, conn.handshake_duration);
             }
 
             // Now we need to:
@@ -307,8 +301,7 @@ async fn handle_connect(
                 match hyper::upgrade::on(req).await {
                     Ok(upgraded) => {
                         let client_io = TokioIo::new(upgraded);
-                        let (mut upstream_read, mut upstream_write) =
-                            tokio::io::split(conn.stream);
+                        let (mut upstream_read, mut upstream_write) = tokio::io::split(conn.stream);
 
                         // Issue a leaf cert for the client-side TLS.
                         match state.ca.server_config_for_domain(&host) {
@@ -329,10 +322,7 @@ async fn handle_connect(
                                                 &mut upstream_read,
                                                 &mut client_write,
                                             );
-                                            tokio::try_join!(
-                                                client_to_upstream,
-                                                upstream_to_client
-                                            )
+                                            tokio::try_join!(client_to_upstream, upstream_to_client)
                                         };
 
                                         let timeout = Duration::from_secs(300);
@@ -376,12 +366,12 @@ async fn handle_connect(
             Ok(resp)
         }
         Err(tls::TlsError::PqcRequired) => {
-            state.metrics.record_failure(&host, "PQC required but not supported");
+            state
+                .metrics
+                .record_failure(&host, "PQC required but not supported");
             Ok(error_response(
                 StatusCode::BAD_GATEWAY,
-                &format!(
-                    "PQC required: {host} does not support post-quantum key exchange"
-                ),
+                &format!("PQC required: {host} does not support post-quantum key exchange"),
             ))
         }
         Err(e) => {
@@ -404,25 +394,21 @@ async fn direct_tunnel(
 
     tokio::spawn(async move {
         match hyper::upgrade::on(req).await {
-            Ok(upgraded) => {
-                match TcpStream::connect(&authority).await {
-                    Ok(upstream) => {
-                        let client = TokioIo::new(upgraded);
-                        let (mut upstream_read, mut upstream_write) =
-                            tokio::io::split(upstream);
-                        let (mut client_read, mut client_write) =
-                            tokio::io::split(client);
+            Ok(upgraded) => match TcpStream::connect(&authority).await {
+                Ok(upstream) => {
+                    let client = TokioIo::new(upgraded);
+                    let (mut upstream_read, mut upstream_write) = tokio::io::split(upstream);
+                    let (mut client_read, mut client_write) = tokio::io::split(client);
 
-                        let _ = tokio::try_join!(
-                            tokio::io::copy(&mut client_read, &mut upstream_write),
-                            tokio::io::copy(&mut upstream_read, &mut client_write),
-                        );
-                    }
-                    Err(e) => {
-                        tracing::error!(authority, error = %e, "direct tunnel connect failed");
-                    }
+                    let _ = tokio::try_join!(
+                        tokio::io::copy(&mut client_read, &mut upstream_write),
+                        tokio::io::copy(&mut upstream_read, &mut client_write),
+                    );
                 }
-            }
+                Err(e) => {
+                    tracing::error!(authority, error = %e, "direct tunnel connect failed");
+                }
+            },
             Err(e) => {
                 tracing::error!(error = %e, "direct tunnel upgrade failed");
             }
@@ -475,7 +461,9 @@ async fn connect_upstream_tcp(
 }
 
 /// Parse "host:port" from a CONNECT authority string.
-fn parse_host_port(authority: &str) -> Result<(String, u16), Box<dyn std::error::Error + Send + Sync>> {
+fn parse_host_port(
+    authority: &str,
+) -> Result<(String, u16), Box<dyn std::error::Error + Send + Sync>> {
     if let Some(colon_pos) = authority.rfind(':') {
         let host = authority[..colon_pos].to_string();
         let port: u16 = authority[colon_pos + 1..].parse()?;

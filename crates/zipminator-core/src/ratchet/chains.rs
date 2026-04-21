@@ -25,7 +25,8 @@ const MSG_KEY_INFO: &[u8] = b"PQRatchetMsgKey_v1";
 pub fn root_kdf(root_key: &[u8; 32], ss: &[u8; 32]) -> ([u8; 32], [u8; 32]) {
     let hk = Hkdf::<Sha256>::new(Some(root_key), ss);
     let mut okm = [0u8; 64];
-    hk.expand(ROOT_KDF_INFO, &mut okm).expect("HKDF expand 64 bytes");
+    hk.expand(ROOT_KDF_INFO, &mut okm)
+        .expect("HKDF expand 64 bytes");
 
     let mut rk = [0u8; 32];
     let mut ck = [0u8; 32];
@@ -46,18 +47,12 @@ pub fn chain_kdf(chain_key: &[u8; 32]) -> ([u8; 32], [u8; 32]) {
     // message key: HMAC-SHA256(chain_key, 0x01)
     let mut mac1 = HmacSha256::new_from_slice(chain_key).expect("HMAC accepts any key length");
     mac1.update(&[0x01]);
-    let msg_key: [u8; 32] = mac1
-        .finalize()
-        .into_bytes()
-        .into();
+    let msg_key: [u8; 32] = mac1.finalize().into_bytes().into();
 
     // next chain key: HMAC-SHA256(chain_key, 0x02)
     let mut mac2 = HmacSha256::new_from_slice(chain_key).expect("HMAC accepts any key length");
     mac2.update(&[0x02]);
-    let next_ck: [u8; 32] = mac2
-        .finalize()
-        .into_bytes()
-        .into();
+    let next_ck: [u8; 32] = mac2.finalize().into_bytes().into();
 
     (msg_key, next_ck)
 }
@@ -73,7 +68,8 @@ pub fn message_keys(msg_key: &[u8; 32], counter: u32) -> ([u8; 32], [u8; 12]) {
     // Use a zero-byte salt so the IKM (msg_key) fully determines the output.
     let hk = Hkdf::<Sha256>::new(Some(&[0u8; 32]), msg_key);
     let mut okm = [0u8; 44]; // 32-byte key + 12-byte nonce
-    hk.expand(MSG_KEY_INFO, &mut okm).expect("HKDF expand 44 bytes");
+    hk.expand(MSG_KEY_INFO, &mut okm)
+        .expect("HKDF expand 44 bytes");
 
     let mut aes_key = [0u8; 32];
     aes_key.copy_from_slice(&okm[..32]);

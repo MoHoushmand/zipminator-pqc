@@ -234,7 +234,11 @@ impl QrngReader {
                     self.pool_size.store(size, Ordering::Relaxed);
                     let mut src = self.source.write().expect("source lock poisoned");
                     *src = EntropySource::Quantum;
-                    info!(old_size = current_size, new_size = size, "entropy pool updated");
+                    info!(
+                        old_size = current_size,
+                        new_size = size,
+                        "entropy pool updated"
+                    );
                 }
                 Err(e) => {
                     warn!(error = %e, "entropy pool reload failed");

@@ -49,9 +49,7 @@ fn psk_binds_session_keys_to_shared_context() {
     assert!(alice_keys.ct_eq(&bob_keys));
 
     // Same keypair exchange but different PSK derives different keys.
-    let (ct_am, mallory_keys) = mallory
-        .encapsulate_to(alice.public_key())
-        .expect("mallory");
+    let (ct_am, mallory_keys) = mallory.encapsulate_to(alice.public_key()).expect("mallory");
     let alice_via_mallory = alice.accept(&ct_am).expect("alice mallory path");
     assert!(!alice_via_mallory.ct_eq(&mallory_keys));
 }
@@ -68,6 +66,14 @@ fn windowed_csi_entropy_from_mock_source_is_positive_and_bounded() {
 
     // The mock source is not cryptographic but spreads samples across
     // bins; H_2 should be strictly positive and at most log2(16) = 4.
-    assert!(h.0 > 0.5, "windowed H_2 should exceed 0.5 bits, got {}", h.0);
-    assert!(h.0 <= 4.0_f64 + 1e-9, "H_2 must not exceed log2(16), got {}", h.0);
+    assert!(
+        h.0 > 0.5,
+        "windowed H_2 should exceed 0.5 bits, got {}",
+        h.0
+    );
+    assert!(
+        h.0 <= 4.0_f64 + 1e-9,
+        "H_2 must not exceed log2(16), got {}",
+        h.0
+    );
 }

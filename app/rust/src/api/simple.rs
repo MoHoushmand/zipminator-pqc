@@ -89,16 +89,12 @@ pub fn ratchet_alice_finish(
     kem_ciphertext: Vec<u8>,
     bob_public_key: Vec<u8>,
 ) -> Result<(), String> {
-    ratchet::alice_finish(session_id, kem_ciphertext, bob_public_key)
-        .map_err(|e| e.to_string())
+    ratchet::alice_finish(session_id, kem_ciphertext, bob_public_key).map_err(|e| e.to_string())
 }
 
 /// Encrypt a message in a ratchet session.
 /// Returns (header, ciphertext).
-pub fn ratchet_encrypt(
-    session_id: u64,
-    plaintext: Vec<u8>,
-) -> Result<RatchetMessage, String> {
+pub fn ratchet_encrypt(session_id: u64, plaintext: Vec<u8>) -> Result<RatchetMessage, String> {
     let enc = ratchet::encrypt(session_id, plaintext).map_err(|e| e.to_string())?;
     Ok(RatchetMessage {
         header: enc.header,

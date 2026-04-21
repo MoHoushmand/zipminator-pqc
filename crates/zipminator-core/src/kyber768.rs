@@ -180,10 +180,7 @@ impl Kyber768 {
         sk_data.extend_from_slice(&pk_hash);
         sk_data.extend_from_slice(seed);
 
-        (
-            PublicKey { data: pk_data },
-            SecretKey { data: sk_data },
-        )
+        (PublicKey { data: pk_data }, SecretKey { data: sk_data })
     }
 
     /// Encapsulate: generate shared secret and ciphertext
@@ -211,8 +208,8 @@ impl Kyber768 {
 
         let mut shared_key = [0u8; KYBER_SYMBYTES];
         let mut randomness = [0u8; KYBER_SYMBYTES];
-        shared_key.copy_from_slice(&kr[0..KYBER_SYMBYTES]);      // K (shared secret seed)
-        randomness.copy_from_slice(&kr[KYBER_SYMBYTES..]);       // r (randomness for sampling)
+        shared_key.copy_from_slice(&kr[0..KYBER_SYMBYTES]); // K (shared secret seed)
+        randomness.copy_from_slice(&kr[KYBER_SYMBYTES..]); // r (randomness for sampling)
 
         // Unpack public key
         let t = PolyVec::from_bytes(&pk.data[..KYBER_POLYVECBYTES])
@@ -289,10 +286,7 @@ impl Kyber768 {
             ss_input[KYBER_SYMBYTES..].copy_from_slice(&ct_hash);
             let ss = sha3_256(&ss_input);
 
-            (
-                Ciphertext { data: ct_data },
-                SharedSecret { data: ss },
-            )
+            (Ciphertext { data: ct_data }, SharedSecret { data: ss })
         }
     }
 
@@ -337,7 +331,8 @@ impl Kyber768 {
         let mut msg = [0u8; KYBER_SYMBYTES];
         for i in 0..KYBER_N {
             // Compute v - mp modulo Q
-            let diff = (v.coeffs[i] as i32 - mp.coeffs[i] as i32 + 5 * KYBER_Q as i32) % KYBER_Q as i32;
+            let diff =
+                (v.coeffs[i] as i32 - mp.coeffs[i] as i32 + 5 * KYBER_Q as i32) % KYBER_Q as i32;
 
             // Decode: check if coefficient is closer to 0 or Q/2
             // Using the formula from FIPS 203: bit = floor((2*diff + Q/2) / Q) mod 2
@@ -347,7 +342,9 @@ impl Kyber768 {
 
         // Re-derive: (K', r') = G(m' || H(pk)) and re-encapsulate
         let (ct_prime, _ss_prime) = Self::encapsulate_with_coins(
-            &PublicKey { data: pk_data.to_vec() },
+            &PublicKey {
+                data: pk_data.to_vec(),
+            },
             &msg,
         );
 
@@ -381,12 +378,14 @@ impl Kyber768 {
         let invalid_ss = sha3_256(&invalid_ss_input);
 
         // Constant-time select between valid and invalid shared secret
-        let mut ss = SharedSecret { data: [0u8; KYBER_SYMBYTES] };
+        let mut ss = SharedSecret {
+            data: [0u8; KYBER_SYMBYTES],
+        };
         for i in 0..KYBER_SYMBYTES {
             ss.data[i] = subtle::ConditionallySelectable::conditional_select(
                 &invalid_ss[i],
                 &valid_ss[i],
-                ct_match
+                ct_match,
             );
         }
 

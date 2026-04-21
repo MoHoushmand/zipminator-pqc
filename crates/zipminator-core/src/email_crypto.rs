@@ -260,8 +260,7 @@ impl EmailEnvelope {
             if *pos + 4 > data.len() {
                 return Err(EmailCryptoError::InvalidCiphertext("truncated envelope"));
             }
-            let val =
-                u32::from_be_bytes(data[*pos..*pos + 4].try_into().unwrap()) as usize;
+            let val = u32::from_be_bytes(data[*pos..*pos + 4].try_into().unwrap()) as usize;
             *pos += 4;
             Ok(val)
         };
@@ -348,8 +347,7 @@ impl EmailCrypto {
 
         // 3. Generate random CEK
         let mut cek = SecretBytes32([0u8; 32]);
-        getrandom(&mut cek.0)
-            .map_err(|_| EmailCryptoError::RngError("failed to generate CEK"))?;
+        getrandom(&mut cek.0).map_err(|_| EmailCryptoError::RngError("failed to generate CEK"))?;
 
         // 4. Wrap CEK with KEK using AES-256-KW
         let wrapped_cek = aes256_key_wrap(&kek.0, &cek.0)?;
@@ -510,16 +508,14 @@ mod tests {
         let plaintext = b"Subject: Test\n\nHello, post-quantum email!";
         let headers = b"From: alice@qdaria.com\r\nTo: bob@qdaria.com\r\n";
 
-        let envelope =
-            EmailCrypto::encrypt(pk_bytes, plaintext, headers).expect("encrypt");
+        let envelope = EmailCrypto::encrypt(pk_bytes, plaintext, headers).expect("encrypt");
 
         assert_eq!(envelope.kem_ciphertext.len(), kyber768::ciphertext_bytes());
         assert_eq!(envelope.wrapped_cek.len(), 40); // 32-byte CEK + 8 wrap overhead
         assert_eq!(envelope.nonce.len(), 12);
         assert_eq!(envelope.tag.len(), 16);
 
-        let decrypted =
-            EmailCrypto::decrypt(sk_bytes, &envelope, headers).expect("decrypt");
+        let decrypted = EmailCrypto::decrypt(sk_bytes, &envelope, headers).expect("decrypt");
         assert_eq!(decrypted, plaintext);
     }
 
@@ -531,8 +527,7 @@ mod tests {
         let plaintext = b"secret message";
         let headers = b"";
 
-        let envelope =
-            EmailCrypto::encrypt(pk.as_bytes(), plaintext, headers).expect("encrypt");
+        let envelope = EmailCrypto::encrypt(pk.as_bytes(), plaintext, headers).expect("encrypt");
 
         // Decrypting with wrong SK should fail (shared secret will differ)
         let result = EmailCrypto::decrypt(sk2.as_bytes(), &envelope, headers);
@@ -547,8 +542,7 @@ mod tests {
         let headers1 = b"From: alice@qdaria.com";
         let headers2 = b"From: eve@evil.com";
 
-        let envelope =
-            EmailCrypto::encrypt(pk.as_bytes(), plaintext, headers1).expect("encrypt");
+        let envelope = EmailCrypto::encrypt(pk.as_bytes(), plaintext, headers1).expect("encrypt");
 
         // Decrypting with wrong AAD should fail (GCM authentication)
         let result = EmailCrypto::decrypt(sk.as_bytes(), &envelope, headers2);
@@ -581,11 +575,9 @@ mod tests {
         let plaintext = b"";
         let headers = b"empty-body-test";
 
-        let envelope =
-            EmailCrypto::encrypt(pk.as_bytes(), plaintext, headers).expect("encrypt");
+        let envelope = EmailCrypto::encrypt(pk.as_bytes(), plaintext, headers).expect("encrypt");
 
-        let decrypted =
-            EmailCrypto::decrypt(sk.as_bytes(), &envelope, headers).expect("decrypt");
+        let decrypted = EmailCrypto::decrypt(sk.as_bytes(), &envelope, headers).expect("decrypt");
         assert_eq!(decrypted, plaintext);
     }
 
@@ -596,11 +588,9 @@ mod tests {
         let plaintext = vec![0xab_u8; 100_000]; // 100 KB
         let headers = b"large-body";
 
-        let envelope =
-            EmailCrypto::encrypt(pk.as_bytes(), &plaintext, headers).expect("encrypt");
+        let envelope = EmailCrypto::encrypt(pk.as_bytes(), &plaintext, headers).expect("encrypt");
 
-        let decrypted =
-            EmailCrypto::decrypt(sk.as_bytes(), &envelope, headers).expect("decrypt");
+        let decrypted = EmailCrypto::decrypt(sk.as_bytes(), &envelope, headers).expect("decrypt");
         assert_eq!(decrypted, plaintext);
     }
 
@@ -611,12 +601,10 @@ mod tests {
         let plaintext = b"serialization test";
         let headers = b"test-headers";
 
-        let envelope =
-            EmailCrypto::encrypt(pk.as_bytes(), plaintext, headers).expect("encrypt");
+        let envelope = EmailCrypto::encrypt(pk.as_bytes(), plaintext, headers).expect("encrypt");
 
         let serialized = envelope.to_bytes();
-        let deserialized =
-            EmailEnvelope::from_bytes(&serialized).expect("deserialize");
+        let deserialized = EmailEnvelope::from_bytes(&serialized).expect("deserialize");
 
         let decrypted =
             EmailCrypto::decrypt(sk.as_bytes(), &deserialized, headers).expect("decrypt");
@@ -632,8 +620,7 @@ mod tests {
     #[test]
     fn test_invalid_sk_rejected() {
         let (pk, _sk) = kyber768::keypair();
-        let envelope =
-            EmailCrypto::encrypt(pk.as_bytes(), b"test", b"").expect("encrypt");
+        let envelope = EmailCrypto::encrypt(pk.as_bytes(), b"test", b"").expect("encrypt");
 
         let result = EmailCrypto::decrypt(&[0u8; 100], &envelope, b"");
         assert!(matches!(result, Err(EmailCryptoError::InvalidSecretKey(_))));

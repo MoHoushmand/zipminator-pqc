@@ -24,7 +24,10 @@ mod tests {
         assert_eq!(hs.state(), HandshakeState::InitiationSent);
         assert_eq!(msg.message_type, 1);
         // Real ML-KEM-768 ciphertext is 1088 bytes, not a 32-byte placeholder.
-        assert_eq!(msg.kem_ciphertext.len(), pqcrypto_kyber::kyber768::ciphertext_bytes());
+        assert_eq!(
+            msg.kem_ciphertext.len(),
+            pqcrypto_kyber::kyber768::ciphertext_bytes()
+        );
     }
 
     #[test]
@@ -42,7 +45,9 @@ mod tests {
     #[test]
     fn responder_exposes_public_key_of_expected_size() {
         let responder = Handshake::new_responder();
-        let pk = responder.static_public().expect("responder keypair present");
+        let pk = responder
+            .static_public()
+            .expect("responder keypair present");
         // ML-KEM-768 (NIST FIPS 203) public keys are 1184 bytes.
         assert_eq!(pk.len(), pqcrypto_kyber::kyber768::public_key_bytes());
     }
@@ -73,8 +78,12 @@ mod tests {
         let resp_msg = responder.create_response().unwrap();
         initiator.consume_response(&resp_msg).unwrap();
 
-        let ss_i = initiator.transport_secret().expect("initiator transport secret");
-        let ss_r = responder.transport_secret().expect("responder transport secret");
+        let ss_i = initiator
+            .transport_secret()
+            .expect("initiator transport secret");
+        let ss_r = responder
+            .transport_secret()
+            .expect("responder transport secret");
 
         assert_eq!(ss_i.len(), SHARED_SECRET_BYTES);
         assert_eq!(ss_r.len(), SHARED_SECRET_BYTES);
@@ -87,8 +96,8 @@ mod tests {
 
     // --- ITER 2 new tests: wire format serialization -------------------------
 
-    use super::wire::{MessageType, WireMessage, INITIATION_WIRE_LEN, RESPONSE_WIRE_LEN};
     use super::handshake::MSG_TYPE_INITIATION;
+    use super::wire::{MessageType, WireMessage, INITIATION_WIRE_LEN, RESPONSE_WIRE_LEN};
 
     /// Deterministic ciphertext filler so the fixture is stable across runs.
     /// NOT a valid KEM ciphertext; iter 2 only validates byte layout.
@@ -127,9 +136,7 @@ mod tests {
         // The committed fixture lives at tests/vpn/fixtures/initiation.hex
         // (repo-root relative). Dart's iter-5 widget test will load the same
         // file and expect the same bytes.
-        let expected_hex = include_str!(
-            "../../../tests/vpn/fixtures/initiation.hex"
-        );
+        let expected_hex = include_str!("../../../tests/vpn/fixtures/initiation.hex");
         let expected_bytes = hex::decode(expected_hex.trim()).expect("valid hex fixture");
         let actual_bytes = deterministic_initiation().to_bytes();
         assert_eq!(
@@ -260,7 +267,9 @@ mod tests {
         responder.consume_initiation(&init_msg).unwrap();
         let resp = responder.create_response().unwrap();
         assert!(resp.response_mac.is_some(), "iter-3 response carries a MAC");
-        initiator.consume_response(&resp).expect("valid MAC accepted");
+        initiator
+            .consume_response(&resp)
+            .expect("valid MAC accepted");
         assert_eq!(initiator.state(), HandshakeState::Established);
     }
 

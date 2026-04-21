@@ -142,16 +142,12 @@ impl OllamaClient {
             stream: false,
         };
 
-        let resp = self
-            .http
-            .post(&url)
-            .json(&body)
-            .send()
-            .await
-            .map_err(|e| OllamaError::ConnectionFailed {
+        let resp = self.http.post(&url).json(&body).send().await.map_err(|e| {
+            OllamaError::ConnectionFailed {
                 url: url.clone(),
                 reason: e.to_string(),
-            })?;
+            }
+        })?;
 
         let status = resp.status();
         if !status.is_success() {
@@ -192,16 +188,12 @@ impl OllamaClient {
             stream: false,
         };
 
-        let resp = self
-            .http
-            .post(&url)
-            .json(&body)
-            .send()
-            .await
-            .map_err(|e| OllamaError::ConnectionFailed {
+        let resp = self.http.post(&url).json(&body).send().await.map_err(|e| {
+            OllamaError::ConnectionFailed {
                 url: url.clone(),
                 reason: e.to_string(),
-            })?;
+            }
+        })?;
 
         let status = resp.status();
         if !status.is_success() {

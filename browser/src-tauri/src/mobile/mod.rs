@@ -59,10 +59,7 @@ pub enum PqcProxyError {
     /// `peer_public_key_b64` was not valid standard base64.
     InvalidBase64(String),
     /// Decoded key length did not match `Kyber768::PK_BYTES` (1184).
-    InvalidKeyLength {
-        expected: usize,
-        got: usize,
-    },
+    InvalidKeyLength { expected: usize, got: usize },
     /// Crypto core rejected the key (caller-supplied error text).
     EncapsulationFailed(String),
 }
@@ -120,8 +117,7 @@ fn decode_peer_key(peer_public_key_b64: &str) -> Result<PublicKey, PqcProxyError
             got: decoded.len(),
         });
     }
-    PublicKey::from_bytes(&decoded)
-        .map_err(|e| PqcProxyError::EncapsulationFailed(e.to_string()))
+    PublicKey::from_bytes(&decoded).map_err(|e| PqcProxyError::EncapsulationFailed(e.to_string()))
 }
 
 /// Core logic, exposed for unit tests. Returns typed errors rather than
@@ -293,6 +289,9 @@ mod tests {
             got: 64,
         };
         let json = serde_json::to_value(&err).expect("serialize error");
-        assert_eq!(json.get("kind").and_then(|v| v.as_str()), Some("InvalidKeyLength"));
+        assert_eq!(
+            json.get("kind").and_then(|v| v.as_str()),
+            Some("InvalidKeyLength")
+        );
     }
 }

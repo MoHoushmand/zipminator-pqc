@@ -44,7 +44,10 @@ fn test_ciphertext_tampering() {
     let ss2 = Kyber768::decapsulate(&ct, &sk);
 
     // Due to implicit rejection, we should get a different shared secret
-    assert_ne!(ss1.data, ss2.data, "Tampered ciphertext should produce different shared secret");
+    assert_ne!(
+        ss1.data, ss2.data,
+        "Tampered ciphertext should produce different shared secret"
+    );
 }
 
 #[test]
@@ -70,8 +73,8 @@ fn test_shared_secret_size() {
 
 #[test]
 fn test_ntt_reduce_fits_12bit() {
-    use crate::poly::Poly;
     use crate::constants::KYBER_ETA1;
+    use crate::poly::Poly;
 
     // Raw NTT outputs from CBD(2) use lazy Montgomery reduction and can
     // exceed 12-bit range. After Barrett reduction they must fit in [0, q).
@@ -87,7 +90,9 @@ fn test_ntt_reduce_fits_12bit() {
             assert!(
                 *c >= -(KYBER_Q - 1) && *c <= (KYBER_Q - 1),
                 "After reduce, coeff[{}] = {} out of (-q, q) range (trial {})",
-                i, c, trial
+                i,
+                c,
+                trial
             );
         }
     }

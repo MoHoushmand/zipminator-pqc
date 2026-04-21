@@ -24,7 +24,7 @@
 
 use pqcrypto_traits::kem::PublicKey;
 
-use crate::ratchet::{PqcRatchet, PqRatchetSession};
+use crate::ratchet::{PqRatchetSession, PqcRatchet};
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -45,7 +45,9 @@ fn kem_handshake() -> (PqcRatchet, PqcRatchet, [u8; 32]) {
         .expect("Bob should accept Alice's valid public key");
 
     let (ct_bytes, ss_bob) = bob.encapsulate().expect("Bob encapsulation must succeed");
-    let ss_alice = alice.decapsulate(&ct_bytes).expect("Alice decapsulation must succeed");
+    let ss_alice = alice
+        .decapsulate(&ct_bytes)
+        .expect("Alice decapsulation must succeed");
 
     assert_eq!(
         ss_alice, ss_bob,
@@ -59,8 +61,7 @@ fn kem_handshake() -> (PqcRatchet, PqcRatchet, [u8; 32]) {
 /// Returns (alice_session, bob_session) both ready for encrypt/decrypt.
 fn session_handshake() -> (PqRatchetSession, PqRatchetSession) {
     let (mut alice, alice_pk) = PqRatchetSession::init_alice();
-    let (bob, kem_ct, bob_pk) =
-        PqRatchetSession::init_bob(&alice_pk).expect("bob init");
+    let (bob, kem_ct, bob_pk) = PqRatchetSession::init_bob(&alice_pk).expect("bob init");
     alice
         .alice_finish_handshake(&kem_ct, &bob_pk)
         .expect("alice finish handshake");
@@ -80,7 +81,10 @@ fn test_ratchet_init_alice_bob() {
 
     // Bob learns Alice's identity
     let result = bob.set_remote_public(alice.local_static_public.as_bytes());
-    assert!(result.is_ok(), "Bob should accept a valid Kyber768 public key");
+    assert!(
+        result.is_ok(),
+        "Bob should accept a valid Kyber768 public key"
+    );
 
     // Bob encapsulates -> obtains (ciphertext, shared_secret_bob)
     let (ct_bytes, ss_bob) = bob.encapsulate().expect("Encapsulation must succeed");
@@ -92,7 +96,9 @@ fn test_ratchet_init_alice_bob() {
     assert_eq!(ss_bob.len(), 32, "Shared secret must be 32 bytes");
 
     // Alice decapsulates -> recovers shared secret
-    let ss_alice = alice.decapsulate(&ct_bytes).expect("Decapsulation must succeed");
+    let ss_alice = alice
+        .decapsulate(&ct_bytes)
+        .expect("Decapsulation must succeed");
 
     assert_eq!(
         ss_alice, ss_bob,
@@ -217,16 +223,25 @@ fn test_ratchet_step_produces_new_keys() {
 
     // Bob sends a reply
     let (h_b0, c_b0) = bob.encrypt(b"bob-reply-0").expect("bob encrypt");
-    let p_b0 = alice.decrypt(&h_b0, &c_b0).expect("alice decrypt bob reply");
+    let p_b0 = alice
+        .decrypt(&h_b0, &c_b0)
+        .expect("alice decrypt bob reply");
     assert_eq!(p_b0, b"bob-reply-0");
 
     // Alice sends again (another ratchet step since send_message_number resets)
-    let (h_a1, c_a1) = alice.encrypt(b"alice-step-1").expect("alice encrypt after ratchet");
-    let p_a1 = bob.decrypt(&h_a1, &c_a1).expect("bob decrypt alice after ratchet");
+    let (h_a1, c_a1) = alice
+        .encrypt(b"alice-step-1")
+        .expect("alice encrypt after ratchet");
+    let p_a1 = bob
+        .decrypt(&h_a1, &c_a1)
+        .expect("bob decrypt alice after ratchet");
     assert_eq!(p_a1, b"alice-step-1");
 
     // Ciphertexts from different ratchet epochs must differ
-    assert_ne!(c_a0, c_a1, "Ciphertexts from different ratchet steps must differ");
+    assert_ne!(
+        c_a0, c_a1,
+        "Ciphertexts from different ratchet steps must differ"
+    );
 }
 
 /// Forward secrecy: each message produces a distinct ciphertext (the chain key
@@ -265,7 +280,11 @@ fn test_ratchet_forward_secrecy() {
         let plain = bob
             .decrypt(&headers[i], &ciphertexts[i])
             .unwrap_or_else(|e| panic!("decrypt message {} failed: {}", i, e));
-        assert_eq!(plain, *msg, "Decrypted plaintext must match for message {}", i);
+        assert_eq!(
+            plain, *msg,
+            "Decrypted plaintext must match for message {}",
+            i
+        );
     }
 }
 
@@ -322,10 +341,14 @@ fn test_ratchet_out_of_order_messages() {
     let p3 = bob.decrypt(&h3, &c3).expect("decrypt M3 (out of order)");
     assert_eq!(p3, b"msg-3");
 
-    let p1 = bob.decrypt(&h1, &c1).expect("decrypt M1 (from skipped cache)");
+    let p1 = bob
+        .decrypt(&h1, &c1)
+        .expect("decrypt M1 (from skipped cache)");
     assert_eq!(p1, b"msg-1");
 
-    let p2 = bob.decrypt(&h2, &c2).expect("decrypt M2 (from skipped cache)");
+    let p2 = bob
+        .decrypt(&h2, &c2)
+        .expect("decrypt M2 (from skipped cache)");
     assert_eq!(p2, b"msg-2");
 }
 
@@ -435,7 +458,9 @@ fn test_ratchet_wrong_recipient() {
     // Alice generates her keypair; Bob encapsulates to Alice
     let alice = PqcRatchet::new();
     let mut bob_encap = PqcRatchet::new();
-    bob_encap.set_remote_public(alice.local_static_public.as_bytes()).unwrap();
+    bob_encap
+        .set_remote_public(alice.local_static_public.as_bytes())
+        .unwrap();
     let (ct_bytes, ss_bob) = bob_encap.encapsulate().unwrap();
 
     // Carol has a completely different keypair -- she should not recover ss_bob
@@ -531,7 +556,10 @@ fn test_ratchet_constant_time_comparison() {
     // Different plaintexts produce different ciphertexts
     let (h1, c1) = alice.encrypt(b"plaintext-A").expect("encrypt A");
     let (h2, c2) = alice.encrypt(b"plaintext-B").expect("encrypt B");
-    assert_ne!(c1, c2, "Different plaintexts must produce different ciphertexts");
+    assert_ne!(
+        c1, c2,
+        "Different plaintexts must produce different ciphertexts"
+    );
 
     // Bob decrypts both correctly
     let p1 = bob.decrypt(&h1, &c1).expect("decrypt A");
@@ -568,7 +596,10 @@ fn test_ffi_ratchet_lifecycle() {
 
     unsafe {
         let ptr = zipminator_ratchet_new();
-        assert!(!ptr.is_null(), "zipminator_ratchet_new must return non-null pointer");
+        assert!(
+            !ptr.is_null(),
+            "zipminator_ratchet_new must return non-null pointer"
+        );
 
         let mut pk_buf = vec![0u8; 1184]; // Kyber768 public key size
         let written = zipminator_ratchet_get_public_key(ptr, pk_buf.as_mut_ptr());
@@ -608,10 +639,7 @@ fn test_ffi_ratchet_encrypt_decrypt() {
     unsafe {
         // 1. Alice initialises her session
         let mut alice_pk = vec![0u8; PK_BYTES];
-        let alice_ptr = zipminator_ratchet_session_new_alice(
-            alice_pk.as_mut_ptr(),
-            alice_pk.len(),
-        );
+        let alice_ptr = zipminator_ratchet_session_new_alice(alice_pk.as_mut_ptr(), alice_pk.len());
         assert!(!alice_ptr.is_null(), "Alice session must be non-null");
 
         // 2. Bob initialises his session with Alice's public key
@@ -670,7 +698,11 @@ fn test_ffi_ratchet_encrypt_decrypt() {
             out_buf.as_mut_ptr(),
             out_buf.len(),
         );
-        assert!(bytes_written >= 0, "decrypt must return >= 0 on success, got {}", bytes_written);
+        assert!(
+            bytes_written >= 0,
+            "decrypt must return >= 0 on success, got {}",
+            bytes_written
+        );
         let decrypted = &out_buf[..bytes_written as usize];
         assert_eq!(decrypted, plaintext, "Decrypted text must match original");
 

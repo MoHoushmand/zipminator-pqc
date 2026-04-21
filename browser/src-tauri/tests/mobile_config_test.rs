@@ -27,10 +27,8 @@ fn tauri_dir() -> PathBuf {
 }
 
 fn read_json(path: &Path) -> serde_json::Value {
-    let text = std::fs::read_to_string(path)
-        .unwrap_or_else(|e| panic!("read {path:?}: {e}"));
-    serde_json::from_str(&text)
-        .unwrap_or_else(|e| panic!("parse {path:?} as JSON: {e}"))
+    let text = std::fs::read_to_string(path).unwrap_or_else(|e| panic!("read {path:?}: {e}"));
+    serde_json::from_str(&text).unwrap_or_else(|e| panic!("parse {path:?} as JSON: {e}"))
 }
 
 #[test]
@@ -58,8 +56,8 @@ fn desktop_config_frontend_dist_exists() {
         "frontendDist must contain index.html; the Tauri 2.x generator \
          panics without a frontend entry point"
     );
-    let entry_text = std::fs::read_to_string(&entry)
-        .unwrap_or_else(|e| panic!("read {entry:?}: {e}"));
+    let entry_text =
+        std::fs::read_to_string(&entry).unwrap_or_else(|e| panic!("read {entry:?}: {e}"));
     assert!(
         !entry_text.trim().is_empty(),
         "{entry:?} must not be empty; Tauri expects a non-empty HTML document"

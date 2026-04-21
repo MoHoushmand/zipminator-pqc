@@ -2,7 +2,7 @@
 
 The marathon task lists these as owned globs:
   - docs/guides/pillars/07-quantum-email.md
-  - web/app/(dashboard)/mail/**
+  - web/app/mail/**
 
 These tests pin the minimum structural contract for both surfaces:
 the docs page must exist, must cover the NIST FIPS 203 (ML-KEM-768)
@@ -17,7 +17,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PILLAR_DOC = REPO_ROOT / "docs" / "guides" / "pillars" / "07-quantum-email.md"
-DASHBOARD_DIR = REPO_ROOT / "web" / "app" / "(dashboard)" / "mail"
+DASHBOARD_DIR = REPO_ROOT / "web" / "app" / "mail"
 DASHBOARD_PAGE = DASHBOARD_DIR / "page.tsx"
 DASHBOARD_LAYOUT = DASHBOARD_DIR / "layout.tsx"
 

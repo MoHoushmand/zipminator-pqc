@@ -25,6 +25,8 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 60
     env:
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
       ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
       ASC_API_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
       ASC_API_KEY_CONTENT: ${{ secrets.ASC_API_KEY_CONTENT }}

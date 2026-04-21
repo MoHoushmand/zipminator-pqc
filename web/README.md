@@ -39,7 +39,7 @@ landing-page/
 │       ├── QDwordmark2.svg
 │       ├── QDaria_logo_teal Large.png
 │       ├── QDaria.svg
-│       ├── Q|D>.svg
+│       ├── QD-bracket.svg
 │       ├── Z.svg            # Zipminator logomark
 │       └── zipminator.svg   # Zipminator full logo
 ├── scripts/

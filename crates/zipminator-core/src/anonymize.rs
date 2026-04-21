@@ -109,7 +109,7 @@ pub fn anonymize_text(
 
     // Sort matches by start position descending so replacements don't shift offsets.
     let mut sorted: Vec<&PiiMatch> = matches.iter().collect();
-    sorted.sort_by(|a, b| b.start.cmp(&a.start));
+    sorted.sort_by_key(|m| std::cmp::Reverse(m.start));
 
     let mut result = text.to_string();
     for m in &sorted {

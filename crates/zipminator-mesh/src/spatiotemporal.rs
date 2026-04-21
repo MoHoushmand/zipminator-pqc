@@ -7,8 +7,8 @@
 //!
 //! Architecture #6 from the Physical Cryptography integration plan.
 
-use sha2::{Digest, Sha256};
 use hmac::{Hmac, Mac};
+use sha2::{Digest, Sha256};
 
 type HmacSha256 = Hmac<Sha256>;
 
@@ -90,8 +90,8 @@ pub fn sign_with_presence(
 ) -> Result<SpatiotemporalSignature, SpatiotemporalError> {
     let attestation_hash = attestation.hash();
 
-    let mut mac = HmacSha256::new_from_slice(signing_key)
-        .map_err(|_| SpatiotemporalError::HmacError)?;
+    let mut mac =
+        HmacSha256::new_from_slice(signing_key).map_err(|_| SpatiotemporalError::HmacError)?;
     mac.update(payload);
     mac.update(&attestation_hash);
     let result = mac.finalize();
@@ -130,8 +130,8 @@ pub fn verify_with_presence(
 
     // Recompute HMAC
     let attestation_hash = signature.attestation.hash();
-    let mut mac = HmacSha256::new_from_slice(verifying_key)
-        .map_err(|_| SpatiotemporalError::HmacError)?;
+    let mut mac =
+        HmacSha256::new_from_slice(verifying_key).map_err(|_| SpatiotemporalError::HmacError)?;
     mac.update(payload);
     mac.update(&attestation_hash);
 
@@ -247,7 +247,10 @@ mod tests {
             Some(60_000), // 60 second window
             Some(now_ms),
         );
-        assert!(matches!(result, Err(SpatiotemporalError::TimestampOutOfRange { .. })));
+        assert!(matches!(
+            result,
+            Err(SpatiotemporalError::TimestampOutOfRange { .. })
+        ));
     }
 
     #[test]

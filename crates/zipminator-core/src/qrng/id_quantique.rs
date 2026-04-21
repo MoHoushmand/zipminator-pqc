@@ -2,16 +2,15 @@
 ///
 /// Implements communication with ID Quantique Quantis USB quantum random number generators.
 /// Uses libusb for USB communication and provides thread-safe access.
-
 use super::{HealthStatus, QrngDevice, QrngError};
 use log::{debug, error, info, warn};
 use std::time::Duration;
 
 /// ID Quantique Quantis USB device constants
-const VENDOR_ID: u16 = 0x0ABA;  // ID Quantique vendor ID
+const VENDOR_ID: u16 = 0x0ABA; // ID Quantique vendor ID
 const PRODUCT_ID: u16 = 0x0101; // Quantis USB product ID
-const ENDPOINT_IN: u8 = 0x81;   // Bulk IN endpoint
-const TIMEOUT_MS: u64 = 1000;   // USB read timeout
+const ENDPOINT_IN: u8 = 0x81; // Bulk IN endpoint
+const TIMEOUT_MS: u64 = 1000; // USB read timeout
 const MAX_CHUNK_SIZE: usize = 4096; // Maximum bytes per USB transfer
 
 /// Statistical quality thresholds for health checks
@@ -55,7 +54,8 @@ impl IdQuantiqueDevice {
     fn find_and_open_device(&mut self) -> Result<libusb::DeviceHandle<'static>, QrngError> {
         let context = self.context.as_ref().ok_or(QrngError::DeviceNotFound)?;
 
-        let devices = context.devices()
+        let devices = context
+            .devices()
             .map_err(|e| QrngError::UsbError(e.to_string()))?;
 
         for device in devices.iter() {
@@ -64,11 +64,15 @@ impl IdQuantiqueDevice {
                 .map_err(|e| QrngError::UsbError(e.to_string()))?;
 
             if desc.vendor_id() == VENDOR_ID && desc.product_id() == PRODUCT_ID {
-                debug!("Found ID Quantique device: VID={:04x} PID={:04x}",
-                       desc.vendor_id(), desc.product_id());
+                debug!(
+                    "Found ID Quantique device: VID={:04x} PID={:04x}",
+                    desc.vendor_id(),
+                    desc.product_id()
+                );
 
                 // Open the device immediately
-                let handle = device.open()
+                let handle = device
+                    .open()
                     .map_err(|e| QrngError::InitializationFailed(format!("open device: {}", e)))?;
 
                 // SAFETY: We're transmuting the lifetime here because:
@@ -98,9 +102,10 @@ impl IdQuantiqueDevice {
 
         if bias > MAX_BIAS || bias < (1.0 - MAX_BIAS) {
             warn!("Statistical bias detected: {:.4} (expected ~0.5)", bias);
-            return Err(QrngError::StatisticalTestFailed(
-                format!("Bias {:.4} exceeds threshold {:.4}", bias, MAX_BIAS)
-            ));
+            return Err(QrngError::StatisticalTestFailed(format!(
+                "Bias {:.4} exceeds threshold {:.4}",
+                bias, MAX_BIAS
+            )));
         }
 
         // TODO: Add more sophisticated statistical tests (entropy estimation, runs test, etc.)
@@ -144,7 +149,9 @@ impl QrngDevice for IdQuantiqueDevice {
         let health = self.health_check()?;
         if health != HealthStatus::Healthy {
             error!("Device health check failed after initialization");
-            return Err(QrngError::HealthCheckFailed("Initial health check failed".to_string()));
+            return Err(QrngError::HealthCheckFailed(
+                "Initial health check failed".to_string(),
+            ));
         }
 
         Ok(())
@@ -152,10 +159,14 @@ impl QrngDevice for IdQuantiqueDevice {
 
     fn get_random_bytes(&mut self, buffer: &mut [u8]) -> Result<usize, QrngError> {
         if !self.initialized {
-            return Err(QrngError::InitializationFailed("Device not initialized".to_string()));
+            return Err(QrngError::InitializationFailed(
+                "Device not initialized".to_string(),
+            ));
         }
 
-        let handle = self.device_handle.as_mut()
+        let handle = self
+            .device_handle
+            .as_mut()
             .ok_or(QrngError::DeviceNotFound)?;
 
         let mut total_read = 0;
@@ -181,8 +192,10 @@ impl QrngDevice for IdQuantiqueDevice {
                     total_read += bytes_read;
                     self.stats.total_bytes_read += bytes_read as u64;
 
-                    debug!("Read {} bytes from QRNG device (total: {})",
-                           bytes_read, total_read);
+                    debug!(
+                        "Read {} bytes from QRNG device (total: {})",
+                        bytes_read, total_read
+                    );
                 }
                 Err(e) => {
                     self.stats.read_errors += 1;
@@ -248,7 +261,10 @@ impl QrngDevice for IdQuantiqueDevice {
         }
 
         self.initialized = false;
-        info!("Device shutdown complete. Total bytes read: {}", self.stats.total_bytes_read);
+        info!(
+            "Device shutdown complete. Total bytes read: {}",
+            self.stats.total_bytes_read
+        );
 
         Ok(())
     }

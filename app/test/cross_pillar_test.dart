@@ -21,7 +21,8 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Start at Vault
+      // Start at Vault (initial route is /home — tap nav rail tab to load Vault)
+      await tapNavTab(tester, 'Vault');
       expect(find.text('Quantum Vault'), findsOneWidget);
 
       // Navigate through each pillar and verify it loads
@@ -30,23 +31,19 @@ void main() {
         ('VoIP', 'Quantum VoIP'),
         ('VPN', 'Q-VPN'),
         ('Anonymizer', 'Anonymizer'),
-        ('Q-AI', 'Q-AI Assistant'),
+        ('Q-AI', 'QDaria Q-AI Personal Assistant'),
         ('Email', 'Quantum Mail'),
         ('Browser', 'PQC'), // Full-page browser shows compact privacy chips
       ];
 
       for (final (tab, expectedTitle) in pillars) {
-        await tester.tap(find.text(tab));
-        await tester.pump(const Duration(seconds: 1));
-        await tester.pump(const Duration(milliseconds: 100));
+        await tapNavTab(tester, tab);
         expect(find.text(expectedTitle), findsWidgets,
             reason: '$tab screen should show "$expectedTitle"');
       }
 
       // Navigate back to Vault
-      await tester.tap(find.text('Vault'));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(milliseconds: 500));
+      await tapNavTab(tester, 'Vault');
       expect(find.text('Quantum Vault'), findsOneWidget);
 
       tester.view.resetPhysicalSize();
@@ -116,15 +113,11 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // Go to Email
-      await tester.tap(find.text('Email'));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tapNavTab(tester, 'Email');
       expect(find.text('Quantum Mail'), findsWidgets);
 
       // Go to Vault - key management should be available
-      await tester.tap(find.text('Vault'));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tapNavTab(tester, 'Vault');
       expect(find.text('Key Management'), findsOneWidget);
 
       tester.view.resetPhysicalSize();

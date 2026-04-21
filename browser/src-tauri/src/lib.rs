@@ -5,6 +5,7 @@
 //! status and metrics.
 
 pub mod ai;
+pub mod mobile;
 pub mod privacy;
 pub mod proxy;
 #[cfg(feature = "vpn")]
@@ -47,7 +48,6 @@ pub async fn start_vpn(
 #[cfg(not(feature = "vpn"))]
 pub fn init_vpn_manager() {}
 
-
 /// Initialize and start the PQC proxy during Tauri setup.
 ///
 /// Call this from the Tauri `setup` hook:
@@ -56,9 +56,7 @@ pub fn init_vpn_manager() {}
 /// // In your Tauri builder:
 /// // .setup(|app| { zipbrowser::setup_proxy(app)?; Ok(()) })
 /// ```
-pub async fn start_proxy(
-    app_data_dir: std::path::PathBuf,
-) -> Result<(String, u16), String> {
+pub async fn start_proxy(app_data_dir: std::path::PathBuf) -> Result<(String, u16), String> {
     let ca_dir = app_data_dir.join("pqc-ca");
     let config = ProxyConfig::default();
 
@@ -69,8 +67,7 @@ pub async fn start_proxy(
     let host = "127.0.0.1".to_string();
     let port = handle.port;
 
-    PROXY_HANDLE
-        .get_or_init(|| Mutex::new(Some(handle)));
+    PROXY_HANDLE.get_or_init(|| Mutex::new(Some(handle)));
 
     tracing::info!(port, "PQC proxy started");
     Ok((host, port))

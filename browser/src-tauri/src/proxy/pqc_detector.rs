@@ -192,10 +192,7 @@ mod tests {
     fn classify_mlkem_hybrid() {
         let status = PqcDetector::classify_key_exchange("X25519MLKEM768");
         assert!(status.is_pqc());
-        assert_eq!(
-            status,
-            PqcStatus::Active("X25519MLKEM768".to_string())
-        );
+        assert_eq!(status, PqcStatus::Active("X25519MLKEM768".to_string()));
     }
 
     #[test]
@@ -243,7 +240,9 @@ mod tests {
 
     #[test]
     fn known_pqc_domains() {
-        assert!(PqcDetector::is_known_pqc_domain("pq.cloudflareresearch.com"));
+        assert!(PqcDetector::is_known_pqc_domain(
+            "pq.cloudflareresearch.com"
+        ));
         assert!(!PqcDetector::is_known_pqc_domain("example.com"));
     }
 

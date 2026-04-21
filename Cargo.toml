@@ -6,6 +6,8 @@ members = [
     "crates/zipminator-nist",
     "crates/zipminator-bench",
     "crates/zipminator-mesh",
+    "crates/qmesh-core",
+    "crates/pq-wireguard",
     "browser/src-tauri",
     "app/rust",
 ]

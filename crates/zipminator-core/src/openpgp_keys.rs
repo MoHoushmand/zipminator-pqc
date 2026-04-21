@@ -9,10 +9,10 @@
 
 use crate::email_crypto::EmailCryptoError;
 
+use ed25519_dalek::{SigningKey, VerifyingKey};
 use hkdf::Hkdf;
 use sha2::Sha256;
 use x25519_dalek::{EphemeralSecret, PublicKey as X25519PublicKey, StaticSecret};
-use ed25519_dalek::{SigningKey, VerifyingKey};
 use zeroize::{Zeroize, ZeroizeOnDrop};
 
 use aes_gcm::aead::{Aead, KeyInit, Payload};
@@ -387,8 +387,7 @@ pub fn composite_decrypt(
     combined_ikm.zeroize();
 
     // 4. AES-256-GCM decrypt
-    let mut ct_with_tag =
-        Vec::with_capacity(envelope.encrypted_body.len() + envelope.tag.len());
+    let mut ct_with_tag = Vec::with_capacity(envelope.encrypted_body.len() + envelope.tag.len());
     ct_with_tag.extend_from_slice(&envelope.encrypted_body);
     ct_with_tag.extend_from_slice(&envelope.tag);
 
@@ -433,10 +432,8 @@ mod tests {
         let plaintext = b"Hello from composite PQC encryption!";
         let aad = b"email-headers";
 
-        let envelope =
-            composite_encrypt(&recipient, plaintext, aad).expect("composite encrypt");
-        let decrypted =
-            composite_decrypt(&kp, &envelope, aad).expect("composite decrypt");
+        let envelope = composite_encrypt(&recipient, plaintext, aad).expect("composite encrypt");
+        let decrypted = composite_decrypt(&kp, &envelope, aad).expect("composite decrypt");
 
         assert_eq!(decrypted, plaintext);
     }
@@ -450,8 +447,7 @@ mod tests {
         let plaintext = b"secret";
         let aad = b"";
 
-        let envelope =
-            composite_encrypt(&recipient, plaintext, aad).expect("encrypt");
+        let envelope = composite_encrypt(&recipient, plaintext, aad).expect("encrypt");
         let result = composite_decrypt(&kp2, &envelope, aad);
         assert!(result.is_err());
     }
@@ -465,8 +461,7 @@ mod tests {
         let aad1 = b"correct-headers";
         let aad2 = b"wrong-headers";
 
-        let envelope =
-            composite_encrypt(&recipient, plaintext, aad1).expect("encrypt");
+        let envelope = composite_encrypt(&recipient, plaintext, aad1).expect("encrypt");
         let result = composite_decrypt(&kp, &envelope, aad2);
         assert!(result.is_err());
     }
@@ -561,10 +556,8 @@ mod tests {
         let plaintext = b"";
         let aad = b"empty";
 
-        let envelope =
-            composite_encrypt(&recipient, plaintext, aad).expect("encrypt");
-        let decrypted =
-            composite_decrypt(&kp, &envelope, aad).expect("decrypt");
+        let envelope = composite_encrypt(&recipient, plaintext, aad).expect("encrypt");
+        let decrypted = composite_decrypt(&kp, &envelope, aad).expect("decrypt");
         assert_eq!(decrypted, plaintext);
     }
 }

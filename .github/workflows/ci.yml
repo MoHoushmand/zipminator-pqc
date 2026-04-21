@@ -26,6 +26,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Linux system dependencies (Tauri)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libglib2.0-dev \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev \
+            libsoup-3.0-dev \
+            libjavascriptcoregtk-4.1-dev \
+            librsvg2-dev \
+            libayatana-appindicator3-dev \
+            pkg-config
+
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -99,17 +113,37 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-py${{ matrix.python-version }}-pip-
 
-      - name: Install dependencies
+      - name: Install Linux system dependencies (Tauri transitive)
+        if: runner.os == 'Linux'
         run: |
-          pip install --upgrade pip
-          pip install maturin[patchelf] pytest pytest-cov
-          pip install -e ".[all,dev]"
+          sudo apt-get update
+          sudo apt-get install -y \
+            libglib2.0-dev \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev \
+            libsoup-3.0-dev \
+            libjavascriptcoregtk-4.1-dev \
+            librsvg2-dev \
+            libayatana-appindicator3-dev \
+            pkg-config
+
+      - name: Create venv and install dependencies
+        run: |
+          python -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install 'maturin[patchelf]' pytest pytest-cov pytest-asyncio fastapi asyncpg
+          python -m pip install -e ".[all,dev]"
 
       - name: Build Rust extension via maturin
-        run: maturin develop --release
+        run: |
+          . .venv/bin/activate
+          maturin develop --release
 
       - name: Run pytest
-        run: pytest tests/ -v --tb=short --junitxml=test-results/pytest.xml
+        run: |
+          . .venv/bin/activate
+          pytest tests/ -v --tb=short --junitxml=test-results/pytest.xml
 
       - name: Upload test results
         if: always()
@@ -170,6 +204,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Linux system dependencies (Tauri)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libglib2.0-dev \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev \
+            libsoup-3.0-dev \
+            libjavascriptcoregtk-4.1-dev \
+            librsvg2-dev \
+            libayatana-appindicator3-dev \
+            pkg-config
+
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -222,6 +269,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Linux system dependencies (Tauri)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libglib2.0-dev \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev \
+            libsoup-3.0-dev \
+            libjavascriptcoregtk-4.1-dev \
+            librsvg2-dev \
+            libayatana-appindicator3-dev \
+            pkg-config
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -243,11 +304,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-wheels-
 
-      - name: Install maturin
-        run: pip install maturin[patchelf]
+      - name: Create venv and install maturin
+        run: |
+          python -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install 'maturin[patchelf]'
 
       - name: Build wheel
-        run: maturin build --release --strip
+        run: |
+          . .venv/bin/activate
+          maturin build --release --strip
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4

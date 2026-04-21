@@ -44,7 +44,7 @@ Check IEEE S&P 2027 and USENIX Security 2027 deadlines before final decision.
 6. quantum-key-distribution-engineer — key derivation from composed entropy
 7. verification-quality — truth scoring on all code-backed claims
 8. agentic-jujutsu — adversarial ("ARE is just XOR", "Merkle overhead", "DORA is marketing")
-9. hive-mind-advanced — Byzantine 2/3 consensus final gate
+9. quantum-peer-reviewer — 8-agent Byzantine 2/3 consensus final gate
 10. reasoningbank-intelligence + agentdb-advanced — learn and persist patterns
 11. stream-chain — multi-stage processing pipeline coordination
 12. pair-programming — navigator/driver TDD for benchmark code
@@ -177,7 +177,7 @@ Generate as TikZ/pgfplots LaTeX, compile to PDF, verify via Playwright:
 - Gemini 3.1 Pro Preview: 1M-context structural + novelty assessment
 - Grok 4: third opinion on novelty
 - DeepSeek-R1: mathematical proof verification
-- hive-mind-advanced: Byzantine 2/3 consensus
+- quantum-peer-reviewer skill: Byzantine 2/3 consensus
 - Playwright: verify all 10 figures render correctly
 - Compile: pdflatex + bibtex clean
 

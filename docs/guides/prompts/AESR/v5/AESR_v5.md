@@ -289,3 +289,4 @@ AESR v5 Prompt Engineer
         |-- Episodic Memory (cross-session search, plugin v1.0.15)
         +-- Agentic Jujutsu (git-integrated trajectories)
 ```
+2

@@ -256,28 +256,3 @@ jobs:
         run: |
           echo "Validating NIST test vectors..."
           # Add specific KAT validation
-
-  # NOTE: Claude Flow notification pattern is duplicated across 8+ workflows.
-  # TODO: Extract into a reusable composite action at .github/actions/claude-flow-notify/action.yml
-  security-notification:
-    name: Security Notification
-    runs-on: ubuntu-latest
-    needs: [security-audit, security-scanning, constant-time-validation]
-    if: failure()
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install Claude Flow
-        run: npm install -g claude-flow@alpha
-
-      - name: Send security alert
-        run: |
-          npx claude-flow@alpha hooks notify --message "Security tests failed in CI pipeline"
-          npx claude-flow@alpha hooks post-task --task-id "security-scan-failed"

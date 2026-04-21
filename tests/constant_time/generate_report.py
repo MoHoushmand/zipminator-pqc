@@ -244,7 +244,7 @@ def generate_markdown_report(results, output_path):
     print(f"Report generated: {output_path}")
 
 def store_in_memory(results):
-    """Store validation results in swarm memory for coordination."""
+    """Write validation summary to .marathon/metrics for coordination."""
 
     summary = {
         'timestamp': datetime.now().isoformat(),
@@ -268,36 +268,18 @@ def store_in_memory(results):
             'status': 'PASS' if failed == 0 else 'FAIL'
         }
 
-    # Determine overall status
     cpp_ok = summary['implementations'].get('cpp', {}).get('status') == 'PASS'
     rust_ok = summary['implementations'].get('rust', {}).get('status') == 'PASS'
+    summary['overall_status'] = 'PASS' if (cpp_ok or rust_ok) else 'FAIL'
 
-    if cpp_ok or rust_ok:
-        summary['overall_status'] = 'PASS'
-    else:
-        summary['overall_status'] = 'FAIL'
+    metrics_dir = Path('.marathon/metrics')
+    metrics_dir.mkdir(parents=True, exist_ok=True)
+    summary_path = metrics_dir / 'constant-time-validation.json'
+    with open(summary_path, 'w') as f:
+        json.dump(summary, f, indent=2)
 
-    # Store in swarm memory
-    try:
-        result = subprocess.run([
-            'npx', 'claude-flow@alpha', 'hooks', 'notify',
-            '--message', f'Constant-time validation complete: {summary["overall_status"]}'
-        ], capture_output=True, text=True)
-
-        print(f"Stored results in swarm memory: {result.stdout}")
-
-        # Store detailed results
-        result = subprocess.run([
-            'npx', 'claude-flow@alpha', 'memory', 'store',
-            '--key', 'swarm/validation/security-results',
-            '--value', json.dumps(summary),
-            '--namespace', 'coordination'
-        ], capture_output=True, text=True)
-
-        print("Detailed results stored in memory")
-
-    except Exception as e:
-        print(f"Warning: Could not store in swarm memory: {e}")
+    print(f"Constant-time validation summary: {summary['overall_status']}")
+    print(f"Summary written to: {summary_path}")
 
 def main():
     if len(sys.argv) < 3:
@@ -332,8 +314,8 @@ def main():
     print(f"Generating report: {report_path}")
     generate_markdown_report(results, report_path)
 
-    # Store in memory for swarm coordination
-    print("Storing results in swarm memory...")
+    # Write summary to .marathon/metrics for coordination
+    print("Writing validation summary to .marathon/metrics ...")
     store_in_memory(results)
 
     print("\n✓ Report generation complete!")

@@ -29,17 +29,8 @@ pub use config::{AiConfig, AiMode};
 
 #[cfg(feature = "tauri-shell")]
 pub use sidebar::{
-    AiState,
-    ai_chat,
-    ai_clear_history,
-    ai_download_model,
-    ai_extract_page_context,
-    ai_get_config,
-    ai_load_model,
-    ai_rewrite,
-    ai_set_config,
-    ai_summarize,
-    initial_state,
+    ai_chat, ai_clear_history, ai_download_model, ai_extract_page_context, ai_get_config,
+    ai_load_model, ai_rewrite, ai_set_config, ai_summarize, initial_state, AiState,
 };
 
 /// Selects which LLM backend handles a request.
@@ -47,20 +38,15 @@ pub use sidebar::{
 /// `Mock` returns canned responses (for testing / offline use).
 /// `Local` uses the candle-based Phi-3 engine.
 /// `Claude` and `OpenAI` use the cloud client with provider-specific endpoints.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ModelProvider {
     Claude,
     OpenAI,
     Ollama,
     Local,
+    #[default]
     Mock,
-}
-
-impl Default for ModelProvider {
-    fn default() -> Self {
-        Self::Mock
-    }
 }
 
 impl ModelProvider {
@@ -196,7 +182,9 @@ mod tests {
 
     #[test]
     fn provider_endpoints() {
-        assert!(ModelProvider::Claude.default_endpoint().contains("anthropic"));
+        assert!(ModelProvider::Claude
+            .default_endpoint()
+            .contains("anthropic"));
         assert!(ModelProvider::OpenAI.default_endpoint().contains("openai"));
         assert!(ModelProvider::Local.default_endpoint().is_empty());
     }
@@ -268,10 +256,7 @@ mod tests {
 
     #[test]
     fn prompt_guard_allows_safe_input_through() {
-        let result = guarded_chat_sync(
-            ModelProvider::Mock,
-            "What is quantum key distribution?",
-        );
+        let result = guarded_chat_sync(ModelProvider::Mock, "What is quantum key distribution?");
         assert!(result.prompt_safety.is_safe);
         assert!(result.text.contains("Mock"));
     }
@@ -299,7 +284,10 @@ mod tests {
 
     #[test]
     fn ollama_provider_defaults() {
-        assert_eq!(ModelProvider::Ollama.default_endpoint(), "http://localhost:11434");
+        assert_eq!(
+            ModelProvider::Ollama.default_endpoint(),
+            "http://localhost:11434"
+        );
         assert_eq!(ModelProvider::Ollama.default_model(), "llama3.2");
         assert!(!ModelProvider::Ollama.requires_api_key());
         assert!(ModelProvider::Ollama.is_local());

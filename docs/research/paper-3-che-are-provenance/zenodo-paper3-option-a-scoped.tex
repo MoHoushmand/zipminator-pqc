@@ -1,0 +1,180 @@
+% zenodo-paper3-option-a-scoped.tex
+% Deltas from main-draft.tex; all unchanged sections omitted.
+% Apply by:
+%   (1) replacing the \title line (currently main-draft.tex line 59)
+%   (2) replacing the \begin{abstract}...\end{abstract} block (lines 74-123)
+%   (3) inserting the new \section{Open Problems} block immediately
+%       before \section{Conclusion} (currently sec:conclusion, around line 1580)
+%
+% Rest of the paper (intro, related work, preliminaries, ARE construction,
+% composition, provenance, evaluation, security, DORA mapping, conclusion,
+% references, appendices) stays intact.
+%
+% Rationale: the current abstract asserts "we prove" for broader claims
+% that the paper's own tab:proven-vs-conjectured marks as Conjectured,
+% and that Claim 1 (ARE Pre-Conditioning, Informal) backs with the
+% remark "A complete security reduction remains open." This scope-down
+% aligns abstract and title with the formal status table.
+
+% ─── (1) Title replacement ──────────────────────────────────────────
+% OLD: \title{Certified Heterogeneous Entropy with Algebraic Randomness Extraction}
+\title{Certified Heterogeneous Entropy over $\mathrm{GF}(p^n)$:\\
+  A Proven Subcase with Conjectured Extensions}
+
+% ─── (2) Abstract replacement ──────────────────────────────────────
+\begin{abstract}
+Composing entropy from heterogeneous sources, quantum hardware,
+WiFi Channel State Information (CSI), and operating system random
+number generators, is essential for post-quantum cryptographic
+systems but lacks formal provenance guarantees.
+%
+We present the Certified Heterogeneous Entropy (\che) framework
+together with Algebraic Randomness Extraction (\are), a new family
+of seeded pre-conditioners parameterized by algebraic programs over
+bounded number domains with six arithmetic operations, generated
+deterministically from SHAKE-256.
+%
+\textbf{Proven result.}
+For the finite-field domain $\mathrm{GF}(p^n)$, we prove that each
+multiplicative step with nonzero operands is a bijection on the
+multiplicative group and therefore preserves $\log_2(p^n - 1)$ bits
+of min-entropy exactly (\Cref{thm:gf-uniform}, \Cref{cor:gf-chain}).
+%
+The composition protocol XOR-fuses independent sources with the
+standard guarantee that the output retains at least the
+min-entropy of the strongest uncompromised input, and records each
+contribution in a SHA-256 Merkle-tree certificate that binds the
+output to its constituent sources.
+%
+Graceful degradation adjusts the min-entropy estimate downward
+when sources fail, with no silent fallback.
+%
+\textbf{Conjectured and open.}
+A complete extraction soundness reduction for mixed-domain \are
+programs remains open; the security of the quaternion
+($\mathbb{H}$), octonion ($\mathbb{O}$), and $p$-adic ($\Q_p$)
+domains is stated as a conjecture, with the concrete adversarial
+models left to future work.
+%
+The two-layer architecture (algebraic fold followed by SHA-256
+expansion) is evaluated empirically but is not a proven extractor
+outside the GF subcase.
+%
+\textbf{Evaluation.}
+Our implementation processes 6.8\,MB of IBM Quantum entropy
+(ibm\_kingston, 156 qubits), a 9\,KB WiFi CSI pool from ESP32-S3
+hardware (treated as a qualitative demonstration, not a certified
+source at this scale), and \texttt{os.urandom} output.
+%
+We report an MCV-based min-entropy proxy; the official NIST
+SP~800-90B \texttt{ea\_non\_iid} run is identified as required
+future work.
+%
+The provenance certificates provide an audit trail aligned with
+DORA Art.~7 requirements for cryptographic key lifecycle
+management in EU-regulated financial institutions.
+%
+\Cref{tab:proven-vs-conjectured} summarizes the formal status of
+each claim; \Cref{sec:open-problems} lists the outstanding proofs
+and measurements required to promote the conjectured items.
+%
+All code is open-source.
+\end{abstract}
+
+% ─── (3) New section: Open Problems ────────────────────────────────
+% Insert immediately before \section{Conclusion} (sec:conclusion).
+
+\section{Open Problems}
+\label{sec:open-problems}
+
+This paper proves a single core theorem (\Cref{thm:gf-uniform}) and
+identifies several claims that remain conjectured or require
+additional measurement before they meet the same bar. We list them
+here so that the extractor theory community and implementers have
+a concrete roadmap.
+
+\subsection{Theory gaps}
+\label{sec:open-problems:theory}
+
+\begin{enumerate}
+  \item \textbf{General \are extraction bound (mixed domain).}
+    \Cref{claim:are-extraction} asserts that a random \are program
+    of $k$ steps over a source of min-entropy $\minentropy(X) \geq
+    \alpha n$ produces output $\varepsilon$-close to uniform for
+    suitable $k, \alpha, \varepsilon$. The formal reduction is
+    open. The main difficulty is bounding min-entropy across
+    non-GF steps (addition, subtraction, multiplication,
+    division, modulo, power) composed with the zero-avoidance
+    perturbation. \Cref{thm:gf-uniform} is a natural starting
+    point because GF steps preserve min-entropy exactly; a bound
+    of the form ``if a fraction $\rho$ of steps are GF, loss is
+    at most $f(1-\rho)$'' would promote the claim.
+
+  \item \textbf{Quaternion ($\mathbb{H}$) adversary model.}
+    The paper asserts that non-commutativity doubles the number
+    of distinct evaluation orders the adversary must consider.
+    A concrete adversary model (query complexity, success
+    probability) is not given. Either a formal argument or a
+    softening of the claim to ``structural diversity'' is
+    required.
+
+  \item \textbf{Octonion ($\mathbb{O}$) Catalan inversion paths.}
+    Same status as $\mathbb{H}$: the Catalan-count argument
+    ($C_K$ parenthesizations for $K$ multiplications) is
+    combinatorial, not cryptographic. A reduction from a
+    standard hardness assumption is open.
+
+  \item \textbf{$p$-adic orthogonal mixing.}
+    The $\Q_p$ domain claim ``orthogonal mixing'' in the
+    extended security section is unproven. The ultrametric
+    structure may or may not yield extraction properties
+    distinct from $\R$; no formal result is given.
+
+  \item \textbf{27\% fold collision rate.}
+    The 9-domain program layer shows a 27\% collision rate in
+    the algebraic fold. The paper does not formally tie this to
+    the XOR-composed min-entropy floor. A short argument (XOR
+    composition absorbs fold collisions up to the weaker source
+    bound) would close the gap, but is not in the current
+    manuscript.
+\end{enumerate}
+
+\subsection{Measurement gaps}
+\label{sec:open-problems:measurement}
+
+\begin{enumerate}
+  \item \textbf{NIST SP~800-90B \texttt{ea\_non\_iid} run.}
+    The discussion reports an MCV estimator proxy instead of the
+    official NIST reference implementation. For a paper that
+    invokes DORA Art.~7 audit relevance, the official tool must
+    be run on all three sources (IBM Quantum 6.8\,MB, CSI, OS)
+    and reconciled with the MCV proxy. The tool is freely
+    available from NIST; the blocker is installation and
+    execution, not access.
+
+  \item \textbf{CSI pool size.}
+    The CSI input in this paper is 9\,KB, below any reasonable
+    NIST SP~800-90B entropy-assessment floor (the reference
+    recommendation is $\geq 10^6$ samples). Paper~2 uses a
+    larger BCM4339 Nexmon trace; either reuse that trace or
+    explicitly scope CSI as a qualitative demonstration (as
+    this revision does in the abstract) rather than a certified
+    source.
+
+  \item \textbf{Cross-source independence.}
+    The XOR composition proof assumes source independence. The
+    paper does not empirically measure mutual information
+    between IBM Quantum, CSI, and OS entropy streams. A simple
+    pairwise mutual-information test over the collected traces
+    would either validate or bound the independence assumption.
+\end{enumerate}
+
+\Cref{tab:proven-vs-conjectured} already lists the formal status
+of each claim. This section translates that status into an
+actionable research program: items in
+\Cref{sec:open-problems:theory} require new proofs; items in
+\Cref{sec:open-problems:measurement} require instrument runs on
+existing or expanded data. Together they constitute the path to
+promote the current manuscript from ``proven GF subcase with
+conjectured extensions'' to ``proven mixed-domain \are extractor
+with certified source characterization.''

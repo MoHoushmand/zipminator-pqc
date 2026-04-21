@@ -10,8 +10,8 @@ use std::sync::Arc;
 
 use dashmap::DashMap;
 use rcgen::{
-    BasicConstraints, CertificateParams, DistinguishedName, DnType, ExtendedKeyUsagePurpose,
-    IsCa, KeyPair, KeyUsagePurpose, SanType,
+    BasicConstraints, CertificateParams, DistinguishedName, DnType, ExtendedKeyUsagePurpose, IsCa,
+    KeyPair, KeyUsagePurpose, SanType,
 };
 use rustls_pki_types::{CertificateDer, PrivateKeyDer, PrivatePkcs8KeyDer};
 use thiserror::Error;
@@ -177,8 +177,8 @@ impl CertificateAuthority {
     /// Generate a new leaf certificate for `domain`, signed by our CA.
     fn generate_leaf(&self, domain: &str) -> Result<CertKeyPair, CertError> {
         // Re-create the CA key pair from PEM.
-        let ca_key = KeyPair::from_pem(&self.ca_key_pem)
-            .map_err(|e| CertError::KeyGen(e.to_string()))?;
+        let ca_key =
+            KeyPair::from_pem(&self.ca_key_pem).map_err(|e| CertError::KeyGen(e.to_string()))?;
 
         // Re-create the CA cert by self-signing with the same params.
         // This is needed because rcgen::Certificate is not serializable;
@@ -231,10 +231,7 @@ impl CertificateAuthority {
     /// We rebuild the same CA params and self-sign again. The output cert
     /// will have different serial/dates but that is fine because we only
     /// need the issuer identity (DN + public key) for signing leaves.
-    fn reconstruct_ca_cert(
-        &self,
-        ca_key: &KeyPair,
-    ) -> Result<rcgen::Certificate, CertError> {
+    fn reconstruct_ca_cert(&self, ca_key: &KeyPair) -> Result<rcgen::Certificate, CertError> {
         let mut params = CertificateParams::new(Vec::<String>::new())
             .map_err(|e| CertError::CertGen(e.to_string()))?;
 

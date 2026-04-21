@@ -73,7 +73,9 @@ impl Default for MockQrngDevice {
 impl QrngDevice for MockQrngDevice {
     fn initialize(&mut self) -> Result<(), QrngError> {
         if let Some(MockFailureMode::InitFailed) = self.fail_mode {
-            return Err(QrngError::InitializationFailed("Mock init failure".to_string()));
+            return Err(QrngError::InitializationFailed(
+                "Mock init failure".to_string(),
+            ));
         }
 
         self.initialized = true;
@@ -82,7 +84,9 @@ impl QrngDevice for MockQrngDevice {
 
     fn get_random_bytes(&mut self, buffer: &mut [u8]) -> Result<usize, QrngError> {
         if !self.initialized {
-            return Err(QrngError::InitializationFailed("Not initialized".to_string()));
+            return Err(QrngError::InitializationFailed(
+                "Not initialized".to_string(),
+            ));
         }
 
         if let Some(MockFailureMode::ReadFailed) = self.fail_mode {
@@ -98,16 +102,19 @@ impl QrngDevice for MockQrngDevice {
         }
 
         match self.fail_mode {
-            Some(MockFailureMode::HealthCheckFailed) => {
-                Err(QrngError::HealthCheckFailed("Mock health check failure".to_string()))
-            }
+            Some(MockFailureMode::HealthCheckFailed) => Err(QrngError::HealthCheckFailed(
+                "Mock health check failure".to_string(),
+            )),
             Some(MockFailureMode::Degraded) => Ok(HealthStatus::Degraded),
             _ => Ok(HealthStatus::Healthy),
         }
     }
 
     fn device_info(&self) -> String {
-        format!("Mock QRNG Device (counter: {})", self.counter.lock().unwrap())
+        format!(
+            "Mock QRNG Device (counter: {})",
+            self.counter.lock().unwrap()
+        )
     }
 
     fn is_ready(&self) -> bool {

@@ -34,7 +34,5 @@ out/
 # Docker
 .docker/
 
-# Claude / Hive-Mind
-.claude-flow/
-.hive-mind/
+# Claude Code
 CLAUDE.md

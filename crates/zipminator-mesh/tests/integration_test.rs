@@ -34,7 +34,9 @@ fn test_end_to_end_siphash_key_from_file() {
     let source = FilePoolSource::new(&pool_path).unwrap();
     let mut bridge = EntropyBridge::new(source);
 
-    let sip_key = bridge.derive_siphash_key(Some(b"integration-test")).unwrap();
+    let sip_key = bridge
+        .derive_siphash_key(Some(b"integration-test"))
+        .unwrap();
     assert_eq!(sip_key.as_bytes().len(), 16);
     assert!(!sip_key.is_zero());
     let _ = sip_key.k0();
@@ -142,7 +144,10 @@ fn test_different_entropy_produces_different_keys() {
 
     let key_a = bridge_a.derive_mesh_key(Some(b"same-salt")).unwrap();
     let key_b = bridge_b.derive_mesh_key(Some(b"same-salt")).unwrap();
-    assert_ne!(key_a, key_b, "different entropy must produce different keys");
+    assert_ne!(
+        key_a, key_b,
+        "different entropy must produce different keys"
+    );
 }
 
 #[test]

@@ -21,7 +21,10 @@ fn encrypt_anonymize_store_roundtrip() {
         "SSN should be replaced with [NATIONAL_ID], got: {}",
         anon.text
     );
-    assert!(!anon.text.contains("123-45-6789"), "Original SSN must be gone");
+    assert!(
+        !anon.text.contains("123-45-6789"),
+        "Original SSN must be gone"
+    );
 
     // Step 2: Set up ratchet sessions (alice sends, bob receives)
     let (mut alice, alice_pk) = PqRatchetSession::init_alice();
@@ -146,14 +149,18 @@ fn anonymization_all_levels_differ() {
     // Each level (2-10) must differ from the original input
     for (i, out) in outputs.iter().enumerate().skip(1) {
         assert_ne!(
-            out, &input,
+            out,
+            &input,
             "Level {} output should differ from raw input",
             i + 1
         );
     }
 
     // Levels 2-10 should not all be identical (different strategies produce different output)
-    let unique_count = outputs[1..].iter().collect::<std::collections::HashSet<_>>().len();
+    let unique_count = outputs[1..]
+        .iter()
+        .collect::<std::collections::HashSet<_>>()
+        .len();
     assert!(
         unique_count >= 3,
         "Expected at least 3 distinct outputs across levels 2-10, got {}",

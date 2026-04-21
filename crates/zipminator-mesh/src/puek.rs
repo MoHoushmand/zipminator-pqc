@@ -188,10 +188,8 @@ impl PuekVerifier {
             });
         }
 
-        let similarity = cosine_similarity(
-            &self.enrollment.eigenmodes[..k],
-            &fresh_eigenmodes[..k],
-        );
+        let similarity =
+            cosine_similarity(&self.enrollment.eigenmodes[..k], &fresh_eigenmodes[..k]);
 
         if similarity < self.enrollment.threshold {
             return Err(PuekError::EnvironmentMismatch {
@@ -342,7 +340,11 @@ mod tests {
         let fresh = compute_eigenmodes(&data).unwrap();
         let key1 = verifier.verify_and_derive(&fresh, b"salt").unwrap();
         let key2 = verifier2.verify_and_derive(&fresh, b"salt").unwrap();
-        assert_eq!(key1.as_bytes(), key2.as_bytes(), "same inputs must produce same key");
+        assert_eq!(
+            key1.as_bytes(),
+            key2.as_bytes(),
+            "same inputs must produce same key"
+        );
     }
 
     #[test]
@@ -355,7 +357,11 @@ mod tests {
         let fresh = compute_eigenmodes(&data).unwrap();
         let key1 = verifier1.verify_and_derive(&fresh, b"salt-a").unwrap();
         let key2 = verifier2.verify_and_derive(&fresh, b"salt-b").unwrap();
-        assert_ne!(key1.as_bytes(), key2.as_bytes(), "different salt must produce different key");
+        assert_ne!(
+            key1.as_bytes(),
+            key2.as_bytes(),
+            "different salt must produce different key"
+        );
     }
 
     #[test]

@@ -59,7 +59,11 @@ pub struct AuditViolation {
 }
 
 impl AuditViolation {
-    fn new(kind: ViolationKind, description: impl Into<String>, destination: Option<String>) -> Self {
+    fn new(
+        kind: ViolationKind,
+        description: impl Into<String>,
+        destination: Option<String>,
+    ) -> Self {
         Self {
             kind,
             description: description.into(),
@@ -249,7 +253,10 @@ impl PrivacyAuditor {
         let ks = self.kill_switch_active.load(Ordering::Relaxed);
 
         let violations = {
-            let mut v = self.current_violations.write().expect("violations lock poisoned");
+            let mut v = self
+                .current_violations
+                .write()
+                .expect("violations lock poisoned");
             std::mem::take(&mut *v)
         };
 
@@ -294,7 +301,11 @@ impl PrivacyAuditor {
 
     /// Return the most recent report, if any.
     pub fn latest_report(&self) -> Option<AuditReport> {
-        self.reports.read().expect("reports lock poisoned").last().cloned()
+        self.reports
+            .read()
+            .expect("reports lock poisoned")
+            .last()
+            .cloned()
     }
 
     // ── Private ───────────────────────────────────────────────────────────
@@ -416,7 +427,10 @@ mod tests {
 
         let report = auditor.run_audit();
         assert!(!report.violations.is_empty());
-        assert!(report.violations.iter().any(|v| v.kind == ViolationKind::ClassicalTlsInStrictMode));
+        assert!(report
+            .violations
+            .iter()
+            .any(|v| v.kind == ViolationKind::ClassicalTlsInStrictMode));
     }
 
     #[test]
@@ -430,7 +444,10 @@ mod tests {
         });
 
         let report = auditor.run_audit();
-        assert!(report.violations.iter().any(|v| v.kind == ViolationKind::ProxyBypass));
+        assert!(report
+            .violations
+            .iter()
+            .any(|v| v.kind == ViolationKind::ProxyBypass));
     }
 
     #[test]
@@ -440,7 +457,10 @@ mod tests {
         auditor.set_vpn_active(false); // Simulates VPN drop.
 
         let report = auditor.run_audit();
-        assert!(report.violations.iter().any(|v| v.kind == ViolationKind::VpnDropped));
+        assert!(report
+            .violations
+            .iter()
+            .any(|v| v.kind == ViolationKind::VpnDropped));
     }
 
     #[test]

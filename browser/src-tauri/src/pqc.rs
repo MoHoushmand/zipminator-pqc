@@ -9,22 +9,22 @@ use zipminator_core::Kyber768;
 
 #[derive(Serialize)]
 pub struct PqcKeypair {
-    pub public_key: String,  // base64
-    pub secret_key: String,  // base64
+    pub public_key: String, // base64
+    pub secret_key: String, // base64
     pub pk_size: usize,
     pub sk_size: usize,
 }
 
 #[derive(Serialize)]
 pub struct PqcEncapsulation {
-    pub ciphertext: String,      // base64
-    pub shared_secret: String,   // base64 (32 bytes)
+    pub ciphertext: String,    // base64
+    pub shared_secret: String, // base64 (32 bytes)
     pub ct_size: usize,
 }
 
 #[derive(Serialize)]
 pub struct PqcDecapsulation {
-    pub shared_secret: String,   // base64 (32 bytes)
+    pub shared_secret: String, // base64 (32 bytes)
     pub matches: bool,
 }
 
@@ -68,7 +68,9 @@ pub fn pqc_keygen() -> Result<PqcKeypair, String> {
 /// Encapsulate: given a base64 public key, produce ciphertext + shared secret.
 #[tauri::command]
 pub fn pqc_encapsulate(public_key_b64: String) -> Result<PqcEncapsulation, String> {
-    let pk_bytes = B64.decode(&public_key_b64).map_err(|e| format!("bad base64: {e}"))?;
+    let pk_bytes = B64
+        .decode(&public_key_b64)
+        .map_err(|e| format!("bad base64: {e}"))?;
     let pk = zipminator_core::PublicKey::from_bytes(&pk_bytes)
         .map_err(|e| format!("invalid public key: {e}"))?;
     let (ct, ss) = Kyber768::encapsulate(&pk);
@@ -86,8 +88,12 @@ pub fn pqc_decapsulate(
     ciphertext_b64: String,
     secret_key_b64: String,
 ) -> Result<PqcDecapsulation, String> {
-    let ct_bytes = B64.decode(&ciphertext_b64).map_err(|e| format!("bad ct base64: {e}"))?;
-    let sk_bytes = B64.decode(&secret_key_b64).map_err(|e| format!("bad sk base64: {e}"))?;
+    let ct_bytes = B64
+        .decode(&ciphertext_b64)
+        .map_err(|e| format!("bad ct base64: {e}"))?;
+    let sk_bytes = B64
+        .decode(&secret_key_b64)
+        .map_err(|e| format!("bad sk base64: {e}"))?;
     let ct = zipminator_core::Ciphertext::from_bytes(&ct_bytes)
         .map_err(|e| format!("invalid ciphertext: {e}"))?;
     let sk = zipminator_core::SecretKey::from_bytes(&sk_bytes)

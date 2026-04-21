@@ -99,8 +99,7 @@ impl TabManager {
         let id = tab.id.clone();
         self.tabs.push(tab.clone());
         self.tab_order.push(id.clone());
-        self.history
-            .insert(id.clone(), (Vec::new(), Vec::new()));
+        self.history.insert(id.clone(), (Vec::new(), Vec::new()));
         self.active_tab_id = Some(id);
         tab
     }
@@ -396,10 +395,22 @@ mod tests {
     fn test_pin_tab() {
         let mut mgr = TabManager::new();
         let tab = mgr.create_tab("https://example.com");
-        assert!(!mgr.get_tabs().iter().find(|t| t.id == tab.id).unwrap().pinned);
+        assert!(
+            !mgr.get_tabs()
+                .iter()
+                .find(|t| t.id == tab.id)
+                .unwrap()
+                .pinned
+        );
 
         mgr.toggle_pin(&tab.id);
-        assert!(mgr.get_tabs().iter().find(|t| t.id == tab.id).unwrap().pinned);
+        assert!(
+            mgr.get_tabs()
+                .iter()
+                .find(|t| t.id == tab.id)
+                .unwrap()
+                .pinned
+        );
         // Pinned tab should be first in order.
         assert_eq!(mgr.tab_order[0], tab.id);
     }

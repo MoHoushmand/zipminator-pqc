@@ -18,8 +18,7 @@ pub const MAX_CONCURRENT_CONNECTIONS: usize = 256;
 pub const CONNECTION_TIMEOUT_SECS: u64 = 30;
 
 /// Proxy operating mode.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum ProxyMode {
     /// Allow both PQC and classical TLS (prefer PQC).
     #[default]
@@ -27,7 +26,6 @@ pub enum ProxyMode {
     /// Refuse connections that cannot negotiate PQC key exchange.
     PqcOnly,
 }
-
 
 /// Full proxy configuration.
 #[derive(Debug, Clone, Serialize, Deserialize)]

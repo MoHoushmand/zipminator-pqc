@@ -22,6 +22,7 @@ use serde::{Deserialize, Serialize};
 use tracing::{info, warn};
 
 /// Minimum cache size kept in memory (bytes).
+#[allow(dead_code)]
 const CACHE_SIZE: usize = 4096;
 
 /// Whether the entropy came from the quantum pool or the OS CSPRNG.
@@ -233,7 +234,11 @@ impl QrngReader {
                     self.pool_size.store(size, Ordering::Relaxed);
                     let mut src = self.source.write().expect("source lock poisoned");
                     *src = EntropySource::Quantum;
-                    info!(old_size = current_size, new_size = size, "entropy pool updated");
+                    info!(
+                        old_size = current_size,
+                        new_size = size,
+                        "entropy pool updated"
+                    );
                 }
                 Err(e) => {
                     warn!(error = %e, "entropy pool reload failed");

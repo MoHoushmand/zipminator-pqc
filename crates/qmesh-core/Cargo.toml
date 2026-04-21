@@ -1,0 +1,36 @@
+[package]
+name = "qmesh-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Q-Mesh (Pillar 9): ML-KEM-768 handshake wrapper, HKDF key derivation, and software-mocked CSI entropy estimator for WiFi sensing"
+
+[dependencies]
+# ML-KEM-768 handshake: re-export the zipminator-core implementation.
+# Path dep (no PyO3 features) keeps this crate self-contained and free of
+# Python toolchain requirements.
+zipminator-core = { path = "../zipminator-core", default-features = false }
+
+# HKDF-SHA256 for session-key derivation (FIPS 198 HMAC, FIPS 180-4 SHA-256).
+hkdf = "0.12"
+sha2 = "0.10"
+
+# Key-material zeroization on drop.
+zeroize = { version = "1", features = ["derive"] }
+
+# Constant-time equality checks.
+subtle = "2.5"
+
+# Error plumbing.
+thiserror = "1.0"
+
+[dev-dependencies]
+# Deterministic uniform CSRNG for entropy-estimator tests.
+rand = "0.8"
+rand_chacha = "0.3"
+
+[lib]
+name = "qmesh_core"
+path = "src/lib.rs"

@@ -17,21 +17,26 @@ fn full_connect_rekey_disconnect_lifecycle() {
     // Boot sequence.
     assert_eq!(sm.current(), VpnState::Disconnected);
 
-    sm.transition(VpnState::Connecting).expect("Disconnected → Connecting");
+    sm.transition(VpnState::Connecting)
+        .expect("Disconnected → Connecting");
     assert_eq!(sm.current(), VpnState::Connecting);
 
-    sm.transition(VpnState::Connected).expect("Connecting → Connected");
+    sm.transition(VpnState::Connected)
+        .expect("Connecting → Connected");
     assert_eq!(sm.current(), VpnState::Connected);
 
     // Periodic rekey cycle.
-    sm.transition(VpnState::Rekeying).expect("Connected → Rekeying");
+    sm.transition(VpnState::Rekeying)
+        .expect("Connected → Rekeying");
     assert_eq!(sm.current(), VpnState::Rekeying);
 
-    sm.transition(VpnState::Connected).expect("Rekeying → Connected");
+    sm.transition(VpnState::Connected)
+        .expect("Rekeying → Connected");
     assert_eq!(sm.current(), VpnState::Connected);
 
     // User-initiated disconnect.
-    sm.transition(VpnState::Disconnected).expect("Connected → Disconnected");
+    sm.transition(VpnState::Disconnected)
+        .expect("Connected → Disconnected");
     assert_eq!(sm.current(), VpnState::Disconnected);
 }
 
@@ -41,7 +46,8 @@ fn full_connect_rekey_disconnect_lifecycle() {
 fn error_during_connecting_then_reset() {
     let sm = VpnStateMachine::new();
     sm.transition(VpnState::Connecting).unwrap();
-    sm.transition(VpnState::Error("TLS timeout".to_string())).unwrap();
+    sm.transition(VpnState::Error("TLS timeout".to_string()))
+        .unwrap();
     assert!(matches!(sm.current(), VpnState::Error(_)));
 
     sm.transition(VpnState::Disconnected).unwrap();
@@ -53,7 +59,8 @@ fn error_during_connected_then_reset() {
     let sm = VpnStateMachine::new();
     sm.transition(VpnState::Connecting).unwrap();
     sm.transition(VpnState::Connected).unwrap();
-    sm.transition(VpnState::Error("packet loss".to_string())).unwrap();
+    sm.transition(VpnState::Error("packet loss".to_string()))
+        .unwrap();
 
     sm.transition(VpnState::Disconnected).unwrap();
     assert_eq!(sm.current(), VpnState::Disconnected);
@@ -63,7 +70,8 @@ fn error_during_connected_then_reset() {
 fn retry_connection_after_error() {
     let sm = VpnStateMachine::new();
     sm.transition(VpnState::Connecting).unwrap();
-    sm.transition(VpnState::Error("unreachable".to_string())).unwrap();
+    sm.transition(VpnState::Error("unreachable".to_string()))
+        .unwrap();
     // Retry: Error → Connecting is allowed.
     sm.transition(VpnState::Connecting).unwrap();
     sm.transition(VpnState::Connected).unwrap();
@@ -235,7 +243,11 @@ fn vpn_state_display_strings_are_stable() {
 fn vpn_state_serialises_to_json() {
     let s = serde_json::to_string(&VpnState::Connected).expect("serialise");
     // Internally-tagged serde: tag field uses the Rust variant name.
-    assert!(s.contains("Connected"), "unexpected JSON for Connected: {}", s);
+    assert!(
+        s.contains("Connected"),
+        "unexpected JSON for Connected: {}",
+        s
+    );
 
     let s2 = serde_json::to_string(&VpnState::Error("oops".to_string())).expect("serialise");
     assert!(s2.contains("oops"), "unexpected JSON for Error: {}", s2);

@@ -129,7 +129,10 @@ impl VoipSessionManager {
     }
 
     /// Accept an incoming offer: encapsulate against the offerer's public key.
-    pub fn accept_offer(&mut self, offer: &SdpOffer) -> Result<(VoipSession, SdpAnswer), &'static str> {
+    pub fn accept_offer(
+        &mut self,
+        offer: &SdpOffer,
+    ) -> Result<(VoipSession, SdpAnswer), &'static str> {
         let pk = PublicKey::from_bytes(&offer.pk_bytes)?;
         let (ct, ss) = Kyber768::encapsulate(&pk);
 
@@ -172,7 +175,10 @@ impl VoipSessionManager {
         session: &mut VoipSession,
         answer: &SdpAnswer,
     ) -> Result<(), &'static str> {
-        let sk = session.local_sk.take().ok_or("No secret key — session already completed or not an offerer")?;
+        let sk = session
+            .local_sk
+            .take()
+            .ok_or("No secret key — session already completed or not an offerer")?;
         let ct = crate::kyber768::Ciphertext::from_bytes(&answer.ct_bytes)?;
 
         let ss = Kyber768::decapsulate(&ct, &sk);
@@ -305,10 +311,20 @@ mod tests {
         let (_session, offer) = mgr.create_offer();
 
         assert!(offer.pq_ext.kem_line.starts_with("a=pq-kem:ML-KEM-768 "));
-        assert!(offer.pq_ext.ct_line.is_none(), "Offer must not contain ciphertext");
-        assert!(offer.pq_ext.fingerprint_line.starts_with("a=pq-srtp-key-fingerprint:"));
+        assert!(
+            offer.pq_ext.ct_line.is_none(),
+            "Offer must not contain ciphertext"
+        );
+        assert!(offer
+            .pq_ext
+            .fingerprint_line
+            .starts_with("a=pq-srtp-key-fingerprint:"));
         // Fingerprint is 64 hex chars (SHA-256)
-        let fp = offer.pq_ext.fingerprint_line.strip_prefix("a=pq-srtp-key-fingerprint:").unwrap();
+        let fp = offer
+            .pq_ext
+            .fingerprint_line
+            .strip_prefix("a=pq-srtp-key-fingerprint:")
+            .unwrap();
         assert_eq!(fp.len(), 64);
     }
 
@@ -319,7 +335,10 @@ mod tests {
         let (answerer, answer) = mgr.accept_offer(&offer).unwrap();
 
         assert_eq!(answerer.state, SessionState::Connected);
-        assert!(answer.pq_ext.ct_line.is_some(), "Answer must contain ciphertext");
+        assert!(
+            answer.pq_ext.ct_line.is_some(),
+            "Answer must contain ciphertext"
+        );
         let ct_line = answer.pq_ext.ct_line.as_ref().unwrap();
         assert!(ct_line.starts_with("a=pq-ct:"));
         assert!(answerer.remote_keys.is_some());
@@ -362,13 +381,15 @@ mod tests {
 
         // Offerer's local keys == Answerer's remote keys (both labeled "offerer")
         assert_eq!(
-            offerer.local_keys, answerer.remote_keys.as_ref().unwrap().clone(),
+            offerer.local_keys,
+            answerer.remote_keys.as_ref().unwrap().clone(),
             "Offerer local keys must match answerer's view of offerer keys"
         );
 
         // Answerer's local keys == Offerer's remote keys (both labeled "answerer")
         assert_eq!(
-            answerer.local_keys, offerer.remote_keys.as_ref().unwrap().clone(),
+            answerer.local_keys,
+            offerer.remote_keys.as_ref().unwrap().clone(),
             "Answerer local keys must match offerer's view of answerer keys"
         );
 
@@ -416,7 +437,8 @@ mod tests {
 
         // Build a second voicemail with a different secret and steal the encrypted frames
         let wrong_secret = [0xBBu8; 32];
-        let mut vm_wrong = Voicemail::new(2, "bob@sip.example".into(), 1700000001, &wrong_secret).unwrap();
+        let mut vm_wrong =
+            Voicemail::new(2, "bob@sip.example".into(), 1700000001, &wrong_secret).unwrap();
         vm_wrong.frames = vm.frames.clone();
         vm_wrong.next_seq = vm.next_seq;
 
@@ -449,7 +471,13 @@ mod tests {
         vm.record_frame(b"hello voicemail").unwrap();
 
         // Answerer can also play back with the same shared secret
-        let mut vm2 = Voicemail::new(answerer.session_id, "caller".into(), 1700000003, &answerer.shared_secret.unwrap()).unwrap();
+        let mut vm2 = Voicemail::new(
+            answerer.session_id,
+            "caller".into(),
+            1700000003,
+            &answerer.shared_secret.unwrap(),
+        )
+        .unwrap();
         vm2.frames = vm.frames.clone();
         vm2.next_seq = vm.next_seq;
 

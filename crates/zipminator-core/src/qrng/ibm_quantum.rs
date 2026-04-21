@@ -134,10 +134,7 @@ impl IBMQuantumQRNG {
 
     /// Read from quantum entropy pool
     fn read_from_pool(&mut self, buffer: &mut [u8]) -> Result<usize, QrngError> {
-        let file = self
-            .pool_file
-            .as_mut()
-            .ok_or(QrngError::DeviceNotFound)?;
+        let file = self.pool_file.as_mut().ok_or(QrngError::DeviceNotFound)?;
 
         match file.read(buffer) {
             Ok(bytes_read) => {
@@ -150,9 +147,7 @@ impl IBMQuantumQRNG {
 
                 // Check if pool is running low
                 let remaining = self.pool_total_size - self.pool_bytes_read;
-                if remaining < self.config.min_pool_bytes as u64
-                    && self.config.warn_on_fallback
-                {
+                if remaining < self.config.min_pool_bytes as u64 && self.config.warn_on_fallback {
                     warn!(
                         "Quantum entropy pool low ({} bytes remaining). Consider refilling.",
                         remaining
@@ -266,9 +261,7 @@ impl QrngDevice for IBMQuantumQRNG {
 
                     // Pool exhausted mid-read, fall through to urandom for remainder
                     if self.config.warn_on_fallback {
-                        warn!(
-                            "Quantum entropy pool exhausted, falling back to /dev/urandom"
-                        );
+                        warn!("Quantum entropy pool exhausted, falling back to /dev/urandom");
                     }
                     self.pool_exhausted = true;
                     self.using_quantum = false;

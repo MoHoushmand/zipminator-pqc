@@ -3780,6 +3780,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "pq-wireguard"
+version = "1.0.0"
+dependencies = [
+ "hex",
+ "hkdf",
+ "pqcrypto-kyber",
+ "pqcrypto-traits",
+ "sha2",
+ "subtle",
+ "thiserror 1.0.69",
+ "zeroize",
+]
+
+[[package]]
 name = "pqcrypto-internals"
 version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3984,6 +3998,20 @@ dependencies = [
  "pyo3-build-config",
  "quote",
  "syn 2.0.117",
+]
+
+[[package]]
+name = "qmesh-core"
+version = "1.0.0"
+dependencies = [
+ "hkdf",
+ "rand 0.8.5",
+ "rand_chacha 0.3.1",
+ "sha2",
+ "subtle",
+ "thiserror 1.0.69",
+ "zeroize",
+ "zipminator-core",
 ]
 
 [[package]]

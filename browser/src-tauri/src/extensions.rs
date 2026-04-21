@@ -280,15 +280,30 @@ mod tests {
 
     #[test]
     fn test_pattern_matching() {
-        assert!(match_pattern("https://example.com/page", "https://example.com/*"));
-        assert!(match_pattern("https://sub.example.com/page", "https://*.example.com/*"));
-        assert!(match_pattern("http://example.com/page", "*://example.com/*"));
-        assert!(!match_pattern("http://other.com/page", "https://example.com/*"));
+        assert!(match_pattern(
+            "https://example.com/page",
+            "https://example.com/*"
+        ));
+        assert!(match_pattern(
+            "https://sub.example.com/page",
+            "https://*.example.com/*"
+        ));
+        assert!(match_pattern(
+            "http://example.com/page",
+            "*://example.com/*"
+        ));
+        assert!(!match_pattern(
+            "http://other.com/page",
+            "https://example.com/*"
+        ));
     }
 
     #[test]
     fn test_all_urls_pattern() {
-        assert!(matches_any_pattern("https://any.com/page", &["<all_urls>".to_string()]));
+        assert!(matches_any_pattern(
+            "https://any.com/page",
+            &["<all_urls>".to_string()]
+        ));
     }
 
     #[test]

@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "zipminator"
-version = "0.5.0"
+version = "0.5.1"
 description = "Post-quantum cryptography with quantum entropy - CRYSTALS-Kyber-768 implementation"
 readme = "README.md"
 authors = [
@@ -100,6 +100,10 @@ python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 asyncio_mode = "auto"
+markers = [
+    "asyncio: mark test as asyncio-based (registered to silence PytestUnknownMarkWarning)",
+    "integration: mark test as an integration test requiring external services",
+]
 
 [tool.black]
 line-length = 100

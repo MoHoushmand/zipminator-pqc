@@ -28,8 +28,10 @@ use aes_gcm::aead::{Aead, KeyInit, Payload};
 use aes_gcm::{Aes256Gcm, Key, Nonce};
 use getrandom::getrandom;
 use pqcrypto_kyber::kyber768;
-use pqcrypto_traits::kem::{Ciphertext as KemCiphertext, PublicKey as KemPublicKey,
-                             SecretKey as KemSecretKey, SharedSecret as KemSharedSecret};
+use pqcrypto_traits::kem::{
+    Ciphertext as KemCiphertext, PublicKey as KemPublicKey, SecretKey as KemSecretKey,
+    SharedSecret as KemSharedSecret,
+};
 use std::convert::TryInto;
 use zeroize::Zeroize;
 
@@ -74,8 +76,7 @@ impl PqcRatchet {
             return Err("Invalid public key length");
         }
         self.remote_static_public = Some(
-            kyber768::PublicKey::from_bytes(pk_bytes)
-                .map_err(|_| "Failed to parse public key")?,
+            kyber768::PublicKey::from_bytes(pk_bytes).map_err(|_| "Failed to parse public key")?,
         );
         Ok(())
     }
@@ -98,8 +99,8 @@ impl PqcRatchet {
         if ct_bytes.len() != kyber768::ciphertext_bytes() {
             return Err("Invalid ciphertext length");
         }
-        let ct = kyber768::Ciphertext::from_bytes(ct_bytes)
-            .map_err(|_| "Failed to parse ciphertext")?;
+        let ct =
+            kyber768::Ciphertext::from_bytes(ct_bytes).map_err(|_| "Failed to parse ciphertext")?;
         let ss = kyber768::decapsulate(&ct, &self.local_static_secret);
         let ss_bytes: [u8; 32] = ss
             .as_bytes()
@@ -110,12 +111,7 @@ impl PqcRatchet {
 
     /// Encrypt data with AES-256-GCM using a random 12-byte nonce.
     /// The nonce is prepended to the ciphertext (first 12 bytes of output).
-    pub fn encrypt(
-        &self,
-        data: &[u8],
-        key: &[u8; 32],
-        ad: &[u8],
-    ) -> Result<Vec<u8>, &'static str> {
+    pub fn encrypt(&self, data: &[u8], key: &[u8; 32], ad: &[u8]) -> Result<Vec<u8>, &'static str> {
         let cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(key));
         let mut nonce_bytes = [0u8; 12];
         getrandom(&mut nonce_bytes).map_err(|_| "Failed to generate random nonce")?;
@@ -143,7 +139,10 @@ impl PqcRatchet {
         let (nonce_bytes, ciphertext) = encrypted_data.split_at(12);
         let cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(key));
         let nonce = Nonce::from_slice(nonce_bytes);
-        let payload = Payload { msg: ciphertext, aad: ad };
+        let payload = Payload {
+            msg: ciphertext,
+            aad: ad,
+        };
         cipher
             .decrypt(nonce, payload)
             .map_err(|_| "AES-GCM decryption failed")
@@ -164,19 +163,25 @@ impl Drop for PqcRatchet {
         let sk_size = std::mem::size_of::<kyber768::SecretKey>();
         // SAFETY: we own self exclusively (mutable borrow in Drop) and write
         //         exactly size_of bytes, which is within the allocation.
-        unsafe { std::ptr::write_bytes(sk_ptr, 0u8, sk_size); }
+        unsafe {
+            std::ptr::write_bytes(sk_ptr, 0u8, sk_size);
+        }
 
         // Zeroize remote_static_public (not secret, but reduces attack surface).
         if let Some(ref mut rpk) = self.remote_static_public {
             let pk_ptr = rpk as *mut kyber768::PublicKey as *mut u8;
             let pk_size = std::mem::size_of::<kyber768::PublicKey>();
-            unsafe { std::ptr::write_bytes(pk_ptr, 0u8, pk_size); }
+            unsafe {
+                std::ptr::write_bytes(pk_ptr, 0u8, pk_size);
+            }
         }
 
         // Also zeroize local_static_public for completeness.
         let lpk_ptr = &mut self.local_static_public as *mut kyber768::PublicKey as *mut u8;
         let lpk_size = std::mem::size_of::<kyber768::PublicKey>();
-        unsafe { std::ptr::write_bytes(lpk_ptr, 0u8, lpk_size); }
+        unsafe {
+            std::ptr::write_bytes(lpk_ptr, 0u8, lpk_size);
+        }
     }
 }
 
@@ -263,7 +268,10 @@ impl PqRatchetSession {
     ) -> Result<Vec<u8>, RatchetError> {
         let cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(aes_key));
         let n = Nonce::from_slice(nonce);
-        let payload = Payload { msg: plaintext, aad };
+        let payload = Payload {
+            msg: plaintext,
+            aad,
+        };
         cipher
             .encrypt(n, payload)
             .map_err(|_| RatchetError::CryptoError("AES-GCM encrypt failed"))
@@ -278,7 +286,10 @@ impl PqRatchetSession {
     ) -> Result<Vec<u8>, RatchetError> {
         let cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(aes_key));
         let n = Nonce::from_slice(nonce);
-        let payload = Payload { msg: ciphertext, aad };
+        let payload = Payload {
+            msg: ciphertext,
+            aad,
+        };
         cipher
             .decrypt(n, payload)
             .map_err(|_| RatchetError::CryptoError("AES-GCM decrypt failed"))
@@ -289,7 +300,9 @@ impl PqRatchetSession {
     ///   2. Run root_kdf(root_key, ss) → (new_root_key, new_chain_key).
     ///   3. Generate a fresh local ratchet keypair.
     ///   4. Store the KEM ciphertext for the outgoing header.
-    fn ratchet_send_step(state: &mut RatchetState) -> Result<([u8; CT_BYTES], [u8; 32]), RatchetError> {
+    fn ratchet_send_step(
+        state: &mut RatchetState,
+    ) -> Result<([u8; CT_BYTES], [u8; 32]), RatchetError> {
         let their_pk = Self::their_pk(state)?;
         // pqcrypto-kyber returns (SharedSecret, Ciphertext)
         let (ss, ct) = kyber768::encapsulate(&their_pk);
@@ -343,10 +356,7 @@ impl PqRatchetSession {
     }
 
     /// Cache skipped receiving-chain message keys up to `target_count`.
-    fn skip_message_keys(
-        state: &mut RatchetState,
-        target_count: u32,
-    ) -> Result<(), RatchetError> {
+    fn skip_message_keys(state: &mut RatchetState, target_count: u32) -> Result<(), RatchetError> {
         let current = state.recv_message_number;
         if target_count <= current {
             return Ok(());
@@ -390,7 +400,9 @@ impl PqRatchetSession {
     /// Bob must send `kem_ciphertext_bytes` and `bob_pk_bytes` back to Alice.
     pub fn init_bob(alice_eph_pk: &[u8]) -> Result<(Self, Vec<u8>, Vec<u8>), RatchetError> {
         if alice_eph_pk.len() != PK_BYTES {
-            return Err(RatchetError::InvalidPublicKey("alice ephemeral pk wrong length"));
+            return Err(RatchetError::InvalidPublicKey(
+                "alice ephemeral pk wrong length",
+            ));
         }
         let alice_pk = kyber768::PublicKey::from_bytes(alice_eph_pk)
             .map_err(|_| RatchetError::InvalidPublicKey("alice ephemeral pk invalid"))?;
@@ -545,8 +557,8 @@ impl PqRatchetSession {
             return Err(RatchetError::HandshakeIncomplete);
         }
 
-        let header = MessageHeader::from_bytes(header_bytes)
-            .map_err(RatchetError::InvalidPublicKey)?;
+        let header =
+            MessageHeader::from_bytes(header_bytes).map_err(RatchetError::InvalidPublicKey)?;
 
         // Check skipped-key cache first (handles out-of-order delivery).
         let skip_key = SkipKey::new(&header.ephemeral_pk, header.message_number);
@@ -567,7 +579,9 @@ impl PqRatchetSession {
             state.recv_message_number = 0;
             state.previous_send_chain_length = state.send_message_number;
 
-            let ct_bytes = header.kem_ciphertext.as_ref()
+            let ct_bytes = header
+                .kem_ciphertext
+                .as_ref()
                 .ok_or(RatchetError::InvalidCiphertext("missing KEM CT in header"))?;
             let new_ck = Self::ratchet_recv_step(state, ct_bytes, &header.ephemeral_pk)?;
             state.recv_chain_key.0 = new_ck;
@@ -661,7 +675,9 @@ mod tests {
         let bob = PqcRatchet::new();
 
         let bob_pk_bytes = bob.local_static_public.as_bytes().to_vec();
-        alice.set_remote_public(&bob_pk_bytes).expect("set remote pk");
+        alice
+            .set_remote_public(&bob_pk_bytes)
+            .expect("set remote pk");
 
         let (ct_bytes, ss_alice) = alice.encapsulate().expect("encapsulate");
         let ss_bob = bob.decapsulate(&ct_bytes).expect("decapsulate");
@@ -698,8 +714,7 @@ mod tests {
     #[test]
     fn test_full_handshake() {
         let (mut alice, alice_pk) = PqRatchetSession::init_alice();
-        let (bob, kem_ct, bob_pk) =
-            PqRatchetSession::init_bob(&alice_pk).expect("bob init");
+        let (bob, kem_ct, bob_pk) = PqRatchetSession::init_bob(&alice_pk).expect("bob init");
 
         alice
             .alice_finish_handshake(&kem_ct, &bob_pk)
@@ -712,8 +727,7 @@ mod tests {
     #[test]
     fn test_encrypt_decrypt_alice_to_bob() {
         let (mut alice, alice_pk) = PqRatchetSession::init_alice();
-        let (mut bob, kem_ct, bob_pk) =
-            PqRatchetSession::init_bob(&alice_pk).expect("bob init");
+        let (mut bob, kem_ct, bob_pk) = PqRatchetSession::init_bob(&alice_pk).expect("bob init");
         alice
             .alice_finish_handshake(&kem_ct, &bob_pk)
             .expect("alice finish");
@@ -727,8 +741,7 @@ mod tests {
     #[test]
     fn test_encrypt_decrypt_bob_to_alice() {
         let (mut alice, alice_pk) = PqRatchetSession::init_alice();
-        let (mut bob, kem_ct, bob_pk) =
-            PqRatchetSession::init_bob(&alice_pk).expect("bob init");
+        let (mut bob, kem_ct, bob_pk) = PqRatchetSession::init_bob(&alice_pk).expect("bob init");
         alice
             .alice_finish_handshake(&kem_ct, &bob_pk)
             .expect("alice finish");
@@ -742,8 +755,7 @@ mod tests {
     #[test]
     fn test_multiple_messages_alice_to_bob() {
         let (mut alice, alice_pk) = PqRatchetSession::init_alice();
-        let (mut bob, kem_ct, bob_pk) =
-            PqRatchetSession::init_bob(&alice_pk).expect("bob init");
+        let (mut bob, kem_ct, bob_pk) = PqRatchetSession::init_bob(&alice_pk).expect("bob init");
         alice
             .alice_finish_handshake(&kem_ct, &bob_pk)
             .expect("alice finish");
@@ -759,8 +771,7 @@ mod tests {
     #[test]
     fn test_multiple_messages_both_directions() {
         let (mut alice, alice_pk) = PqRatchetSession::init_alice();
-        let (mut bob, kem_ct, bob_pk) =
-            PqRatchetSession::init_bob(&alice_pk).expect("bob init");
+        let (mut bob, kem_ct, bob_pk) = PqRatchetSession::init_bob(&alice_pk).expect("bob init");
         alice
             .alice_finish_handshake(&kem_ct, &bob_pk)
             .expect("alice finish");
@@ -801,8 +812,7 @@ mod tests {
     #[test]
     fn test_tampered_ciphertext_rejected() {
         let (mut alice, alice_pk) = PqRatchetSession::init_alice();
-        let (mut bob, kem_ct, bob_pk) =
-            PqRatchetSession::init_bob(&alice_pk).expect("bob init");
+        let (mut bob, kem_ct, bob_pk) = PqRatchetSession::init_bob(&alice_pk).expect("bob init");
         alice
             .alice_finish_handshake(&kem_ct, &bob_pk)
             .expect("alice finish");

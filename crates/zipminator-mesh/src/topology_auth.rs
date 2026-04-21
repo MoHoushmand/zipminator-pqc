@@ -9,10 +9,10 @@
 
 use std::collections::BTreeMap;
 
+use crate::mesh_key::MeshKey;
 use hkdf::Hkdf;
 use petgraph::graph::UnGraph;
 use sha2::{Digest, Sha256};
-use crate::mesh_key::MeshKey;
 
 /// HKDF info string for topology key derivation.
 const HKDF_INFO_TOPOLOGY: &[u8] = b"zipminator-topology-key-v1";
@@ -315,8 +315,16 @@ mod tests {
         let (topo1, a, b, c) = build_triangle();
         let (topo2, a2, b2, c2) = build_triangle();
 
-        let keys1 = vec![(a, make_mesh_key(0x11)), (b, make_mesh_key(0x22)), (c, make_mesh_key(0x33))];
-        let keys2 = vec![(a2, make_mesh_key(0x11)), (b2, make_mesh_key(0x22)), (c2, make_mesh_key(0x33))];
+        let keys1 = vec![
+            (a, make_mesh_key(0x11)),
+            (b, make_mesh_key(0x22)),
+            (c, make_mesh_key(0x33)),
+        ];
+        let keys2 = vec![
+            (a2, make_mesh_key(0x11)),
+            (b2, make_mesh_key(0x22)),
+            (c2, make_mesh_key(0x33)),
+        ];
 
         let k1 = topo1.derive_topology_key(&keys1, b"salt").unwrap();
         let k2 = topo2.derive_topology_key(&keys2, b"salt").unwrap();

@@ -95,7 +95,10 @@ pub struct ErrorContext {
     pub column: u32,
     pub operation: Option<String>,
     pub details: Option<String>,
-    #[cfg_attr(feature = "config", serde(skip, default = "std::time::SystemTime::now"))]
+    #[cfg_attr(
+        feature = "config",
+        serde(skip, default = "std::time::SystemTime::now")
+    )]
     pub timestamp: std::time::SystemTime,
 }
 
@@ -139,10 +142,7 @@ impl fmt::Display for ZipminatorError {
         write!(
             f,
             "[{}] {} (0x{:04X}): {}",
-            self.severity,
-            self.code,
-            self.code as u32,
-            self.message
+            self.severity, self.code, self.code as u32, self.message
         )?;
 
         if let Some(ref operation) = self.context.operation {
@@ -303,9 +303,7 @@ impl From<crate::qrng::QrngError> for ZipminatorError {
             crate::qrng::QrngError::InvalidBufferSize { .. } => {
                 (ErrorCode::InternalError, ErrorSeverity::Error)
             }
-            crate::qrng::QrngError::Timeout(_) => {
-                (ErrorCode::Timeout, ErrorSeverity::Error)
-            }
+            crate::qrng::QrngError::Timeout(_) => (ErrorCode::Timeout, ErrorSeverity::Error),
             crate::qrng::QrngError::StatisticalTestFailed(_) => {
                 (ErrorCode::QrngEntropyTestFailed, ErrorSeverity::Critical)
             }
@@ -427,10 +425,7 @@ mod tests {
     #[cfg(feature = "config")]
     #[test]
     fn test_error_serialization() {
-        let err = zipminator_error!(
-            ErrorCode::InvalidCiphertext,
-            "Ciphertext validation failed"
-        );
+        let err = zipminator_error!(ErrorCode::InvalidCiphertext, "Ciphertext validation failed");
 
         let json = err.to_json();
         assert_eq!(json["error_code_value"], 0x2003);
@@ -439,15 +434,10 @@ mod tests {
 
     #[test]
     fn test_error_chain() {
-        let source_err = zipminator_error!(
-            ErrorCode::QrngDeviceNotFound,
-            "Device not found"
-        );
+        let source_err = zipminator_error!(ErrorCode::QrngDeviceNotFound, "Device not found");
 
-        let err = zipminator_error!(
-            ErrorCode::QrngInitializationFailed,
-            "Initialization failed"
-        ).with_source(source_err);
+        let err = zipminator_error!(ErrorCode::QrngInitializationFailed, "Initialization failed")
+            .with_source(source_err);
 
         assert!(err.source.is_some());
         let error_str = format!("{}", err);

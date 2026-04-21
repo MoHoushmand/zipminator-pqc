@@ -12,8 +12,8 @@
 //! forwarding any request.
 
 use std::collections::HashSet;
-use std::sync::RwLock;
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::RwLock;
 
 use serde::{Deserialize, Serialize};
 
@@ -85,12 +85,12 @@ const DEFAULT_BLOCKED_DOMAINS: &[&str] = &[
 
 /// Tracking URL path/query patterns (matched against full URL).
 const DEFAULT_BLOCKED_PATTERNS: &[&str] = &[
-    "/collect?v=",          // Google Analytics collect endpoint
+    "/collect?v=", // Google Analytics collect endpoint
     "/collect?tid=",
     "/r/collect",
-    "facebook.com/tr/",     // Facebook Pixel
+    "facebook.com/tr/", // Facebook Pixel
     "facebook.com/tr?",
-    "/beacon.",             // Generic beacon endpoints
+    "/beacon.", // Generic beacon endpoints
     "/pixel.",
     "/ping?",
     "/__utm.gif",
@@ -192,7 +192,10 @@ impl TelemetryBlocker {
 
         // Check custom user-defined blocked domains.
         {
-            let custom = self.custom_blocked.read().expect("custom_blocked lock poisoned");
+            let custom = self
+                .custom_blocked
+                .read()
+                .expect("custom_blocked lock poisoned");
             if domain_matches(&host, &custom) {
                 return Some(BlockReason::CustomRule(host.clone()));
             }
@@ -200,7 +203,10 @@ impl TelemetryBlocker {
 
         // Check built-in blocked domains.
         {
-            let blocked = self.blocked_domains.read().expect("blocked_domains lock poisoned");
+            let blocked = self
+                .blocked_domains
+                .read()
+                .expect("blocked_domains lock poisoned");
             if domain_matches(&host, &blocked) {
                 return Some(BlockReason::BlockedDomain(host.clone()));
             }
@@ -293,10 +299,7 @@ impl TelemetryBlocker {
     /// Number of blocked requests in the recent window for a given domain.
     pub fn blocked_count_for_domain(&self, domain: &str) -> u64 {
         let recent = self.recent.read().expect("recent lock poisoned");
-        recent
-            .iter()
-            .filter(|r| r.url.contains(domain))
-            .count() as u64
+        recent.iter().filter(|r| r.url.contains(domain)).count() as u64
     }
 
     /// Snapshot of blocker statistics.
@@ -453,8 +456,14 @@ mod tests {
     #[test]
     fn total_blocked_counter() {
         let blocker = TelemetryBlocker::new();
-        blocker.record_blocked("https://google-analytics.com/x", BlockReason::BlockedDomain("google-analytics.com".to_string()));
-        blocker.record_blocked("https://doubleclick.net/x", BlockReason::BlockedDomain("doubleclick.net".to_string()));
+        blocker.record_blocked(
+            "https://google-analytics.com/x",
+            BlockReason::BlockedDomain("google-analytics.com".to_string()),
+        );
+        blocker.record_blocked(
+            "https://doubleclick.net/x",
+            BlockReason::BlockedDomain("doubleclick.net".to_string()),
+        );
         assert_eq!(blocker.total_blocked(), 2);
     }
 
@@ -472,8 +481,14 @@ mod tests {
 
     #[test]
     fn extract_host_strips_scheme_and_path() {
-        assert_eq!(extract_host("https://google-analytics.com/collect?v=1"), "google-analytics.com");
-        assert_eq!(extract_host("http://sub.example.com/path/page"), "sub.example.com");
+        assert_eq!(
+            extract_host("https://google-analytics.com/collect?v=1"),
+            "google-analytics.com"
+        );
+        assert_eq!(
+            extract_host("http://sub.example.com/path/page"),
+            "sub.example.com"
+        );
         assert_eq!(extract_host("https://host.com:443/path"), "host.com");
     }
 }

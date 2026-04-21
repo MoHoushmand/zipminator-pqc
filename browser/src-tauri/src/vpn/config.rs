@@ -119,16 +119,16 @@ impl VpnConfig {
         // We do NOT perform DNS resolution here (that would require I/O and
         // could block or fail in test environments).
         if !self.server_endpoint.contains(':') {
-            return Err(ConfigError::UnresolvableEndpoint(self.server_endpoint.clone()));
+            return Err(ConfigError::UnresolvableEndpoint(
+                self.server_endpoint.clone(),
+            ));
         }
         // The port portion must be a valid u16.
-        let port_str = self
-            .server_endpoint
-            .rsplit(':')
-            .next()
-            .unwrap_or("");
+        let port_str = self.server_endpoint.rsplit(':').next().unwrap_or("");
         if port_str.parse::<u16>().is_err() {
-            return Err(ConfigError::UnresolvableEndpoint(self.server_endpoint.clone()));
+            return Err(ConfigError::UnresolvableEndpoint(
+                self.server_endpoint.clone(),
+            ));
         }
 
         // Curve25519 keys are always 32 bytes; the serde layer enforces this,
@@ -247,28 +247,40 @@ mod tests {
     fn empty_server_endpoint_fails() {
         let mut cfg = valid_config();
         cfg.server_endpoint = "".to_string();
-        assert!(matches!(cfg.validate(), Err(ConfigError::EmptyServerEndpoint)));
+        assert!(matches!(
+            cfg.validate(),
+            Err(ConfigError::EmptyServerEndpoint)
+        ));
     }
 
     #[test]
     fn all_zero_server_key_fails() {
         let mut cfg = valid_config();
         cfg.server_public_key = [0u8; 32];
-        assert!(matches!(cfg.validate(), Err(ConfigError::InvalidServerPublicKey)));
+        assert!(matches!(
+            cfg.validate(),
+            Err(ConfigError::InvalidServerPublicKey)
+        ));
     }
 
     #[test]
     fn all_zero_client_key_fails() {
         let mut cfg = valid_config();
         cfg.client_private_key = [0u8; 32];
-        assert!(matches!(cfg.validate(), Err(ConfigError::InvalidClientPrivateKey)));
+        assert!(matches!(
+            cfg.validate(),
+            Err(ConfigError::InvalidClientPrivateKey)
+        ));
     }
 
     #[test]
     fn missing_cidr_slash_fails() {
         let mut cfg = valid_config();
         cfg.tunnel_address = "10.14.0.2".to_string();
-        assert!(matches!(cfg.validate(), Err(ConfigError::InvalidTunnelAddress)));
+        assert!(matches!(
+            cfg.validate(),
+            Err(ConfigError::InvalidTunnelAddress)
+        ));
     }
 
     #[test]
@@ -282,14 +294,20 @@ mod tests {
     fn rekey_interval_too_low_fails() {
         let mut cfg = valid_config();
         cfg.rekey_interval_secs = 30;
-        assert!(matches!(cfg.validate(), Err(ConfigError::InvalidRekeyInterval(30))));
+        assert!(matches!(
+            cfg.validate(),
+            Err(ConfigError::InvalidRekeyInterval(30))
+        ));
     }
 
     #[test]
     fn rekey_interval_too_high_fails() {
         let mut cfg = valid_config();
         cfg.rekey_interval_secs = 7200;
-        assert!(matches!(cfg.validate(), Err(ConfigError::InvalidRekeyInterval(7200))));
+        assert!(matches!(
+            cfg.validate(),
+            Err(ConfigError::InvalidRekeyInterval(7200))
+        ));
     }
 
     #[test]

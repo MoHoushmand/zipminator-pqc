@@ -9,6 +9,8 @@
 
 #![allow(dead_code)]
 
+pub mod anonymize;
+pub mod are;
 pub mod constants;
 pub mod email_crypto;
 pub mod email_transport;
@@ -19,8 +21,6 @@ pub mod kyber768;
 pub mod message_store;
 pub mod ntt;
 pub mod openpgp_keys;
-pub mod anonymize;
-pub mod are;
 pub mod pii;
 pub mod poly;
 pub mod qrng;

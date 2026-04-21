@@ -105,7 +105,9 @@ impl SessionManager {
         SessionInfo {
             token: guard.0.as_str().to_string(),
             started_at: guard.1,
-            rotation_count: self.rotation_count.load(std::sync::atomic::Ordering::Relaxed),
+            rotation_count: self
+                .rotation_count
+                .load(std::sync::atomic::Ordering::Relaxed),
         }
     }
 
@@ -175,7 +177,8 @@ mod tests {
         let tok = mgr.current_token();
         // Base64url alphabet: A-Z, a-z, 0-9, -, _
         assert!(
-            tok.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_'),
+            tok.chars()
+                .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_'),
             "invalid base64url chars in: {tok}"
         );
     }

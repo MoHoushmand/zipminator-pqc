@@ -17,13 +17,16 @@ use tauri::Manager;
 
 // AI sidebar commands (Domain 4)
 use zipbrowser::ai;
+// Mobile WebView bridge (Pillar 8 mobile target)
+use zipbrowser::mobile;
 
 fn main() {
     // Initialize structured logging (tracing for domain modules, env_logger for shell).
     tracing_subscriber::fmt()
         .with_env_filter(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "zipbrowser=info,proxy=debug,vpn=info,privacy=info,ai=info".into()),
+            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
+                "zipbrowser=info,proxy=debug,vpn=info,privacy=info,ai=info".into()
+            }),
         )
         .init();
 
@@ -41,13 +44,15 @@ fn main() {
         .plugin(tauri_plugin_shell::init())
         .manage(AppState::new())
         .setup(|app| {
+            #[cfg(feature = "vpn")]
             let app_handle = app.handle().clone();
 
             // ── Domain 2: Start PQC HTTPS Proxy ───────────────────────────
             // Use a channel so the proxy port feeds back into AI sidebar state.
-            let data_dir = app.path().app_data_dir().unwrap_or_else(|_| {
-                std::env::temp_dir().join("zipbrowser")
-            });
+            let data_dir = app
+                .path()
+                .app_data_dir()
+                .unwrap_or_else(|_| std::env::temp_dir().join("zipbrowser"));
             let proxy_data_dir = data_dir.clone();
             let (port_tx, port_rx) = std::sync::mpsc::channel();
             tauri::async_runtime::spawn(async move {
@@ -182,6 +187,8 @@ fn main() {
             ai::sidebar::ai_clear_history,
             ai::sidebar::ai_download_model,
             ai::sidebar::ai_load_model,
+            // ── Mobile WebView PQC proxy (Pillar 8 mobile target) ──────────
+            mobile::pqc_proxy_command,
         ])
         .run(tauri::generate_context!())
         .expect("error running Zipminator");

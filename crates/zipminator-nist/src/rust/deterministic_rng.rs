@@ -5,9 +5,9 @@
 //! This DRBG implementation provides reproducible randomness from a seed
 //! to enable Known Answer Test (KAT) validation against NIST test vectors.
 
-use aes::Aes256;
-use aes::cipher::{KeyIvInit, StreamCipher};
 use aes::cipher::generic_array::GenericArray;
+use aes::cipher::{KeyIvInit, StreamCipher};
+use aes::Aes256;
 
 type Aes256Ctr = ctr::Ctr64BE<Aes256>;
 
@@ -79,12 +79,15 @@ impl DeterministicRNG {
     /// Create DRBG from hex seed string
     pub fn from_hex(hex_seed: &str) -> Result<Self, String> {
         if hex_seed.len() != 96 {
-            return Err(format!("Hex seed must be 96 characters (48 bytes), got {}", hex_seed.len()));
+            return Err(format!(
+                "Hex seed must be 96 characters (48 bytes), got {}",
+                hex_seed.len()
+            ));
         }
 
         let mut seed = [0u8; 48];
         for i in 0..48 {
-            let byte_str = &hex_seed[i*2..i*2+2];
+            let byte_str = &hex_seed[i * 2..i * 2 + 2];
             seed[i] = u8::from_str_radix(byte_str, 16)
                 .map_err(|e| format!("Invalid hex at position {}: {}", i, e))?;
         }
@@ -119,7 +122,10 @@ mod tests {
         let mut out2 = [0u8; 32];
         rng2.generate(&mut out2);
 
-        assert_eq!(out1, out2, "Deterministic RNG must produce identical output");
+        assert_eq!(
+            out1, out2,
+            "Deterministic RNG must produce identical output"
+        );
     }
 
     #[test]

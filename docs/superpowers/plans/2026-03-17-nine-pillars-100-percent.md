@@ -6,9 +6,9 @@
 
 **Architecture:** 5 parallel work streams via agent teams with worktree isolation. Each stream runs RALPH independently. A shared `docker-compose.integration.yml` provides containerized services (GreenMail SMTP/IMAP, coturn TURN/STUN, Ollama LLM, ESP32 mesh mock) for integration tests. All work is TDD-first: failing test → run to verify FAIL → implement → verify green.
 
-**Tech Stack:** Rust (crates/), Python (src/zipminator/, tests/), Flutter (app/), Docker (integration services), Ruflo v3.5.21 (orchestration), Playwright (UI verification)
+**Tech Stack:** Rust (crates/), Python (src/zipminator/, tests/), Flutter (app/), Docker (integration services), native Task tool + superpowers:dispatching-parallel-agents (orchestration), Playwright (UI verification)
 
-**Orchestration:** Tier 3 Hive-Mind + Agent Teams. Each stream gets a worktree branch. RALPH loop (max 12 iterations) per task. Quality gates enforced via `scripts/ralph-loop.sh`.
+**Orchestration:** Native Task-tool parallel dispatch + agent teams with worktree isolation. Each stream gets a worktree branch. RALPH loop (max 12 iterations) per task. Quality gates enforced via `bash scripts/marathon.sh --prompt-version v6.1`.
 
 ---
 
@@ -1299,7 +1299,7 @@ git commit -m "feat(mesh): entropy bridge + ADR-032 beacon auth + SipHash integr
 - [ ] **Step 1: Run RALPH quality gate script**
 
 ```bash
-bash docs/guides/claude-flow-v3/scripts/ralph-loop.sh
+bash scripts/marathon.sh --prompt-version v6
 ```
 
 Expected: ALL GATES PASSED (cargo test, pytest, next build)
@@ -1344,35 +1344,22 @@ git add docs/guides/FEATURES.md
 git commit -m "docs: update FEATURES.md — all 9 pillars at 100%"
 ```
 
-### Task F3: Update Orchestration Guide
+### Task F3: Archived — Orchestration Guide Replaced by Native Stack
 
-- [ ] **Step 1: Update README.md versions**
-
-In `docs/guides/claude-flow-v3/README.md`:
-- Claude Code version: v2.1.77
-- Ruflo version: v3.5.21
-- Last Updated: 2026-03-17
-
-- [ ] **Step 2: Update 01-project-state.md**
-
-Mark all phases complete, add docker-compose.integration.yml to infrastructure section.
-
-- [ ] **Step 3: Commit**
-
-```bash
-git add docs/guides/claude-flow-v3/
-git commit -m "docs: update orchestration guide for v3.5.21 + all pillars complete"
-```
+The former `docs/guides/claude-flow-v3/` has been archived under `_archive/2026-04-15/ruflo-removal/`. Orchestration now runs through:
+- `~/.claude/scripts/marathon.sh` (RALPH loop driver)
+- Native `Task` tool + `superpowers:dispatching-parallel-agents`
+- `quantum-peer-reviewer` skill (8-agent Byzantine 2/3 consensus)
 
 ---
 
-## Orchestration Prompt: Hive-Mind Launch Command
+## Orchestration Prompt: Parallel Agent Teams Launch Command
 
 Use this prompt to kick off the parallel execution:
 
 ```
-Initialize hive-mind orchestration for Zipminator 9-Pillar Sprint.
-Use /hive-mind-advanced skill.
+Initialize parallel agent teams for Zipminator 9-Pillar Sprint.
+Use native Task tool + superpowers:dispatching-parallel-agents.
 
 Read the implementation plan: docs/superpowers/plans/2026-03-17-nine-pillars-100-percent.md
 
@@ -1397,7 +1384,7 @@ After all streams merge, run Task F1 (full quality gate) and Task F2 (FEATURES.m
 For continuous monitoring during the sprint:
 
 ```
-/loop 5m bash docs/guides/claude-flow-v3/scripts/ralph-loop.sh
+/loop 5m bash scripts/marathon.sh --prompt-version v6
 ```
 
 This runs the quality gate every 5 minutes, catching regressions as agent teams work.

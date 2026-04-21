@@ -97,11 +97,7 @@ impl VitalAuthSession {
     /// - `enrolled`: The baseline biometric profile.
     /// - `initial_key`: Initial 32-byte session key (from QRNG or key exchange).
     /// - `tolerance`: Maximum allowed biometric distance (0.0-1.0 typical).
-    pub fn new(
-        enrolled: BiometricProfile,
-        initial_key: [u8; 32],
-        tolerance: f64,
-    ) -> Self {
+    pub fn new(enrolled: BiometricProfile, initial_key: [u8; 32], tolerance: f64) -> Self {
         Self {
             enrolled_profile: enrolled,
             session_key: initial_key,
@@ -136,8 +132,8 @@ impl VitalAuthSession {
         }
 
         // Evolve session key via rolling HMAC
-        let mut mac = HmacSha256::new_from_slice(&self.session_key)
-            .map_err(|_| VitalAuthError::HmacError)?;
+        let mut mac =
+            HmacSha256::new_from_slice(&self.session_key).map_err(|_| VitalAuthError::HmacError)?;
         let bio_bytes = fresh.to_bytes();
         mac.update(&bio_bytes);
         mac.update(nonce);
@@ -229,7 +225,11 @@ mod tests {
         let fresh = make_profile(16.2, 72.5);
         session.update(&fresh, &make_nonce(1)).unwrap();
 
-        assert_ne!(session.session_key(), &initial_key, "key must evolve after update");
+        assert_ne!(
+            session.session_key(),
+            &initial_key,
+            "key must evolve after update"
+        );
     }
 
     #[test]
@@ -244,7 +244,11 @@ mod tests {
         s1.update(&fresh, &make_nonce(1)).unwrap();
         s2.update(&fresh, &make_nonce(2)).unwrap();
 
-        assert_ne!(s1.session_key(), s2.session_key(), "different nonces must produce different keys");
+        assert_ne!(
+            s1.session_key(),
+            s2.session_key(),
+            "different nonces must produce different keys"
+        );
     }
 
     #[test]
@@ -278,7 +282,11 @@ mod tests {
         let key = [0xAA; 32];
         let mut session = VitalAuthSession::new(enrolled, key, 0.5);
         session.kill();
-        assert_eq!(session.session_key(), &[0u8; 32], "key must be zeroized after kill");
+        assert_eq!(
+            session.session_key(),
+            &[0u8; 32],
+            "key must be zeroized after kill"
+        );
     }
 
     #[test]

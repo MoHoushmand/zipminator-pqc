@@ -110,7 +110,7 @@ Read `_onSignalingMessage` in ratchet_provider.dart carefully. Incoming messages
 
 Plan file: .claude/plans/graceful-snuggling-pebble.md
 
-Use /hive-mind-advanced with 4 parallel agents:
+Use native Task tool + superpowers:dispatching-parallel-agents with 4 parallel agents:
 
 ### Agent 1: Privacy eyes verification
 Test on device: anonymizer hidden-by-default, L10 warning, before/after hidden
@@ -147,5 +147,5 @@ Wire VPN location rotation (simulated location changes).
 - `/ralph-loop N=8` — iterate until messaging works
 - `/batch-tdd` — parallel testing across Rust/Python/Flutter
 - `/verification-quality` — truth scoring before TestFlight build
-- `/hive-mind-advanced` — parallel agents for UX sprint
+- `superpowers:dispatching-parallel-agents` — parallel agents for UX sprint
 ```

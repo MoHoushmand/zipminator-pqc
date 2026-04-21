@@ -180,8 +180,7 @@ mod tests {
         assert_eq!(bob.public_key.len(), 1184);
 
         // Alice finish
-        alice_finish(alice.session_id, bob.kem_ciphertext, bob.public_key)
-            .expect("alice finish");
+        alice_finish(alice.session_id, bob.kem_ciphertext, bob.public_key).expect("alice finish");
 
         // Alice encrypts
         let msg = b"hello from alice".to_vec();
@@ -190,8 +189,7 @@ mod tests {
         assert!(!enc.ciphertext.is_empty());
 
         // Bob decrypts
-        let plaintext = decrypt(bob.session_id, enc.header, enc.ciphertext)
-            .expect("decrypt");
+        let plaintext = decrypt(bob.session_id, enc.header, enc.ciphertext).expect("decrypt");
         assert_eq!(plaintext, msg);
 
         // Cleanup
@@ -203,8 +201,7 @@ mod tests {
     fn test_bidirectional_messages() {
         let alice = init_alice();
         let bob = init_bob(alice.public_key).expect("bob init");
-        alice_finish(alice.session_id, bob.kem_ciphertext, bob.public_key)
-            .expect("alice finish");
+        alice_finish(alice.session_id, bob.kem_ciphertext, bob.public_key).expect("alice finish");
 
         for i in 0..3 {
             // Alice -> Bob

@@ -221,7 +221,7 @@ export const SectionComprehensiveStatus = () => (
           </h4>
           <ul className="space-y-2 text-sm text-slate-300">
             <li className="flex items-start gap-2"><span className="text-amber-400 mt-0.5">●</span> Next.js on port 3099, 22+ routes including /invest, /mail, /dashboard</li>
-            <li className="flex items-start gap-2"><span className="text-amber-400 mt-0.5">●</span> OAuth: GitHub, Google, LinkedIn, Apple (next-auth v5)</li>
+            <li className="flex items-start gap-2"><span className="text-amber-400 mt-0.5">●</span> OAuth: GitHub, Google, LinkedIn (next-auth v5 beta)</li>
             <li className="flex items-start gap-2"><span className="text-amber-400 mt-0.5">●</span> Supabase waitlist with rate limiting and Zod validation</li>
             <li className="flex items-start gap-2"><span className="text-amber-400 mt-0.5">●</span> 22-slide investor pitch deck + IP valuation blueprint</li>
             <li className="flex items-start gap-2"><span className="text-amber-400 mt-0.5">●</span> Live at: https://www.zipminator.zip</li>

@@ -1,0 +1,41 @@
+# Zipminator Pillar 7 mail stack (owned: docker/mail/).
+#
+# Build context is the non-owned canonical image at email/mailserver/,
+# which compiles OpenSSL 3.5 + Postfix 3.10 + Dovecot 2.3.21 for native
+# X25519MLKEM768 hybrid TLS. This compose file is the deployment seam
+# other services pin against.
+#
+# Crypto: Implements NIST FIPS 203 (ML-KEM-768) via X25519MLKEM768
+# hybrid key exchange per IETF draft-kwiatkowski-tls-ecdhe-mlkem.
+
+services:
+  mailserver:
+    build:
+      context: ../../email/mailserver
+      dockerfile: Dockerfile
+    image: zipminator/mailserver:pqc
+    container_name: zipminator-mailserver
+    hostname: mail.zipminator.local
+    ports:
+      - "25:25"      # SMTP (receive)
+      - "465:465"    # SMTPS (submission over TLS)
+      - "587:587"    # SMTP submission (STARTTLS, PQC-hardened)
+      - "993:993"    # IMAPS (PQC-hardened)
+      - "995:995"    # POP3S
+    environment:
+      MAIL_DOMAIN: zipminator.local
+      MAIL_HOSTNAME: mail.zipminator.local
+      PQC_CURVES: "X25519MLKEM768:X25519:prime256v1:secp384r1"
+    volumes:
+      - mail_data:/var/mail
+      - mail_log:/var/log/mail
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "sh", "-c", "nc -z localhost 587 && nc -z localhost 993"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  mail_data:
+  mail_log:

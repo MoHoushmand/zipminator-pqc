@@ -12,14 +12,14 @@ use std::path::PathBuf;
 use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, Emitter, Manager, State};
+use tauri::{AppHandle, Emitter, State};
 use tokio::sync::{mpsc, Mutex};
 
 use crate::ai::cloud_llm::{CloudClientConfig, CloudLlmClient, CloudTokenEvent};
 use crate::ai::config::{AiConfig, AiConfigPublic, AiMode};
 use crate::ai::local_llm::{
-    ChatMessage, InferenceRequest, LocalLlmEngine, Role, TokenEvent,
-    CHAT_SYSTEM_PROMPT, SUMMARIZE_SYSTEM_PROMPT, WRITING_SYSTEM_PROMPT,
+    ChatMessage, InferenceRequest, LocalLlmEngine, Role, TokenEvent, CHAT_SYSTEM_PROMPT,
+    SUMMARIZE_SYSTEM_PROMPT, WRITING_SYSTEM_PROMPT,
 };
 use crate::ai::page_context::{PageContext, RawPageData};
 use crate::ai::prompt_guard;
@@ -44,6 +44,7 @@ pub const EVENT_AI_ERROR: &str = "ai-error";
 // ---------------------------------------------------------------------------
 
 /// Mutable sidebar state shared across Tauri command handlers.
+#[derive(Default)]
 pub struct SidebarState {
     pub config: AiConfig,
     /// Loaded local inference engine (`None` until the model is loaded).
@@ -54,18 +55,6 @@ pub struct SidebarState {
     pub chat_histories: std::collections::HashMap<String, Vec<ChatMessage>>,
     /// PQC proxy port (forwarded from the proxy module at startup).
     pub proxy_port: Option<u16>,
-}
-
-impl Default for SidebarState {
-    fn default() -> Self {
-        Self {
-            config: AiConfig::default(),
-            local_engine: None,
-            cloud_client: None,
-            chat_histories: std::collections::HashMap::new(),
-            proxy_port: None,
-        }
-    }
 }
 
 /// Thread-safe handle to [`SidebarState`].
@@ -203,7 +192,7 @@ pub async fn ai_chat(
     app: AppHandle,
     request: ChatRequest,
 ) -> Result<AiResponse, AiError> {
-    let (mode, engine_opt, cloud_opt, history, config_snapshot) = {
+    let (mode, engine_opt, _cloud_opt, history, config_snapshot) = {
         let mut guard = state.lock().await;
 
         // Build user message, optionally prefixed with page context.
@@ -252,12 +241,8 @@ pub async fn ai_chat(
     let _ = app.emit(EVENT_AI_START, ());
 
     let result_text = match mode {
-        AiMode::Local => {
-            run_local_chat(&app, engine_opt, &history, &config_snapshot).await?
-        }
-        AiMode::Cloud => {
-            run_cloud_chat(&app, &state, &history, &config_snapshot).await?
-        }
+        AiMode::Local => run_local_chat(&app, engine_opt, &history, &config_snapshot).await?,
+        AiMode::Cloud => run_cloud_chat(&app, &state, &history, &config_snapshot).await?,
         AiMode::Off => {
             return Err(AiError::new("ai_disabled", "AI assistant is turned off."));
         }
@@ -317,9 +302,7 @@ pub async fn ai_summarize(
 
     let history = vec![ChatMessage {
         role: Role::User,
-        content: format!(
-            "Please summarise the following web page:\n\n{prompt_content}"
-        ),
+        content: format!("Please summarise the following web page:\n\n{prompt_content}"),
     }];
 
     let result_text = match mode {
@@ -331,7 +314,10 @@ pub async fn ai_summarize(
             );
             let (tx, mut rx) = mpsc::channel::<TokenEvent>(128);
             let engine = engine_opt.ok_or_else(|| {
-                AiError::new("no_model", "Local model not loaded. Please download the model.")
+                AiError::new(
+                    "no_model",
+                    "Local model not loaded. Please download the model.",
+                )
             })?;
 
             let app_clone = app.clone();
@@ -356,9 +342,7 @@ pub async fn ai_summarize(
 
             result.text
         }
-        AiMode::Cloud => {
-            run_cloud_chat(&app, &state, &history, &config_snapshot).await?
-        }
+        AiMode::Cloud => run_cloud_chat(&app, &state, &history, &config_snapshot).await?,
         AiMode::Off => {
             return Err(AiError::new("ai_disabled", "AI assistant is turned off."));
         }
@@ -387,12 +371,16 @@ pub async fn ai_rewrite(
         WritingAction::Translate => "Translate the following text to English (if not already English), or to Spanish (if in English).",
     };
 
-    let tone_instruction = request.tone.as_ref().map(|t| match t {
-        WritingTone::Professional => " Use a professional, formal tone.",
-        WritingTone::Casual => " Use a casual, conversational tone.",
-        WritingTone::Academic => " Use an academic, scholarly tone with precise language.",
-        WritingTone::Creative => " Use a creative, expressive tone.",
-    }).unwrap_or("");
+    let tone_instruction = request
+        .tone
+        .as_ref()
+        .map(|t| match t {
+            WritingTone::Professional => " Use a professional, formal tone.",
+            WritingTone::Casual => " Use a casual, conversational tone.",
+            WritingTone::Academic => " Use an academic, scholarly tone with precise language.",
+            WritingTone::Creative => " Use a creative, expressive tone.",
+        })
+        .unwrap_or("");
 
     // --- Prompt guard: scan the user-supplied text for injection ---
     let safety = prompt_guard::scan(&request.text);
@@ -435,9 +423,8 @@ pub async fn ai_rewrite(
                 &history[0].content,
             );
             let (tx, mut rx) = mpsc::channel::<TokenEvent>(128);
-            let engine = engine_opt.ok_or_else(|| {
-                AiError::new("no_model", "Local model not loaded.")
-            })?;
+            let engine =
+                engine_opt.ok_or_else(|| AiError::new("no_model", "Local model not loaded."))?;
 
             let app_clone = app.clone();
             tokio::spawn(async move {
@@ -477,10 +464,7 @@ pub async fn ai_rewrite(
 
 /// Clear the chat history for a specific tab.
 #[tauri::command]
-pub async fn ai_clear_history(
-    state: State<'_, AiState>,
-    tab_id: String,
-) -> Result<(), AiError> {
+pub async fn ai_clear_history(state: State<'_, AiState>, tab_id: String) -> Result<(), AiError> {
     let mut guard = state.lock().await;
     guard.chat_histories.remove(&tab_id);
     Ok(())
@@ -569,13 +553,15 @@ async fn run_local_chat(
     config: &AiConfig,
 ) -> Result<String, AiError> {
     let engine = engine_opt.ok_or_else(|| {
-        AiError::new("no_model", "Local model not loaded. Please download the model first.")
+        AiError::new(
+            "no_model",
+            "Local model not loaded. Please download the model first.",
+        )
     })?;
 
     let last_user_msg = history
         .iter()
-        .filter(|m| m.role == Role::User)
-        .last()
+        .rfind(|m| m.role == Role::User)
         .map(|m| m.content.as_str())
         .unwrap_or("");
 
@@ -649,8 +635,7 @@ async fn run_cloud_chat(
 
     let last_user_msg = history
         .iter()
-        .filter(|m| m.role == Role::User)
-        .last()
+        .rfind(|m| m.role == Role::User)
         .map(|m| m.content.as_str())
         .unwrap_or("");
 

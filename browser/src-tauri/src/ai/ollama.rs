@@ -29,10 +29,12 @@ struct GenerateRequest<'a> {
 }
 
 /// Response body from Ollama `/api/generate` (non-streaming).
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct GenerateResponse {
     response: String,
     #[serde(default)]
+    #[allow(dead_code)]
     done: bool,
 }
 
@@ -52,10 +54,12 @@ struct ChatRequest<'a> {
 }
 
 /// Response body from Ollama `/api/chat` (non-streaming).
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct ChatResponse {
     message: OllamaMessage,
     #[serde(default)]
+    #[allow(dead_code)]
     done: bool,
 }
 
@@ -138,16 +142,12 @@ impl OllamaClient {
             stream: false,
         };
 
-        let resp = self
-            .http
-            .post(&url)
-            .json(&body)
-            .send()
-            .await
-            .map_err(|e| OllamaError::ConnectionFailed {
+        let resp = self.http.post(&url).json(&body).send().await.map_err(|e| {
+            OllamaError::ConnectionFailed {
                 url: url.clone(),
                 reason: e.to_string(),
-            })?;
+            }
+        })?;
 
         let status = resp.status();
         if !status.is_success() {
@@ -188,16 +188,12 @@ impl OllamaClient {
             stream: false,
         };
 
-        let resp = self
-            .http
-            .post(&url)
-            .json(&body)
-            .send()
-            .await
-            .map_err(|e| OllamaError::ConnectionFailed {
+        let resp = self.http.post(&url).json(&body).send().await.map_err(|e| {
+            OllamaError::ConnectionFailed {
                 url: url.clone(),
                 reason: e.to_string(),
-            })?;
+            }
+        })?;
 
         let status = resp.status();
         if !status.is_success() {

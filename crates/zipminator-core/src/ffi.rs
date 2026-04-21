@@ -262,11 +262,7 @@ pub unsafe extern "C" fn zipminator_ratchet_session_encrypt(
                 if header_bytes.len() > header_cap || ct_bytes.len() > ct_cap {
                     return ERR_BUFFER;
                 }
-                ptr::copy_nonoverlapping(
-                    header_bytes.as_ptr(),
-                    out_header,
-                    header_bytes.len(),
-                );
+                ptr::copy_nonoverlapping(header_bytes.as_ptr(), out_header, header_bytes.len());
                 *out_header_written = header_bytes.len();
 
                 ptr::copy_nonoverlapping(ct_bytes.as_ptr(), out_ct, ct_bytes.len());
@@ -317,11 +313,7 @@ pub unsafe extern "C" fn zipminator_ratchet_session_decrypt(
                     return ERR_BUFFER;
                 }
                 if !plaintext.is_empty() {
-                    ptr::copy_nonoverlapping(
-                        plaintext.as_ptr(),
-                        out_buf,
-                        plaintext.len(),
-                    );
+                    ptr::copy_nonoverlapping(plaintext.as_ptr(), out_buf, plaintext.len());
                 }
                 plaintext.len() as c_int
             }
@@ -677,10 +669,8 @@ mod tests {
         unsafe {
             // Alice init
             let mut alice_pk = vec![0u8; PK_BYTES];
-            let alice_ptr = zipminator_ratchet_session_new_alice(
-                alice_pk.as_mut_ptr(),
-                alice_pk.len(),
-            );
+            let alice_ptr =
+                zipminator_ratchet_session_new_alice(alice_pk.as_mut_ptr(), alice_pk.len());
             assert!(!alice_ptr.is_null());
 
             // Bob init
@@ -789,11 +779,7 @@ mod tests {
             );
             assert_eq!(rc, ERR_NULL);
 
-            let rc = zipminator_ratchet_session_get_public_key(
-                ptr::null(),
-                ptr::null_mut(),
-                0,
-            );
+            let rc = zipminator_ratchet_session_get_public_key(ptr::null(), ptr::null_mut(), 0);
             assert_eq!(rc, ERR_NULL);
         }
     }
@@ -1083,12 +1069,8 @@ mod tests {
         unsafe {
             let mut pk = vec![0u8; 100]; // too small
             let mut sk = vec![0u8; 2432];
-            let rc = zipminator_composite_keygen(
-                pk.as_mut_ptr(),
-                pk.len(),
-                sk.as_mut_ptr(),
-                sk.len(),
-            );
+            let rc =
+                zipminator_composite_keygen(pk.as_mut_ptr(), pk.len(), sk.as_mut_ptr(), sk.len());
             assert_eq!(rc, ERR_NULL);
         }
     }

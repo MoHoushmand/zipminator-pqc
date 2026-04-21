@@ -195,7 +195,11 @@ fn random_pseudonym() -> String {
 /// Level 7: add jitter to numeric PII; non-numeric falls back to full mask.
 fn quantum_jitter(_full_text: &str, m: &PiiMatch) -> String {
     // Extract numeric value if present
-    let digits: String = m.matched_text.chars().filter(|c| c.is_ascii_digit()).collect();
+    let digits: String = m
+        .matched_text
+        .chars()
+        .filter(|c| c.is_ascii_digit())
+        .collect();
     if digits.is_empty() || digits.len() > 18 {
         return "*".repeat(m.matched_text.len()); // fallback
     }
@@ -219,7 +223,11 @@ fn quantum_jitter(_full_text: &str, m: &PiiMatch) -> String {
 
 /// Level 8: epsilon-delta differential privacy noise on numeric PII.
 fn differential_privacy(_full_text: &str, m: &PiiMatch) -> String {
-    let digits: String = m.matched_text.chars().filter(|c| c.is_ascii_digit()).collect();
+    let digits: String = m
+        .matched_text
+        .chars()
+        .filter(|c| c.is_ascii_digit())
+        .collect();
     if digits.is_empty() || digits.len() > 18 {
         return "[DP_REDACTED]".to_string();
     }
@@ -459,7 +467,11 @@ mod tests {
     #[test]
     fn level_from_u8_valid() {
         for v in 1..=10u8 {
-            assert!(AnonymizationLevel::from_u8(v).is_some(), "Level {} must parse", v);
+            assert!(
+                AnonymizationLevel::from_u8(v).is_some(),
+                "Level {} must parse",
+                v
+            );
         }
     }
 

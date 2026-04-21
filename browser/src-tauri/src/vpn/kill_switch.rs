@@ -187,7 +187,9 @@ impl KillSwitch {
             // Allow WireGuard UDP to the peer (outbound bootstrap traffic before
             // the tunnel interface exists). The actual server address filtering
             // is handled by the VPN configuration; here we whitelist by mark.
-            vec!["-A", "OUTPUT", "-m", "mark", "--mark", "51820", "-j", "ACCEPT"],
+            vec![
+                "-A", "OUTPUT", "-m", "mark", "--mark", "51820", "-j", "ACCEPT",
+            ],
         ];
 
         for args in &ipv4_cmds {
@@ -218,16 +220,14 @@ impl KillSwitch {
         run_iptables("iptables", &["-P", "OUTPUT", "ACCEPT"]).map_err(|e| {
             KillSwitchError::DeactivationFailed(format!("iptables policy reset: {}", e))
         })?;
-        run_iptables("iptables", &["-F", "OUTPUT"]).map_err(|e| {
-            KillSwitchError::DeactivationFailed(format!("iptables flush: {}", e))
-        })?;
+        run_iptables("iptables", &["-F", "OUTPUT"])
+            .map_err(|e| KillSwitchError::DeactivationFailed(format!("iptables flush: {}", e)))?;
 
         run_iptables("ip6tables", &["-P", "OUTPUT", "ACCEPT"]).map_err(|e| {
             KillSwitchError::DeactivationFailed(format!("ip6tables policy reset: {}", e))
         })?;
-        run_iptables("ip6tables", &["-F", "OUTPUT"]).map_err(|e| {
-            KillSwitchError::DeactivationFailed(format!("ip6tables flush: {}", e))
-        })?;
+        run_iptables("ip6tables", &["-F", "OUTPUT"])
+            .map_err(|e| KillSwitchError::DeactivationFailed(format!("ip6tables flush: {}", e)))?;
 
         Ok(())
     }
@@ -240,9 +240,7 @@ impl KillSwitch {
         // an elevated process.  This stub logs a warning but does not block.
         // Full implementation is deferred until the Windows Tauri target is
         // validated in CI.
-        warn!(
-            "Windows kill switch not yet implemented; traffic may leak if VPN drops"
-        );
+        warn!("Windows kill switch not yet implemented; traffic may leak if VPN drops");
         Ok(())
     }
 
@@ -276,21 +274,19 @@ fn apply_pf_rules(rules: &str) -> Result<(), KillSwitchError> {
     let mut tmpfile = tempfile::NamedTempFile::new().map_err(|e| {
         KillSwitchError::ActivationFailed(format!("creating pf rules tempfile: {}", e))
     })?;
-    tmpfile.write_all(rules.as_bytes()).map_err(|e| {
-        KillSwitchError::ActivationFailed(format!("writing pf rules: {}", e))
-    })?;
+    tmpfile
+        .write_all(rules.as_bytes())
+        .map_err(|e| KillSwitchError::ActivationFailed(format!("writing pf rules: {}", e)))?;
     let path = tmpfile.path().to_str().ok_or_else(|| {
         KillSwitchError::ActivationFailed("pf rules tempfile path is not UTF-8".to_string())
     })?;
 
     // Load rules.
-    run_pfctl(&["-f", path]).map_err(|e| {
-        KillSwitchError::ActivationFailed(format!("pfctl -f: {}", e))
-    })?;
+    run_pfctl(&["-f", path])
+        .map_err(|e| KillSwitchError::ActivationFailed(format!("pfctl -f: {}", e)))?;
     // Enable pf.
-    run_pfctl(&["-e"]).map_err(|e| {
-        KillSwitchError::ActivationFailed(format!("pfctl -e: {}", e))
-    })?;
+    run_pfctl(&["-e"])
+        .map_err(|e| KillSwitchError::ActivationFailed(format!("pfctl -e: {}", e)))?;
 
     Ok(())
 }

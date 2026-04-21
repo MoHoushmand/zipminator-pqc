@@ -223,8 +223,7 @@ impl AttestationPayload {
             Self::TopologyUpdate { node_ids, edges } => {
                 let node_count = node_ids.len() as u16;
                 let edge_count = edges.len() as u16;
-                let mut buf =
-                    Vec::with_capacity(4 + node_ids.len() * 16 + edges.len() * 32);
+                let mut buf = Vec::with_capacity(4 + node_ids.len() * 16 + edges.len() * 32);
                 buf.extend_from_slice(&node_count.to_le_bytes());
                 buf.extend_from_slice(&edge_count.to_le_bytes());
                 for id in node_ids {
@@ -236,7 +235,13 @@ impl AttestationPayload {
                 }
                 buf
             }
-            Self::PresenceProof { node_id, latitude, longitude, timestamp_ms, signature } => {
+            Self::PresenceProof {
+                node_id,
+                latitude,
+                longitude,
+                timestamp_ms,
+                signature,
+            } => {
                 let mut buf = Vec::with_capacity(16 + 8 + 8 + 8 + 64); // 104 bytes
                 buf.extend_from_slice(node_id);
                 buf.extend_from_slice(&latitude.to_le_bytes());
@@ -245,7 +250,12 @@ impl AttestationPayload {
                 buf.extend_from_slice(signature);
                 buf
             }
-            Self::VitalAuthChallenge { node_id, challenge_nonce, breathing_rate, heart_rate } => {
+            Self::VitalAuthChallenge {
+                node_id,
+                challenge_nonce,
+                breathing_rate,
+                heart_rate,
+            } => {
                 let mut buf = Vec::with_capacity(16 + 32 + 4 + 4); // 56 bytes
                 buf.extend_from_slice(node_id);
                 buf.extend_from_slice(challenge_nonce);
@@ -253,7 +263,13 @@ impl AttestationPayload {
                 buf.extend_from_slice(&heart_rate.to_le_bytes());
                 buf
             }
-            Self::EmCanaryAlert { node_id, alert_level, frequency_hz, power_dbm, timestamp_ms } => {
+            Self::EmCanaryAlert {
+                node_id,
+                alert_level,
+                frequency_hz,
+                power_dbm,
+                timestamp_ms,
+            } => {
                 let mut buf = Vec::with_capacity(16 + 1 + 8 + 8 + 8); // 41 bytes
                 buf.extend_from_slice(node_id);
                 buf.push(*alert_level);
@@ -266,10 +282,7 @@ impl AttestationPayload {
     }
 
     /// Deserialize a payload from bytes given the message type.
-    fn from_bytes(
-        msg_type: MessageType,
-        data: &[u8],
-    ) -> Result<Self, AttestationError> {
+    fn from_bytes(msg_type: MessageType, data: &[u8]) -> Result<Self, AttestationError> {
         match msg_type {
             MessageType::CsiEigenstructure => {
                 if !data.len().is_multiple_of(8) || data.is_empty() {
@@ -298,8 +311,7 @@ impl AttestationPayload {
                 let mut micro_movement = [0.0f32; 8];
                 for (i, slot) in micro_movement.iter_mut().enumerate() {
                     let offset = 8 + i * 4;
-                    *slot =
-                        f32::from_le_bytes(data[offset..offset + 4].try_into().unwrap());
+                    *slot = f32::from_le_bytes(data[offset..offset + 4].try_into().unwrap());
                 }
                 Ok(Self::VitalSigns {
                     breathing_rate,
@@ -330,10 +342,8 @@ impl AttestationPayload {
                         got: data.len(),
                     });
                 }
-                let node_count =
-                    u16::from_le_bytes(data[0..2].try_into().unwrap()) as usize;
-                let edge_count =
-                    u16::from_le_bytes(data[2..4].try_into().unwrap()) as usize;
+                let node_count = u16::from_le_bytes(data[0..2].try_into().unwrap()) as usize;
+                let edge_count = u16::from_le_bytes(data[2..4].try_into().unwrap()) as usize;
                 let expected_len = 4 + node_count * 16 + edge_count * 32;
                 if data.len() != expected_len {
                     return Err(AttestationError::InvalidPayloadSize {
@@ -376,7 +386,13 @@ impl AttestationPayload {
                 let timestamp_ms = u64::from_le_bytes(data[32..40].try_into().unwrap());
                 let mut signature = [0u8; 64];
                 signature.copy_from_slice(&data[40..104]);
-                Ok(Self::PresenceProof { node_id, latitude, longitude, timestamp_ms, signature })
+                Ok(Self::PresenceProof {
+                    node_id,
+                    latitude,
+                    longitude,
+                    timestamp_ms,
+                    signature,
+                })
             }
             MessageType::VitalAuthChallenge => {
                 if data.len() != 56 {
@@ -392,7 +408,12 @@ impl AttestationPayload {
                 challenge_nonce.copy_from_slice(&data[16..48]);
                 let breathing_rate = f32::from_le_bytes(data[48..52].try_into().unwrap());
                 let heart_rate = f32::from_le_bytes(data[52..56].try_into().unwrap());
-                Ok(Self::VitalAuthChallenge { node_id, challenge_nonce, breathing_rate, heart_rate })
+                Ok(Self::VitalAuthChallenge {
+                    node_id,
+                    challenge_nonce,
+                    breathing_rate,
+                    heart_rate,
+                })
             }
             MessageType::EmCanaryAlert => {
                 if data.len() != 41 {
@@ -408,7 +429,13 @@ impl AttestationPayload {
                 let frequency_hz = f64::from_le_bytes(data[17..25].try_into().unwrap());
                 let power_dbm = f64::from_le_bytes(data[25..33].try_into().unwrap());
                 let timestamp_ms = u64::from_le_bytes(data[33..41].try_into().unwrap());
-                Ok(Self::EmCanaryAlert { node_id, alert_level, frequency_hz, power_dbm, timestamp_ms })
+                Ok(Self::EmCanaryAlert {
+                    node_id,
+                    alert_level,
+                    frequency_hz,
+                    power_dbm,
+                    timestamp_ms,
+                })
             }
         }
     }
@@ -478,8 +505,7 @@ impl AttestationMessage {
         let msg_type = MessageType::from_byte(data[5])?;
 
         // Parse payload length
-        let payload_len =
-            u16::from_le_bytes(data[6..8].try_into().unwrap()) as usize;
+        let payload_len = u16::from_le_bytes(data[6..8].try_into().unwrap()) as usize;
 
         // Verify total message length
         let expected_total = HEADER_SIZE + payload_len + HMAC_SIZE;
@@ -552,11 +578,7 @@ impl AttestationMessageBuilder {
     }
 
     /// Set the payload to a topology update message.
-    pub fn topology_update(
-        mut self,
-        node_ids: Vec<NodeId>,
-        edges: Vec<(NodeId, NodeId)>,
-    ) -> Self {
+    pub fn topology_update(mut self, node_ids: Vec<NodeId>, edges: Vec<(NodeId, NodeId)>) -> Self {
         self.payload = Some(AttestationPayload::TopologyUpdate { node_ids, edges });
         self
     }
@@ -571,7 +593,11 @@ impl AttestationMessageBuilder {
         signature: [u8; 64],
     ) -> Self {
         self.payload = Some(AttestationPayload::PresenceProof {
-            node_id, latitude, longitude, timestamp_ms, signature,
+            node_id,
+            latitude,
+            longitude,
+            timestamp_ms,
+            signature,
         });
         self
     }
@@ -585,7 +611,10 @@ impl AttestationMessageBuilder {
         heart_rate: f32,
     ) -> Self {
         self.payload = Some(AttestationPayload::VitalAuthChallenge {
-            node_id, challenge_nonce, breathing_rate, heart_rate,
+            node_id,
+            challenge_nonce,
+            breathing_rate,
+            heart_rate,
         });
         self
     }
@@ -600,7 +629,11 @@ impl AttestationMessageBuilder {
         timestamp_ms: u64,
     ) -> Self {
         self.payload = Some(AttestationPayload::EmCanaryAlert {
-            node_id, alert_level, frequency_hz, power_dbm, timestamp_ms,
+            node_id,
+            alert_level,
+            frequency_hz,
+            power_dbm,
+            timestamp_ms,
         });
         self
     }
@@ -625,8 +658,7 @@ impl Default for AttestationMessageBuilder {
 
 /// Compute HMAC-SHA256 over the given data using a `MeshKey`.
 fn compute_hmac(key: &MeshKey, data: &[u8]) -> [u8; 32] {
-    let mut mac =
-        HmacSha256::new_from_slice(key.as_bytes()).expect("HMAC accepts any key size");
+    let mut mac = HmacSha256::new_from_slice(key.as_bytes()).expect("HMAC accepts any key size");
     mac.update(data);
     let result = mac.finalize();
     let mut out = [0u8; 32];
@@ -699,9 +731,7 @@ mod tests {
     fn roundtrip_anomaly_event() {
         let dev = 3.14159;
         let ts = 1_710_000_000_000u64;
-        let msg = AttestationMessage::builder()
-            .anomaly_event(dev, ts)
-            .build();
+        let msg = AttestationMessage::builder().anomaly_event(dev, ts).build();
 
         let key = test_key();
         let wire = msg.serialize(&key).unwrap();
@@ -865,14 +895,14 @@ mod tests {
         let key = test_key();
         let result = AttestationMessage::deserialize(
             &[
-                b'R', b'V', b'A', b'T', // magic
-                VERSION,                  // version
-                0x03,                     // type: anomaly
-                0x10, 0x00,               // payload_len = 16
+                b'R', b'V', b'A', b'T',    // magic
+                VERSION, // version
+                0x03,    // type: anomaly
+                0x10, 0x00, // payload_len = 16
                 // Only 8 bytes of payload instead of 16, plus 32 HMAC
-                0, 0, 0, 0, 0, 0, 0, 0,  // 8 bytes
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, // 8 bytes
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0,
             ],
             &key,
         );

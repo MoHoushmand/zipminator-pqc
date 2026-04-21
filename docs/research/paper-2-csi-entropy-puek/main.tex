@@ -1,4 +1,4 @@
-% main.tex — Paper 2: Unilateral WiFi CSI as NIST-Validated Entropy Source
+% main.tex, Paper 2: Unilateral WiFi CSI as NIST-Validated Entropy Source
 % Target: ACM WiSec 2026
 % Author: Daniel Mo Houshmand, QDaria Quantum Research
 %
@@ -56,11 +56,12 @@ From Bilateral Key Agreement to Single-Device Randomness}
 
 \begin{abstract}
 Every prior system that extracts randomness from WiFi Channel State Information (CSI) requires two cooperating endpoints exploiting channel reciprocity for bilateral key agreement.
-We present the first system, measurement, and NIST SP~800-90B validation of WiFi CSI as a \emph{unilateral} entropy source: a single device passively measuring ambient CSI to harvest genuine physical randomness with no cooperating partner.
+We present the first system, measurement, and preliminary NIST SP~800-90B assessment of WiFi CSI as a \emph{unilateral} entropy source: a single device passively measuring ambient CSI to harvest genuine physical randomness with no cooperating partner.
+The assessment is pilot-scale (2{,}690~bytes), below the $\geq$1~M-sample threshold that NIST recommends for a production \texttt{ea\_non\_iid} certification; results should be read as a methodological first step, not a production entropy certificate.
 Using the public Gi-z/CSI-Data corpus (TU~Darmstadt Nexmon captures, Broadcom BCM4339), we extract phase least-significant bits from 343~frames across 256~OFDM subcarriers, apply Von~Neumann debiasing, and obtain 2,690~bytes of entropy at a 24.5\% extraction ratio.
 The NIST SP~800-90B \texttt{ea\_non\_iid} assessment yields a final min-entropy of \textbf{5.50~bits/byte} (MCV estimator, 99\% confidence), compared to 6.35 for IBM Quantum (ibm\_kingston, 156~qubits) and 6.36 for \texttt{os.urandom}.
 We introduce the Physical Unclonable Environment Key (PUEK), which derives location-locked cryptographic keys from the SVD eigenstructure of CSI measurements, with security profiles from $\tau=0.75$ (office) to $\tau=0.98$ (military).
-The method is hardware-agnostic, working with any IEEE~802.11n/ac/ax device; a \$5 ESP32-S3 reference implementation produces 45--90~MB/month at zero marginal cost, compared to IBM~Quantum at \$1.60/second.
+The method is hardware-agnostic, working with any IEEE~802.11n/ac/ax device; a \$5 ESP32-S3 reference implementation is projected to produce 45--90~MB/month at zero marginal cost (extrapolated from our BCM4339 Nexmon baseline), compared to IBM~Quantum at \$1.60/second.
 We provide a formal indistinguishability game and proof sketch for PUEK security under a spatial decorrelation assumption.
 All code, data references, and the full extraction pipeline are open-source.
 \end{abstract}
@@ -120,8 +121,8 @@ We fill both gaps simultaneously.
 \item \textbf{Unilateral CSI entropy.}
 We present the first system and formal argument for using WiFi CSI as a single-device entropy source, distinct from all prior bilateral key agreement work (Section~\ref{sec:unilateral}, Figure~\ref{fig:bilateral-vs-unilateral}).
 
-\item \textbf{First NIST SP 800-90B validation of WiFi CSI.}
-Using the public Gi-z/CSI-Data corpus~\cite{gringoli2019csidata}, we run the full \texttt{ea\_non\_iid} assessment and report 5.50~bits/byte final min-entropy from 343~Nexmon frames (Section~\ref{sec:evaluation}).
+\item \textbf{First preliminary NIST SP 800-90B assessment of WiFi CSI.}
+Using the public Gi-z/CSI-Data corpus~\cite{gringoli2019csidata}, we run the full \texttt{ea\_non\_iid} assessment and report 5.50~bits/byte final min-entropy from 343~Nexmon frames (Section~\ref{sec:evaluation}); the 2{,}690-byte sample is a pilot-scale demonstration below the $\geq$1~M-sample NIST recommendation for production certification.
 
 \item \textbf{Physical Unclonable Environment Key (PUEK).}
 We introduce a novel primitive that derives location-locked cryptographic keys from the SVD eigenstructure of CSI measurements, with four security profiles mapping to clearance levels L1--L4 (Section~\ref{sec:puek}, Figure~\ref{fig:puek-protocol}).
@@ -700,22 +701,22 @@ Figure~\ref{fig:minentropy-bars} presents these results visually.
 
 \input{figures/fig3-minentropy-bars}
 
-\subsection{Throughput}
+\subsection{Throughput (projected)}
 \label{subsec:throughput}
 
-An ESP32-S3 receiving WiFi frames at 20~Hz with 256 subcarriers generates:
+The following ESP32-S3 figures are \emph{projections} extrapolated from our BCM4339 Nexmon baseline; no ESP32-S3 capture was run in this pilot. An ESP32-S3 receiving WiFi frames at 20~Hz with 256 subcarriers is projected to generate:
 \begin{equation}
 \text{Raw rate} = 20 \times 256 = 5{,}120 \; \text{bits/s}
 \label{eq:raw-rate}
 \end{equation}
-After Von~Neumann debiasing at 24.5\%:
+After Von~Neumann debiasing at 24.5\% (the ratio measured on the Nexmon trace):
 \begin{equation}
 \text{Debiased rate} = 5{,}120 \times 0.245 = 1{,}254 \; \text{bits/s} \approx 157 \; \text{bytes/s}
 \label{eq:debiased-rate}
 \end{equation}
-This yields approximately \textbf{13.5~KB/hour} or \textbf{9.7~MB/month} per node.
-A mesh of 5 nodes produces 48.5~MB/month, and with 10 nodes, 97~MB/month.
-At higher frame rates (100~Hz on Nexmon-patched hardware), throughput scales linearly to 785~bytes/s or 45~MB/month per node.
+This projects to approximately \textbf{13.5~KB/hour} or \textbf{9.7~MB/month} per node.
+A mesh of 5 nodes projects to 48.5~MB/month, and with 10 nodes, 97~MB/month.
+At higher frame rates (100~Hz on Nexmon-patched hardware), throughput scales linearly to 785~bytes/s or 45~MB/month per node (projected).
 
 
 Figure~\ref{fig:extraction-sensitivity} shows how both metrics evolve with the number of input frames, confirming convergence.
@@ -734,7 +735,7 @@ Table~\ref{tab:economics} compares three entropy sources across cost dimensions 
 
 \begin{table}[t]
 \centering
-\caption{Cost comparison of entropy sources.}
+\caption{Cost comparison of entropy sources. ESP32-S3 CSI throughput is a projection extrapolated from our BCM4339 Nexmon baseline; no ESP32-S3 capture was run.}
 \label{tab:economics}
 \small
 \begin{tabular}{@{}lccc@{}}
@@ -744,7 +745,7 @@ Table~\ref{tab:economics} compares three entropy sources across cost dimensions 
 Hardware cost & Cloud service & \$5 one-time & Included \\
 Runtime cost & \$1.60/s & \$0 & \$0 \\
 Monthly quota (free) & 10~min & Unlimited & Unlimited \\
-Entropy/month (free) & $\sim$6~MB\footnotemark & 45--90~MB & Unlimited \\
+Entropy/month (free) & $\sim$6~MB\footnotemark & 45--90~MB (projected) & Unlimited \\
 Min-entropy (bpb) & 6.35 & 5.50 & 6.36 \\
 Network required & Yes (cloud) & No (local) & No \\
 Physical source & Quantum (Born rule) & EM scattering & CSPRNG \\
@@ -759,7 +760,7 @@ Beyond the free tier, pricing is \$1.60 per second of quantum processing time.
 At an effective throughput of $\sim$10~KB/s (accounting for circuit transpilation, queue wait, and result download), 1~MB costs approximately \$1.70 of quantum time.
 
 An ESP32-S3 module costs \$5 and requires no ongoing fees.
-At 45--90~MB/month (depending on frame rate), the amortized cost per MB drops below \$0.001 within the first month.
+At a projected 45--90~MB/month (depending on frame rate, extrapolated from BCM4339 Nexmon measurements), the amortized cost per MB drops below \$0.001 within the first month.
 Over a one-year deployment, the cost per MB is:
 \begin{equation}
 \text{Cost/MB (1yr)} = \frac{\$5}{12 \times 67.5 \; \text{MB}} \approx \$0.006
@@ -842,7 +843,7 @@ We recommend two mitigations:
 Even in fully static conditions, Johnson-Nyquist thermal noise ($P_N = k_B T B \approx -101$~dBm at 300~K, 20~MHz) provides a residual entropy floor of $\sim$1--2~bpb, yielding 0.5--2~MB/month per node at reduced rates.
 \end{enumerate}
 
-An entropy system that honestly pauses during low-quality conditions is strictly preferable to one that silently outputs low-entropy bytes; the variance monitor is a feature, not a limitation.
+An entropy system that explicitly pauses during low-quality conditions is strictly preferable to one that silently outputs low-entropy bytes; the variance monitor is a feature, not a limitation.
 
 Figure~\ref{fig:static-degradation} illustrates this degradation pattern and the variance monitoring response.
 
@@ -873,6 +874,8 @@ Ruotsalainen~\etal~\cite{ruotsalainen2023shake} and Avrahami~\etal~\cite{avraham
 Xiao~\etal~\cite{xiao2024securing} provide a comprehensive 2024 survey of physical-layer key generation; every system surveyed operates in the bilateral mode, and none apply NIST SP~800-90B entropy assessment.
 Du~\etal~\cite{du2024keycome} recently proposed KeyCome, a bilateral CSI key generation scheme with obfuscation matrix encapsulation for non-reciprocal channels.
 All of these works operate in the bilateral setting: two cooperating endpoints exploit channel reciprocity.
+In particular, Mathur~\etal~\cite{mathur2008radio} explicitly require a cooperating partner and a reciprocal channel measurement, because their construction reduces key agreement to matching quantized bits between Alice and Bob; without the second endpoint, their scheme yields no output.
+Our construction drops both the cooperating-partner and reciprocity assumptions: a single device passively measures ambient CSI and extracts min-entropy without a counterparty.
 Our work is the first to formalize, implement, and evaluate the unilateral paradigm.
 
 \subsection{RF Fingerprinting and PUFs}
@@ -952,7 +955,7 @@ CSI entropy functions as defense-in-depth; it does not need to stand alone.
 
 \paragraph{Adjacent-subcarrier correlation.}
 The gap between per-byte min-entropy (6.36) and the final estimate (5.50) is driven by bitwise correlations.
-Neighboring OFDM subcarriers experience similar channel conditions (coherence bandwidth $\approx$ 2--5~MHz in indoor environments, spanning 10--25 subcarriers at 20~MHz).
+Neighboring OFDM subcarriers experience similar channel conditions (coherence bandwidth $\approx$ 2--5~MHz in indoor environments~\cite{halperin2011tool}, spanning 10--25 subcarriers at 20~MHz).
 With a coherence bandwidth of $\sim$15 subcarriers, 256~subcarriers yield approximately $\lfloor 256/15 \rfloor = 17$ effectively independent channels per frame, contributing $17 \times 343 \approx 5{,}831$ effectively independent phase samples across all frames.
 Von~Neumann debiasing removes bias but not inter-sample correlation; however, the NIST SP~800-90B bitstring analysis is designed to detect exactly such correlations, and our final bound of 5.50~bpb reflects the entropy \emph{after} accounting for all bit-level dependencies.
 Mitigation strategies include: (1)~extracting from every $n$-th subcarrier rather than all subcarriers, (2)~applying a linear-feedback shift register (LFSR) whitening stage before debiasing, or (3)~using amplitude-phase cross-bits rather than phase-only LSBs.
@@ -997,17 +1000,17 @@ The key findings are:
 All prior CSI randomness extraction requires two cooperating endpoints.
 We demonstrate that a single device passively measuring ambient CSI can harvest genuine physical entropy with no cooperating partner, no reconciliation protocol, and no channel reciprocity assumption.
 
-\item \textbf{Measured min-entropy.}
+\item \textbf{Pilot-scale measured min-entropy.}
 Using the public Gi-z/CSI-Data corpus and the NIST SP~800-90B \texttt{ea\_non\_iid} tool, we measure 5.50~bits/byte of final min-entropy from 343~frames across 256~OFDM subcarriers after Von~Neumann debiasing.
-This is the first SP~800-90B assessment of WiFi CSI in any configuration.
+This is the first preliminary SP~800-90B assessment of WiFi CSI in any configuration; the 2{,}690-byte sample is below the $\geq$1~M-sample recommendation for a production certification, and a full-scale assessment remains as future work.
 
 \item \textbf{Physical Unclonable Environment Key.}
 We introduce PUEK, which derives location-locked cryptographic keys from the SVD eigenstructure of CSI measurements, with four security profiles ($\tau = 0.75$ to $0.98$) mapping to operational clearance levels.
 We provide a formal indistinguishability game (Definition~\ref{def:puek-ind}) and prove security under the Environmental Spatial Decorrelation assumption and PRF security of HMAC (Proposition~\ref{prop:puek-security}).
 
-\item \textbf{Economic viability.}
-A \$5 ESP32-S3 produces 45--90~MB/month of physical entropy at zero marginal cost, compared to \$1.60/second for cloud quantum entropy.
-For IoT deployments requiring hardware-backed TRNG, CSI entropy offers a 4--6 order-of-magnitude cost reduction over QRNG.
+\item \textbf{Economic viability (projected).}
+A \$5 ESP32-S3 is projected to produce 45--90~MB/month of physical entropy at zero marginal cost (extrapolated from our BCM4339 Nexmon baseline; no ESP32-S3 capture was run), compared to \$1.60/second for cloud quantum entropy.
+For IoT deployments requiring hardware-backed TRNG, CSI entropy is projected to offer a 4--6 order-of-magnitude cost reduction over QRNG.
 
 \item \textbf{Open source.}
 The complete pipeline (Python extraction, Rust implementation with 118~tests, pool architecture, XOR compositor) is released as part of the \zipminator open-source project.

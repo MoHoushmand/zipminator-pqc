@@ -43,7 +43,11 @@ pub struct Cookie {
 
 impl Cookie {
     /// Create a new third-party cookie.
-    pub fn third_party(name: impl Into<String>, value: impl Into<String>, domain: impl Into<String>) -> Self {
+    pub fn third_party(
+        name: impl Into<String>,
+        value: impl Into<String>,
+        domain: impl Into<String>,
+    ) -> Self {
         Self {
             name: name.into(),
             value: value.into(),
@@ -56,7 +60,11 @@ impl Cookie {
     }
 
     /// Create a first-party cookie that will not be rotated.
-    pub fn first_party(name: impl Into<String>, value: impl Into<String>, domain: impl Into<String>) -> Self {
+    pub fn first_party(
+        name: impl Into<String>,
+        value: impl Into<String>,
+        domain: impl Into<String>,
+    ) -> Self {
         Self {
             name: name.into(),
             value: value.into(),
@@ -92,19 +100,29 @@ impl CookieJar {
     /// Insert or update a cookie.
     pub fn set(&self, cookie: Cookie) {
         let key = Self::key(&cookie.domain, &cookie.name);
-        self.cookies.write().expect("cookie jar lock poisoned").insert(key, cookie);
+        self.cookies
+            .write()
+            .expect("cookie jar lock poisoned")
+            .insert(key, cookie);
     }
 
     /// Retrieve a cookie by domain and name.
     pub fn get(&self, domain: &str, name: &str) -> Option<Cookie> {
         let key = Self::key(domain, name);
-        self.cookies.read().expect("cookie jar lock poisoned").get(&key).cloned()
+        self.cookies
+            .read()
+            .expect("cookie jar lock poisoned")
+            .get(&key)
+            .cloned()
     }
 
     /// Remove a cookie.
     pub fn remove(&self, domain: &str, name: &str) {
         let key = Self::key(domain, name);
-        self.cookies.write().expect("cookie jar lock poisoned").remove(&key);
+        self.cookies
+            .write()
+            .expect("cookie jar lock poisoned")
+            .remove(&key);
     }
 
     /// Pin a cookie to prevent rotation.
@@ -127,7 +145,12 @@ impl CookieJar {
 
     /// Snapshot of all cookies in this jar.
     pub fn all(&self) -> Vec<Cookie> {
-        self.cookies.read().expect("cookie jar lock poisoned").values().cloned().collect()
+        self.cookies
+            .read()
+            .expect("cookie jar lock poisoned")
+            .values()
+            .cloned()
+            .collect()
     }
 
     /// Rotate all eligible cookies using QRNG-derived values.
@@ -153,11 +176,13 @@ impl CookieJar {
     }
 }
 
-/// Global cookie rotator — manages all tab jars and drives rotation.
+/// Global cookie rotator, manages all tab jars and drives rotation.
+#[allow(dead_code)]
 pub struct CookieRotator {
     entropy: Arc<QrngReader>,
     jars: RwLock<HashMap<String, Arc<CookieJar>>>,
     /// Rotation interval.
+    #[allow(dead_code)]
     interval: Duration,
     /// Domains whose first-party cookies are fully protected.
     trusted_domains: RwLock<HashSet<String>>,
@@ -191,12 +216,18 @@ impl CookieRotator {
 
     /// Remove the jar for a closed tab.
     pub fn remove_tab(&self, tab_id: &str) {
-        self.jars.write().expect("rotator lock poisoned").remove(tab_id);
+        self.jars
+            .write()
+            .expect("rotator lock poisoned")
+            .remove(tab_id);
     }
 
     /// Mark a domain as trusted (its first-party cookies won't be rotated).
     pub fn trust_domain(&self, domain: impl Into<String>) {
-        self.trusted_domains.write().expect("trusted_domains lock poisoned").insert(domain.into());
+        self.trusted_domains
+            .write()
+            .expect("trusted_domains lock poisoned")
+            .insert(domain.into());
     }
 
     /// Rotate third-party cookies in all jars.
@@ -226,7 +257,9 @@ impl CookieRotator {
             timestamp: unix_now(),
             tabs_rotated,
             cookies_rotated: total_rotated,
-            cumulative_rotations: self.total_rotations.load(std::sync::atomic::Ordering::Relaxed),
+            cumulative_rotations: self
+                .total_rotations
+                .load(std::sync::atomic::Ordering::Relaxed),
         };
 
         tracing::info!(
@@ -240,7 +273,8 @@ impl CookieRotator {
 
     /// Total number of cookie rotations since startup.
     pub fn total_rotations(&self) -> u64 {
-        self.total_rotations.load(std::sync::atomic::Ordering::Relaxed)
+        self.total_rotations
+            .load(std::sync::atomic::Ordering::Relaxed)
     }
 
     /// Number of active tab jars.
@@ -329,7 +363,10 @@ mod tests {
         jar.pin("ads.com", "pinned_cookie");
         let rotated = jar.rotate_all(&entropy);
         assert_eq!(rotated, 0);
-        assert_eq!(jar.get("ads.com", "pinned_cookie").unwrap().value, "keep-me");
+        assert_eq!(
+            jar.get("ads.com", "pinned_cookie").unwrap().value,
+            "keep-me"
+        );
     }
 
     #[test]

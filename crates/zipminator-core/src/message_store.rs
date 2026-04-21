@@ -6,9 +6,9 @@
 //!
 //! Also provides offline queue and group message fanout for Pillar 2 completeness.
 
+use crate::ratchet::RatchetError;
 use std::collections::HashMap;
 use std::sync::atomic::{AtomicU64, Ordering};
-use crate::ratchet::RatchetError;
 
 /// A stored encrypted message.
 #[derive(Debug, Clone)]
@@ -27,12 +27,16 @@ pub struct EncryptedMessage {
 pub trait MessageStore {
     fn store_message(&mut self, msg: EncryptedMessage) -> Result<String, RatchetError>;
     fn get_message(&self, message_id: &str) -> Result<Option<EncryptedMessage>, RatchetError>;
-    fn get_conversation(&self, conversation_id: &str) -> Result<Vec<EncryptedMessage>, RatchetError>;
+    fn get_conversation(
+        &self,
+        conversation_id: &str,
+    ) -> Result<Vec<EncryptedMessage>, RatchetError>;
     fn delete_message(&mut self, message_id: &str) -> Result<bool, RatchetError>;
     fn delete_conversation(&mut self, conversation_id: &str) -> Result<usize, RatchetError>;
 
     /// Queue a message for offline delivery to `recipient`.
-    fn queue_offline(&mut self, msg: EncryptedMessage, recipient: &str) -> Result<(), RatchetError>;
+    fn queue_offline(&mut self, msg: EncryptedMessage, recipient: &str)
+        -> Result<(), RatchetError>;
 
     /// Drain all queued messages for `recipient`, returning them in insertion order.
     /// The queue for that recipient is emptied after this call.
@@ -61,7 +65,9 @@ pub struct InMemoryMessageStore {
 }
 
 impl InMemoryMessageStore {
-    pub fn new() -> Self { Self::default() }
+    pub fn new() -> Self {
+        Self::default()
+    }
 }
 
 impl MessageStore for InMemoryMessageStore {
@@ -73,10 +79,16 @@ impl MessageStore for InMemoryMessageStore {
     fn get_message(&self, message_id: &str) -> Result<Option<EncryptedMessage>, RatchetError> {
         Ok(self.messages.get(message_id).cloned())
     }
-    fn get_conversation(&self, conversation_id: &str) -> Result<Vec<EncryptedMessage>, RatchetError> {
-        let mut msgs: Vec<_> = self.messages.values()
+    fn get_conversation(
+        &self,
+        conversation_id: &str,
+    ) -> Result<Vec<EncryptedMessage>, RatchetError> {
+        let mut msgs: Vec<_> = self
+            .messages
+            .values()
             .filter(|m| m.conversation_id == conversation_id)
-            .cloned().collect();
+            .cloned()
+            .collect();
         msgs.sort_by_key(|m| m.sequence);
         Ok(msgs)
     }
@@ -84,15 +96,24 @@ impl MessageStore for InMemoryMessageStore {
         Ok(self.messages.remove(message_id).is_some())
     }
     fn delete_conversation(&mut self, conversation_id: &str) -> Result<usize, RatchetError> {
-        let ids: Vec<String> = self.messages.values()
+        let ids: Vec<String> = self
+            .messages
+            .values()
             .filter(|m| m.conversation_id == conversation_id)
-            .map(|m| m.id.clone()).collect();
+            .map(|m| m.id.clone())
+            .collect();
         let count = ids.len();
-        for id in ids { self.messages.remove(&id); }
+        for id in ids {
+            self.messages.remove(&id);
+        }
         Ok(count)
     }
 
-    fn queue_offline(&mut self, msg: EncryptedMessage, recipient: &str) -> Result<(), RatchetError> {
+    fn queue_offline(
+        &mut self,
+        msg: EncryptedMessage,
+        recipient: &str,
+    ) -> Result<(), RatchetError> {
         self.offline_queues
             .entry(recipient.to_string())
             .or_default()
@@ -163,7 +184,11 @@ mod file_store {
             } else {
                 InMemoryMessageStore::new()
             };
-            Ok(Self { path, storage_key, inner })
+            Ok(Self {
+                path,
+                storage_key,
+                inner,
+            })
         }
 
         /// Encrypt and write the store to disk.
@@ -181,7 +206,8 @@ mod file_store {
             let mut nonce_bytes = [0u8; 12];
             getrandom(&mut nonce_bytes)
                 .map_err(|_| RatchetError::CryptoError("nonce generation failed"))?;
-            let ct = cipher.encrypt(Nonce::from_slice(&nonce_bytes), plaintext.as_ref())
+            let ct = cipher
+                .encrypt(Nonce::from_slice(&nonce_bytes), plaintext.as_ref())
                 .map_err(|_| RatchetError::CryptoError("store encryption failed"))?;
             let mut out = Vec::with_capacity(12 + ct.len());
             out.extend_from_slice(&nonce_bytes);
@@ -195,7 +221,8 @@ mod file_store {
             }
             let (nonce_bytes, ct) = data.split_at(12);
             let cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(key));
-            cipher.decrypt(Nonce::from_slice(nonce_bytes), ct)
+            cipher
+                .decrypt(Nonce::from_slice(nonce_bytes), ct)
                 .map_err(|_| RatchetError::CryptoError("store decryption failed"))
         }
     }
@@ -214,18 +241,29 @@ mod file_store {
         }
         fn delete_message(&mut self, id: &str) -> Result<bool, RatchetError> {
             let d = self.inner.delete_message(id)?;
-            if d { self.flush()?; }
+            if d {
+                self.flush()?;
+            }
             Ok(d)
         }
         fn delete_conversation(&mut self, cid: &str) -> Result<usize, RatchetError> {
             let n = self.inner.delete_conversation(cid)?;
-            if n > 0 { self.flush()?; }
+            if n > 0 {
+                self.flush()?;
+            }
             Ok(n)
         }
-        fn queue_offline(&mut self, msg: EncryptedMessage, recipient: &str) -> Result<(), RatchetError> {
+        fn queue_offline(
+            &mut self,
+            msg: EncryptedMessage,
+            recipient: &str,
+        ) -> Result<(), RatchetError> {
             self.inner.queue_offline(msg, recipient)
         }
-        fn drain_offline(&mut self, recipient: &str) -> Result<Vec<EncryptedMessage>, RatchetError> {
+        fn drain_offline(
+            &mut self,
+            recipient: &str,
+        ) -> Result<Vec<EncryptedMessage>, RatchetError> {
             self.inner.drain_offline(recipient)
         }
         fn fanout_group(
@@ -250,9 +288,13 @@ mod tests {
 
     fn msg(id: &str, conv: &str, seq: u32) -> EncryptedMessage {
         EncryptedMessage {
-            id: id.into(), conversation_id: conv.into(), sender: "alice".into(),
-            ciphertext: vec![0xAA; 48], nonce: vec![0xBB; 12],
-            timestamp: 1710000000 + seq as u64, sequence: seq,
+            id: id.into(),
+            conversation_id: conv.into(),
+            sender: "alice".into(),
+            ciphertext: vec![0xAA; 48],
+            nonce: vec![0xBB; 12],
+            timestamp: 1710000000 + seq as u64,
+            sequence: seq,
         }
     }
 
@@ -316,7 +358,8 @@ mod tests {
     fn offline_queue_basic() {
         let mut s = InMemoryMessageStore::new();
         for i in 0..3 {
-            s.queue_offline(msg(&format!("q{i}"), "c", i), "recipient-1").unwrap();
+            s.queue_offline(msg(&format!("q{i}"), "c", i), "recipient-1")
+                .unwrap();
         }
         let pending = s.drain_offline("recipient-1").unwrap();
         assert_eq!(pending.len(), 3);
@@ -365,7 +408,9 @@ mod tests {
     fn group_fanout_generates_unique_ids() {
         let mut s = InMemoryMessageStore::new();
         let template = msg("tpl", "g", 0);
-        let ids = s.fanout_group("g", &["a", "b", "c", "d"], &template).unwrap();
+        let ids = s
+            .fanout_group("g", &["a", "b", "c", "d"], &template)
+            .unwrap();
         // All ids must be distinct.
         let unique: std::collections::HashSet<&String> = ids.iter().collect();
         assert_eq!(unique.len(), 4);
@@ -386,9 +431,13 @@ mod file_tests {
 
     fn msg(id: &str, conv: &str, seq: u32) -> EncryptedMessage {
         EncryptedMessage {
-            id: id.into(), conversation_id: conv.into(), sender: "bob".into(),
-            ciphertext: vec![0xCC; 32], nonce: vec![0xDD; 12],
-            timestamp: 1710000000 + seq as u64, sequence: seq,
+            id: id.into(),
+            conversation_id: conv.into(),
+            sender: "bob".into(),
+            ciphertext: vec![0xCC; 32],
+            nonce: vec![0xDD; 12],
+            timestamp: 1710000000 + seq as u64,
+            sequence: seq,
         }
     }
 

@@ -22,12 +22,14 @@ void main() {
   group('Vault Screen', () {
     testWidgets('shows vault header and file encryption info', (tester) async {
       await pumpApp(tester);
+      await tapNavTab(tester, 'Vault');
       expect(find.text('ML-KEM-768 File Encryption'), findsOneWidget);
       expect(find.text('FIPS 203'), findsOneWidget);
     });
 
     testWidgets('has key management section', (tester) async {
       await pumpApp(tester);
+      await tapNavTab(tester, 'Vault');
       expect(find.text('Key Management'), findsOneWidget);
     });
   });
@@ -37,9 +39,7 @@ void main() {
     testWidgets('shows PQC Messenger with conversation list',
         (tester) async {
       await pumpApp(tester);
-      await tester.tap(find.text('Messenger'));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tapNavTab(tester, 'Messenger');
 
       expect(find.text('PQC Messenger'), findsOneWidget);
       // Should show conversation list with demo contacts
@@ -50,9 +50,7 @@ void main() {
   group('VoIP Screen', () {
     testWidgets('shows PQ-SRTP info and Start Call button', (tester) async {
       await pumpApp(tester);
-      await tester.tap(find.text('VoIP'));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tapNavTab(tester, 'VoIP');
 
       expect(find.text('Quantum VoIP'), findsOneWidget);
       expect(find.text('PQ-SRTP'), findsWidgets);
@@ -60,9 +58,7 @@ void main() {
 
     testWidgets('shows protocol info cards when not in call', (tester) async {
       await pumpApp(tester);
-      await tester.tap(find.text('VoIP'));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tapNavTab(tester, 'VoIP');
 
       expect(find.text('HKDF-SHA-256'), findsOneWidget);
       expect(find.text('AES-128-CM'), findsOneWidget);
@@ -73,9 +69,7 @@ void main() {
   group('VPN Screen', () {
     testWidgets('shows disconnect state and connect button', (tester) async {
       await pumpApp(tester);
-      await tester.tap(find.text('VPN'));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tapNavTab(tester, 'VPN');
 
       expect(find.text('Q-VPN'), findsOneWidget);
       expect(find.text('Disconnected'), findsOneWidget);
@@ -86,9 +80,7 @@ void main() {
 
     testWidgets('has kill switch toggle', (tester) async {
       await pumpApp(tester);
-      await tester.tap(find.text('VPN'));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tapNavTab(tester, 'VPN');
 
       expect(find.text('Kill Switch'), findsOneWidget);
       expect(find.text('Block traffic if VPN disconnects'), findsOneWidget);

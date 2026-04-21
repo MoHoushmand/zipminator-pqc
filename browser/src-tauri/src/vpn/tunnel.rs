@@ -108,7 +108,11 @@ impl TunDevice {
     pub fn read_packet(&self, buf: &mut [u8]) -> Result<usize, TunnelError> {
         use std::os::unix::io::AsRawFd;
         let n = unsafe {
-            libc::read(self.fd.as_raw_fd(), buf.as_mut_ptr() as *mut libc::c_void, buf.len())
+            libc::read(
+                self.fd.as_raw_fd(),
+                buf.as_mut_ptr() as *mut libc::c_void,
+                buf.len(),
+            )
         };
         if n < 0 {
             return Err(TunnelError::Io(std::io::Error::last_os_error()));
@@ -121,7 +125,11 @@ impl TunDevice {
     pub fn write_packet(&self, buf: &[u8]) -> Result<usize, TunnelError> {
         use std::os::unix::io::AsRawFd;
         let n = unsafe {
-            libc::write(self.fd.as_raw_fd(), buf.as_ptr() as *const libc::c_void, buf.len())
+            libc::write(
+                self.fd.as_raw_fd(),
+                buf.as_ptr() as *const libc::c_void,
+                buf.len(),
+            )
         };
         if n < 0 {
             return Err(TunnelError::Io(std::io::Error::last_os_error()));
@@ -193,7 +201,7 @@ impl Tunnel {
         let tunnel = Self {
             tun,
             udp,
-            peer: Mutex::new(*peer),  // unbox into the Mutex
+            peer: Mutex::new(*peer), // unbox into the Mutex
             config,
             metrics,
         };
@@ -254,11 +262,17 @@ impl Tunnel {
                     let outcome = peer.decapsulate(None, &recv_buf[..n], &mut send_buf);
                     match outcome {
                         TunnResult::WriteToTunnelV4(pkt, _addr) => {
-                            debug!(len = pkt.len(), "WireGuard: handshake response received (IPv4)");
+                            debug!(
+                                len = pkt.len(),
+                                "WireGuard: handshake response received (IPv4)"
+                            );
                             return Ok::<(), TunnelError>(());
                         }
                         TunnResult::WriteToTunnelV6(pkt, _addr) => {
-                            debug!(len = pkt.len(), "WireGuard: handshake response received (IPv6)");
+                            debug!(
+                                len = pkt.len(),
+                                "WireGuard: handshake response received (IPv6)"
+                            );
                             return Ok::<(), TunnelError>(());
                         }
                         TunnResult::WriteToNetwork(pkt) => Some(pkt.to_vec()),
@@ -318,7 +332,12 @@ impl Tunnel {
         self.metrics.add_bytes_received(n as u64);
 
         // Decapsulate inside the lock; copy result bytes before releasing.
-        enum DecapResult { Tunnel(Vec<u8>), Network(Vec<u8>), Done, Err(String) }
+        enum DecapResult {
+            Tunnel(Vec<u8>),
+            Network(Vec<u8>),
+            Done,
+            Err(String),
+        }
 
         let result = {
             let mut peer = self.peer.lock().await;
@@ -398,31 +417,28 @@ fn configure_interface(iface: &str, ip: &str, mtu: u32) -> Result<(), TunnelErro
 #[cfg(target_os = "macos")]
 fn configure_interface_macos(iface: &str, ip: &str, mtu: u32) -> Result<(), TunnelError> {
     // Assign IP address to the utun interface.
-    run_cmd("ifconfig", &[iface, ip, ip]).map_err(|e| {
-        TunnelError::IfaceConfig(format!("ifconfig assign: {}", e))
-    })?;
+    run_cmd("ifconfig", &[iface, ip, ip])
+        .map_err(|e| TunnelError::IfaceConfig(format!("ifconfig assign: {}", e)))?;
     // Set MTU.
-    run_cmd("ifconfig", &[iface, "mtu", &mtu.to_string()]).map_err(|e| {
-        TunnelError::IfaceConfig(format!("ifconfig mtu: {}", e))
-    })?;
+    run_cmd("ifconfig", &[iface, "mtu", &mtu.to_string()])
+        .map_err(|e| TunnelError::IfaceConfig(format!("ifconfig mtu: {}", e)))?;
     // Bring the interface up.
-    run_cmd("ifconfig", &[iface, "up"]).map_err(|e| {
-        TunnelError::IfaceConfig(format!("ifconfig up: {}", e))
-    })?;
+    run_cmd("ifconfig", &[iface, "up"])
+        .map_err(|e| TunnelError::IfaceConfig(format!("ifconfig up: {}", e)))?;
     Ok(())
 }
 
 #[cfg(target_os = "linux")]
 fn configure_interface_linux(iface: &str, ip: &str, mtu: u32) -> Result<(), TunnelError> {
-    run_cmd("ip", &["addr", "add", ip, "dev", iface]).map_err(|e| {
-        TunnelError::IfaceConfig(format!("ip addr add: {}", e))
-    })?;
-    run_cmd("ip", &["link", "set", "dev", iface, "mtu", &mtu.to_string()]).map_err(|e| {
-        TunnelError::IfaceConfig(format!("ip link mtu: {}", e))
-    })?;
-    run_cmd("ip", &["link", "set", "dev", iface, "up"]).map_err(|e| {
-        TunnelError::IfaceConfig(format!("ip link up: {}", e))
-    })?;
+    run_cmd("ip", &["addr", "add", ip, "dev", iface])
+        .map_err(|e| TunnelError::IfaceConfig(format!("ip addr add: {}", e)))?;
+    run_cmd(
+        "ip",
+        &["link", "set", "dev", iface, "mtu", &mtu.to_string()],
+    )
+    .map_err(|e| TunnelError::IfaceConfig(format!("ip link mtu: {}", e)))?;
+    run_cmd("ip", &["link", "set", "dev", iface, "up"])
+        .map_err(|e| TunnelError::IfaceConfig(format!("ip link up: {}", e)))?;
     Ok(())
 }
 
@@ -462,9 +478,8 @@ fn remove_default_routes(iface: &str) -> Result<(), TunnelError> {
 #[cfg(target_os = "macos")]
 fn install_routes_macos(iface: &str) -> Result<(), TunnelError> {
     for net in &["0.0.0.0/1", "128.0.0.0/1", "::/1", "8000::/1"] {
-        run_cmd("route", &["add", "-net", net, "-interface", iface]).map_err(|e| {
-            TunnelError::RoutingError(format!("route add {}: {}", net, e))
-        })?;
+        run_cmd("route", &["add", "-net", net, "-interface", iface])
+            .map_err(|e| TunnelError::RoutingError(format!("route add {}: {}", net, e)))?;
     }
     Ok(())
 }
@@ -480,9 +495,8 @@ fn remove_routes_macos(iface: &str) -> Result<(), TunnelError> {
 #[cfg(target_os = "linux")]
 fn install_routes_linux(iface: &str) -> Result<(), TunnelError> {
     for net in &["0.0.0.0/1", "128.0.0.0/1", "::/1", "8000::/1"] {
-        run_cmd("ip", &["route", "add", net, "dev", iface]).map_err(|e| {
-            TunnelError::RoutingError(format!("ip route add {}: {}", net, e))
-        })?;
+        run_cmd("ip", &["route", "add", net, "dev", iface])
+            .map_err(|e| TunnelError::RoutingError(format!("ip route add {}: {}", net, e)))?;
     }
     Ok(())
 }
@@ -512,9 +526,7 @@ fn create_utun() -> Result<TunDevice, TunnelError> {
 #[cfg(target_os = "macos")]
 fn open_utun_socket() -> Result<std::os::unix::io::OwnedFd, std::io::Error> {
     use libc::{
-        AF_SYSTEM, SOCK_DGRAM, SYSPROTO_CONTROL,
-        sockaddr_ctl, ctl_info, CTLIOCGINFO,
-        connect,
+        connect, ctl_info, sockaddr_ctl, AF_SYSTEM, CTLIOCGINFO, SOCK_DGRAM, SYSPROTO_CONTROL,
     };
     use std::os::unix::io::{FromRawFd, OwnedFd};
 
@@ -545,7 +557,12 @@ fn open_utun_socket() -> Result<std::os::unix::io::OwnedFd, std::io::Error> {
         addr.sc_id = info.ctl_id;
         addr.sc_unit = 0; // 0 = auto-assign next available utunN
 
-        if connect(fd, &addr as *const _ as *const libc::sockaddr, std::mem::size_of::<sockaddr_ctl>() as u32) < 0 {
+        if connect(
+            fd,
+            &addr as *const _ as *const libc::sockaddr,
+            std::mem::size_of::<sockaddr_ctl>() as u32,
+        ) < 0
+        {
             libc::close(fd);
             return Err(std::io::Error::last_os_error());
         }
@@ -664,7 +681,11 @@ mod tests {
         };
         // boringtun should accept any 32-byte key pair.
         let result = build_boringtun_peer(&config);
-        assert!(result.is_ok(), "boringtun peer creation should succeed: {:?}", result.err());
+        assert!(
+            result.is_ok(),
+            "boringtun peer creation should succeed: {:?}",
+            result.err()
+        );
     }
 
     #[test]
@@ -716,13 +737,9 @@ mod tests {
         let server_secret = x25519::StaticSecret::from([0x02u8; 32]);
         let server_public = x25519::PublicKey::from(&server_secret);
 
-        let mut client = Tunn::new(
-            client_secret, server_public, None, None, 0, None,
-        );
+        let mut client = Tunn::new(client_secret, server_public, None, None, 0, None);
 
-        let mut server = Tunn::new(
-            server_secret, client_public, None, None, 1, None,
-        );
+        let mut server = Tunn::new(server_secret, client_public, None, None, 1, None);
 
         // Complete the WireGuard handshake between client and server.
         let mut buf1 = vec![0u8; 2048];
@@ -731,14 +748,20 @@ mod tests {
         // Client -> Server: handshake initiation (Type 1, 0x01).
         let init_pkt = match client.format_handshake_initiation(&mut buf1, false) {
             TunnResult::WriteToNetwork(pkt) => pkt.to_vec(),
-            other => panic!("expected WriteToNetwork for initiation, got {:?}", std::mem::discriminant(&other)),
+            other => panic!(
+                "expected WriteToNetwork for initiation, got {:?}",
+                std::mem::discriminant(&other)
+            ),
         };
         assert_eq!(init_pkt[0], 0x01, "handshake initiation must be Type 1");
 
         // Server processes initiation -> responds with Type 2.
         let response_pkt = match server.decapsulate(None, &init_pkt, &mut buf2) {
             TunnResult::WriteToNetwork(pkt) => pkt.to_vec(),
-            other => panic!("expected WriteToNetwork for response, got {:?}", std::mem::discriminant(&other)),
+            other => panic!(
+                "expected WriteToNetwork for response, got {:?}",
+                std::mem::discriminant(&other)
+            ),
         };
         assert_eq!(response_pkt[0], 0x02, "handshake response must be Type 2");
 
@@ -746,7 +769,10 @@ mod tests {
         match client.decapsulate(None, &response_pkt, &mut buf1) {
             TunnResult::Done => {}
             TunnResult::WriteToNetwork(_) => {} // keepalive is fine
-            other => panic!("expected Done after handshake response, got {:?}", std::mem::discriminant(&other)),
+            other => panic!(
+                "expected Done after handshake response, got {:?}",
+                std::mem::discriminant(&other)
+            ),
         }
 
         // Now encapsulate a sample IP packet.
@@ -757,11 +783,17 @@ mod tests {
         let mut transport_buf = vec![0u8; 2048];
         let transport_pkt = match client.encapsulate(&sample_ip_packet, &mut transport_buf) {
             TunnResult::WriteToNetwork(pkt) => pkt.to_vec(),
-            other => panic!("expected WriteToNetwork for transport, got {:?}", std::mem::discriminant(&other)),
+            other => panic!(
+                "expected WriteToNetwork for transport, got {:?}",
+                std::mem::discriminant(&other)
+            ),
         };
 
         // Verify WireGuard Type 4 transport format.
-        assert!(transport_pkt.len() >= 12, "transport packet must be at least 12 bytes (header)");
+        assert!(
+            transport_pkt.len() >= 12,
+            "transport packet must be at least 12 bytes (header)"
+        );
         assert_eq!(transport_pkt[0], 0x04, "transport packet type must be 0x04");
         // Reserved bytes must be zero.
         assert_eq!(transport_pkt[1], 0x00, "reserved byte 1 must be 0x00");
@@ -772,7 +804,11 @@ mod tests {
         // boringtun starts the transport counter at 1 (counter 0 is not used
         // for transport data in some implementations).
         let counter = u64::from_le_bytes(transport_pkt[8..16].try_into().unwrap());
-        assert!(counter <= 1, "first transport packet counter should be 0 or 1, got {}", counter);
+        assert!(
+            counter <= 1,
+            "first transport packet counter should be 0 or 1, got {}",
+            counter
+        );
         // Encrypted payload follows at offset 16: plaintext (24) + Poly1305 tag (16) = 40.
         let encrypted_payload_len = transport_pkt.len() - 16;
         assert_eq!(

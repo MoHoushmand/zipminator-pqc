@@ -60,9 +60,11 @@ struct ChatCompletionRequest<'a> {
 }
 
 /// Non-streaming completion choice.
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct Choice {
     message: OaiMessage,
+    #[allow(dead_code)]
     finish_reason: Option<String>,
 }
 
@@ -88,9 +90,11 @@ struct StreamDelta {
 }
 
 /// Streaming choice inside an SSE chunk.
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct StreamChoice {
     delta: StreamDelta,
+    #[allow(dead_code)]
     finish_reason: Option<String>,
 }
 
@@ -178,8 +182,7 @@ impl RateLimiter {
     fn try_acquire(&mut self) -> bool {
         let now = Instant::now();
         let elapsed_ms = now.duration_since(self.last_refill).as_millis() as f64;
-        self.available = (self.available + elapsed_ms * self.refill_rate)
-            .min(self.capacity as f64);
+        self.available = (self.available + elapsed_ms * self.refill_rate).min(self.capacity as f64);
         self.last_refill = now;
 
         if self.available >= 1.0 {
@@ -223,8 +226,8 @@ impl CloudLlmClient {
             return Err(CloudLlmError::NoApiKey);
         }
 
-        let mut builder = reqwest::Client::builder()
-            .timeout(Duration::from_secs(config.timeout_secs));
+        let mut builder =
+            reqwest::Client::builder().timeout(Duration::from_secs(config.timeout_secs));
 
         // Route through the local PQC proxy.
         if let Some(port) = config.proxy_port {
@@ -275,8 +278,8 @@ impl CloudLlmClient {
             content: user_message.to_string(),
         });
 
-        if token_tx.is_some() {
-            self.stream_completion(messages, token_tx.unwrap()).await
+        if let Some(tx) = token_tx {
+            self.stream_completion(messages, tx).await
         } else {
             self.non_streaming_completion(messages).await
         }
@@ -296,7 +299,10 @@ impl CloudLlmClient {
     }
 
     fn completions_url(&self) -> String {
-        format!("{}/chat/completions", self.config.endpoint.trim_end_matches('/'))
+        format!(
+            "{}/chat/completions",
+            self.config.endpoint.trim_end_matches('/')
+        )
     }
 
     async fn non_streaming_completion(
@@ -470,9 +476,7 @@ impl CloudLlmClient {
 
 /// Append a PQC protection notice to any system prompt when running in cloud mode.
 pub fn cloud_system_prompt(base: &str) -> String {
-    format!(
-        "{base}\n\nNote: This conversation is protected by ML-KEM-768 post-quantum encryption."
-    )
+    format!("{base}\n\nNote: This conversation is protected by ML-KEM-768 post-quantum encryption.")
 }
 
 #[cfg(test)]

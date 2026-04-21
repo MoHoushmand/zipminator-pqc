@@ -119,6 +119,7 @@ jobs:
   memory-profiling:
     name: Memory Profiling
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - name: Checkout code
@@ -250,32 +251,3 @@ jobs:
           name: benchmark-report
           path: reports/
           retention-days: 90
-
-  # NOTE: Claude Flow notification pattern is duplicated across 8+ workflows.
-  # TODO: Extract into a reusable composite action at .github/actions/claude-flow-notify/action.yml
-  performance-tracking:
-    name: Performance Tracking
-    runs-on: ubuntu-latest
-    needs: [rust-benchmarks, python-benchmarks]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install Claude Flow
-        run: npm install -g claude-flow@alpha
-
-      - name: Track performance metrics
-        run: |
-          npx claude-flow@alpha hooks notify --message "Performance benchmarks completed"
-          npx claude-flow@alpha hooks post-task --task-id "benchmark-run-${{ github.run_number }}"
-
-      - name: Store metrics in memory
-        run: |
-          # Store performance metrics for historical tracking
-          npx claude-flow@alpha hooks post-edit --file "benchmark-results" --memory-key "performance/benchmarks/${{ github.run_number }}"

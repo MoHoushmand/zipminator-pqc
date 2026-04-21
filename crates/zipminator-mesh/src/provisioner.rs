@@ -203,10 +203,7 @@ impl MeshProvisioner {
     ///
     /// The `mesh_id` parameter is the network identifier used as HKDF salt
     /// for domain separation. It must be non-empty and at most 65535 bytes.
-    pub fn provision_nvs_binary(
-        &mut self,
-        mesh_id: &str,
-    ) -> Result<Vec<u8>, EntropyBridgeError> {
+    pub fn provision_nvs_binary(&mut self, mesh_id: &str) -> Result<Vec<u8>, EntropyBridgeError> {
         if mesh_id.is_empty() {
             return Err(EntropyBridgeError::PoolNotAccessible(
                 "mesh_id must not be empty".into(),
@@ -352,9 +349,7 @@ impl MeshProvisioner {
     ///
     /// Returns the mesh_id, PSK bytes, SipHash bytes, optional PUEK data, and optional canary data.
     /// Validates the SHA-256 checksum.
-    pub fn parse_nvs_v2_binary(
-        blob: &[u8],
-    ) -> Result<ParsedNvsV2, EntropyBridgeError> {
+    pub fn parse_nvs_v2_binary(blob: &[u8]) -> Result<ParsedNvsV2, EntropyBridgeError> {
         if blob.len() < NVS_MAGIC_V2.len() + 2 + NVS_CHECKSUM_SIZE {
             return Err(EntropyBridgeError::PoolNotAccessible(
                 "blob too short for V2 format".into(),
@@ -381,20 +376,27 @@ impl MeshProvisioner {
 
         // Mesh ID
         if pos + 2 > payload.len() {
-            return Err(EntropyBridgeError::PoolNotAccessible("truncated mesh_id length".into()));
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "truncated mesh_id length".into(),
+            ));
         }
         let id_len = u16::from_le_bytes([payload[pos], payload[pos + 1]]) as usize;
         pos += 2;
         if pos + id_len > payload.len() {
-            return Err(EntropyBridgeError::PoolNotAccessible("truncated mesh_id".into()));
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "truncated mesh_id".into(),
+            ));
         }
-        let mesh_id = String::from_utf8(payload[pos..pos + id_len].to_vec())
-            .map_err(|e| EntropyBridgeError::PoolNotAccessible(format!("invalid mesh_id UTF-8: {e}")))?;
+        let mesh_id = String::from_utf8(payload[pos..pos + id_len].to_vec()).map_err(|e| {
+            EntropyBridgeError::PoolNotAccessible(format!("invalid mesh_id UTF-8: {e}"))
+        })?;
         pos += id_len;
 
         // PSK (16 bytes)
         if pos + 16 > payload.len() {
-            return Err(EntropyBridgeError::PoolNotAccessible("truncated PSK".into()));
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "truncated PSK".into(),
+            ));
         }
         let mut psk = [0u8; 16];
         psk.copy_from_slice(&payload[pos..pos + 16]);
@@ -402,7 +404,9 @@ impl MeshProvisioner {
 
         // SipHash key (16 bytes)
         if pos + 16 > payload.len() {
-            return Err(EntropyBridgeError::PoolNotAccessible("truncated SipHash key".into()));
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "truncated SipHash key".into(),
+            ));
         }
         let mut sip = [0u8; 16];
         sip.copy_from_slice(&payload[pos..pos + 16]);
@@ -410,19 +414,25 @@ impl MeshProvisioner {
 
         // PUEK section
         if pos + 1 > payload.len() {
-            return Err(EntropyBridgeError::PoolNotAccessible("truncated has_puek".into()));
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "truncated has_puek".into(),
+            ));
         }
         let has_puek = payload[pos];
         pos += 1;
         let puek_data = if has_puek == 1 {
             if pos + 2 > payload.len() {
-                return Err(EntropyBridgeError::PoolNotAccessible("truncated puek eigenmode count".into()));
+                return Err(EntropyBridgeError::PoolNotAccessible(
+                    "truncated puek eigenmode count".into(),
+                ));
             }
             let eigenmode_count = u16::from_le_bytes([payload[pos], payload[pos + 1]]) as usize;
             pos += 2;
             let eigenmodes_bytes = eigenmode_count * 8;
             if pos + eigenmodes_bytes + 8 > payload.len() {
-                return Err(EntropyBridgeError::PoolNotAccessible("truncated puek data".into()));
+                return Err(EntropyBridgeError::PoolNotAccessible(
+                    "truncated puek data".into(),
+                ));
             }
             let mut eigenmodes = Vec::with_capacity(eigenmode_count);
             for _ in 0..eigenmode_count {
@@ -439,14 +449,18 @@ impl MeshProvisioner {
 
         // Canary section
         if pos + 1 > payload.len() {
-            return Err(EntropyBridgeError::PoolNotAccessible("truncated has_canary".into()));
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "truncated has_canary".into(),
+            ));
         }
         let has_canary = payload[pos];
         pos += 1;
         let canary_data = if has_canary == 1 {
             // 3 * f64 (24) + u32 (4) + flags (1) = 29 bytes
             if pos + 29 > payload.len() {
-                return Err(EntropyBridgeError::PoolNotAccessible("truncated canary data".into()));
+                return Err(EntropyBridgeError::PoolNotAccessible(
+                    "truncated canary data".into(),
+                ));
             }
             let elevated = f64::from_le_bytes(payload[pos..pos + 8].try_into().unwrap());
             pos += 8;
@@ -583,7 +597,11 @@ mod tests {
         let (_dir, pool_path) = create_test_pool(1024);
         let mut prov = MeshProvisioner::new(&pool_path, "nvs-net").unwrap();
         let blob = prov.provision_nvs_binary("nvs-net").unwrap();
-        assert_eq!(&blob[..6], b"ZMESH\x01", "binary must start with magic bytes");
+        assert_eq!(
+            &blob[..6],
+            b"ZMESH\x01",
+            "binary must start with magic bytes"
+        );
     }
 
     #[test]
@@ -614,7 +632,10 @@ mod tests {
         let sip_end = sip_start + 16;
         let sip = &blob[sip_start..sip_end];
         assert_eq!(sip.len(), 16);
-        assert!(sip.iter().any(|&b| b != 0), "SipHash key must not be all zeros");
+        assert!(
+            sip.iter().any(|&b| b != 0),
+            "SipHash key must not be all zeros"
+        );
 
         // PSK and SipHash key must differ
         assert_ne!(psk, sip, "PSK and SipHash key must differ");
@@ -652,7 +673,10 @@ mod tests {
         let blob2 = prov2.provision_nvs_binary("net-beta").unwrap();
 
         // Different lengths (different mesh_id strings) or different key material
-        assert_ne!(blob1, blob2, "different mesh_ids must produce different binaries");
+        assert_ne!(
+            blob1, blob2,
+            "different mesh_ids must produce different binaries"
+        );
 
         // Also verify different key material specifically: extract PSK from each
         let psk_offset_1 = 8 + "net-alpha".len();
@@ -710,8 +734,14 @@ mod tests {
         let parsed = MeshProvisioner::parse_nvs_v2_binary(&blob).unwrap();
 
         assert_eq!(parsed.mesh_id, "v2-puek");
-        assert!(parsed.psk.iter().any(|&b| b != 0), "PSK must not be all zeros");
-        assert!(parsed.siphash.iter().any(|&b| b != 0), "SipHash must not be all zeros");
+        assert!(
+            parsed.psk.iter().any(|&b| b != 0),
+            "PSK must not be all zeros"
+        );
+        assert!(
+            parsed.siphash.iter().any(|&b| b != 0),
+            "SipHash must not be all zeros"
+        );
         assert_ne!(parsed.psk, parsed.siphash);
 
         let p = parsed.puek.expect("PUEK data should be present");
@@ -767,9 +797,7 @@ mod tests {
     fn test_nvs_v2_binary_with_neither() {
         let (_dir, pool_path) = create_test_pool(1024);
         let mut prov = MeshProvisioner::new(&pool_path, "v2-none").unwrap();
-        let blob = prov
-            .provision_nvs_v2_binary("v2-none", None, None)
-            .unwrap();
+        let blob = prov.provision_nvs_v2_binary("v2-none", None, None).unwrap();
 
         let parsed = MeshProvisioner::parse_nvs_v2_binary(&blob).unwrap();
 
@@ -788,7 +816,11 @@ mod tests {
             .provision_nvs_v2_binary("v2-magic", None, None)
             .unwrap();
 
-        assert_eq!(&blob[..6], b"ZMESH\x02", "V2 binary must start with ZMESH\\x02");
+        assert_eq!(
+            &blob[..6],
+            b"ZMESH\x02",
+            "V2 binary must start with ZMESH\\x02"
+        );
         // Confirm it differs from V1 magic
         assert_ne!(&blob[..6], b"ZMESH\x01");
     }
@@ -816,7 +848,10 @@ mod tests {
         let mut corrupted = blob.clone();
         corrupted[10] ^= 0xFF;
         let result = MeshProvisioner::parse_nvs_v2_binary(&corrupted);
-        assert!(result.is_err(), "corrupted blob must fail checksum validation");
+        assert!(
+            result.is_err(),
+            "corrupted blob must fail checksum validation"
+        );
     }
 
     #[test]
@@ -861,7 +896,10 @@ mod tests {
         let psk_v1 = &blob_v1[8 + id_len..8 + id_len + 16];
         let sip_v1 = &blob_v1[8 + id_len + 16..8 + id_len + 32];
         assert_eq!(&parsed.psk, psk_v1, "V2 PSK must match V1 derivation");
-        assert_eq!(&parsed.siphash, sip_v1, "V2 SipHash must match V1 derivation");
+        assert_eq!(
+            &parsed.siphash, sip_v1,
+            "V2 SipHash must match V1 derivation"
+        );
     }
 
     #[test]

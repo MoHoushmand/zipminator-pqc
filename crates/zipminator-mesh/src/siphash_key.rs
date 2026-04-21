@@ -95,7 +95,10 @@ mod tests {
         }
         let key = SipHashKey::from_bytes(&raw).unwrap();
         assert_eq!(key.k0(), u64::from_le_bytes([1, 2, 3, 4, 5, 6, 7, 8]));
-        assert_eq!(key.k1(), u64::from_le_bytes([9, 10, 11, 12, 13, 14, 15, 16]));
+        assert_eq!(
+            key.k1(),
+            u64::from_le_bytes([9, 10, 11, 12, 13, 14, 15, 16])
+        );
     }
 
     #[test]

@@ -237,7 +237,11 @@ mod tests {
     #[test]
     fn pqc_client_config_builds() {
         let config = build_pqc_client_config();
-        assert!(config.is_ok(), "PQC client config should build: {:?}", config.err());
+        assert!(
+            config.is_ok(),
+            "PQC client config should build: {:?}",
+            config.err()
+        );
     }
 
     #[test]

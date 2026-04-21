@@ -113,10 +113,8 @@ impl PrivacyEngine {
 
         let session = Arc::new(SessionManager::new(Arc::clone(&entropy)));
 
-        let fingerprint_guard = FingerprintGuard::new(
-            Arc::clone(&entropy),
-            config.fingerprint_config.clone(),
-        );
+        let fingerprint_guard =
+            FingerprintGuard::new(Arc::clone(&entropy), config.fingerprint_config.clone());
         let fingerprint = Arc::new(std::sync::Mutex::new(fingerprint_guard));
 
         let cookies = Arc::new(CookieRotator::new(

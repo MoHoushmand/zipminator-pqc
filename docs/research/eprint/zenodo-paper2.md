@@ -31,9 +31,9 @@ WiFi CSI; entropy source; NIST SP 800-90B; unilateral randomness; Physical Unclo
 **Access right:** Open Access
 
 **Related identifiers:**
-- `https://github.com/MoHoushmand/zipminator-pqc` — Software, `isSupplementedBy`
-- `https://github.com/seemoo-lab/nexmon_csi` — Software, `references` (tooling used)
-- `https://orcid.org/0009-0008-2270-5454` — Other, `isIdentifiedBy`
+- `https://github.com/MoHoushmand/zipminator-pqc`, Software, `isSupplementedBy`
+- `https://github.com/seemoo-lab/nexmon_csi`, Software, `references` (tooling used)
+- `https://orcid.org/0009-0008-2270-5454`, Other, `isIdentifiedBy`
 
 **Communities (optional):** open-science
 

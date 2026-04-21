@@ -1,7 +1,7 @@
 # Multi-stage Docker build for Zipminator
 
 # Stage 1: Builder
-FROM rust:1.85-alpine3.20 AS builder
+FROM rust:1.90-alpine3.20 AS builder
 
 LABEL maintainer="QDaria <hello@qdaria.com>"
 LABEL description="Quantum-safe cryptography CLI with NIST Kyber768"

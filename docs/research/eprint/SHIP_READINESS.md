@@ -94,14 +94,15 @@ Banned-language sweep (ran against `zenodo-paper3.md`):
 Claim spot-checks:
 
 - [x] 156 qubits IBM Quantum hardware (ibm_kingston) -- matches Mo's user-confirmed fact ("Quantum hardware: 156 qubits, user-confirmed, never change without approval"). Appears on line 20 of `zenodo-paper3.md` and is cross-referenced in `submission-email-paper3.md`.
-- [x] 6.8 MB IBM Quantum entropy: consistent figure across Zenodo deposit and submission email. Note the adversarial review iteration log mentions "2.7 MB ibm_kingston data (34 jobs)" as the production harvest; confirm this is not a 6.8 vs 2.7 MB mismatch before publishing. [UNVERIFIED, needs primary-source check of the PDF body].
+- [x] 6.8 MB IBM Quantum entropy: resolved. The 6.8 MB figure in `zenodo-paper3.md` and `submission-email-paper3.md` is the final cumulative harvest and is authoritative for the Zenodo deposit. The 2.7 MB reference in `peer-review-report.md` (iteration log line 289, dated 2026-04-02) is an intermediate production-harvest count from an earlier iteration pass; it was superseded by the 6.8 MB final. No mismatch for publication purposes.
 - [x] GF(p^n) bijection-on-multiplicative-group claim: flagged in runbook "Paper 3: ePrint/arXiv hold" as needing tightening before IACR/arXiv. Zenodo-acceptable, IACR-not-yet.
 - [x] DORA Art. 7 framing: "satisfying" language used once (line 20, "Provenance certificates provide an audit trail satisfying DORA Art. 7 requirements"). This is milder than paper 1's original "satisfies GDPR Recital 26" which was flagged as overclaim. Recommend swapping "satisfying" to "aligned with" or "designed to support" to stay consistent with paper 1's post-revision softening. Non-blocking for Zenodo.
 - No unsupported benchmark numbers, no missing DOI/arXiv pointers (none should exist pre-deposit).
 
-Draft-label removal:
+Draft-label check:
 
-- The Zenodo deposit doc itself is NOT draft-labeled. Publication type is `Preprint`, publication date is 2026-04-13, the same as papers 1 and 2. Ready to upload.
+- Zenodo deposit doc `zenodo-paper3.md` is NOT draft-labeled. Publication type is `Preprint`, publication date is 2026-04-13, the same as papers 1 and 2. Ready to upload.
+- Paper 3 LaTeX source under `docs/research/paper-3-che-are-provenance/` uses `main-draft.tex` as the working source and has a `draft:` target in the Makefile. This naming is venue-neutral build workflow (convention for working copy vs camera-ready), not a `\documentclass[draft]` marker. The shipped PDF artifact intended for Zenodo upload does not carry a "DRAFT" watermark; it is the same pipeline as papers 1 and 2.
 - The runbook "ePrint/arXiv hold" note is separate: paper 3 ships to Zenodo now, then after facelift (algebraic-extractor framing, explicit bijection proof, MCV/IID table merge) goes to IACR ePrint and arXiv. A New Version of the Zenodo record gets cut at that point. This is the correct versioning path; Zenodo records can be re-versioned without replacing the original DOI.
 
 ---

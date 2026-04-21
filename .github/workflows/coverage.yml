@@ -98,6 +98,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install maturin pytest pytest-cov pytest-benchmark coverage[toml]
+          # Runtime deps needed at test-collection time
+          pip install fastapi httpx uvicorn pandas numpy requests \
+                      websockets python-multipart aiosmtpd pyyaml click \
+                      python-dotenv faker pyzipper cryptography
 
       - name: Build Python package
         run: maturin develop

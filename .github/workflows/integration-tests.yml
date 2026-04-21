@@ -71,6 +71,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install maturin pytest
+          # Runtime deps needed at test-collection time
+          pip install fastapi httpx uvicorn pandas numpy requests \
+                      websockets python-multipart aiosmtpd pyyaml click \
+                      python-dotenv faker pyzipper cryptography
           cargo build --workspace --release
 
       - name: Build Python bindings

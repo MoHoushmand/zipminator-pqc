@@ -153,7 +153,8 @@ impl CookieJar {
     }
 }
 
-/// Global cookie rotator — manages all tab jars and drives rotation.
+/// Global cookie rotator, manages all tab jars and drives rotation.
+#[allow(dead_code)]
 pub struct CookieRotator {
     entropy: Arc<QrngReader>,
     jars: RwLock<HashMap<String, Arc<CookieJar>>>,

@@ -29,6 +29,7 @@ struct GenerateRequest<'a> {
 }
 
 /// Response body from Ollama `/api/generate` (non-streaming).
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct GenerateResponse {
     response: String,
@@ -53,6 +54,7 @@ struct ChatRequest<'a> {
 }
 
 /// Response body from Ollama `/api/chat` (non-streaming).
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct ChatResponse {
     message: OllamaMessage,

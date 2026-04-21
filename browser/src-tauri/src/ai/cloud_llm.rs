@@ -60,6 +60,7 @@ struct ChatCompletionRequest<'a> {
 }
 
 /// Non-streaming completion choice.
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct Choice {
     message: OaiMessage,
@@ -89,6 +90,7 @@ struct StreamDelta {
 }
 
 /// Streaming choice inside an SSE chunk.
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct StreamChoice {
     delta: StreamDelta,

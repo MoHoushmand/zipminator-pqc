@@ -106,6 +106,7 @@
 - **State machine**: Full VPN lifecycle (Disconnected -> Connecting -> Connected -> Reconnecting)
 - **Kill switch**: Network isolation when VPN drops
 - **PQ handshake**: ML-KEM-768 key exchange verified in tests
+- **Verification (2026-04-21)**: VPN: 19 pq-wireguard tests passing (15 unit + 4 template), crypto chain verified, clippy `-D warnings` clean, `pqcrypto-kyber = "=0.8.1"` exact pin confirmed, `thiserror`/`zeroize` present, placeholder gate clean (no unresolved `PLACEHOLDER`/`TODO_FILL` in `infra/wireguard/`), macOS kernel module deferred to Linux CI
 - **Gap**: Packet wrapping has prototype shortcuts; iOS/Android VPN service integration planned
 
 ### File Paths

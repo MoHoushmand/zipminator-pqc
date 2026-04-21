@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "zipminator"
-version = "0.5.1"
+version = "1.0.0"
 description = "Post-quantum cryptography with quantum entropy - CRYSTALS-Kyber-768 implementation"
 readme = "README.md"
 authors = [

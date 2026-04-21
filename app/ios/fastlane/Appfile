@@ -5,6 +5,5 @@ apple_id("mo@qdaria.com")
 # https://appstoreconnect.apple.com -> Users and Access -> Team ID
 itc_team_id("TODO_ITC_TEAM_ID")
 
-# TODO: replace with the Apple Developer Portal team ID from
-# https://developer.apple.com/account -> Membership Details -> Team ID
-team_id("TODO_DEVELOPER_TEAM_ID")
+# Apple Developer Portal team ID (sourced from app/ios/ExportOptions.plist)
+team_id("5EK49H64WB")

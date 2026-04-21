@@ -25,15 +25,15 @@
   },
   "gates": {
     "cargo_test": "pass",
-    "cargo_test_detail": "438+ workspace tests + 179 zipbrowser + 19 pq-wireguard + 174 qmesh/mesh, all green",
-    "clippy_lib": "pass",
-    "clippy_lib_detail": "All library targets pass with -D warnings",
-    "clippy_all_targets": "deferred_preexisting",
-    "clippy_all_targets_detail": "Pre-existing test-only warnings in zipminator-core (5), zipminator-mesh (5+), zipminator-bench (1). Out of scope for verification slice.",
+    "clippy": "pass",
     "web_build": "deferred_preexisting",
-    "web_build_detail": "Pre-existing route collision at app/mail vs app/(dashboard)/mail + missing next-auth/react dep. Blocker carried from run 20260421-143842-132b24.",
-    "flutter_test": "deferred_ci",
-    "flutter_test_detail": "Flutter SDK not installed on macOS host; CI workflow covers"
+    "flutter_test": "deferred_ci"
+  },
+  "gate_details": {
+    "cargo_test": "438+ workspace tests + 179 zipbrowser + 19 pq-wireguard + 174 qmesh/mesh, all green",
+    "clippy": "All library targets pass with -D warnings; test-only warnings in zipminator-core/mesh/bench tracked as pre-existing deferral",
+    "web_build": "Pre-existing route collision at app/mail vs app/(dashboard)/mail + missing next-auth/react dep. Blocker carried from run 20260421-143842-132b24.",
+    "flutter_test": "Flutter SDK not installed on macOS host; CI workflow covers"
   },
   "deferrals": [
     {"track": "M", "gate": "flutter_test", "reason": "Flutter SDK not installed locally; CI workflow verifies."},

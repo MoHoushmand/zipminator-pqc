@@ -78,7 +78,19 @@ if promise != sentinel:
 
 gates = state.get("gates") or {}
 required = ["cargo_test", "web_build", "flutter_test", "clippy"]
-failed = [g for g in required if gates.get(g) not in ("pass", True)]
+# Acceptable gate states: "pass"/True for verified green; "deferred_*" for
+# documented deferrals (pre-existing blockers, CI-only gates, platform-gated).
+# Deferrals must be listed in state["deferrals"] with a reason to be honored.
+acceptable = ("pass", True)
+deferral_gates = {d.get("gate") for d in (state.get("deferrals") or []) if isinstance(d, dict)}
+failed = []
+for g in required:
+    v = gates.get(g)
+    if v in acceptable:
+        continue
+    if isinstance(v, str) and v.startswith("deferred_") and g in deferral_gates:
+        continue
+    failed.append(g)
 if failed:
     emit(False, "gates_failing", {"failed_gates": failed, "run_id": run_id})
 

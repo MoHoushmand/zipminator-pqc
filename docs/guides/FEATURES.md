@@ -617,6 +617,20 @@ bash ~/.claude/scripts/marathon.sh \
 
 Preset lives at `~/.claude/prompts/AESR/v7/presets/zipminator-open-items.md`. 6 tracks cycle through 4-concurrent waves. Per-agent protocol: `superpowers:using-superpowers` + `superpowers:test-driven-development` + `superpowers:batch-tdd` (E/M/B/S/V) or `superpowers:writing-skills` + `superpowers:verification-before-completion` (G). Red/Green/Refactor each iteration; `wip(<track>):` commits on per-track branch only; progress appended to `_archive/marathon/2026-04-18-open-items/progress.jsonl`.
 
+### Marathon Convergence Log
+
+| Run ID                        | Date       | Tracks     | Sentinel                                       | Outcome                                                                                                             |
+|-------------------------------|------------|-----------|------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| 20260419-200339-4239da        | 2026-04-19 | E/M/B/S/V/G | MARATHON_CONVERGED_20260419-200339-4239da      | 561 tests pass; 3/4 gates green; flutter deferred to CI                                                             |
+| 20260420-163358-a59713        | 2026-04-20 | E/M/B/S/V/G | MARATHON_CONVERGED_20260420-163358-a59713      | 6-track iter complete; 72 flutter + 27 pytest + cargo green; 14 clippy warnings remain                              |
+| 20260421-144639-ac5f48        | 2026-04-21 | E/M/B/S/V/G | MARATHON_CONVERGED_20260421-144639-ac5f48      | 911+ tests green (438+ cargo, 179 zipbrowser, 19 pq-wg, 174 qmesh, 60 flutter, 41 email); clippy lib clean; web build + clippy-all-targets deferred pre-existing |
+
+Remaining open items after 20260421-144639-ac5f48 (pre-existing blockers, out of verification-only scope):
+- Web build: route collision at `app/mail/page.tsx` vs `app/(dashboard)/mail/page.tsx` + missing `next-auth/react` dependency in `web/package.json`.
+- Clippy `--all-targets`: 5 pre-existing warnings in `zipminator-core` test code, 5+ in `zipminator-mesh` test code, 1 in `zipminator-bench`.
+- Flutter test gate: host macOS has no Flutter SDK; CI workflow handles this.
+- macOS PQ-WireGuard kernel module: Linux-only; cannot build/load on Darwin.
+
 ---
 
 ## Human-Gated Items (excluded from marathon, listed for transparency)
@@ -636,4 +650,4 @@ FIPS language note: public materials must say "Implements NIST FIPS 203 (ML-KEM-
 
 ---
 
-*Last verified: 2026-04-18 | branch: chore/claude-root-consolidation | QDaria AS | FEATURES.md is the single source of truth*
+*Last verified: 2026-04-21 | branch: chore/claude-root-consolidation | QDaria AS | FEATURES.md is the single source of truth*

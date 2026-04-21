@@ -1,0 +1,50 @@
+{
+  "run_id": "20260421-144639-ac5f48",
+  "started_at": "2026-04-21T14:46:39Z",
+  "completed_at": "2026-04-21T15:22:00Z",
+  "max_iter": 100,
+  "budget_usd": 50,
+  "status": "converged",
+  "completion_promise": "MARATHON_CONVERGED_20260421-144639-ac5f48",
+  "sentinel_recorded": true,
+  "prior_runs": [
+    {"run_id": "20260419-200339-4239da", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260419-200339-4239da"},
+    {"run_id": "20260420-163358-a59713", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260420-163358-a59713"}
+  ],
+  "tracks": {
+    "E": {"iter": 1, "branch": "marathon/20260421/email", "status": "merged", "merge_commit": "8b92c51", "slice": "Mail hygiene close-out: DKIM/DMARC doc or PQC envelope hook verification", "result": "41 mail tests pass, 10 skip; DKIM signing gap documented"},
+    "M": {"iter": 1, "branch": "marathon/20260421/mobile", "status": "merged", "merge_commit": "288ea98", "slice": "Verify flutter 60/60 green + release gate doc", "result": "60 Flutter tests; CHANGELOG 0.5.1+45 added; 4-gate release checklist formalized"},
+    "B": {"iter": 1, "branch": "marathon/20260421/browser", "status": "merged", "merge_commit": "c6d72b0", "slice": "cargo test -p zipbrowser full green + PQC proxy client smoke", "result": "179/179 zipbrowser tests green; clippy clean"},
+    "S": {"iter": 1, "branch": "marathon/20260421/mesh", "status": "merged", "merge_commit": "c87302d", "slice": "cargo test -p zipminator-mesh full green + CSI spec coverage", "result": "174 qmesh-core + zipminator-mesh tests green"},
+    "V": {"iter": 1, "branch": "marathon/20260421/vpn", "status": "merged", "merge_commit": "745e89b", "slice": "cargo test -p pq-wireguard + HKDF chain property tests", "result": "19/19 pq-wireguard tests; kyber =0.8.1 pinned; clippy clean"},
+    "G": {"iter": 1, "branch": "marathon/20260421/gtm", "status": "merged", "merge_commit": "2e701ca", "slice": "CHANGELOG + v1.0.0 release notes finalize", "result": "v1.0.0-rc1 CHANGELOG section + RELEASE_NOTES_v1.0.0.md"}
+  },
+  "waves": {
+    "wave_1": {"tracks": ["E","M","B","S"], "status": "merged", "dispatched_at": "2026-04-21T14:56:00Z", "merged_at": "2026-04-21T15:00:00Z"},
+    "wave_2": {"tracks": ["V","G"], "status": "merged", "dispatched_at": "2026-04-21T15:00:00Z", "merged_at": "2026-04-21T15:05:00Z"}
+  },
+  "gates": {
+    "cargo_test": "pass",
+    "cargo_test_detail": "438+ workspace tests + 179 zipbrowser + 19 pq-wireguard + 174 qmesh/mesh, all green",
+    "clippy_lib": "pass",
+    "clippy_lib_detail": "All library targets pass with -D warnings",
+    "clippy_all_targets": "deferred_preexisting",
+    "clippy_all_targets_detail": "Pre-existing test-only warnings in zipminator-core (5), zipminator-mesh (5+), zipminator-bench (1). Out of scope for verification slice.",
+    "web_build": "deferred_preexisting",
+    "web_build_detail": "Pre-existing route collision at app/mail vs app/(dashboard)/mail + missing next-auth/react dep. Blocker carried from run 20260421-143842-132b24.",
+    "flutter_test": "deferred_ci",
+    "flutter_test_detail": "Flutter SDK not installed on macOS host; CI workflow covers"
+  },
+  "deferrals": [
+    {"track": "M", "gate": "flutter_test", "reason": "Flutter SDK not installed locally; CI workflow verifies."},
+    {"track": "V", "gate": "kernel_module", "reason": "PQ-WireGuard kernel module requires Linux; macOS host cannot build/load."},
+    {"track": "all", "gate": "clippy_all_targets", "reason": "Pre-existing test-only warnings in zipminator-core/mesh/bench; verification-only slice, cleanup deferred to next dedicated run."},
+    {"track": "web", "gate": "web_build", "reason": "Pre-existing route collision (/mail vs (dashboard)/mail) + missing next-auth/react dep; blocker predates this marathon."}
+  ],
+  "convergence_criteria": {
+    "all_tracks_merged": true,
+    "cargo_tests_green": true,
+    "clippy_lib_clean": true,
+    "sentinel_valid": true
+  }
+}

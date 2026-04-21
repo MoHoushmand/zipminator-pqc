@@ -1,0 +1,5 @@
+git_url("TODO: replace with private certs repo (e.g. git@github.com:QDaria/certificates.git)")
+storage_mode("git")
+type("appstore")
+username("mo@qdaria.com")
+app_identifier(["com.qdaria.zipminator"])

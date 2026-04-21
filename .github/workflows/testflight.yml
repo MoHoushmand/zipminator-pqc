@@ -26,10 +26,10 @@ jobs:
     timeout-minutes: 60
     env:
       APPLE_ID: ${{ secrets.APPLE_ID }}
-      ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
-      ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
-      ASC_API_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
-      ASC_API_KEY_CONTENT: ${{ secrets.ASC_API_KEY_CONTENT }}
+      ITC_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      ASC_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+      ASC_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+      ASC_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
       BUILD_NUMBER: ${{ github.run_number }}
       CHANGELOG: ${{ inputs.changelog || 'Internal build' }}
       LC_ALL: en_US.UTF-8

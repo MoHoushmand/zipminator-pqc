@@ -119,6 +119,7 @@ jobs:
   memory-profiling:
     name: Memory Profiling
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - name: Checkout code

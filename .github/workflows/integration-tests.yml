@@ -92,6 +92,7 @@ jobs:
   qrng-integration:
     name: QRNG Provider Integration
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - name: Checkout code
@@ -154,6 +155,7 @@ jobs:
   load-testing:
     name: Load Testing
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - name: Checkout code

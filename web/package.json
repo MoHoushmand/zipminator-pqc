@@ -15,7 +15,6 @@
   "dependencies": {
     "@base-ui/react": "^1.2.0",
     "@google/generative-ai": "^0.24.1",
-    "@qdaria/auth": "workspace:*",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@supabase/ssr": "^0.5.2",

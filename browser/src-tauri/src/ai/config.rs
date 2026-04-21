@@ -179,8 +179,10 @@ mod tests {
 
     #[test]
     fn context_window_clamped_for_local() {
-        let mut cfg = AiConfig::default();
-        cfg.context_window = 99_999;
+        let cfg = AiConfig {
+            context_window: 99_999,
+            ..Default::default()
+        };
         assert_eq!(cfg.effective_context_window(), 4096);
     }
 

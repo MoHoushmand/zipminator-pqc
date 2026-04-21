@@ -113,7 +113,7 @@ fn overwrite_random(path: &Path, size: u64) -> std::io::Result<()> {
     while remaining > 0 {
         let n = std::cmp::min(remaining, chunk as u64) as usize;
         getrandom::getrandom(&mut buf[..n])
-            .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+            .map_err(std::io::Error::other)?;
         f.write_all(&buf[..n])?;
         remaining -= n as u64;
     }

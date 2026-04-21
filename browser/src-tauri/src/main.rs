@@ -41,6 +41,7 @@ fn main() {
         .plugin(tauri_plugin_shell::init())
         .manage(AppState::new())
         .setup(|app| {
+            #[cfg(feature = "vpn")]
             let app_handle = app.handle().clone();
 
             // ── Domain 2: Start PQC HTTPS Proxy ───────────────────────────

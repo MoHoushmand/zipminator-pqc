@@ -12,7 +12,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, Emitter, Manager, State};
+use tauri::{AppHandle, Emitter, State};
 use tokio::sync::{mpsc, Mutex};
 
 use crate::ai::cloud_llm::{CloudClientConfig, CloudLlmClient, CloudTokenEvent};
@@ -44,6 +44,7 @@ pub const EVENT_AI_ERROR: &str = "ai-error";
 // ---------------------------------------------------------------------------
 
 /// Mutable sidebar state shared across Tauri command handlers.
+#[derive(Default)]
 pub struct SidebarState {
     pub config: AiConfig,
     /// Loaded local inference engine (`None` until the model is loaded).
@@ -54,18 +55,6 @@ pub struct SidebarState {
     pub chat_histories: std::collections::HashMap<String, Vec<ChatMessage>>,
     /// PQC proxy port (forwarded from the proxy module at startup).
     pub proxy_port: Option<u16>,
-}
-
-impl Default for SidebarState {
-    fn default() -> Self {
-        Self {
-            config: AiConfig::default(),
-            local_engine: None,
-            cloud_client: None,
-            chat_histories: std::collections::HashMap::new(),
-            proxy_port: None,
-        }
-    }
 }
 
 /// Thread-safe handle to [`SidebarState`].
@@ -203,7 +192,7 @@ pub async fn ai_chat(
     app: AppHandle,
     request: ChatRequest,
 ) -> Result<AiResponse, AiError> {
-    let (mode, engine_opt, cloud_opt, history, config_snapshot) = {
+    let (mode, engine_opt, _cloud_opt, history, config_snapshot) = {
         let mut guard = state.lock().await;
 
         // Build user message, optionally prefixed with page context.
@@ -574,8 +563,7 @@ async fn run_local_chat(
 
     let last_user_msg = history
         .iter()
-        .filter(|m| m.role == Role::User)
-        .last()
+        .rfind(|m| m.role == Role::User)
         .map(|m| m.content.as_str())
         .unwrap_or("");
 
@@ -649,8 +637,7 @@ async fn run_cloud_chat(
 
     let last_user_msg = history
         .iter()
-        .filter(|m| m.role == Role::User)
-        .last()
+        .rfind(|m| m.role == Role::User)
         .map(|m| m.content.as_str())
         .unwrap_or("");
 

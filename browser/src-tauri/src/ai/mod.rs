@@ -47,20 +47,15 @@ pub use sidebar::{
 /// `Mock` returns canned responses (for testing / offline use).
 /// `Local` uses the candle-based Phi-3 engine.
 /// `Claude` and `OpenAI` use the cloud client with provider-specific endpoints.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ModelProvider {
     Claude,
     OpenAI,
     Ollama,
     Local,
+    #[default]
     Mock,
-}
-
-impl Default for ModelProvider {
-    fn default() -> Self {
-        Self::Mock
-    }
 }
 
 impl ModelProvider {

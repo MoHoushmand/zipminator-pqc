@@ -60,6 +60,7 @@ struct ChatCompletionRequest<'a> {
 }
 
 /// Non-streaming completion choice.
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct Choice {
     message: OaiMessage,
@@ -88,6 +89,7 @@ struct StreamDelta {
 }
 
 /// Streaming choice inside an SSE chunk.
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct StreamChoice {
     delta: StreamDelta,
@@ -275,8 +277,8 @@ impl CloudLlmClient {
             content: user_message.to_string(),
         });
 
-        if token_tx.is_some() {
-            self.stream_completion(messages, token_tx.unwrap()).await
+        if let Some(tx) = token_tx {
+            self.stream_completion(messages, tx).await
         } else {
             self.non_streaming_completion(messages).await
         }

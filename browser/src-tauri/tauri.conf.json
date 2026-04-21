@@ -13,7 +13,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "Zipminator — Quantum-Secure Encryption",
+        "title": "Zipminator, Quantum-Secure Encryption",
         "width": 1280,
         "height": 900,
         "minWidth": 800,

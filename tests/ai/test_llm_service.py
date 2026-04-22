@@ -23,7 +23,7 @@ class TestOllamaHealthCheck:
     @pytest.mark.asyncio
     async def test_health_check_ollama_down(self):
         """When Ollama is not running, health_check returns False gracefully."""
-        client = OllamaClient(base_url="http://localhost:99999")
+        client = OllamaClient(base_url="http://127.0.0.1:9")
         result = await client.health_check()
         assert result is False
 
@@ -44,7 +44,7 @@ class TestOllamaChat:
     @pytest.mark.asyncio
     async def test_chat_ollama_down_returns_error(self):
         """When Ollama is unreachable, chat returns a helpful error dict."""
-        client = OllamaClient(base_url="http://localhost:99999")
+        client = OllamaClient(base_url="http://127.0.0.1:9")
         result = await client.chat(
             messages=[{"role": "user", "content": "Hello"}]
         )
@@ -77,7 +77,7 @@ class TestOllamaListModels:
     @pytest.mark.asyncio
     async def test_list_models_ollama_down(self):
         """When Ollama is unreachable, list_models returns empty list."""
-        client = OllamaClient(base_url="http://localhost:99999")
+        client = OllamaClient(base_url="http://127.0.0.1:9")
         result = await client.list_models()
         assert result == []
 

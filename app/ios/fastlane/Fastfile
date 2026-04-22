@@ -41,9 +41,7 @@ platform :ios do
       output_directory: "build",
       output_name: "Runner.ipa",
       clean: true,
-      silent: false,
-      include_bitcode: false,
-      include_symbols: true
+      silent: false
     )
 
     upload_to_testflight(

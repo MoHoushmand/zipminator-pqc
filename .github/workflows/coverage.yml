@@ -101,7 +101,8 @@ jobs:
           # Runtime deps needed at test-collection time
           pip install fastapi httpx uvicorn pandas numpy requests \
                       websockets python-multipart aiosmtpd pyyaml click \
-                      python-dotenv faker pyzipper cryptography asyncpg
+                      python-dotenv faker pyzipper cryptography asyncpg \
+                      ipython qiskit qiskit-aer
 
       - name: Build Python package
         run: maturin develop

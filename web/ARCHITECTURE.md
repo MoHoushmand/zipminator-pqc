@@ -351,7 +351,7 @@ Origin Server → Generate → Cache → Return
 ## Security Architecture
 
 ### 1. HTTPS Enforcement
-- Automatic SSL via Vercel/Netlify
+- Automatic SSL via Vercel
 - HSTS headers
 - Redirect HTTP → HTTPS
 

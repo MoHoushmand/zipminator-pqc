@@ -124,7 +124,6 @@ A modern, qBraid-inspired landing page for Zipminator-PQC (zipminator.zip), show
 
 2. **DEPLOYMENT.md** - Comprehensive deployment guide
    - Vercel deployment (CLI + GitHub)
-   - Netlify deployment
    - Docker deployment (Dockerfile + docker-compose)
    - AWS Amplify, Google Cloud Run
    - DNS configuration (Cloudflare, Route 53)
@@ -261,12 +260,6 @@ A modern, qBraid-inspired landing page for Zipminator-PQC (zipminator.zip), show
 - Automatic SSL certificates
 - Environment variable management
 - Preview deployments for PRs
-
-### Alternative: Netlify
-- Similar feature set to Vercel
-- Drag-and-drop deployment
-- Form handling
-- Split testing
 
 ### Self-Hosted: Docker
 - Complete Docker setup provided
@@ -413,7 +406,7 @@ npm start
 - **3D Graphics**: Three.js + @react-three/fiber
 - **Icons**: Lucide React
 - **Fonts**: Inter, JetBrains Mono (Google Fonts)
-- **Deployment**: Vercel/Netlify/Docker
+- **Deployment**: Vercel (canonical) or Docker (self-host)
 
 ## Project Stats
 

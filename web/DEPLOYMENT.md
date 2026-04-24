@@ -7,7 +7,7 @@ Complete deployment guide for the Zipminator-PQC landing page.
 - Node.js 18+ installed
 - Domain: zipminator.zip configured
 - Git repository set up
-- Platform account (Vercel/Netlify/etc.)
+- Vercel account (Vercel is the canonical deploy target — Netlify was retired 2026-04-24)
 
 ## Deployment Options
 
@@ -80,70 +80,7 @@ NEXT_PUBLIC_API_URL=https://api.zipminator.zip
 NEXT_PUBLIC_DOMAIN=zipminator.zip
 ```
 
-### 2. Netlify
-
-#### A. Via Netlify CLI
-
-```bash
-# Install Netlify CLI
-npm i -g netlify-cli
-
-# Login
-netlify login
-
-# Initialize site
-netlify init
-
-# Deploy
-netlify deploy --prod
-```
-
-#### B. Via GitHub Integration
-
-1. Push code to GitHub (same as Vercel)
-2. Visit [netlify.com](https://netlify.com)
-3. Click "Add new site" → "Import an existing project"
-4. Connect GitHub repository
-5. Configure:
-   - Build command: `npm run build`
-   - Publish directory: `.next`
-   - Node version: 18
-6. Click "Deploy"
-
-#### Custom Domain (Netlify)
-
-1. Site Settings → Domain Management → Custom Domains
-2. Add `zipminator.zip`
-3. Configure DNS:
-   ```
-   Type: A
-   Name: @
-   Value: 75.2.60.5
-
-   Type: CNAME
-   Name: www
-   Value: [your-site].netlify.app
-   ```
-
-#### Build Settings (netlify.toml)
-
-Create `netlify.toml`:
-
-```toml
-[build]
-  command = "npm run build"
-  publish = ".next"
-
-[build.environment]
-  NODE_VERSION = "18"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-```
-
-### 3. Docker Deployment
+### 2. Docker Deployment
 
 #### Dockerfile
 
@@ -344,8 +281,6 @@ jobs:
 
 1. **Enable CDN**:
    - Vercel: Automatic
-   - Netlify: Automatic
-   - Others: Configure CloudFlare
 
 2. **Set Cache Headers**:
    ```javascript
@@ -429,11 +364,6 @@ async headers() {
 vercel rollback [deployment-url]
 ```
 
-### Netlify
-```bash
-netlify rollback
-```
-
 ### Docker
 ```bash
 docker pull zipminator-landing:previous-tag
@@ -478,5 +408,4 @@ docker-compose up -d
 ## Support
 
 - Vercel: [vercel.com/support](https://vercel.com/support)
-- Netlify: [netlify.com/support](https://netlify.com/support)
 - QDaria: contact@qdaria.com

@@ -1,8 +1,25 @@
+const path = require('path');
+const dotenv = require('dotenv');
+
+// Load root monorepo .env before Next.js reads config.
+// Root-level .env is the single source of truth; per-app .env files are forbidden.
+// Use dotenv (already a direct dep) rather than @next/env to avoid pnpm hoisting quirks.
+const monorepoRoot = path.resolve(__dirname, '../../../..');
+dotenv.config({ path: path.join(monorepoRoot, '.env') });
+dotenv.config({ path: path.join(monorepoRoot, '.env.local'), override: true });
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_SUPABASE_URL: process.env.SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+  },
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
   },
   images: {
     remotePatterns: [

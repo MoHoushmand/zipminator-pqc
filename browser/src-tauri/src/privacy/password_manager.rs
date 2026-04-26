@@ -213,6 +213,11 @@ impl PasswordVault {
             .is_some()
     }
 
+    /// Whether the vault file exists on disk (i.e. a vault has been created).
+    pub fn vault_path_exists(&self) -> bool {
+        self.vault_path.exists()
+    }
+
     // ── Entry operations ──────────────────────────────────────────────────
 
     /// Add a new password entry.

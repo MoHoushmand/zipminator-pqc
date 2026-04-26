@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
-use std::sync::Mutex;
+use std::path::Path;
+use std::sync::{Arc, Mutex};
 use uuid::Uuid;
+
+use zipbrowser::privacy::{PrivacyConfig, PrivacyEngine};
 
 /// Security level of the current connection.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -65,8 +68,30 @@ pub struct Bookmark {
     pub created_at: String,
 }
 
+/// Mutable runtime configuration for privacy subsystem toggles.
+///
+/// `PrivacyConfig` (in `privacy::mod`) holds the static config; this struct
+/// tracks user-facing toggles that the dashboard can flip at runtime.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PrivacyToggles {
+    pub fingerprint_resistance: bool,
+    pub cookie_rotation: bool,
+    pub telemetry_blocking: bool,
+    pub strict_pqc_mode: bool,
+}
+
+impl Default for PrivacyToggles {
+    fn default() -> Self {
+        Self {
+            fingerprint_resistance: true,
+            cookie_rotation: true,
+            telemetry_blocking: true,
+            strict_pqc_mode: false,
+        }
+    }
+}
+
 /// Full application state shared across Tauri commands.
-#[derive(Debug)]
 pub struct AppState {
     pub tabs: Mutex<super::tabs::TabManager>,
     pub proxy_config: Mutex<ProxyConfig>,
@@ -74,6 +99,25 @@ pub struct AppState {
     pub entropy_status: Mutex<EntropyStatus>,
     pub bookmarks: Mutex<Vec<Bookmark>>,
     pub session_token: Mutex<String>,
+    /// Privacy engine handle (entropy, session, fingerprint, cookies, vault, blocker, auditor).
+    /// Initialized at app startup with the project root and vault path.
+    pub privacy: Mutex<Option<Arc<PrivacyEngine>>>,
+    pub privacy_toggles: Mutex<PrivacyToggles>,
+}
+
+impl std::fmt::Debug for AppState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("AppState")
+            .field("tabs", &"<TabManager>")
+            .field("proxy_config", &self.proxy_config)
+            .field("vpn_state", &self.vpn_state)
+            .field("entropy_status", &self.entropy_status)
+            .field("bookmarks", &"<bookmarks>")
+            .field("session_token", &"<redacted>")
+            .field("privacy", &self.privacy.lock().ok().map(|p| p.is_some()))
+            .field("privacy_toggles", &self.privacy_toggles)
+            .finish()
+    }
 }
 
 impl AppState {
@@ -85,7 +129,25 @@ impl AppState {
             entropy_status: Mutex::new(EntropyStatus::default()),
             bookmarks: Mutex::new(Vec::new()),
             session_token: Mutex::new(Uuid::new_v4().to_string()),
+            privacy: Mutex::new(None),
+            privacy_toggles: Mutex::new(PrivacyToggles::default()),
         }
+    }
+
+    /// Initialize the privacy engine and store it in `AppState`.
+    ///
+    /// Must be called once at startup, after the app data directory is known.
+    /// Subsequent calls replace the engine (used by tests).
+    pub fn init_privacy(&self, project_root: &Path, vault_path: &Path) {
+        let engine = PrivacyEngine::init(project_root, vault_path, PrivacyConfig::default());
+        if let Ok(mut guard) = self.privacy.lock() {
+            *guard = Some(engine);
+        }
+    }
+
+    /// Borrow the privacy engine.  Returns `None` if not initialized yet.
+    pub fn privacy_engine(&self) -> Option<Arc<PrivacyEngine>> {
+        self.privacy.lock().ok().and_then(|g| g.clone())
     }
 
     /// Generate a new session token. The privacy engine can override this
@@ -129,5 +191,50 @@ impl AppState {
 impl Default for AppState {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+// ── Tests ────────────────────────────────────────────────────────────────────
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tempfile::TempDir;
+
+    #[test]
+    fn appstate_starts_without_privacy_engine() {
+        let s = AppState::new();
+        assert!(s.privacy_engine().is_none());
+    }
+
+    #[test]
+    fn init_privacy_populates_engine() {
+        let s = AppState::new();
+        let tmp = TempDir::new().unwrap();
+        s.init_privacy(tmp.path(), &tmp.path().join("vault.json"));
+        let engine = s.privacy_engine();
+        assert!(engine.is_some(), "privacy engine should be populated");
+    }
+
+    #[test]
+    fn privacy_toggles_default_safe() {
+        let s = AppState::new();
+        let toggles = s.privacy_toggles.lock().unwrap().clone();
+        assert!(toggles.fingerprint_resistance);
+        assert!(toggles.cookie_rotation);
+        assert!(toggles.telemetry_blocking);
+        assert!(!toggles.strict_pqc_mode);
+    }
+
+    #[test]
+    fn privacy_engine_session_rotation_propagates() {
+        let s = AppState::new();
+        let tmp = TempDir::new().unwrap();
+        s.init_privacy(tmp.path(), &tmp.path().join("vault.json"));
+        let engine = s.privacy_engine().unwrap();
+        let before = engine.session.current_token();
+        engine.rotate_session();
+        let after = engine.session.current_token();
+        assert_ne!(before, after);
     }
 }

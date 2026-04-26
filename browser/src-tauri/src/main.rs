@@ -118,6 +118,38 @@ fn main() {
                 }
             }
 
+            // ── Domain 5: Initialize the Privacy Engine ──────────────────
+            // The privacy engine wires together: entropy reader, session manager,
+            // fingerprint guard, cookie rotator, password vault, telemetry blocker
+            // and the zero-telemetry auditor. It is the source of truth for the
+            // PrivacyDashboard.tsx component.
+            {
+                let state = app.state::<AppState>();
+                let privacy_data_dir = data_dir.clone();
+                // Walk up from the data dir to find a candidate project root for
+                // the QRNG entropy pool; if not present, the QrngReader falls
+                // back to OS CSPRNG automatically.
+                let project_root = std::env::var("ZIPMINATOR_PROJECT_ROOT")
+                    .map(std::path::PathBuf::from)
+                    .unwrap_or_else(|_| {
+                        // Default: parent of app data dir (developer mode) or a
+                        // sentinel path that triggers CSPRNG fallback.
+                        privacy_data_dir
+                            .parent()
+                            .map(|p| p.to_path_buf())
+                            .unwrap_or_else(|| std::path::PathBuf::from("/nonexistent"))
+                    });
+                if !privacy_data_dir.exists() {
+                    let _ = std::fs::create_dir_all(&privacy_data_dir);
+                }
+                let vault_path = privacy_data_dir.join("password-vault.json");
+                state.init_privacy(&project_root, &vault_path);
+                tracing::info!(
+                    vault_path = %vault_path.display(),
+                    "Privacy engine initialized"
+                );
+            }
+
             tracing::info!("ZipBrowser setup complete — all domains initialized");
             Ok(())
         })
@@ -199,6 +231,22 @@ fn main() {
             ai::sidebar::ai_pqc_envelope_session_close,
             // ── Mobile WebView PQC proxy (Pillar 8 mobile target) ──────────
             mobile::pqc_proxy_command,
+            // ── Privacy engine (Pillar 8: 7 privacy subsystems) ─────────────
+            commands::privacy_get_status,
+            commands::privacy_toggle_protection,
+            commands::privacy_run_audit,
+            commands::privacy_get_latest_audit,
+            commands::privacy_rotate_session,
+            // ── Password vault (Pillar 8: PQC-encrypted credentials) ───────
+            commands::vault_get_state,
+            commands::vault_create,
+            commands::vault_unlock,
+            commands::vault_lock,
+            commands::vault_list_entries,
+            commands::vault_add_entry,
+            commands::vault_get_entry,
+            commands::vault_delete_entry,
+            commands::vault_generate_password,
         ])
         .run(tauri::generate_context!())
         .expect("error running Zipminator");

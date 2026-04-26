@@ -28,7 +28,7 @@
 | 4 | **Q-VPN** | **100%** | Done | Done | Done | Done | Packet wrapping verified (1500 B MTU roundtrip, monotonic AEAD counter); iOS NEPacketTunnelProvider + Android VpnService (`com.qdaria.zipminator.QVpnService`) wired; kill-switch invariant tested through Reconnecting cycle |
 | 5 | **10-Level Anonymizer** | **100%** | Done | Done | Done | Done | All L1-L10 verified; CLI `--level N` wired; Flutter UI wired to `POST /api/anonymize` |
 | 6 | **Q-AI Assistant** | **85%** | Done | Done | Done | Partial | Prompt guard + Ollama + PII scan + PQC tunnel done (45 AI tests) |
-| 7 | **Quantum Mail** | **75%** | Done | Done | Done | Partial | PQC envelope + SMTP transport + server-side self-destruct TTL (15 tests) |
+| 7 | **Quantum Mail** | **90%** | Done | Done | Done | Partial | PQC envelope + SMTP/IMAP transport + server-side self-destruct TTL + DKIM config + attachment anonymization (L4 default) wired into compose pipeline + pre-send PII gate (Acknowledge / Anonymize) (62 mail tests + 7 vitest pii-gate; live SMTP/IMAP smoke through Postfix+Dovecot still requires Docker daemon) |
 | 8 | **ZipBrowser** | **85%** | Done | Done | Done | Done | AI sidebar integrated (Recipe W); WebView limitation (ADR documented) |
 | 9 | **Q-Mesh (RuView)** | **90%** | Done | Done | Planned | Partial | Physical Cryptography Wave 1 complete: 6 new modules, 106 mesh tests, 513 workspace total |
 
@@ -187,11 +187,11 @@
 
 ---
 
-## Pillar 7: Quantum-Secure Email (75%)
+## Pillar 7: Quantum-Secure Email (90%)
 
 - **Domain**: `@zipminator.zip` (`.zip` = real Google TLD, brand-perfect)
-- **What works**: Envelope crypto (ML-KEM-768 key exchange, AES-256-GCM at rest, QRNG-seeded per-message keys); Rust `email_crypto.rs` encrypt/decrypt roundtrip; config files for Postfix/Dovecot; SMTP transport with PQC bridge; server-side self-destruct TTL via `X-Zipminator-TTL` header (parses seconds, sets `self_destruct_at`, existing `purge_loop` handles deletion); Docker compose integration with GreenMail + mail-transport service; 15 transport tests (6 PQC bridge + 9 storage/SMTP requiring Docker)
-- **What's missing**: Production SMTP/IMAP deployment (Docker stack ready but needs hosting); attachment anonymization not wired into email pipeline; PII scanning not wired into compose flow
+- **What works**: Envelope crypto (ML-KEM-768 key exchange, AES-256-GCM at rest, QRNG-seeded per-message keys); Rust `email_crypto.rs` encrypt/decrypt roundtrip; config files for Postfix/Dovecot/OpenDKIM (selector `s1`, domain `zipminator.zip`, RSA-SHA256, relaxed/simple canonicalization); SMTP transport with PQC bridge; server-side self-destruct TTL via `X-Zipminator-TTL` header (parses seconds, sets `self_destruct_at`, existing `purge_loop` handles deletion) — verified end-to-end with mocked time in `tests/email_transport/test_ttl_header.py`; Docker compose integration with GreenMail + mail-transport service; attachment anonymization pipeline wired through `mobile/src/services/EmailCryptoService.ts` (`composeWithAnonymizedAttachments`, default L4) — verified by `tests/email_anonymization/test_attachment_pipeline.py` (no plaintext PII survives the envelope); pre-send PII gate in `web/app/mail/compose/page.tsx` requires user to Anonymize or Acknowledge before send (vitest in `web/app/mail/compose/__tests__/pii-gate.test.tsx`, 7 cases); DKIM automated test scaffold in `tests/email_transport/test_dkim_signing.py` (config-sanity + header-parser layers always run; live `dkimpy` sign layer skips with `[blocked: opendkim not configured locally]` until OpenDKIM key is generated). 62 mail tests pass + 3 cleanly skipped under zip-pqc env; 7 vitest tests pass.
+- **What's missing**: Production SMTP/IMAP deployment through Postfix+Dovecot+GreenMail (BLOCKED: requires Docker daemon, deferred per marathon order-of-attack 2026-04-26); live OpenDKIM milter test (requires generated `s1.private` and milter socket — config files in place, key generation deferred until first deploy)
 
 ### File Paths
 
@@ -210,7 +210,10 @@
 
 ### Open Email Items
 
-- Verified 2026-04-21 (marathon 20260421-144639-ac5f48/email): `tests/email_transport/test_pqc_envelope.py` + `tests/mail/*` + `tests/test_email_transport.py` = 41 passed, 10 skipped under zip-pqc env. Gap: no automated DKIM signing test asserts that outbound mail gets a valid `DKIM-Signature` header from the OpenDKIM config at `email/mailserver/config/dkim/` (opendkim.conf, signing.table, key.table); next step is a pytest case that boots the mailserver container (or mocks OpenDKIM milter), sends a message via SMTP, and verifies the resulting header parses and signs the configured domain.
+- Verified 2026-04-26 (marathon 20260426-032534-21fc8f/H): `tests/email_transport/` + `tests/email_anonymization/` + `tests/mail/` = 62 passed, 3 skipped under zip-pqc env (skips: live `dkimpy` signing with no local key, Rust-only wrong-SK negative test, conftest-collected stub). Vitest in `web/app/mail/compose/__tests__/pii-gate.test.tsx` adds 7 React-level tests for the pre-send PII gate. Remaining gaps to push 90% → 100%:
+  1. Production SMTP/IMAP deployment through `docker-compose.email.yml` (Postfix+Dovecot+GreenMail+mail-transport) — config is committed and unit-tested; smoke test against the live stack is **blocked** until the Docker daemon is up. The order-of-attack revision on 2026-04-26 deferred this slot.
+  2. Live OpenDKIM milter test path — config tables (`opendkim.conf`, `signing.table`, `key.table`, `trusted.hosts`) are correct (`zipminator.zip` / selector `s1` / RSA-SHA256 / relaxed-simple); the test scaffold (`tests/email_transport/test_dkim_signing.py`) parses synthetic headers, sanity-checks all four config files, and includes an opt-in live signer path that activates the moment a generated `s1.private` is dropped at `email/mailserver/config/dkim/keys/zipminator.zip/s1.private`.
+- Last verified 2026-04-21 (marathon 20260421-144639-ac5f48/email): `tests/email_transport/test_pqc_envelope.py` + `tests/mail/*` + `tests/test_email_transport.py` = 41 passed, 10 skipped under zip-pqc env (history line, retained for diffability).
 
 ---
 

@@ -62,6 +62,8 @@ export default function ComposePage() {
   const [sent, setSent] = useState(false)
   const [attachments, setAttachments] = useState<File[]>([])
   const [isDragOver, setIsDragOver] = useState(false)
+  const [piiAcknowledged, setPiiAcknowledged] = useState(false)
+  const [showPiiGate, setShowPiiGate] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const selectedDestruct = SELF_DESTRUCT_OPTIONS.find(
@@ -85,19 +87,33 @@ export default function ComposePage() {
         redacted.slice(match.end)
     }
     setBody(redacted)
+    // Anonymizing clears the gate -- redacted body has no PII left.
+    setPiiAcknowledged(false)
+    setShowPiiGate(false)
   }, [body, piiMatches])
 
-  const handleSendAnyway = useCallback(() => {
+  const handleAcknowledgeAndSend = useCallback(() => {
+    setPiiAcknowledged(true)
+    setShowPiiGate(false)
     setSent(true)
   }, [])
 
+  const handleSendAnyway = useCallback(() => {
+    // Backwards-compat alias for the in-banner button: opens the gate.
+    setShowPiiGate(true)
+  }, [])
+
   const handleSend = useCallback(() => {
-    if (piiMatches.length > 0) {
+    // Pre-send PII gate: when matches exist and the user has not yet
+    // acknowledged the warning, surface the modal-style gate instead of
+    // sending. The user must either Acknowledge & Send or Anonymize.
+    if (piiMatches.length > 0 && !piiAcknowledged) {
+      setShowPiiGate(true)
       setShowPiiPreview(true)
       return
     }
     setSent(true)
-  }, [piiMatches])
+  }, [piiMatches, piiAcknowledged])
 
   const handleFilesDrop = useCallback((files: FileList | null) => {
     if (!files) return
@@ -504,14 +520,78 @@ export default function ComposePage() {
         </div>
       </div>
 
+      {/* Pre-send PII gate -- mandatory acknowledgment when PII is detected. */}
+      <AnimatePresence>
+        {showPiiGate && piiMatches.length > 0 && !piiAcknowledged && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            data-testid="pii-gate"
+            role="dialog"
+            aria-labelledby="pii-gate-title"
+            className="shrink-0 px-4 py-3 border-t border-red-500/30 bg-red-500/5"
+          >
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <h4
+                  id="pii-gate-title"
+                  className="text-sm font-semibold text-red-400"
+                >
+                  Pre-send check: {piiMatches.length} PII pattern
+                  {piiMatches.length !== 1 ? 's' : ''} detected
+                </h4>
+                <p className="text-xs text-gray-400 mt-1">
+                  This message contains sensitive information.
+                  Either anonymize the body or acknowledge that you intend
+                  to send it as-is. The send button is disabled until you
+                  choose.
+                </p>
+                <div className="flex flex-wrap items-center gap-2 mt-3">
+                  <button
+                    type="button"
+                    data-testid="pii-gate-anonymize"
+                    onClick={handleRedact}
+                    className="text-xs px-4 py-2 rounded-xl bg-gradient-to-r from-quantum-500 to-quantum-700 text-white font-semibold hover:shadow-lg hover:shadow-quantum-500/30 transition-all"
+                  >
+                    Anonymize
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="pii-gate-acknowledge"
+                    onClick={handleAcknowledgeAndSend}
+                    className="text-xs px-4 py-2 rounded-xl border border-red-500/40 text-red-400 hover:bg-red-500/10 font-semibold transition-colors"
+                  >
+                    Acknowledge & Send
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="pii-gate-cancel"
+                    onClick={() => setShowPiiGate(false)}
+                    className="text-xs px-3 py-2 rounded-xl text-gray-500 hover:text-gray-300 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Send bar */}
       <div className="shrink-0 px-4 py-3 border-t border-white/[0.06] bg-black/20 flex items-center justify-between">
         <div className="text-xs text-gray-600 font-mono">
           {pqcEnabled ? 'End-to-end encrypted' : 'Transport encrypted only'}
+          {piiMatches.length > 0 && !piiAcknowledged && (
+            <span className="ml-2 text-red-400">- PII gate active</span>
+          )}
         </div>
         <button
           onClick={handleSend}
           disabled={!to || !subject}
+          data-testid="compose-send"
           className={`
             flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm
             transition-all duration-300

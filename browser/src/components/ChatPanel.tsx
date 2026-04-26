@@ -206,7 +206,15 @@ export function ChatPanel({ tabId, ai, pageContext, onExtractPage }: ChatPanelPr
     streamingIdRef.current = assistantId;
 
     const ctx = includePageContext && pageContext ? pageContext : undefined;
-    await ai.chat(tabId, trimmed, ctx);
+    // Prefer the Ollama streaming path when in local mode and a PQC session
+    // is active — this routes tokens through the PQC envelope wrapper.
+    const useOllamaStream =
+      ai.config?.mode === "local" && Boolean(ai.pqcSession);
+    if (useOllamaStream) {
+      await ai.ollamaChatStream(tabId, trimmed, ai.pqcSession?.session_id);
+    } else {
+      await ai.chat(tabId, trimmed, ctx);
+    }
   }, [input, ai, tabId, includePageContext, pageContext]);
 
   const handleKeyDown = useCallback(
@@ -273,8 +281,8 @@ export function ChatPanel({ tabId, ai, pageContext, onExtractPage }: ChatPanelPr
         <div ref={endRef} />
       </div>
 
-      {/* Page context toggle */}
-      <div className="px-3 pb-2">
+      {/* Page context + PQC toggle */}
+      <div className="px-3 pb-2 flex items-center gap-2 flex-wrap">
         <button
           onClick={handleAskAboutPage}
           className={`
@@ -297,6 +305,34 @@ export function ChatPanel({ tabId, ai, pageContext, onExtractPage }: ChatPanelPr
               — {pageContext.title}
             </span>
           )}
+        </button>
+
+        <button
+          onClick={async () => {
+            if (ai.pqcSession) {
+              await ai.pqcCloseSession();
+            } else {
+              await ai.pqcInitSession();
+            }
+          }}
+          className={`
+            flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
+            transition-colors duration-150
+            ${ai.pqcSession
+              ? "bg-emerald-700 text-white"
+              : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200"
+            }
+          `}
+          title={
+            ai.pqcSession
+              ? "Close PQC streaming tunnel"
+              : "Wrap streaming chunks in ML-KEM-768 envelopes"
+          }
+          data-testid="pqc-tunnel-toggle"
+        >
+          <span className="text-xs">
+            {ai.pqcSession ? "PQC tunnel ON" : "PQC tunnel OFF"}
+          </span>
         </button>
       </div>
 

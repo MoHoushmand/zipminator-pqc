@@ -21,7 +21,7 @@ import React, {
   KeyboardEvent as ReactKeyboardEvent,
 } from "react";
 
-import { useAI } from "../hooks/useAI";
+import { useAI, OllamaModelInfo } from "../hooks/useAI";
 import { usePageContent } from "../hooks/usePageContent";
 import { ChatPanel } from "./ChatPanel";
 import { SummaryPanel } from "./SummaryPanel";
@@ -161,6 +161,55 @@ export function AISidebar({
   const sidebarRef = useRef<HTMLDivElement>(null);
   const resizeStartX = useRef(0);
   const resizeStartWidth = useRef(DEFAULT_WIDTH);
+
+  // ---------------------------------------------------------------------------
+  // Ollama model picker state (Pillar 6 Q-AI)
+  // ---------------------------------------------------------------------------
+  const [ollamaModels, setOllamaModels] = useState<OllamaModelInfo[]>([]);
+  const [activeOllamaModel, setActiveOllamaModel] = useState<string>("");
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pulling, setPulling] = useState(false);
+
+  const refreshOllamaModels = useCallback(async () => {
+    const list = await ai.ollamaListModels();
+    setOllamaModels(list);
+    if (list.length > 0 && !activeOllamaModel) {
+      // Prefer llama3.2 when present; otherwise the first installed model.
+      const preferred =
+        list.find((m) => m.name.toLowerCase().startsWith("llama3.2")) ?? list[0];
+      setActiveOllamaModel(preferred.name);
+    }
+  }, [ai, activeOllamaModel]);
+
+  // First-run auto-pull flow: if Ollama is reachable but llama3.2 missing,
+  // surface a one-click pull button instead of failing silently.
+  useEffect(() => {
+    if (open) {
+      refreshOllamaModels();
+    }
+  }, [open, refreshOllamaModels]);
+
+  const handlePullDefault = useCallback(async () => {
+    setPulling(true);
+    await ai.ollamaPullModel("llama3.2");
+    setPulling(false);
+    await refreshOllamaModels();
+  }, [ai, refreshOllamaModels]);
+
+  // Format MB display for the pull-progress badge.
+  const pullStatusLine = ai.ollamaPullProgress
+    ? (() => {
+        const p = ai.ollamaPullProgress;
+        const totalMb = p.total ? Math.round(p.total / 1_048_576) : null;
+        const doneMb = p.completed ? Math.round(p.completed / 1_048_576) : null;
+        if (totalMb && doneMb !== null) {
+          return `${p.status} ${doneMb} / ${totalMb} MB`;
+        }
+        return p.status;
+      })()
+    : null;
+
+  const hasModels = ollamaModels.length > 0;
 
   // ---------------------------------------------------------------------------
   // Keyboard shortcut: Cmd+Shift+A
@@ -323,6 +372,16 @@ export function AISidebar({
                 Local
               </span>
             )}
+            {ai.pqcSession && (
+              <span
+                className="px-1.5 py-0.5 bg-emerald-900/60 border border-emerald-700/50 rounded-full text-xs text-emerald-300 font-medium flex items-center gap-1"
+                data-testid="pqc-tunnel-indicator"
+                title="PQC streaming tunnel active (ML-KEM-768 envelope per chunk)"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                PQC tunnel
+              </span>
+            )}
             {ai.generating && (
               <span className="flex items-center gap-1 text-xs text-zinc-500">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
@@ -350,6 +409,123 @@ export function AISidebar({
             </svg>
           </button>
         </header>
+
+        {/* Ollama model picker (Pillar 6 Q-AI) */}
+        <div
+          className="flex items-center justify-between px-3 py-2 border-b border-zinc-800 bg-zinc-900/60"
+          data-testid="ollama-model-picker"
+        >
+          {hasModels ? (
+            <div className="relative w-full">
+              <button
+                onClick={() => setPickerOpen((v) => !v)}
+                className="
+                  flex items-center justify-between w-full
+                  px-2.5 py-1.5 rounded-lg
+                  bg-zinc-800 border border-zinc-700
+                  text-xs text-zinc-200 font-mono
+                  hover:bg-zinc-750 hover:border-indigo-600
+                  transition-colors duration-150
+                "
+                aria-label="Ollama model picker"
+                aria-expanded={pickerOpen}
+                title="Select Ollama model"
+              >
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span className="truncate max-w-[260px]">
+                    {activeOllamaModel || "Select model"}
+                  </span>
+                </span>
+                <svg
+                  className={`w-3.5 h-3.5 text-zinc-500 transition-transform ${
+                    pickerOpen ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {pickerOpen && (
+                <ul
+                  role="listbox"
+                  className="
+                    absolute left-0 right-0 z-30 mt-1
+                    rounded-lg bg-zinc-900 border border-zinc-700
+                    shadow-xl shadow-black/40 max-h-[260px] overflow-y-auto
+                  "
+                >
+                  {ollamaModels.map((m) => (
+                    <li key={m.name} role="option" aria-selected={m.name === activeOllamaModel}>
+                      <button
+                        onClick={() => {
+                          setActiveOllamaModel(m.name);
+                          setPickerOpen(false);
+                          ai.updateConfig({ cloud_model: m.name });
+                        }}
+                        className={`
+                          w-full text-left px-3 py-1.5 text-xs font-mono
+                          hover:bg-zinc-800 transition-colors
+                          ${
+                            m.name === activeOllamaModel
+                              ? "text-indigo-300 bg-zinc-800/80"
+                              : "text-zinc-300"
+                          }
+                        `}
+                      >
+                        {m.name}
+                        {m.size && (
+                          <span className="ml-2 text-zinc-600 font-sans">
+                            ({Math.round(m.size / 1_073_741_824).toFixed(0)} GB)
+                          </span>
+                        )}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ) : pulling || ai.ollamaPullProgress ? (
+            <div className="w-full">
+              <p
+                className="text-xs text-zinc-400 font-medium mb-1"
+                data-testid="ollama-pull-status"
+              >
+                {pullStatusLine ?? "Connecting to Ollama…"}
+              </p>
+              {ai.downloadProgress !== null && (
+                <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-emerald-500 transition-all duration-200"
+                    style={{
+                      width: `${Math.round((ai.downloadProgress ?? 0) * 100)}%`,
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={handlePullDefault}
+              className="
+                w-full px-3 py-1.5 rounded-lg
+                bg-indigo-600 hover:bg-indigo-500
+                text-white text-xs font-medium
+                transition-colors duration-150
+              "
+              data-testid="ollama-pull-default"
+            >
+              Auto-download llama3.2 (~2 GB)
+            </button>
+          )}
+        </div>
 
         {/* Tab bar */}
         <nav className="flex border-b border-zinc-800 bg-zinc-900">

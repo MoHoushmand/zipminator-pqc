@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "mesh_id": "zipminator-prod-001",
+  "node_count": 3,
+  "active_threat_level": "Normal",
+  "last_rotation_unix_ms": 1714086000000,
+  "rotation_counter": 7,
+  "module_keys_present": [
+    "csi_entropy",
+    "puek",
+    "em_canary",
+    "vital_auth",
+    "topo_auth",
+    "spatiotemporal"
+  ],
+  "nodes": [
+    {
+      "node_id": "a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0",
+      "name": "aggregator-living-room",
+      "online": true,
+      "is_coordinator": true,
+      "psk_epoch": 7,
+      "last_beacon_unix_ms": 1714086030000
+    },
+    {
+      "node_id": "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0",
+      "name": "esp32-bedroom",
+      "online": true,
+      "is_coordinator": false,
+      "psk_epoch": 7,
+      "last_beacon_unix_ms": 1714086029500
+    },
+    {
+      "node_id": "c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0",
+      "name": "esp32-kitchen",
+      "online": true,
+      "is_coordinator": false,
+      "psk_epoch": 7,
+      "last_beacon_unix_ms": 1714086029800
+    }
+  ]
+}

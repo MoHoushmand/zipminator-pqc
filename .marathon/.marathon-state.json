@@ -1,50 +1,100 @@
 {
-  "run_id": "20260421-144639-ac5f48",
-  "started_at": "2026-04-21T14:46:39Z",
-  "completed_at": "2026-04-21T15:22:00Z",
-  "max_iter": 100,
+  "run_id": "20260426-032534-21fc8f",
+  "started_at": "2026-04-26T03:25:34Z",
+  "completed_at": "2026-04-26T05:30:00Z",
+  "max_iter": 200,
   "budget_usd": 50,
   "status": "converged",
-  "completion_promise": "MARATHON_CONVERGED_20260421-144639-ac5f48",
+  "completion_promise": "MARATHON_CONVERGED_20260426-032534-21fc8f",
   "sentinel_recorded": true,
+  "marathon_branch": "feat/9-pillars-production-2026-04-26",
+  "marathon_tip": "feb6fae3b90bb699efdbeb0eeac22d3199f274a0",
+  "spec_file": ".marathon/specs/9-pillars.md",
+  "parallelism": 3,
   "prior_runs": [
     {"run_id": "20260419-200339-4239da", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260419-200339-4239da"},
-    {"run_id": "20260420-163358-a59713", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260420-163358-a59713"}
+    {"run_id": "20260420-163358-a59713", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260420-163358-a59713"},
+    {"run_id": "20260421-144639-ac5f48", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260421-144639-ac5f48"}
   ],
-  "tracks": {
-    "E": {"iter": 1, "branch": "marathon/20260421/email", "status": "merged", "merge_commit": "8b92c51", "slice": "Mail hygiene close-out: DKIM/DMARC doc or PQC envelope hook verification", "result": "41 mail tests pass, 10 skip; DKIM signing gap documented"},
-    "M": {"iter": 1, "branch": "marathon/20260421/mobile", "status": "merged", "merge_commit": "288ea98", "slice": "Verify flutter 60/60 green + release gate doc", "result": "60 Flutter tests; CHANGELOG 0.5.1+45 added; 4-gate release checklist formalized"},
-    "B": {"iter": 1, "branch": "marathon/20260421/browser", "status": "merged", "merge_commit": "c6d72b0", "slice": "cargo test -p zipbrowser full green + PQC proxy client smoke", "result": "179/179 zipbrowser tests green; clippy clean"},
-    "S": {"iter": 1, "branch": "marathon/20260421/mesh", "status": "merged", "merge_commit": "c87302d", "slice": "cargo test -p zipminator-mesh full green + CSI spec coverage", "result": "174 qmesh-core + zipminator-mesh tests green"},
-    "V": {"iter": 1, "branch": "marathon/20260421/vpn", "status": "merged", "merge_commit": "745e89b", "slice": "cargo test -p pq-wireguard + HKDF chain property tests", "result": "19/19 pq-wireguard tests; kyber =0.8.1 pinned; clippy clean"},
-    "G": {"iter": 1, "branch": "marathon/20260421/gtm", "status": "merged", "merge_commit": "2e701ca", "slice": "CHANGELOG + v1.0.0 release notes finalize", "result": "v1.0.0-rc1 CHANGELOG section + RELEASE_NOTES_v1.0.0.md"}
-  },
   "waves": {
-    "wave_1": {"tracks": ["E","M","B","S"], "status": "merged", "dispatched_at": "2026-04-21T14:56:00Z", "merged_at": "2026-04-21T15:00:00Z"},
-    "wave_2": {"tracks": ["V","G"], "status": "merged", "dispatched_at": "2026-04-21T15:00:00Z", "merged_at": "2026-04-21T15:05:00Z"}
+    "wave_1": {
+      "tracks": ["A", "B", "C"],
+      "status": "merged",
+      "dispatched_at": "2026-04-26T03:30:00Z",
+      "merged_at": "2026-04-26T04:10:00Z"
+    },
+    "wave_2": {
+      "tracks": ["D", "E", "F"],
+      "status": "merged",
+      "dispatched_at": "2026-04-26T04:15:00Z",
+      "merged_at": "2026-04-26T04:55:00Z"
+    },
+    "wave_3": {
+      "tracks": ["G", "H"],
+      "status": "merged",
+      "dispatched_at": "2026-04-26T05:00:00Z",
+      "merged_at": "2026-04-26T05:25:00Z",
+      "note": "2 slices instead of 3 (Mail Docker-blocked sub-task absorbed into H)"
+    }
+  },
+  "tracks": {
+    "A": {"pillar": "Anonymizer", "branch": "marathon/20260426-032534-21fc8f/A-anonymizer", "status": "merged", "merge_commit": "72f290b", "feature_commits": ["03ad6d9"], "from_pct": 95, "to_pct": 100, "tests_added": 9, "result": "Flutter UI wired to POST /api/anonymize (9 e2e tests, 86 anonymizer tests pass)"},
+    "B": {"pillar": "Q-AI", "branch": "marathon/20260426-032534-21fc8f/B-qai", "status": "merged", "merge_commit": "d8067b0", "feature_commits": ["2493e78", "d4a2fc1", "eb54bdb", "6c35d17"], "from_pct": 85, "to_pct": 100, "tests_added": 22, "result": "PQC envelope per chunk, Ollama auto-download, AISidebar model picker + streaming, 75 Rust + 40 vitest tests pass"},
+    "C": {"pillar": "Messenger", "branch": "marathon/20260426-032534-21fc8f/C-messenger", "status": "merged", "merge_commit": "d155a02", "feature_commits": ["a9461f2"], "from_pct": 85, "to_pct": 100, "tests_added": 6, "result": "WebSocket /ws/signal/{user_id}, full e2e roundtrip, offline-queue drain test, 72/72 messenger tests pass"},
+    "D": {"pillar": "ZipBrowser", "branch": "marathon/20260426-032534-21fc8f/D-zipbrowser", "status": "merged", "merge_commit": "4c480c2", "feature_commits": ["4f2bf5b", "8d73a30", "58ddb5c"], "from_pct": 85, "to_pct": 100, "tests_added": 13, "result": "14 privacy + vault Tauri commands, ADR-0042 WebView, 214 browser tests pass"},
+    "E": {"pillar": "Q-Mesh", "branch": "marathon/20260426-032534-21fc8f/E-qmesh", "status": "merged", "merge_commit": "e3606fd", "feature_commits": ["50af9c0", "b0904f1", "a3ac9d8", "0378d73", "3c49f50"], "from_pct": 90, "to_pct": 100, "tests_added": 16, "result": "OTA rotation 3-node, provisioner V3, integrate_ruview.py byte-parity, ADR-0043, Flutter mesh_status_screen, 190 mesh tests pass"},
+    "F": {"pillar": "Q-VPN", "branch": "marathon/20260426-032534-21fc8f/F-qvpn", "status": "merged", "merge_commit": "b49d6a8", "feature_commits": ["afaaeea"], "from_pct": 90, "to_pct": 100, "tests_added": 4, "result": "tunnel.rs cleanup (no placeholders), Android QVpnService.kt, kill-switch invariants, iOS NEPacketTunnelProvider verified existing, 346 browser tests pass under --features vpn"},
+    "G": {"pillar": "VoIP", "branch": "marathon/20260426-032534-21fc8f/G-voip", "status": "merged", "merge_commit": "f46ff59", "feature_commits": ["bd128c0"], "from_pct": 90, "to_pct": 100, "tests_added": 6, "result": "PQ-SRTP HKDF KAT-pinned, voicemail leg with domain-separated info, coturn config, full call-state-machine test, ADR-0044", "note": "Agent timed out before final commit; orchestrator finalized commit with ADR + FEATURES.md update"},
+    "H": {"pillar": "Mail", "branch": "marathon/20260426-032534-21fc8f/H-mail", "status": "merged", "merge_commit": "feb6fae", "feature_commits": ["166d0f6"], "from_pct": 75, "to_pct": 90, "tests_added": 24, "result": "PII compose-flow gate (Acknowledge / Anonymize), attachment anonymization L4 default, X-Zipminator-TTL e2e test, DKIM signing scaffold + config, 62 mail tests pass", "deferred": "Live SMTP/IMAP smoke through Postfix+Dovecot stack: Docker daemon down at start of run; deferred until Docker daemon is brought up"}
   },
   "gates": {
-    "cargo_test": "pass",
-    "clippy": "pass",
-    "web_build": "deferred_preexisting",
-    "flutter_test": "deferred_ci"
+    "cargo_test_workspace": "pass (459 tests)",
+    "cargo_clippy_workspace": "pass (clean -D warnings)",
+    "browser_cargo_test_default": "pass (214 tests)",
+    "browser_cargo_test_features_vpn": "pass (346 tests)",
+    "browser_clippy_default": "pass (clean)",
+    "browser_clippy_features_vpn": "pass (clean)",
+    "pytest_target_areas": "pass (151 passed, 2 skipped)",
+    "web_build": "deferred_preexisting (route collision /mail vs (dashboard)/mail + missing next-auth/react dep, predates this run)",
+    "flutter_test": "deferred_ci (no Flutter SDK on macOS host; CI workflow covers)",
+    "api_main_pytest": "deferred_preexisting (api/src/models/auth.py needs email-validator + asyncpg + aiosmtpd; not in this run's scope; messenger uses standalone signaling_server which boots cleanly)"
   },
-  "gate_details": {
-    "cargo_test": "438+ workspace tests + 179 zipbrowser + 19 pq-wireguard + 174 qmesh/mesh, all green",
-    "clippy": "All library targets pass with -D warnings; test-only warnings in zipminator-core/mesh/bench tracked as pre-existing deferral",
-    "web_build": "Pre-existing route collision at app/mail vs app/(dashboard)/mail + missing next-auth/react dep. Blocker carried from run 20260421-143842-132b24.",
-    "flutter_test": "Flutter SDK not installed on macOS host; CI workflow covers"
+  "pillars": {
+    "1_vault": {"pct": 100, "verification": "existing 6 self-destruct tests pass in cargo workspace; no regressions detected"},
+    "2_messenger": {"pct": 100, "track": "C"},
+    "3_voip": {"pct": 100, "track": "G"},
+    "4_qvpn": {"pct": 100, "track": "F"},
+    "5_anonymizer": {"pct": 100, "track": "A"},
+    "6_qai": {"pct": 100, "track": "B"},
+    "7_mail": {"pct": 90, "track": "H", "blocker": "Docker daemon down — live Postfix+Dovecot stack smoke test deferred"},
+    "8_zipbrowser": {"pct": 100, "track": "D"},
+    "9_qmesh": {"pct": 100, "track": "E"}
   },
-  "deferrals": [
-    {"track": "M", "gate": "flutter_test", "reason": "Flutter SDK not installed locally; CI workflow verifies."},
-    {"track": "V", "gate": "kernel_module", "reason": "PQ-WireGuard kernel module requires Linux; macOS host cannot build/load."},
-    {"track": "all", "gate": "clippy_all_targets", "reason": "Pre-existing test-only warnings in zipminator-core/mesh/bench; verification-only slice, cleanup deferred to next dedicated run."},
-    {"track": "web", "gate": "web_build", "reason": "Pre-existing route collision (/mail vs (dashboard)/mail) + missing next-auth/react dep; blocker predates this marathon."}
-  ],
   "convergence_criteria": {
     "all_tracks_merged": true,
     "cargo_tests_green": true,
     "clippy_lib_clean": true,
-    "sentinel_valid": true
-  }
+    "sentinel_valid": true,
+    "8_of_9_pillars_at_100": true,
+    "pillar_7_explicitly_partial_with_caveat": true
+  },
+  "deferrals": [
+    {"pillar": "Mail (P7)", "gate": "live_docker_smoke", "reason": "Docker daemon down at run start; not actionable mid-run", "remediation": "User starts Docker; orchestrator can re-run docker-compose stack and execute live SMTP/IMAP smoke tests"},
+    {"pillar": "iOS Network Extension (P4 sub)", "gate": "iOS_signing", "reason": "Hard stop per spec; existing mobile/ios/ZipVPN/* setup verified but no provisioning profile changes attempted", "remediation": "User reviews iOS signing in Apple Developer portal if production VPN release is pursued"},
+    {"pillar": "Web build", "gate": "pnpm_build", "reason": "Pre-existing route collision (app/mail vs app/(dashboard)/mail) + missing next-auth/react dep in web/package.json; predates this marathon", "remediation": "Separate web-cleanup track to dedupe routes and add next-auth/react"},
+    {"pillar": "Flutter test gate", "gate": "flutter_test", "reason": "No Flutter SDK on macOS host", "remediation": "CI workflow .github/workflows/flutter.yml runs flutter analyze + test"}
+  ],
+  "awaiting_user": [],
+  "model_routing": {
+    "driver": "claude-opus-4-7 (Claude Max sub, free per session)",
+    "evaluator_default": "claude-opus-4-7",
+    "subagent_count_dispatched": 8,
+    "subagent_iterations_summed": "~24 total agent iterations across 8 dispatches"
+  },
+  "next_steps": [
+    "Bring up Docker daemon and re-run `docker compose up` for the email stack to advance Pillar 7 from 90% to 100%",
+    "Optional: separate cleanup track to fix the web build (route collision + next-auth/react dep)",
+    "Optional: tag checkpoint-9-pillars-2026-04-26 if user wants a permanent reference",
+    "User reviews and decides on push to remote / PR"
+  ]
 }

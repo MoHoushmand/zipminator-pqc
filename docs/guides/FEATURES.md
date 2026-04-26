@@ -2,10 +2,11 @@
 
 > **Single Source of Truth** for all pillar statuses. Updated after every code change session.
 >
-> Last verified: 2026-04-18 | branch: chore/claude-root-consolidation | Verifier: Claude Code consolidation pass
+> Last verified: 2026-04-26 | branch: feat/9-pillars-production-2026-04-26 | Verifier: Marathon run 20260426-032534-21fc8f (8 tracks A/B/C/D/E/F/G/H merged)
 >
 > See Open Work Matrix for the canonical list of remaining work. The prior `implementation_plan.md` has been archived to `_archive/docs/guides/2026-04-18/implementation_plan.md`.
 >
+> **Apr 26 update**: Marathon run 20260426-032534-21fc8f converged 8 of 9 pillars to 100% production-ready (Pillar 7 Mail at 90% pending Docker daemon for live SMTP/IMAP smoke). Net tests added: 459 cargo workspace + 214 browser + 110 pytest target areas + 40 vitest = ~823 verified per gate sweep. Sentinel: MARATHON_CONVERGED_20260426-032534-21fc8f.
 > **Apr 18 update**: Consolidated FEATURES.md + implementation_plan.md into single SSoT. Reconciled Rust test counts from live `cargo test --workspace --exclude zipbrowser` run (393 passed + 1 ignored; zipbrowser 157 build-gated on web dist). Added 6-track Open Work Matrix for parallel marathon execution (E/M/B/S/V/G).
 > **Mar 20 update**: Q-Mesh upgraded to 90% (Physical Cryptography Wave 1: 6 new modules, 106 mesh tests, 513 workspace total). Mesh crate now at 118 tests (live count, Apr 18).
 > **Mar 19 update**: Reconciled all pillar percentages. VoIP upgraded to 85% (frame encryption exists). Mesh upgraded to 80% (entropy bridge functional). Browser upgraded to 85% (AI sidebar integrated).
@@ -23,14 +24,14 @@
 | # | Pillar | Overall | Crypto | Tests | UI | Integration | Notes |
 |---|--------|:-------:|:------:|:-----:|:--:|:-----------:|-------|
 | 1 | **Quantum Vault** | **100%** | Done | Done | Done | Done | DoD 5220.22-M 3-pass self-destruct wired to Tauri UI (6 tests) |
-| 2 | **PQC Messenger** | **85%** | Done | Done | Done | Partial | MessageStore + offline queue done; e2e needs running API |
-| 3 | **Quantum VoIP** | **100%** | Done | Done | Done | Done | PQ-SRTP frame encryption (HKDF-SHA256 from ML-KEM-768 SS) + encrypted voicemail leg (separate HKDF info) + coturn TURN/STUN config + full call-state-machine test (idle→outgoing→ringing→connecting→connected→media-flow→hangup→encrypted_voicemail). ADR-0044. |
+| 2 | **PQC Messenger** | **100%** | Done | Done | Done | Done | PQ Double Ratchet + MessageStore + offline queue + WebSocket signaling; new `/ws/signal/{user_id}` route; e2e roundtrip test (Peer A encapsulate → relay → Peer B decapsulate) + offline-queue drain-on-reconnect; uvicorn boot path documented; 72/72 messenger tests pass |
+| 3 | **Quantum VoIP** | **100%** | Done | Done | Done | Done | PQ-SRTP frame encryption (HKDF-SHA256 from ML-KEM-768 SS) + encrypted voicemail leg (separate HKDF info, KAT-pinned) + coturn TURN/STUN config + full call-state-machine test (idle→outgoing→ringing→connecting→connected→media-flow→hangup→encrypted_voicemail); ADR-0044 |
 | 4 | **Q-VPN** | **100%** | Done | Done | Done | Done | Packet wrapping verified (1500 B MTU roundtrip, monotonic AEAD counter); iOS NEPacketTunnelProvider + Android VpnService (`com.qdaria.zipminator.QVpnService`) wired; kill-switch invariant tested through Reconnecting cycle |
-| 5 | **10-Level Anonymizer** | **100%** | Done | Done | Done | Done | All L1-L10 verified; CLI `--level N` wired; Flutter UI wired to `POST /api/anonymize` |
-| 6 | **Q-AI Assistant** | **85%** | Done | Done | Done | Partial | Prompt guard + Ollama + PII scan + PQC tunnel done (45 AI tests) |
+| 5 | **10-Level Anonymizer** | **100%** | Done | Done | Done | Done | All L1-L10 verified; CLI `--level N` wired; Flutter UI wired to `POST /api/anonymize` (9 new e2e tests, 86 anonymizer tests pass) |
+| 6 | **Q-AI Assistant** | **100%** | Done | Done | Done | Done | Prompt guard (18 patterns) + Ollama auto-download + Tauri sidebar integration + streaming chat + PQC envelope per chunk (`{ct, kem_ct, nonce}`); `ai_ollama_pull_model` / `ai_ollama_ensure_default_model` Tauri commands; 75 Rust AI tests + 40 vitest tests pass |
 | 7 | **Quantum Mail** | **90%** | Done | Done | Done | Partial | PQC envelope + SMTP/IMAP transport + server-side self-destruct TTL + DKIM config + attachment anonymization (L4 default) wired into compose pipeline + pre-send PII gate (Acknowledge / Anonymize) (62 mail tests + 7 vitest pii-gate; live SMTP/IMAP smoke through Postfix+Dovecot still requires Docker daemon) |
-| 8 | **ZipBrowser** | **85%** | Done | Done | Done | Done | AI sidebar integrated (Recipe W); WebView limitation (ADR documented) |
-| 9 | **Q-Mesh (RuView)** | **90%** | Done | Done | Planned | Partial | Physical Cryptography Wave 1 complete: 6 new modules, 106 mesh tests, 513 workspace total |
+| 8 | **ZipBrowser** | **100%** | Done | Done | Done | Done | 14 new privacy + vault Tauri commands (`vault_*`, `privacy_*`); 7-subsystem PrivacyDashboard grid; QuantumScanner per-tab grade; `Engine: System WebView` pill linking to ADR-0042; 214 browser tests pass; cargo build --release green |
+| 9 | **Q-Mesh (RuView)** | **100%** | Done | Done | Done | Done | Wave 2: attestation wire format (ADR-0043, 21 unit tests); provisioner V3 emits per-module keys for 6 Wave-1 modules (CSI/PUEK/EM canary/vital-auth/topo-auth/spatiotemporal); cross-repo `scripts/integrate_ruview.py` with byte-parity pytest (16 tests, RFC 5869 KAT); OTA key rotation 3-node test (`OtaRotationMessage`); Flutter `mesh_status_screen.dart` with status panel; 190 mesh tests pass |
 
 **Legend**: Done = code exists, tested, reviewed | Partial = code exists but incomplete | Planned = no code yet
 

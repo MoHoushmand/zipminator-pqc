@@ -266,6 +266,14 @@ export default function App() {
         security={activeTab?.security ?? "none"}
         loadTimeMs={loadTimeMs}
       />
+
+      {/*
+        ZipBrowser uses the host system WebView, not a custom browser engine.
+        This is a deliberate engineering decision — see
+        docs/adr/0042-system-webview-limitation.md for the rationale (cost,
+        attack surface, and the fact that the privacy/PQC value lives in the
+        proxy/VPN/privacy layers, not the renderer).
+      */}
     </div>
   );
 }

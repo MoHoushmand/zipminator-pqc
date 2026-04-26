@@ -571,6 +571,281 @@ pub async fn self_destruct_file(
 }
 
 // ---------------------------------------------------------------------------
+// Privacy engine commands (Pillar 8 ZipBrowser)
+// ---------------------------------------------------------------------------
+
+/// Status snapshot of all privacy subsystems.
+///
+/// Mirrored to the React `PrivacyDashboard` component as `PrivacyStatus`.
+#[derive(Debug, Clone, Serialize)]
+pub struct PrivacyStatus {
+    pub fingerprint_resistance: bool,
+    pub cookie_rotation: bool,
+    pub telemetry_blocking: bool,
+    pub strict_pqc_mode: bool,
+    pub entropy_pool_bytes: u64,
+    pub entropy_source: zipbrowser::privacy::entropy::EntropySource,
+    pub session_token: String,
+    pub session_rotation_count: u64,
+    pub blocked_tracker_total: u64,
+}
+
+#[tauri::command]
+pub fn privacy_get_status(state: State<'_, AppState>) -> Result<PrivacyStatus, String> {
+    let toggles = state
+        .privacy_toggles
+        .lock()
+        .map_err(|e| format!("Lock: {}", e))?
+        .clone();
+
+    let engine = state
+        .privacy_engine()
+        .ok_or_else(|| "Privacy engine not initialized".to_string())?;
+
+    let session_info = engine.session.session_info();
+
+    Ok(PrivacyStatus {
+        fingerprint_resistance: toggles.fingerprint_resistance,
+        cookie_rotation: toggles.cookie_rotation,
+        telemetry_blocking: toggles.telemetry_blocking,
+        strict_pqc_mode: toggles.strict_pqc_mode,
+        entropy_pool_bytes: engine.entropy.pool_available(),
+        entropy_source: engine.entropy.pool_source(),
+        session_token: session_info.token,
+        session_rotation_count: session_info.rotation_count,
+        blocked_tracker_total: engine.blocker.total_blocked(),
+    })
+}
+
+#[tauri::command]
+pub fn privacy_toggle_protection(
+    state: State<'_, AppState>,
+    name: String,
+    enabled: bool,
+) -> Result<(), String> {
+    let mut toggles = state
+        .privacy_toggles
+        .lock()
+        .map_err(|e| format!("Lock: {}", e))?;
+    match name.as_str() {
+        "fingerprint_resistance" => toggles.fingerprint_resistance = enabled,
+        "cookie_rotation" => toggles.cookie_rotation = enabled,
+        "telemetry_blocking" => toggles.telemetry_blocking = enabled,
+        "strict_pqc_mode" => {
+            toggles.strict_pqc_mode = enabled;
+            // Propagate strict mode to the auditor if engine is initialized.
+            if let Some(engine) = state.privacy_engine() {
+                engine.auditor.set_strict_mode(enabled);
+            }
+        }
+        _ => return Err(format!("Unknown protection: {}", name)),
+    }
+    log::info!("Privacy protection '{}' set to {}", name, enabled);
+    Ok(())
+}
+
+#[tauri::command]
+pub fn privacy_run_audit(
+    state: State<'_, AppState>,
+) -> Result<zipbrowser::privacy::audit::AuditReport, String> {
+    let engine = state
+        .privacy_engine()
+        .ok_or_else(|| "Privacy engine not initialized".to_string())?;
+    Ok(engine.audit())
+}
+
+#[tauri::command]
+pub fn privacy_get_latest_audit(
+    state: State<'_, AppState>,
+) -> Result<Option<zipbrowser::privacy::audit::AuditReport>, String> {
+    let engine = state
+        .privacy_engine()
+        .ok_or_else(|| "Privacy engine not initialized".to_string())?;
+    Ok(engine.auditor.latest_report())
+}
+
+#[tauri::command]
+pub fn privacy_rotate_session(
+    state: State<'_, AppState>,
+) -> Result<zipbrowser::privacy::session::SessionInfo, String> {
+    let engine = state
+        .privacy_engine()
+        .ok_or_else(|| "Privacy engine not initialized".to_string())?;
+    let info = engine.rotate_session();
+    // Mirror the new token into AppState.session_token so the existing
+    // get_session_token command stays consistent.
+    if let Ok(mut t) = state.session_token.lock() {
+        *t = info.token.clone();
+    }
+    Ok(info)
+}
+
+// ---------------------------------------------------------------------------
+// Password vault commands (Pillar 8 ZipBrowser, sub-system 6)
+// ---------------------------------------------------------------------------
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum VaultState {
+    Locked,
+    NeedsCreate,
+    Unlocked,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct VaultEntrySummary {
+    pub id: String,
+    pub domain: String,
+    pub username: String,
+    pub created_at: u64,
+    pub updated_at: u64,
+    pub has_totp: bool,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct VaultEntryPlain {
+    pub domain: String,
+    pub username: String,
+    pub password: String,
+    pub notes: Option<String>,
+}
+
+fn vault(state: &State<'_, AppState>) -> Result<std::sync::Arc<zipbrowser::privacy::password_manager::PasswordVault>, String> {
+    state
+        .privacy_engine()
+        .map(|e| e.passwords.clone())
+        .ok_or_else(|| "Privacy engine not initialized".to_string())
+}
+
+#[tauri::command]
+pub fn vault_get_state(state: State<'_, AppState>) -> Result<VaultState, String> {
+    let v = vault(&state)?;
+    if v.is_unlocked() {
+        Ok(VaultState::Unlocked)
+    } else if v.vault_path_exists() {
+        Ok(VaultState::Locked)
+    } else {
+        Ok(VaultState::NeedsCreate)
+    }
+}
+
+#[tauri::command]
+pub fn vault_create(
+    state: State<'_, AppState>,
+    master_password: String,
+) -> Result<(), String> {
+    if master_password.len() < 12 {
+        return Err("Master password must be at least 12 characters".to_string());
+    }
+    let v = vault(&state)?;
+    v.create(master_password.as_bytes())
+        .map_err(|e| format!("Vault create failed: {}", e))
+}
+
+#[tauri::command]
+pub fn vault_unlock(
+    state: State<'_, AppState>,
+    master_password: String,
+) -> Result<(), String> {
+    let v = vault(&state)?;
+    v.unlock(master_password.as_bytes())
+        .map_err(|e| format!("Vault unlock failed: {}", e))
+}
+
+#[tauri::command]
+pub fn vault_lock(state: State<'_, AppState>) -> Result<(), String> {
+    let v = vault(&state)?;
+    v.lock();
+    Ok(())
+}
+
+#[tauri::command]
+pub fn vault_list_entries(state: State<'_, AppState>) -> Result<Vec<VaultEntrySummary>, String> {
+    let v = vault(&state)?;
+    let entries = v
+        .list_entries()
+        .map_err(|e| format!("Vault list failed: {}", e))?;
+    Ok(entries
+        .into_iter()
+        .map(|e| VaultEntrySummary {
+            id: e.id,
+            domain: e.domain,
+            username: e.username,
+            created_at: e.created_at,
+            updated_at: e.updated_at,
+            has_totp: !e.encrypted_totp_secret.is_empty(),
+        })
+        .collect())
+}
+
+#[tauri::command]
+pub fn vault_add_entry(
+    state: State<'_, AppState>,
+    domain: String,
+    username: String,
+    password: String,
+    notes: Option<String>,
+) -> Result<VaultEntrySummary, String> {
+    let v = vault(&state)?;
+    let plain = zipbrowser::privacy::password_manager::PlainEntry {
+        domain,
+        username,
+        password: password.into_bytes(),
+        notes,
+        totp_secret: None,
+    };
+    let entry = v
+        .add_entry(plain)
+        .map_err(|e| format!("Vault add failed: {}", e))?;
+    Ok(VaultEntrySummary {
+        id: entry.id,
+        domain: entry.domain,
+        username: entry.username,
+        created_at: entry.created_at,
+        updated_at: entry.updated_at,
+        has_totp: !entry.encrypted_totp_secret.is_empty(),
+    })
+}
+
+#[tauri::command]
+pub fn vault_get_entry(
+    state: State<'_, AppState>,
+    id: String,
+) -> Result<VaultEntryPlain, String> {
+    validate_id(&id)?;
+    let v = vault(&state)?;
+    let plain = v
+        .get_entry(&id)
+        .map_err(|e| format!("Vault get failed: {}", e))?;
+    Ok(VaultEntryPlain {
+        domain: plain.domain.clone(),
+        username: plain.username.clone(),
+        password: String::from_utf8_lossy(&plain.password).into_owned(),
+        notes: plain.notes.clone(),
+    })
+}
+
+#[tauri::command]
+pub fn vault_delete_entry(state: State<'_, AppState>, id: String) -> Result<(), String> {
+    validate_id(&id)?;
+    let v = vault(&state)?;
+    v.delete_entry(&id)
+        .map_err(|e| format!("Vault delete failed: {}", e))
+}
+
+#[tauri::command]
+pub fn vault_generate_password(
+    state: State<'_, AppState>,
+    length: usize,
+) -> Result<String, String> {
+    if !(8..=256).contains(&length) {
+        return Err("Length must be between 8 and 256".to_string());
+    }
+    let v = vault(&state)?;
+    Ok(v.generate_password(length))
+}
+
+// ---------------------------------------------------------------------------
 // Input validation helpers
 // ---------------------------------------------------------------------------
 
@@ -598,5 +873,189 @@ fn sanitize_url_input(input: &str) -> String {
         trimmed[..2048].to_string()
     } else {
         trimmed
+    }
+}
+
+// ── Tests ────────────────────────────────────────────────────────────────────
+//
+// These tests exercise the *logic* behind the Tauri command handlers. Because
+// `#[tauri::command]` wraps functions in a way that requires an actual Tauri
+// `State<'_, T>`, we test by going through `AppState` directly.
+
+#[cfg(test)]
+mod privacy_command_tests {
+    use super::*;
+    use crate::state::AppState;
+    use tempfile::TempDir;
+
+    fn make_state(tmp: &TempDir) -> AppState {
+        let s = AppState::new();
+        s.init_privacy(tmp.path(), &tmp.path().join("vault.json"));
+        s
+    }
+
+    #[test]
+    fn toggle_fingerprint_resistance_off_then_on() {
+        let tmp = TempDir::new().unwrap();
+        let s = make_state(&tmp);
+
+        // Off
+        {
+            let mut t = s.privacy_toggles.lock().unwrap();
+            t.fingerprint_resistance = false;
+        }
+        assert!(!s.privacy_toggles.lock().unwrap().fingerprint_resistance);
+        // On
+        {
+            let mut t = s.privacy_toggles.lock().unwrap();
+            t.fingerprint_resistance = true;
+        }
+        assert!(s.privacy_toggles.lock().unwrap().fingerprint_resistance);
+    }
+
+    #[test]
+    fn audit_report_has_grade() {
+        let tmp = TempDir::new().unwrap();
+        let s = make_state(&tmp);
+        let engine = s.privacy_engine().unwrap();
+        engine.set_vpn_active(true);
+        engine.set_kill_switch_active(true);
+        let report = engine.audit();
+        // Score is 0-100; grade should be one of A-F
+        assert!(['A', 'B', 'C', 'D', 'F'].contains(&report.grade()));
+    }
+
+    #[test]
+    fn rotate_session_increments_count() {
+        let tmp = TempDir::new().unwrap();
+        let s = make_state(&tmp);
+        let engine = s.privacy_engine().unwrap();
+        let info1 = engine.session.session_info();
+        engine.rotate_session();
+        let info2 = engine.session.session_info();
+        assert_eq!(info2.rotation_count, info1.rotation_count + 1);
+        assert_ne!(info1.token, info2.token);
+    }
+
+    #[test]
+    fn telemetry_blocker_increments_total() {
+        let tmp = TempDir::new().unwrap();
+        let s = make_state(&tmp);
+        let engine = s.privacy_engine().unwrap();
+        let before = engine.blocker.total_blocked();
+        let _ = engine.check_url("https://google-analytics.com/collect");
+        let after = engine.blocker.total_blocked();
+        assert_eq!(after, before + 1);
+    }
+}
+
+#[cfg(test)]
+mod vault_command_tests {
+    use crate::state::AppState;
+    use tempfile::TempDir;
+    use zipbrowser::privacy::password_manager::PlainEntry;
+
+    fn make_state(tmp: &TempDir) -> AppState {
+        let s = AppState::new();
+        s.init_privacy(tmp.path(), &tmp.path().join("vault.json"));
+        s
+    }
+
+    #[test]
+    fn vault_lifecycle_create_unlock_lock() {
+        let tmp = TempDir::new().unwrap();
+        let s = make_state(&tmp);
+        let v = s.privacy_engine().unwrap().passwords.clone();
+
+        // Initially: no vault file, vault locked.
+        assert!(!v.is_unlocked());
+        assert!(!v.vault_path_exists());
+
+        // Create with a password.
+        v.create(b"correct-horse-battery-staple-1234").unwrap();
+        assert!(v.is_unlocked());
+        assert!(v.vault_path_exists());
+
+        // Lock then unlock.
+        v.lock();
+        assert!(!v.is_unlocked());
+
+        v.unlock(b"correct-horse-battery-staple-1234").unwrap();
+        assert!(v.is_unlocked());
+    }
+
+    #[test]
+    fn vault_add_and_retrieve_entry() {
+        let tmp = TempDir::new().unwrap();
+        let s = make_state(&tmp);
+        let v = s.privacy_engine().unwrap().passwords.clone();
+
+        v.create(b"correct-horse-battery-staple-1234").unwrap();
+
+        let entry = v
+            .add_entry(PlainEntry {
+                domain: "github.com".to_string(),
+                username: "alice@example.com".to_string(),
+                password: b"super-secret-pw".to_vec(),
+                notes: Some("work account".to_string()),
+                totp_secret: None,
+            })
+            .unwrap();
+
+        assert_eq!(entry.domain, "github.com");
+
+        // Retrieve by ID.
+        let plain = v.get_entry(&entry.id).unwrap();
+        assert_eq!(plain.domain, "github.com");
+        assert_eq!(plain.username, "alice@example.com");
+        assert_eq!(plain.password, b"super-secret-pw");
+    }
+
+    #[test]
+    fn vault_generate_password_has_correct_length() {
+        let tmp = TempDir::new().unwrap();
+        let s = make_state(&tmp);
+        let v = s.privacy_engine().unwrap().passwords.clone();
+        let pw = v.generate_password(24);
+        assert_eq!(pw.len(), 24);
+        // Must be ASCII printable.
+        assert!(pw.chars().all(|c| c.is_ascii() && !c.is_ascii_control()));
+    }
+
+    #[test]
+    fn vault_unlock_rejects_wrong_password() {
+        let tmp = TempDir::new().unwrap();
+        let s = make_state(&tmp);
+        let v = s.privacy_engine().unwrap().passwords.clone();
+
+        v.create(b"correct-horse-battery-staple-1234").unwrap();
+        v.lock();
+
+        let result = v.unlock(b"wrong-password");
+        assert!(result.is_err());
+        assert!(!v.is_unlocked());
+    }
+
+    #[test]
+    fn vault_delete_entry_removes_it() {
+        let tmp = TempDir::new().unwrap();
+        let s = make_state(&tmp);
+        let v = s.privacy_engine().unwrap().passwords.clone();
+
+        v.create(b"correct-horse-battery-staple-1234").unwrap();
+
+        let e = v
+            .add_entry(PlainEntry {
+                domain: "example.com".to_string(),
+                username: "u".to_string(),
+                password: b"p".to_vec(),
+                notes: None,
+                totp_secret: None,
+            })
+            .unwrap();
+
+        assert_eq!(v.list_entries().unwrap().len(), 1);
+        v.delete_entry(&e.id).unwrap();
+        assert_eq!(v.list_entries().unwrap().len(), 0);
     }
 }

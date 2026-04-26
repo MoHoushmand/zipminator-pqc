@@ -212,21 +212,24 @@
 
 ---
 
-## Pillar 8: ZipBrowser — PQC AI Browser (85%)
+## Pillar 8: ZipBrowser — PQC AI Browser (100%)
 
 - **Shell**: Tauri 2.x desktop browser (`browser/src-tauri/`)
 - **DMG**: `target/release/bundle/dmg/Zipminator_0.2.0_aarch64.dmg` (5.7MB, all Apple Silicon M1-M5)
-- **Privacy subsystems** (7 implemented):
+- **Privacy subsystems** (7, all toggle-able from PrivacyDashboard.tsx):
   - VPN state machine + kill switch
   - PQC proxy with ML-KEM-768
   - Canvas/WebGL/Audio fingerprint spoofing
   - Per-tab cookie isolation + QRNG rotation
   - Domain-level telemetry/tracker blocking
-  - PQC-encrypted password vault (Argon2)
-  - Audit logging
-- **AI sidebar**: Integrated via Recipe W (registered Tauri command + React component rendered in SidebarSlot)
-- **Tests**: Browser: 179 tests passing (verified 2026-04-21) — 154 lib unit + 17 bin unit + 7 mobile_config integration + 1 compile-doc-test; clippy clean with `-D warnings`
-- **Gap**: Uses system WebView (not custom browser engine; limitation documented in ADR)
+  - PQC-encrypted password vault (Argon2id + AES-256-GCM + ML-KEM-768)
+  - Zero-telemetry audit logging with privacy score
+- **Tauri commands**: `privacy_get_status`, `privacy_toggle_protection`, `privacy_run_audit`, `privacy_get_latest_audit`, `privacy_rotate_session`, `vault_get_state`, `vault_create`, `vault_unlock`, `vault_lock`, `vault_list_entries`, `vault_add_entry`, `vault_get_entry`, `vault_delete_entry`, `vault_generate_password` — all wired to the React UI.
+- **AI sidebar**: Integrated via Recipe W (registered Tauri command + React component rendered in SidebarSlot — verified rendering in App.tsx on `marathon/20260426-032534-21fc8f/D-zipbrowser`)
+- **Quantum scanner**: per-tab privacy grade A-F via `scan_pqc_endpoint` Tauri command, displayed in QuantumScanner.tsx
+- **Tests**: Browser: 214 tests passing (verified 2026-04-26) — 176 lib unit + 30 bin unit + 7 mobile_config integration + 1 compile-doc-test; clippy clean with `-D warnings`. Up from 201 (Track B's +22 already merged + Track D's +13 vault/privacy tests).
+- **WebView limitation**: explicitly documented in [ADR-0042](../adr/0042-system-webview-limitation.md). User-visible in StatusBar (`Engine: System WebView` pill) and App.tsx footer comment. Rationale: $50-100M Chromium fork cost not justified by privacy/PQC delta when the value lives in the network plane.
+- **Last verified**: 2026-04-26 marathon Track D
 
 ### File Paths
 

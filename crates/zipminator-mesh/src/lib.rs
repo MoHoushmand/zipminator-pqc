@@ -30,7 +30,14 @@ pub mod vital_auth;
 // Wave 2: RuView attestation wire format
 pub mod attestation;
 
+// Wave 2: OTA mesh-key rotation message
+pub mod ota;
+
 pub use entropy_bridge::{EntropyBridge, EntropyBridgeError, PoolEntropySource};
 pub use mesh_key::MeshKey;
+pub use ota::{
+    DeserializedOta, OtaError, OtaNodeState, OtaRotationMessage, OTA_MAGIC, OTA_VERSION,
+    OTA_WIRE_SIZE,
+};
 pub use provisioner::{MeshProvisioner, NVS_MAGIC};
 pub use siphash_key::SipHashKey;

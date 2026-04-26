@@ -58,6 +58,123 @@ export class EmailCryptoService {
         this.keyDirUrl = keyDirUrl.replace(/\/$/, '');
     }
 
+    // ── Attachment anonymization (default L4 per pillar 7 spec) ─────────────
+
+    /**
+     * Default anonymization level for email attachments. L4 hashes values
+     * to fixed-width hex strings: identifiers stay unique-but-unlinkable,
+     * column structure is preserved.
+     */
+    static readonly DEFAULT_ATTACHMENT_ANON_LEVEL = 4;
+
+    /**
+     * Run an attachment through the anonymizer before encryption.
+     *
+     * @param fileBytes  Raw bytes of the file to anonymize
+     * @param filename   Original filename (used to infer content type)
+     * @param level      Anonymization level 1-10 (default L4)
+     * @param apiBase    Base URL of the anonymize service (default localhost)
+     * @returns          Anonymized bytes + the new filename
+     */
+    async anonymizeAttachment(
+        fileBytes: Uint8Array,
+        filename: string,
+        level: number = EmailCryptoService.DEFAULT_ATTACHMENT_ANON_LEVEL,
+        apiBase: string = 'http://localhost:8000',
+    ): Promise<{ bytes: Uint8Array; filename: string }> {
+        if (!Number.isInteger(level) || level < 1 || level > 10) {
+            throw new RangeError(
+                `Anonymization level must be 1-10 inclusive, got ${level}`,
+            );
+        }
+        const ext = filename.split('.').pop()?.toLowerCase() ?? '';
+        const mimeType =
+            ext === 'csv' ? 'text/csv' :
+            ext === 'json' ? 'application/json' :
+            ext === 'xlsx' ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' :
+            ext === 'xls' ? 'application/vnd.ms-excel' :
+            ext === 'parquet' ? 'application/parquet' :
+            'text/plain';
+
+        const formData = new FormData();
+        formData.append('file', new Blob([fileBytes], { type: mimeType }), filename);
+
+        const url = `${apiBase.replace(/\/$/, '')}/v1/anonymize-attachment?level=${level}`;
+        const response = await fetch(url, { method: 'POST', body: formData });
+        if (!response.ok) {
+            const body = await response.text();
+            throw new Error(`anonymize-attachment ${response.status}: ${body}`);
+        }
+        const buf = await response.arrayBuffer();
+        const disposition = response.headers.get('Content-Disposition') ?? '';
+        const nameMatch = disposition.match(/filename="?([^";]+)"?/);
+        const newFilename = nameMatch
+            ? nameMatch[1]
+            : `anon_L${level}_${filename}`;
+        return { bytes: new Uint8Array(buf), filename: newFilename };
+    }
+
+    /**
+     * Compose helper: anonymize each attachment first, then envelope-encrypt
+     * them together with the body. Always anonymizes by default (L4) so PII
+     * never crosses the wire as plaintext.
+     *
+     * @param recipientPk     Recipient ML-KEM-768 public key
+     * @param body            Email body (will be encrypted, NOT anonymized)
+     * @param headers         Email header AAD
+     * @param attachments     Files to anonymize and attach
+     * @param anonymizeLevel  Override default L4 (1-10)
+     * @returns               EmailEnvelope for the body and per-attachment metadata
+     */
+    async composeWithAnonymizedAttachments(
+        recipientPk: Uint8Array,
+        body: string,
+        headers: string,
+        attachments: Array<{ bytes: Uint8Array; filename: string }>,
+        anonymizeLevel: number = EmailCryptoService.DEFAULT_ATTACHMENT_ANON_LEVEL,
+    ): Promise<{
+        bodyEnvelope: EmailEnvelope;
+        attachmentEnvelopes: Array<{
+            originalFilename: string;
+            anonymizedFilename: string;
+            envelope: EmailEnvelope;
+            anonymizationLevel: number;
+        }>;
+    }> {
+        const bodyEnvelope = await this.encryptEmail(recipientPk, body, headers);
+
+        const attachmentEnvelopes: Array<{
+            originalFilename: string;
+            anonymizedFilename: string;
+            envelope: EmailEnvelope;
+            anonymizationLevel: number;
+        }> = [];
+
+        for (const att of attachments) {
+            const anonymized = await this.anonymizeAttachment(
+                att.bytes,
+                att.filename,
+                anonymizeLevel,
+            );
+            // Encrypt the anonymized bytes (treated as a binary "body").
+            const decoder = new TextDecoder('utf-8', { fatal: false });
+            const plaintextStr = decoder.decode(anonymized.bytes);
+            const envelope = await this.encryptEmail(
+                recipientPk,
+                plaintextStr,
+                `${headers}\r\nX-Zipminator-Attachment: ${anonymized.filename}`,
+            );
+            attachmentEnvelopes.push({
+                originalFilename: att.filename,
+                anonymizedFilename: anonymized.filename,
+                envelope,
+                anonymizationLevel: anonymizeLevel,
+            });
+        }
+
+        return { bodyEnvelope, attachmentEnvelopes };
+    }
+
     // ── Encryption ───────────────────────────────────────────────────────────
 
     /**

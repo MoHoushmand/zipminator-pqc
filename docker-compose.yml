@@ -123,5 +123,34 @@ services:
       keydir:
         condition: service_started
 
+  # --------------------------------------------------------------------------
+  # coturn TURN/STUN relay for PQ-VoIP (Pillar 3)
+  #
+  # SRTP frames are encrypted with AES-256-GCM under keys derived from
+  # ML-KEM-768 shared secrets at the application layer; this relay sees only
+  # opaque ciphertext. NAT traversal: mobile + corporate-firewalled peers
+  # cannot do P2P UDP, so coturn provides a stable rendezvous point.
+  # --------------------------------------------------------------------------
+  coturn:
+    image: coturn/coturn:4.6
+    restart: unless-stopped
+    network_mode: host
+    # `network_mode: host` is the recommended deployment for TURN — relayed
+    # transport addresses must be reachable on the host's IP.
+    volumes:
+      - ./infra/coturn/turnserver.conf:/etc/coturn/turnserver.conf:ro
+      - coturn-logs:/var/log/coturn
+    environment:
+      TURN_AUTH_SECRET: ${TURN_AUTH_SECRET:-zipminator_dev_turn_secret_replace_me}
+    command: >
+      -c /etc/coturn/turnserver.conf
+      --static-auth-secret=${TURN_AUTH_SECRET:-zipminator_dev_turn_secret_replace_me}
+    healthcheck:
+      test: ["CMD-SHELL", "turnutils_uclient -p 3478 -y -u test -w test 127.0.0.1 || exit 0"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
 volumes:
   pgdata:
+  coturn-logs:

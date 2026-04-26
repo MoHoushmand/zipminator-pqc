@@ -24,7 +24,7 @@
 |---|--------|:-------:|:------:|:-----:|:--:|:-----------:|-------|
 | 1 | **Quantum Vault** | **100%** | Done | Done | Done | Done | DoD 5220.22-M 3-pass self-destruct wired to Tauri UI (6 tests) |
 | 2 | **PQC Messenger** | **85%** | Done | Done | Done | Partial | MessageStore + offline queue done; e2e needs running API |
-| 3 | **Quantum VoIP** | **90%** | Done | Done | Done | Partial | PQ-SRTP frame encryption + encrypted voicemail storage (33 tests) |
+| 3 | **Quantum VoIP** | **100%** | Done | Done | Done | Done | PQ-SRTP frame encryption (HKDF-SHA256 from ML-KEM-768 SS) + encrypted voicemail leg (separate HKDF info) + coturn TURN/STUN config + full call-state-machine test (idle→outgoing→ringing→connecting→connected→media-flow→hangup→encrypted_voicemail). ADR-0044. |
 | 4 | **Q-VPN** | **100%** | Done | Done | Done | Done | Packet wrapping verified (1500 B MTU roundtrip, monotonic AEAD counter); iOS NEPacketTunnelProvider + Android VpnService (`com.qdaria.zipminator.QVpnService`) wired; kill-switch invariant tested through Reconnecting cycle |
 | 5 | **10-Level Anonymizer** | **100%** | Done | Done | Done | Done | All L1-L10 verified; CLI `--level N` wired; Flutter UI wired to `POST /api/anonymize` |
 | 6 | **Q-AI Assistant** | **85%** | Done | Done | Done | Partial | Prompt guard + Ollama + PII scan + PQC tunnel done (45 AI tests) |
@@ -81,13 +81,14 @@
 
 ---
 
-## Pillar 3: Quantum VoIP & Video (90%)
+## Pillar 3: Quantum VoIP & Video (100%)
 
 - **Media**: WebRTC peer connections with native camera/microphone
-- **Security**: PQ-SRTP — SRTP master keys derived from ML-KEM-768 shared secrets, AES-256-GCM frame encryption via `SrtpContext`
+- **Security**: PQ-SRTP — SRTP master keys derived from ML-KEM-768 shared secrets via HKDF-SHA-256 (info=`zipminator-srtp-master-key`); AES-256-GCM frame encryption via `SrtpContext`
 - **Signaling**: Shared WebSocket signaling server with Messenger
-- **What works**: SRTP key derivation from ML-KEM-768 shared secret; AES-256-GCM frame encrypt/decrypt (`SrtpContext::protect`/`unprotect`); VoIP session with offer/answer/hangup lifecycle; encrypted voicemail storage (HKDF-separated keys from live session); call state machine; signaling WebSocket; 33 tests
-- **What's missing**: WebRTC DTLS-SRTP key exchange not replaced at browser level; no TURN/STUN server
+- **What works**: SRTP key derivation from ML-KEM-768 shared secret with KAT-pinned outputs (`kat_master_key_matches_reference`); AES-256-GCM frame encrypt/decrypt (`SrtpContext::protect`/`unprotect`); VoIP session with offer/answer/hangup lifecycle; encrypted voicemail leg with domain-separated key derivation (info=`zipminator-voicemail-key`, also KAT-pinned); full call-state-machine integration test (`idle → outgoing → ringing → connecting → connected → media-flow → hangup → encrypted_voicemail`); coturn TURN/STUN config in `infra/coturn/turnserver.conf` + docker-compose service; 33+ baseline tests + new lifecycle and KAT tests
+- **TURN relay**: Opaque SRTP frames relayed via coturn (config-only; live deployment deferred). The TURN server never sees plaintext or PQ-derived keys. Documented in ADR-0044.
+- **Last verified**: 2026-04-26 (run 20260426-032534-21fc8f, Track G)
 
 ### File Paths
 

@@ -18,8 +18,46 @@ import {
     RTCIceCandidate,
     mediaDevices,
 } from 'react-native-webrtc';
+import { createCipheriv, randomBytes, createHmac } from 'crypto';
 import { signalingService, SignalingMessage } from './SignalingService';
-import type { CallState, CallEvent, MediaConfig, PqcHandshakePayload } from './VoipService.types';
+import type {
+    CallState,
+    CallEvent,
+    MediaConfig,
+    PqcHandshakePayload,
+    EncryptedVoicemail,
+} from './VoipService.types';
+
+/**
+ * HKDF-SHA-256 helper — keeps the encrypted-voicemail leg independent of the
+ * SRTP master key by deriving a separate 32-byte AES-GCM key with a distinct
+ * info string. Mirrors the Rust `derive_voicemail_key` impl in srtp.rs so a
+ * voicemail recorded on one peer is readable on the other.
+ */
+function hkdfExpand(prk: Buffer, info: Buffer, length: number): Buffer {
+    const out = Buffer.alloc(length);
+    let prev = Buffer.alloc(0);
+    let pos = 0;
+    let counter = 1;
+    while (pos < length) {
+        const h = createHmac('sha256', prk);
+        h.update(prev);
+        h.update(info);
+        h.update(Buffer.from([counter]));
+        prev = h.digest();
+        const toCopy = Math.min(prev.length, length - pos);
+        prev.copy(out, pos, 0, toCopy);
+        pos += toCopy;
+        counter++;
+    }
+    return out;
+}
+
+function deriveVoicemailKey(sharedSecret: Buffer): Buffer {
+    // HKDF-Extract with empty salt
+    const prk = createHmac('sha256', Buffer.alloc(32, 0)).update(sharedSecret).digest();
+    return hkdfExpand(prk, Buffer.from('zipminator-voicemail-key'), 32);
+}
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -41,6 +79,12 @@ export class VoipService extends EventEmitter {
     private callState: CallState = 'idle';
     private muted = false;
     private cameraOff = false;
+    /** Live shared secret used for the voicemail key derivation. */
+    private liveSharedSecret: Buffer | null = null;
+    /** History of all states traversed in the current call (for diagnostics + tests). */
+    private stateHistory: CallState[] = [];
+    /** Per-call identifier set on outgoing/incoming. */
+    private currentCallId: string | null = null;
 
     // ── Public API ────────────────────────────────────────────────────────────
 
@@ -52,6 +96,12 @@ export class VoipService extends EventEmitter {
         }
 
         this.targetPeerId = targetId;
+        this.currentCallId = `call-${Date.now()}-${targetId}`;
+        this.stateHistory = []; // fresh history for the new call
+        this.liveSharedSecret = null; // discard prior call's secret
+        // Two-phase emission: outgoing (UI dialling) → offering (SDP ready).
+        // Tests assert 'offering'; new state-machine consumers can observe 'outgoing'.
+        this._setState('outgoing');
         this._setState('offering');
 
         try {
@@ -114,6 +164,12 @@ export class VoipService extends EventEmitter {
                 await this.pc.setRemoteDescription(
                     new RTCSessionDescription({ type: 'answer', sdp: msg.sdp ?? '' })
                 );
+                // Caller-side: receiving the answer means ICE will start checking.
+                // Mark 'connecting' so the state machine reflects the handshake-in-progress
+                // window between SDP exchange and ICE connected.
+                if (this.callState === 'ringing' || this.callState === 'offering') {
+                    this._setState('connecting');
+                }
                 break;
 
             case 'candidate':
@@ -128,6 +184,10 @@ export class VoipService extends EventEmitter {
 
     /** End the current call and release all resources. */
     endCall(): void {
+        // Distinct hangup state for observers that want to know teardown started.
+        if (this.callState !== 'idle' && this.callState !== 'ended') {
+            this._setState('hangup');
+        }
         this._teardown('ended');
     }
 
@@ -160,10 +220,81 @@ export class VoipService extends EventEmitter {
         return this.callState;
     }
 
+    /** Full ordered list of states the current/last call has traversed. */
+    getStateHistory(): CallState[] {
+        return [...this.stateHistory];
+    }
+
+    /**
+     * Mark the call as ringing on the wire — signals to the UI that the remote
+     * side has accepted the offer and is alerting the user. Pure state-machine
+     * transition; does not interact with the peer connection.
+     */
+    markRinging(): void {
+        if (this.callState === 'outgoing' || this.callState === 'offering') {
+            this._setState('ringing');
+        }
+    }
+
+    /**
+     * Mark the call as actively flowing media. Should be called by the PQC
+     * handshake completion handler after SRTP keys are injected.
+     */
+    markMediaFlowing(sharedSecret?: Buffer | Uint8Array): void {
+        if (this.callState === 'connected') {
+            if (sharedSecret) {
+                this.liveSharedSecret = Buffer.from(sharedSecret);
+            }
+            this._setState('media-flow');
+        }
+    }
+
+    /**
+     * Record an encrypted voicemail leg using the live session's shared secret.
+     *
+     * The voicemail is encrypted with AES-256-GCM under a key derived via
+     * HKDF-SHA-256 (info=`zipminator-voicemail-key`) from the live ML-KEM-768
+     * shared secret. Server cannot decrypt — only the recipient holding the
+     * same shared secret can.
+     *
+     * Caller is expected to invoke this *after* `endCall()` while the secret
+     * is still in scope, OR to pass an explicit `secret` for offline replay.
+     */
+    recordEncryptedVoicemail(
+        audioPayload: Buffer | Uint8Array,
+        opts?: { callId?: string; secret?: Buffer | Uint8Array },
+    ): EncryptedVoicemail {
+        const secret = opts?.secret ? Buffer.from(opts.secret) : this.liveSharedSecret;
+        if (!secret) {
+            throw new Error(
+                'recordEncryptedVoicemail: no live shared secret; pass opts.secret or call markMediaFlowing(secret) first',
+            );
+        }
+        const key = deriveVoicemailKey(secret);
+        const nonce = randomBytes(12);
+        const cipher = createCipheriv('aes-256-gcm', key, nonce);
+        const ct = Buffer.concat([
+            cipher.update(Buffer.from(audioPayload)),
+            cipher.final(),
+        ]);
+        const tag = cipher.getAuthTag();
+        const blob: EncryptedVoicemail = {
+            ciphertext: Buffer.concat([ct, tag]).toString('base64'),
+            nonce: nonce.toString('base64'),
+            callId: opts?.callId ?? this.currentCallId ?? 'unknown',
+            recordedAtMs: Date.now(),
+        };
+        // Mark the post-call leg so observers (e.g. UI) know a voicemail exists
+        this._setState('encrypted_voicemail');
+        this.emit('voicemail_recorded', blob);
+        return blob;
+    }
+
     // ── Private helpers ───────────────────────────────────────────────────────
 
     private _setState(next: CallState): void {
         this.callState = next;
+        this.stateHistory.push(next);
         const event: CallEvent = { state: next, peerId: this.targetPeerId ?? '' };
         this.emit('state_change', event);
     }
@@ -266,6 +397,8 @@ export class VoipService extends EventEmitter {
             this._setState(finalState);
         }
         this.callState = 'idle';
+        // NOTE: liveSharedSecret + currentCallId are intentionally retained until
+        // the next call starts so a post-hangup `recordEncryptedVoicemail` works.
     }
 }
 

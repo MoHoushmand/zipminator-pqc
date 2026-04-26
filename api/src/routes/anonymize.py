@@ -1,7 +1,15 @@
-"""Anonymize attachment endpoint — applies L1-L10 PQC anonymization to uploaded files.
+"""Anonymize endpoints — apply L1-L10 PQC anonymization to text or files.
 
-Supported formats: CSV, JSON, Excel (.xlsx/.xls), Parquet, plain text.
-Returns the anonymized file as a streaming download.
+Two routes are exposed under the same router:
+
+- ``POST /anonymize`` accepts JSON ``{"level": N, "text": "..."}`` and returns
+  ``{"level", "original_text", "anonymized_text"}``. This is what the Flutter
+  level selector calls to render the before/after view.
+- ``POST /anonymize-attachment`` accepts a multipart upload (CSV/JSON/Excel/
+  Parquet/plain text) plus ``?level=N`` and streams back the anonymized file.
+
+The router is mounted at ``/api`` for the JSON endpoint (mobile/UI clients)
+and ``/v1`` for the attachment endpoint (existing email pipeline).
 """
 
 from __future__ import annotations
@@ -13,6 +21,7 @@ import logging
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Query, UploadFile, status
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
@@ -223,4 +232,51 @@ async def anonymize_attachment(
         io.BytesIO(output_bytes),
         media_type=media_type,
         headers=headers,
+    )
+
+
+# ── JSON-body anonymize endpoint (Flutter / mobile UI) ────────────────────────
+
+class AnonymizeRequest(BaseModel):
+    """Body for ``POST /anonymize``: a level (1-10) and free-form text."""
+
+    level: int = Field(..., ge=1, le=10, description="Anonymization level (1-10)")
+    text: str = Field(..., description="Plain text to anonymize")
+
+
+class AnonymizeResponse(BaseModel):
+    """Response: original text echoed back, anonymized text, level used."""
+
+    level: int
+    original_text: str
+    anonymized_text: str
+
+
+@router.post(
+    "/anonymize",
+    response_model=AnonymizeResponse,
+    summary="Apply L1-L10 anonymization to plain text",
+    response_description="JSON with the anonymized text and level metadata",
+)
+async def anonymize_text(req: AnonymizeRequest) -> AnonymizeResponse:
+    """Apply L{level} anonymization to a plain-text payload.
+
+    The Flutter level selector posts ``{"level": N, "text": "..."}`` and
+    renders ``anonymized_text`` in the before/after split view. Levels are
+    routed through :func:`_apply_text_anonymization` so the same masking
+    semantics used by ``/anonymize-attachment`` apply here.
+    """
+    try:
+        anonymized = _apply_text_anonymization(req.text, req.level)
+    except Exception as exc:  # pragma: no cover — guard against pathological input
+        logger.exception("Text anonymization failed at level %d", req.level)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Anonymization failed: {exc}",
+        ) from exc
+
+    return AnonymizeResponse(
+        level=req.level,
+        original_text=req.text,
+        anonymized_text=anonymized,
     )

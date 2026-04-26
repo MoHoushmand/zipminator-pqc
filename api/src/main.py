@@ -40,6 +40,8 @@ app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(keys.router, prefix="/v1/keys", tags=["keys"])
 app.include_router(crypto.router, prefix="/v1", tags=["crypto"])
 app.include_router(anonymize.router, prefix="/v1", tags=["anonymize"])
+# Mobile/UI clients call POST /api/anonymize with JSON {level, text}
+app.include_router(anonymize.router, prefix="/api", tags=["anonymize"])
 app.include_router(signaling.router, tags=["signaling"])
 app.include_router(messages.router, prefix="/v1/messages", tags=["messages"])
 app.include_router(voip.router, prefix="/v1/voip", tags=["voip"])

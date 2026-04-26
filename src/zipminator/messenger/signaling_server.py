@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import base64
 import json
 import logging
 import time
@@ -246,6 +247,61 @@ def create_app() -> FastAPI:
 
     # -- WebSocket endpoint ---------------------------------------------------
 
+    async def _serve_ws(websocket: WebSocket, client_id: str) -> None:
+        """Shared WebSocket handler used by both `/ws/{client_id}` and the
+        marathon-spec path `/ws/signal/{user_id}`.
+
+        Behaviour highlights:
+          - On connect, drain any MessageStore-backed offline queue for this
+            client (acceptance #4).
+          - On `action=message` to an offline target, persist the envelope
+            via MessageStore so it can be drained on the target's reconnect.
+            Sender receives `{"type": "queued", ...}` instead of an error.
+        """
+        peer = await manager.connect(client_id, websocket)
+
+        # Drain offline queue (best-effort; keeps the WS alive on any error).
+        try:
+            await _drain_offline_queue(application, websocket, client_id)
+        except Exception as exc:  # pragma: no cover - defensive
+            log.warning("offline-queue drain failed for %s: %s", client_id, exc)
+
+        try:
+            while True:
+                raw = await websocket.receive_text()
+                try:
+                    msg = json.loads(raw)
+                except json.JSONDecodeError:
+                    if raw.strip() == "ping":
+                        await websocket.send_text("pong")
+                        continue
+                    await websocket.send_text(
+                        json.dumps({"type": "error", "detail": "invalid JSON"})
+                    )
+                    continue
+
+                action = msg.get("action", "")
+                if action == "ping":
+                    await websocket.send_text('{"type":"pong"}')
+                    continue
+
+                # Special-case: persist `message` to offline target so the
+                # target gets it on reconnect (acceptance #4).
+                if action == "message":
+                    handled = await _try_persist_offline(
+                        application, peer, msg, websocket
+                    )
+                    if handled:
+                        continue
+
+                await _handle_action(peer, msg, action, websocket)
+
+        except WebSocketDisconnect:
+            await manager.disconnect(client_id)
+        except Exception as exc:
+            log.error("ws error for %s: %s", client_id, exc)
+            await manager.disconnect(client_id)
+
     @application.websocket("/ws/{client_id}")
     async def ws_endpoint(websocket: WebSocket, client_id: str):
         """Main signaling WebSocket endpoint.
@@ -269,7 +325,8 @@ def create_app() -> FastAPI:
                 -> forwards entire payload to target peer with "from" injected
 
             {"action": "message", "target": "peer_id", "ciphertext": "..."}
-                -> forwards encrypted message to target (1:1)
+                -> forwards encrypted message to target (1:1); persists to
+                   MessageStore offline queue if target is offline
 
             {"action": "broadcast", "room_id": "...", "ciphertext": "..."}
                 -> forwards encrypted message to all room peers except sender
@@ -280,35 +337,136 @@ def create_app() -> FastAPI:
             {"action": "room_peers", "room_id": "..."}
                 -> responds {"type": "room_peers", "peers": [...]}
         """
-        peer = await manager.connect(client_id, websocket)
-        try:
-            while True:
-                raw = await websocket.receive_text()
-                try:
-                    msg = json.loads(raw)
-                except json.JSONDecodeError:
-                    # Handle plain text pings — respond with pong to keep Fly.io proxy alive.
-                    if raw.strip() == "ping":
-                        await websocket.send_text("pong")
-                        continue
-                    await websocket.send_text(
-                        json.dumps({"type": "error", "detail": "invalid JSON"})
-                    )
-                    continue
+        await _serve_ws(websocket, client_id)
 
-                action = msg.get("action", "")
-                if action == "ping":
-                    await websocket.send_text('{"type":"pong"}')
-                    continue
-                await _handle_action(peer, msg, action, websocket)
+    @application.websocket("/ws/signal/{user_id}")
+    async def ws_signal_endpoint(websocket: WebSocket, user_id: str):
+        """Spec path from `.marathon/specs/9-pillars.md` (Pillar 2):
 
-        except WebSocketDisconnect:
-            await manager.disconnect(client_id)
-        except Exception as exc:
-            log.error("ws error for %s: %s", client_id, exc)
-            await manager.disconnect(client_id)
+            ws://localhost:8000/ws/signal/{user_id}
+
+        Same protocol as `/ws/{client_id}`. On connect, any messages that
+        were queued in MessageStore while this user was offline are drained
+        as `{"type": "queued_message", ...}` envelopes.
+        """
+        await _serve_ws(websocket, user_id)
 
     return application
+
+
+# ---------------------------------------------------------------------------
+# Offline queue integration (MessageStore-backed)
+# ---------------------------------------------------------------------------
+
+
+async def _drain_offline_queue(application, websocket, client_id: str) -> None:
+    """Send any queued messages to the freshly-connected client and mark
+    them delivered."""
+    store = getattr(application.state, "message_store", None)
+    if store is None:
+        return
+    try:
+        queued = store.get_undelivered(client_id)
+    except Exception as exc:  # pragma: no cover - defensive
+        log.warning("get_undelivered failed for %s: %s", client_id, exc)
+        return
+
+    for msg in queued:
+        meta = _metadata_sidecar.get(msg["id"]) or {}
+        envelope: dict = {
+            "type": "queued_message",
+            "from": msg["sender_id"],
+            "conversation_id": msg["conversation_id"],
+            "ciphertext": _b64(msg["ciphertext"]),
+            "timestamp": msg["timestamp"],
+        }
+        # Pull through any header metadata stashed in the row when we
+        # persisted the offline envelope.
+        for key in ("nonce", "ephemeral", "aad", "header"):
+            if key in meta:
+                envelope[key] = meta[key]
+        try:
+            await websocket.send_text(json.dumps(envelope))
+            store.mark_delivered(msg["id"])
+            # Drop sidecar entry once delivered.
+            _metadata_sidecar.pop(msg["id"], None)
+        except Exception as exc:  # pragma: no cover - defensive
+            log.warning("offline drain send failed: %s", exc)
+            return
+
+
+async def _try_persist_offline(application, peer: "Peer", msg: dict, ws) -> bool:
+    """If the message target is offline, persist via MessageStore and tell
+    the sender it's been queued. Returns True iff the message was handled
+    (so the caller skips the normal relay path).
+
+    Returns False when:
+      - no MessageStore is wired in (legacy mode), or
+      - the target is online (normal relay path applies).
+    """
+    target_id = msg.get("target")
+    if not target_id:
+        return False
+    if target_id in manager.peers:
+        # Target online — let normal relay path send it.
+        return False
+
+    store = getattr(application.state, "message_store", None)
+    if store is None:
+        return False
+
+    raw_ct = msg.get("ciphertext")
+    if raw_ct is None:
+        return False
+
+    # Accept either base64-string ciphertext (the WebSocket transport
+    # default) or pre-decoded bytes.
+    if isinstance(raw_ct, str):
+        try:
+            ct_bytes = base64.b64decode(raw_ct, validate=False)
+        except Exception:
+            ct_bytes = raw_ct.encode()
+    elif isinstance(raw_ct, (bytes, bytearray)):
+        ct_bytes = bytes(raw_ct)
+    else:
+        return False
+
+    metadata = {
+        k: msg[k]
+        for k in ("nonce", "ephemeral", "aad", "header")
+        if k in msg
+    }
+
+    msg_id = store.store(
+        msg.get("conversation_id", f"conv-{peer.client_id}-{target_id}"),
+        peer.client_id,
+        target_id,
+        ct_bytes,
+    )
+    # Stash the header metadata in a sibling table-less manner via a JSON
+    # blob attached to the row's recipient_id is not possible without a
+    # schema bump; instead we keep metadata on the in-memory row by
+    # roundtripping through the store's row dict on drain. We persist the
+    # metadata into a sidecar dict keyed by message id.
+    _metadata_sidecar[msg_id] = metadata
+
+    await ws.send_text(json.dumps({
+        "type": "queued",
+        "message_id": msg_id,
+        "target": target_id,
+        "detail": f"peer {target_id} is offline; queued for delivery",
+    }))
+    return True
+
+
+# In-memory sidecar so the offline queue can carry header metadata
+# (nonce, ephemeral, aad) alongside the persisted ciphertext without
+# requiring a MessageStore schema bump. Keyed by message id.
+_metadata_sidecar: dict = {}
+
+
+def _b64(b: bytes) -> str:
+    return base64.b64encode(b).decode()
 
 
 async def _handle_action(

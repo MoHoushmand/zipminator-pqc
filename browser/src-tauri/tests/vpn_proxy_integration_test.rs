@@ -20,7 +20,7 @@ use zipbrowser::vpn::{
     config::VpnConfig,
     metrics::VpnMetrics,
     state::{VpnState, VpnStateMachine},
-    VpnManager,
+    VpnEmitFn, VpnManager,
 };
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -37,7 +37,7 @@ fn valid_vpn_config() -> VpnConfig {
     }
 }
 
-fn noop_emit() -> Arc<dyn Fn(&str, serde_json::Value) + Send + Sync> {
+fn noop_emit() -> VpnEmitFn {
     Arc::new(|_, _| {})
 }
 
@@ -191,7 +191,7 @@ async fn connect_emits_state_changed_events() {
     let counter = Arc::new(AtomicUsize::new(0));
     let counter_clone = counter.clone();
 
-    let emit_fn: Arc<dyn Fn(&str, serde_json::Value) + Send + Sync> = Arc::new(move |event, _| {
+    let emit_fn: VpnEmitFn = Arc::new(move |event, _| {
         if event == "vpn-state-changed" {
             counter_clone.fetch_add(1, Ordering::SeqCst);
         }

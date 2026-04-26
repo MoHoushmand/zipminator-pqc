@@ -12,8 +12,11 @@ mod tabs;
 // Domain modules (declared in lib.rs, re-used here via crate path)
 use state::AppState;
 #[cfg(feature = "vpn")]
+#[allow(unused_imports)]
 use state::VpnState;
 use tauri::Manager;
+#[cfg(feature = "vpn")]
+use tauri::Listener;
 
 // AI sidebar commands (Domain 4)
 use zipbrowser::ai;
@@ -80,7 +83,7 @@ fn main() {
             #[cfg(feature = "vpn")]
             {
                 let vpn_handle = app_handle.clone();
-                app.listen("vpn-state-changed", move |event| {
+                app.listen("vpn-state-changed", move |event: tauri::Event| {
                     let payload_str = event.payload();
                     let managed: tauri::State<'_, AppState> = vpn_handle.state();
                     if let Ok(mut vpn) = managed.vpn_state.lock() {

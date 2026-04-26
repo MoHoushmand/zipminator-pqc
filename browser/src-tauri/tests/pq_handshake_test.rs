@@ -59,18 +59,24 @@ async fn two_sessions_produce_distinct_hybrid_keys() {
     let (mut c1, mut s1) = duplex(65536);
     let (mut c2, mut s2) = duplex(65536);
 
-    let ((r1, _), (r2, _)) = tokio::join!(
+    // Each session must run client+server concurrently to avoid a deadlock
+    // (client_handshake awaits the server's TLV; server_handshake awaits
+    // the client's TLV). So we drive both halves of each session in
+    // parallel via nested `tokio::join!`.
+    let (r1, r2) = tokio::join!(
         async {
-            (
-                client_handshake(&mut c1, &wg_key).await,
-                server_handshake(&mut s1, &wg_key).await,
-            )
+            let (cr, _sr) = tokio::join!(
+                client_handshake(&mut c1, &wg_key),
+                server_handshake(&mut s1, &wg_key),
+            );
+            cr
         },
         async {
-            (
-                client_handshake(&mut c2, &wg_key).await,
-                server_handshake(&mut s2, &wg_key).await,
-            )
+            let (cr, _sr) = tokio::join!(
+                client_handshake(&mut c2, &wg_key),
+                server_handshake(&mut s2, &wg_key),
+            );
+            cr
         },
     );
 

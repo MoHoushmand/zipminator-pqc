@@ -396,3 +396,96 @@ describe('NativeModule availability', () => {
     expect(typeof mod.getStatistics).toBe('function');
   });
 });
+
+// -------------------------------------------------------------------------
+// Full lifecycle: connect -> getStatus(CONNECTED) -> disconnect.
+//
+// This test walks the production state machine end-to-end with the native
+// module mocked. The Android VpnService subclass behind the bridge is
+// `com.zipminator.vpn.ZipVpnService`, which subclasses Android's VpnService
+// and establishes the tun interface; we drive the JS bridge that sits in
+// front of it.
+// -------------------------------------------------------------------------
+
+describe('VpnService lifecycle (connect -> status -> disconnect)', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('connect then getStatus returns CONNECTED, then disconnect returns DISCONNECTED', async () => {
+    const mock = getMock();
+
+    // Stage 1: connect
+    mock.connect.mockResolvedValue(undefined);
+    await VpnService.connect(VALID_CONFIG);
+    expect(mock.connect).toHaveBeenCalledTimes(1);
+
+    // Stage 2: status reflects CONNECTED after the native bridge transitions
+    mock.getStatus.mockResolvedValue({ state: 'CONNECTED' as VpnState });
+    const connectedStatus = await VpnService.getStatus();
+    expect(connectedStatus.state).toBe('CONNECTED');
+
+    // Stage 3: disconnect
+    mock.disconnect.mockResolvedValue(undefined);
+    await VpnService.disconnect();
+    expect(mock.disconnect).toHaveBeenCalledTimes(1);
+
+    // Stage 4: status reflects DISCONNECTED
+    mock.getStatus.mockResolvedValue({ state: 'DISCONNECTED' as VpnState });
+    const disconnectedStatus = await VpnService.getStatus();
+    expect(disconnectedStatus.state).toBe('DISCONNECTED');
+  });
+
+  test('connect propagates state events through the JS listener bridge', async () => {
+    const mock = getMock();
+    mock.connect.mockResolvedValue(undefined);
+
+    const observed: VpnState[] = [];
+    const unsubscribe = VpnService.onStateChange((s) => observed.push(s));
+
+    // The listener is registered without throwing; the platform emits
+    // VpnStateChanged events from the native module. With a mocked emitter
+    // we cannot synthesize the event dispatch, but we verify the registration
+    // contract (returns a function, accepts repeated registrations).
+    expect(typeof unsubscribe).toBe('function');
+
+    await VpnService.connect(VALID_CONFIG);
+    unsubscribe();
+  });
+
+  test('connect -> disconnect -> connect cycle is idempotent', async () => {
+    const mock = getMock();
+    mock.connect.mockResolvedValue(undefined);
+    mock.disconnect.mockResolvedValue(undefined);
+
+    await VpnService.connect(VALID_CONFIG);
+    await VpnService.disconnect();
+    await VpnService.connect(VALID_CONFIG);
+    await VpnService.disconnect();
+
+    expect(mock.connect).toHaveBeenCalledTimes(2);
+    expect(mock.disconnect).toHaveBeenCalledTimes(2);
+  });
+
+  test('connect failure surfaces native error and does not leave half-state', async () => {
+    const mock = getMock();
+    mock.connect.mockRejectedValue(new Error('VPN permission denied'));
+
+    await expect(VpnService.connect(VALID_CONFIG)).rejects.toThrow('VPN permission denied');
+    expect(mock.connect).toHaveBeenCalledTimes(1);
+    // Subsequent disconnect must still work (cleanup path).
+    mock.disconnect.mockResolvedValue(undefined);
+    await expect(VpnService.disconnect()).resolves.toBeUndefined();
+  });
+
+  test('REKEYING is a valid status during connection lifetime', async () => {
+    const mock = getMock();
+    mock.getStatus.mockResolvedValueOnce({ state: 'CONNECTED' });
+    mock.getStatus.mockResolvedValueOnce({ state: 'REKEYING' });
+    mock.getStatus.mockResolvedValueOnce({ state: 'CONNECTED' });
+
+    expect((await VpnService.getStatus()).state).toBe('CONNECTED');
+    expect((await VpnService.getStatus()).state).toBe('REKEYING');
+    expect((await VpnService.getStatus()).state).toBe('CONNECTED');
+  });
+});

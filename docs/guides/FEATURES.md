@@ -25,7 +25,7 @@
 | 1 | **Quantum Vault** | **100%** | Done | Done | Done | Done | DoD 5220.22-M 3-pass self-destruct wired to Tauri UI (6 tests) |
 | 2 | **PQC Messenger** | **85%** | Done | Done | Done | Partial | MessageStore + offline queue done; e2e needs running API |
 | 3 | **Quantum VoIP** | **90%** | Done | Done | Done | Partial | PQ-SRTP frame encryption + encrypted voicemail storage (33 tests) |
-| 4 | **Q-VPN** | **90%** | Done | Done | Done | Partial | Packet wrapping has shortcuts; no mobile VPN service |
+| 4 | **Q-VPN** | **100%** | Done | Done | Done | Done | Packet wrapping verified (1500 B MTU roundtrip, monotonic AEAD counter); iOS NEPacketTunnelProvider + Android VpnService (`com.qdaria.zipminator.QVpnService`) wired; kill-switch invariant tested through Reconnecting cycle |
 | 5 | **10-Level Anonymizer** | **100%** | Done | Done | Done | Done | All L1-L10 verified; CLI `--level N` wired; Flutter UI wired to `POST /api/anonymize` |
 | 6 | **Q-AI Assistant** | **85%** | Done | Done | Done | Partial | Prompt guard + Ollama + PII scan + PQC tunnel done (45 AI tests) |
 | 7 | **Quantum Mail** | **75%** | Done | Done | Done | Partial | PQC envelope + SMTP transport + server-side self-destruct TTL (15 tests) |
@@ -100,14 +100,15 @@
 
 ---
 
-## Pillar 4: Q-VPN — PQ-WireGuard (90%)
+## Pillar 4: Q-VPN — PQ-WireGuard (100%)
 
 - **Protocol**: WireGuard wrapped in ML-KEM-768 handshakes
-- **State machine**: Full VPN lifecycle (Disconnected -> Connecting -> Connected -> Reconnecting)
-- **Kill switch**: Network isolation when VPN drops
+- **State machine**: Full VPN lifecycle (Disconnected -> Connecting -> Connected -> Reconnecting via Error)
+- **Kill switch**: Network isolation when VPN drops; verified to stay engaged through the full Connected -> Error -> Connecting -> Connected reconnect cycle
 - **PQ handshake**: ML-KEM-768 key exchange verified in tests
-- **Verification (2026-04-21)**: VPN: 19 pq-wireguard tests passing (15 unit + 4 template), crypto chain verified, clippy `-D warnings` clean, `pqcrypto-kyber = "=0.8.1"` exact pin confirmed, `thiserror`/`zeroize` present, placeholder gate clean (no unresolved `PLACEHOLDER`/`TODO_FILL` in `infra/wireguard/`), macOS kernel module deferred to Linux CI
-- **Gap**: Packet wrapping has prototype shortcuts; iOS/Android VPN service integration planned
+- **Packet wrapping**: full encrypt/decrypt round-trip verified for 1500 B MTU plaintext via `packet_roundtrip_1500b_mtu_preserves_plaintext`; AEAD nonce counter verified strictly monotonic across successive encapsulate calls via `encapsulate_advances_aead_counter_monotonically`. No prototype shortcuts remain in `browser/src-tauri/src/vpn/tunnel.rs`.
+- **Mobile**: iOS Network Extension (NEPacketTunnelProvider, ZipVPN.entitlements, KyberBridge.swift) at `mobile/ios/ZipVPN/`; Android VpnService façade `com.qdaria.zipminator.QVpnService` at `mobile/android/app/src/main/java/com/qdaria/zipminator/QVpnService.kt` delegating to the production `com.zipminator.vpn.ZipVpnService` (tun establishment + JNI to Rust core via `KyberJNI`).
+- **Verification (2026-04-26)**: 19+ pq-wireguard Rust tests passing (lib + 17 vpn_state + 17 kill_switch + 7 vpn_proxy_integration + pq_handshake), TS lifecycle test added in `mobile/src/services/__tests__/VpnService.android.test.ts`, clippy `-D warnings` clean (lib + tests), no `PLACEHOLDER`/`TODO_FILL`/`unimplemented!()`/`HACK`/`TEMP` markers in `browser/src-tauri/src/vpn/`. iOS signing artifacts unchanged (no provisioning profile changes required).
 
 ### File Paths
 

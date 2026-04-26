@@ -888,7 +888,6 @@ fn sanitize_url_input(input: &str) -> String {
 
 #[cfg(test)]
 mod privacy_command_tests {
-    use super::*;
     use crate::state::AppState;
     use tempfile::TempDir;
 

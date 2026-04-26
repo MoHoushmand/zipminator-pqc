@@ -126,6 +126,19 @@ export function StatusBar({ security, loadTimeMs }: StatusBarProps) {
         <span className="status-dot" />
         {entropyLabel}
       </div>
+
+      {/*
+        WebView limitation pill — the only user-visible reference to ADR-0042.
+        ZipBrowser intentionally uses the host system WebView, not a custom
+        engine. The full rationale lives in docs/adr/0042-system-webview-limitation.md.
+      */}
+      <div
+        className="status-item status-webview"
+        title="ZipBrowser uses the host system WebView (WKWebView/WebKitGTK/WebView2). Not a custom browser engine. See docs/adr/0042-system-webview-limitation.md."
+        data-testid="webview-limitation-pill"
+      >
+        Engine: System WebView
+      </div>
     </div>
   );
 }

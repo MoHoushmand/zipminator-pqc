@@ -363,7 +363,7 @@ mod tests {
     /// After deactivation the kill switch is no longer active.
     #[test]
     fn deactivate_clears_active_flag() {
-        let mut ks = KillSwitch::new("utun99", false);
+        let ks = KillSwitch::new("utun99", false);
         // Manually set active to test the flag logic without OS calls.
         // We can't force active=true without real OS calls on a disabled KS,
         // so we verify the path through is_active().

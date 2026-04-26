@@ -35,7 +35,7 @@ pub fn init_vpn_manager() -> &'static vpn::SharedVpnManager {
 #[cfg(feature = "vpn")]
 pub async fn start_vpn(
     config: vpn::config::VpnConfig,
-    emit_fn: std::sync::Arc<dyn Fn(&str, serde_json::Value) + Send + Sync>,
+    emit_fn: vpn::VpnEmitFn,
 ) -> Result<(), String> {
     let manager = init_vpn_manager();
     let mut guard = manager.lock().await;

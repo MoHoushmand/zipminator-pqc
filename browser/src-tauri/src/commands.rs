@@ -7,6 +7,10 @@ use crate::navigation;
 use crate::state::{AppState, Bookmark, EntropyStatus, SecurityLevel, VpnState};
 use crate::tabs::Tab;
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "vpn")]
+use std::sync::Arc;
+#[cfg(feature = "vpn")]
+use tauri::AppHandle;
 use tauri::State;
 
 // ---------------------------------------------------------------------------
@@ -310,7 +314,7 @@ impl TryFrom<VpnConnectRequest> for zipbrowser::vpn::config::VpnConfig {
 pub async fn vpn_connect(request: VpnConnectRequest, app: AppHandle) -> Result<(), String> {
     let config = zipbrowser::vpn::config::VpnConfig::try_from(request)?;
 
-    let emit_fn: Arc<dyn Fn(&str, serde_json::Value) + Send + Sync> = {
+    let emit_fn: zipbrowser::vpn::VpnEmitFn = {
         let app = app.clone();
         Arc::new(move |event: &str, payload: serde_json::Value| {
             use tauri::Emitter;
@@ -330,7 +334,7 @@ pub async fn vpn_disconnect(app: AppHandle) -> Result<(), String> {
     let manager = zipbrowser::init_vpn_manager();
     let mut guard = manager.lock().await;
 
-    let emit_fn: Arc<dyn Fn(&str, serde_json::Value) + Send + Sync> = {
+    let emit_fn: zipbrowser::vpn::VpnEmitFn = {
         let app = app.clone();
         Arc::new(move |event: &str, payload: serde_json::Value| {
             use tauri::Emitter;

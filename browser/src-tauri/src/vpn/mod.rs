@@ -33,6 +33,13 @@ pub mod pq_handshake;
 pub mod state;
 pub mod tunnel;
 
+/// Tauri event-emit callback type used by the VPN manager.
+///
+/// Decoupling from the Tauri `AppHandle` lets the manager be unit-tested
+/// without a running Tauri app and keeps the public API of `connect` /
+/// `disconnect` stable across Tauri versions.
+pub type VpnEmitFn = Arc<dyn Fn(&str, serde_json::Value) + Send + Sync>;
+
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use tokio::task::JoinHandle;
@@ -127,7 +134,7 @@ impl VpnManager {
     pub async fn connect(
         &mut self,
         config: VpnConfig,
-        emit_fn: Arc<dyn Fn(&str, serde_json::Value) + Send + Sync>,
+        emit_fn: VpnEmitFn,
     ) -> Result<(), VpnError> {
         config.validate()?;
 
@@ -279,7 +286,7 @@ impl VpnManager {
     /// and transitions the state machine to `Disconnected`.
     pub async fn disconnect(
         &mut self,
-        emit_fn: Arc<dyn Fn(&str, serde_json::Value) + Send + Sync>,
+        emit_fn: VpnEmitFn,
     ) -> Result<(), VpnError> {
         if matches!(self.state_machine.current(), VpnState::Disconnected) {
             return Ok(());
@@ -331,7 +338,7 @@ impl VpnManager {
     fn transition_and_emit(
         &self,
         next: VpnState,
-        emit_fn: &Arc<dyn Fn(&str, serde_json::Value) + Send + Sync>,
+        emit_fn: &VpnEmitFn,
     ) -> Result<VpnState, VpnError> {
         let state = self
             .state_machine
@@ -344,7 +351,7 @@ impl VpnManager {
         Ok(state)
     }
 
-    fn cleanup_on_error(&mut self, emit_fn: &Arc<dyn Fn(&str, serde_json::Value) + Send + Sync>) {
+    fn cleanup_on_error(&mut self, emit_fn: &VpnEmitFn) {
         if let Some(mut ks) = self.kill_switch.take() {
             let _ = ks.deactivate();
         }
@@ -439,17 +446,15 @@ mod tests {
     use super::*;
     use std::sync::atomic::{AtomicUsize, Ordering};
 
-    fn noop_emit() -> Arc<dyn Fn(&str, serde_json::Value) + Send + Sync> {
+    fn noop_emit() -> VpnEmitFn {
         Arc::new(|_, _| {})
     }
 
-    fn counting_emit() -> (
-        Arc<dyn Fn(&str, serde_json::Value) + Send + Sync>,
-        Arc<AtomicUsize>,
-    ) {
+    #[allow(dead_code)]
+    fn counting_emit() -> (VpnEmitFn, Arc<AtomicUsize>) {
         let count = Arc::new(AtomicUsize::new(0));
         let count_clone = count.clone();
-        let emit: Arc<dyn Fn(&str, serde_json::Value) + Send + Sync> = Arc::new(move |_, _| {
+        let emit: VpnEmitFn = Arc::new(move |_, _| {
             count_clone.fetch_add(1, Ordering::SeqCst);
         });
         (emit, count)

@@ -23,7 +23,7 @@ use std::time::Duration;
 use thiserror::Error;
 use tokio::net::UdpSocket;
 use tokio::sync::Mutex;
-use tracing::{debug, error, info, warn};
+use tracing::{debug, info, warn};
 use zeroize::Zeroize;
 
 use crate::vpn::config::{VpnConfig, TUNNEL_MTU};
@@ -308,13 +308,10 @@ impl Tunnel {
                 _ => Ok(None),
             }
         };
-        match outcome? {
-            Some(pkt) => {
-                let n = pkt.len() as u64;
-                self.udp.send(&pkt).await?;
-                self.metrics.add_bytes_sent(n);
-            }
-            None => {}
+        if let Some(pkt) = outcome? {
+            let n = pkt.len() as u64;
+            self.udp.send(&pkt).await?;
+            self.metrics.add_bytes_sent(n);
         }
         Ok(())
     }
@@ -553,7 +550,7 @@ fn open_utun_socket() -> Result<std::os::unix::io::OwnedFd, std::io::Error> {
         let mut addr: sockaddr_ctl = std::mem::zeroed();
         addr.sc_len = std::mem::size_of::<sockaddr_ctl>() as u8;
         addr.sc_family = AF_SYSTEM as u8;
-        addr.ss_sysaddr = AF_SYS_CONTROL as u16;
+        addr.ss_sysaddr = AF_SYS_CONTROL;
         addr.sc_id = info.ctl_id;
         addr.sc_unit = 0; // 0 = auto-assign next available utunN
 
@@ -689,7 +686,10 @@ mod tests {
     }
 
     #[test]
+    #[allow(clippy::assertions_on_constants)]
     fn tunnel_mtu_is_conservative() {
+        // MTU constants must be conservative enough to avoid fragmentation
+        // with PQC overhead, and meet the IPv6 minimum (1280 B).
         assert!(
             TUNNEL_MTU <= 1420,
             "MTU must be conservative enough to avoid fragmentation with PQC overhead"
@@ -816,5 +816,172 @@ mod tests {
             sample_ip_packet.len() + 16,
             "encrypted payload should be plaintext + 16 bytes Poly1305 tag"
         );
+    }
+
+    /// Full encrypt/decrypt round-trip for an MTU-sized (1500 B) IP packet.
+    ///
+    /// This verifies the end-to-end packet wrapping path: the same payload bytes
+    /// must come out the other side after `encapsulate -> decapsulate`. No
+    /// "prototype shortcut" is permitted; the path must use the real boringtun
+    /// AEAD with the live ChaCha20-Poly1305 transport keys derived from the
+    /// Curve25519 Noise handshake. This is the contract the production
+    /// `Tunnel::send_packet` / `Tunnel::recv_packet` rely on.
+    #[test]
+    fn packet_roundtrip_1500b_mtu_preserves_plaintext() {
+        use boringtun::noise::{Tunn, TunnResult};
+        use boringtun::x25519;
+
+        let client_secret = x25519::StaticSecret::from([0xa1u8; 32]);
+        let client_public = x25519::PublicKey::from(&client_secret);
+        let server_secret = x25519::StaticSecret::from([0xb2u8; 32]);
+        let server_public = x25519::PublicKey::from(&server_secret);
+
+        let mut client = Tunn::new(client_secret, server_public, None, None, 0, None);
+        let mut server = Tunn::new(server_secret, client_public, None, None, 1, None);
+
+        // ── Drive a complete WireGuard handshake (initiator -> responder -> done). ──
+        let mut buf_a = vec![0u8; 4096];
+        let mut buf_b = vec![0u8; 4096];
+
+        let init_pkt = match client.format_handshake_initiation(&mut buf_a, false) {
+            TunnResult::WriteToNetwork(pkt) => pkt.to_vec(),
+            other => panic!("init: {:?}", std::mem::discriminant(&other)),
+        };
+
+        let response_pkt = match server.decapsulate(None, &init_pkt, &mut buf_b) {
+            TunnResult::WriteToNetwork(pkt) => pkt.to_vec(),
+            other => panic!("response: {:?}", std::mem::discriminant(&other)),
+        };
+
+        match client.decapsulate(None, &response_pkt, &mut buf_a) {
+            TunnResult::Done | TunnResult::WriteToNetwork(_) => {}
+            other => panic!("done: {:?}", std::mem::discriminant(&other)),
+        }
+
+        // ── Build a deterministic 1500-byte IPv4 payload. ──
+        //
+        // The MTU on the tunnel interface is `TUNNEL_MTU` = 1280 (see config.rs),
+        // but the on-the-wire WireGuard packet supports up to 1500-byte plaintext;
+        // testing at 1500 ensures no implicit truncation in the path.
+        let mut plaintext = vec![0u8; 1500];
+        plaintext[0] = 0x45; // IPv4 version + IHL=5
+        plaintext[1] = 0x00; // DSCP/ECN
+        plaintext[2] = 0x05; // total length high byte (0x05DC = 1500)
+        plaintext[3] = 0xDC;
+        for (i, b) in plaintext.iter_mut().enumerate().skip(20) {
+            // Payload: predictable byte pattern so we can detect partial writes.
+            *b = (i % 251) as u8;
+        }
+
+        // ── Client encapsulates: plaintext -> encrypted WG transport packet. ──
+        let mut wire_buf = vec![0u8; 2048];
+        let wire_pkt = match client.encapsulate(&plaintext, &mut wire_buf) {
+            TunnResult::WriteToNetwork(pkt) => pkt.to_vec(),
+            TunnResult::Err(e) => panic!("encapsulate failed: {:?}", e),
+            other => panic!("encapsulate: {:?}", std::mem::discriminant(&other)),
+        };
+        assert_eq!(wire_pkt[0], 0x04, "must be a WireGuard transport (Type 4) packet");
+        assert!(
+            wire_pkt.len() >= plaintext.len() + 32,
+            "wire packet must include WG header (16 B) + Poly1305 tag (16 B) on top of {} B plaintext",
+            plaintext.len()
+        );
+
+        // ── Server decapsulates: encrypted WG transport packet -> plaintext. ──
+        let mut decap_buf = vec![0u8; 4096];
+        let recovered: Vec<u8> = match server.decapsulate(None, &wire_pkt, &mut decap_buf) {
+            TunnResult::WriteToTunnelV4(pkt, _) => pkt.to_vec(),
+            TunnResult::WriteToTunnelV6(pkt, _) => pkt.to_vec(),
+            TunnResult::Err(e) => panic!("decapsulate failed: {:?}", e),
+            other => panic!("decapsulate: {:?}", std::mem::discriminant(&other)),
+        };
+
+        // ── The whole point: the recovered plaintext is bit-identical. ──
+        assert_eq!(
+            recovered.len(),
+            plaintext.len(),
+            "round-trip plaintext length mismatch"
+        );
+        assert_eq!(
+            recovered, plaintext,
+            "round-trip plaintext bytes must match the original packet exactly"
+        );
+    }
+
+    /// Verify the AEAD nonce counter strictly advances across successive
+    /// `encapsulate` calls (no replay, no shared mutable state). We do not
+    /// drive the server side here — the fact that boringtun's transport
+    /// counter is monotonic is the production invariant; the round-trip
+    /// proof for an MTU-sized packet lives in the test above.
+    #[test]
+    fn encapsulate_advances_aead_counter_monotonically() {
+        use boringtun::noise::{Tunn, TunnResult};
+        use boringtun::x25519;
+
+        let client_secret = x25519::StaticSecret::from([0x33u8; 32]);
+        let client_public = x25519::PublicKey::from(&client_secret);
+        let server_secret = x25519::StaticSecret::from([0x44u8; 32]);
+        let server_public = x25519::PublicKey::from(&server_secret);
+
+        let mut client = Tunn::new(client_secret, server_public, None, None, 0, None);
+        let mut server = Tunn::new(server_secret, client_public, None, None, 1, None);
+
+        // Drive a complete handshake so client is in transport state.
+        let mut buf_a = vec![0u8; 4096];
+        let mut buf_b = vec![0u8; 4096];
+        let init = match client.format_handshake_initiation(&mut buf_a, false) {
+            TunnResult::WriteToNetwork(pkt) => pkt.to_vec(),
+            other => panic!("init: {:?}", std::mem::discriminant(&other)),
+        };
+        let resp = match server.decapsulate(None, &init, &mut buf_b) {
+            TunnResult::WriteToNetwork(pkt) => pkt.to_vec(),
+            other => panic!("resp: {:?}", std::mem::discriminant(&other)),
+        };
+        let _ = client.decapsulate(None, &resp, &mut buf_a);
+
+        let mut last_counter: Option<u64> = None;
+        for packet_idx in 0..8u8 {
+            let mut plaintext = vec![0u8; 256];
+            plaintext[0] = 0x45;
+            plaintext[1] = packet_idx;
+            for (i, b) in plaintext.iter_mut().enumerate().skip(2) {
+                *b = ((packet_idx as usize + i) % 251) as u8;
+            }
+
+            let mut wire_buf = vec![0u8; 1024];
+            let wire = match client.encapsulate(&plaintext, &mut wire_buf) {
+                TunnResult::WriteToNetwork(pkt) => pkt.to_vec(),
+                TunnResult::Err(e) => panic!("encapsulate {} failed: {:?}", packet_idx, e),
+                other => panic!(
+                    "encapsulate {}: {:?}",
+                    packet_idx,
+                    std::mem::discriminant(&other)
+                ),
+            };
+
+            // WireGuard transport packet: type byte at [0], counter at [8..16] LE.
+            assert_eq!(wire[0], 0x04, "packet {} must be Type-4 transport", packet_idx);
+            let counter = u64::from_le_bytes(wire[8..16].try_into().unwrap());
+            if let Some(prev) = last_counter {
+                assert!(
+                    counter > prev,
+                    "AEAD nonce counter must be strictly increasing: \
+                     packet {} got {} after previous {}",
+                    packet_idx,
+                    counter,
+                    prev
+                );
+            }
+            last_counter = Some(counter);
+
+            // Encrypted payload = plaintext (256 B) + Poly1305 tag (16 B).
+            assert_eq!(
+                wire.len(),
+                plaintext.len() + 16 + 16,
+                "packet {} length: WG header (16) + plaintext ({}) + tag (16)",
+                packet_idx,
+                plaintext.len()
+            );
+        }
     }
 }

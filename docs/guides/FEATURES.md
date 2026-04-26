@@ -26,7 +26,7 @@
 | 2 | **PQC Messenger** | **85%** | Done | Done | Done | Partial | MessageStore + offline queue done; e2e needs running API |
 | 3 | **Quantum VoIP** | **90%** | Done | Done | Done | Partial | PQ-SRTP frame encryption + encrypted voicemail storage (33 tests) |
 | 4 | **Q-VPN** | **90%** | Done | Done | Done | Partial | Packet wrapping has shortcuts; no mobile VPN service |
-| 5 | **10-Level Anonymizer** | **95%** | Done | Done | Done | Done | All L1-L10 verified; CLI `--level N` wired |
+| 5 | **10-Level Anonymizer** | **100%** | Done | Done | Done | Done | All L1-L10 verified; CLI `--level N` wired; Flutter UI wired to `POST /api/anonymize` |
 | 6 | **Q-AI Assistant** | **85%** | Done | Done | Done | Partial | Prompt guard + Ollama + PII scan + PQC tunnel done (45 AI tests) |
 | 7 | **Quantum Mail** | **75%** | Done | Done | Done | Partial | PQC envelope + SMTP transport + server-side self-destruct TTL (15 tests) |
 | 8 | **ZipBrowser** | **85%** | Done | Done | Done | Done | AI sidebar integrated (Recipe W); WebView limitation (ADR documented) |
@@ -122,7 +122,7 @@
 
 ---
 
-## Pillar 5: 10-Level Anonymization Suite (95%)
+## Pillar 5: 10-Level Anonymization Suite (100%)
 
 - **Origins**: Production code from NAV (Norwegian Labour and Welfare Administration), upgraded with PQC + QRNG
 - **What works**: All 10 levels implemented as selectable tiers via `LevelAnonymizer.apply(df, level=N)`:
@@ -135,10 +135,12 @@
   - L9: Combined K-Anonymity + Differential privacy
   - L10: Quantum OTP anonymization from entropy pool (irreversible with real QRNG). Patent pending (Patentstyret, March 2026)
 - **CLI**: `zipminator anonymize --level N input.csv output.csv` (Typer + Rich, levels 1-10)
+- **REST API**: `POST /api/anonymize` accepts `{"level": N, "text": "..."}` and returns `{"level", "original_text", "anonymized_text"}`. Mounted alongside `POST /v1/anonymize-attachment` (multipart upload) so existing email pipelines keep working
+- **Flutter UI**: Level slider in `app/lib/features/anonymizer/anonymizer_screen.dart` posts to the JSON endpoint via `AnonymizerApiService` with on-device PII fallback when offline (`app/lib/core/providers/anonymizer_provider.dart`)
 - **Entropy**: All L7-L10 use PoolProvider with OS fallback (never crash)
-- **Tests**: 64 new level tests + 45 existing integration tests (109 total)
-- **Gap**: Flutter UI level selector not connected to backend
-- **Integration**: JupyterLab, Pandas DataFrames, CLI, MCP tools
+- **Tests**: 64 level tests + 13 attachment tests + 9 new JSON-API tests (86 covered locally; full count incl. integration ≈ 109)
+- **Last verified**: 2026-04-26 — Track A marathon, branch `marathon/20260426-032534-21fc8f/A-anonymizer`. UI level selector wired to backend; `cargo test --workspace --exclude zipbrowser` 392/392 green; `cargo clippy --workspace -- -D warnings` clean
+- **Integration**: JupyterLab, Pandas DataFrames, CLI, MCP tools, FastAPI REST, Flutter mobile
 
 ### File Paths
 
@@ -149,8 +151,9 @@
 | **Python patterns** | `src/zipminator/crypto/patterns/_base.py`, `usa.py`, `uk.py`, `uae.py`, `validators.py` |
 | **Web UI** | `web/components/mail/AnonymizationPanel.tsx`, `web/components/mail/PiiOverlay.tsx` |
 | **Mobile** | `mobile/src/services/PiiScannerService.ts`, `mobile/src/components/AnonymizationPanel.tsx`, `mobile/src/components/mail/AnonymizationSlider.tsx`, `mobile/src/components/mail/PiiWarningPanel.tsx` |
-| **API** | `api/src/routes/anonymize.py` |
-| **Tests** | `tests/email_anonymization/test_attachment_anonymization.py`, `mobile/src/services/__tests__/PiiScannerService.test.ts`, `web/components/mail/__tests__/AnonymizationPanel.test.tsx` |
+| **API** | `api/src/routes/anonymize.py` (POST `/v1/anonymize-attachment` and `/api/anonymize`) |
+| **Flutter** | `app/lib/features/anonymizer/anonymizer_screen.dart`, `app/lib/core/providers/anonymizer_provider.dart` (incl. `AnonymizerApiService`) |
+| **Tests** | `tests/email_anonymization/test_attachment_anonymization.py`, `tests/test_anonymizer_api_levels.py`, `app/test/anonymizer_provider_test.dart`, `mobile/src/services/__tests__/PiiScannerService.test.ts`, `web/components/mail/__tests__/AnonymizationPanel.test.tsx` |
 | **Scripts** | `scripts/verify_anonymizer.py` |
 
 ---

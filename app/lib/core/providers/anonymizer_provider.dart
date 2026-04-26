@@ -1,6 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, TargetPlatform;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:zipminator/core/providers/pii_provider.dart';
 
 /// Anonymization strategy corresponding to Rust AnonymizationLevel 1-10.
@@ -62,12 +66,96 @@ class AnonymizerState {
       );
 }
 
-/// Manages 10-level anonymization by delegating PII scanning to the Rust
-/// bridge (via [PiiNotifier]) and applying level-appropriate transforms.
+/// Thin client for the FastAPI ``POST /api/anonymize`` endpoint.
 ///
-/// Levels 1-6 are implemented in Dart using the PII scan results.
-/// Levels 7-10 apply the same logic as L4/L10 until the Rust
-/// `anonymize_text` bridge function is added to crates/zipminator-app.
+/// Resolves a sensible default base URL per platform (Android emulators reach
+/// the host via 10.0.2.2; everything else uses localhost). Override with
+/// ``--dart-define=ZIPMINATOR_API_BASE_URL=https://...`` for staging or prod.
+class AnonymizerApiService {
+  AnonymizerApiService({
+    String? baseUrl,
+    http.Client? httpClient,
+    Duration timeout = const Duration(seconds: 4),
+  })  : _baseUrl = baseUrl ?? _defaultBaseUrl(),
+        _http = httpClient ?? http.Client(),
+        _timeout = timeout;
+
+  final String _baseUrl;
+  final http.Client _http;
+  final Duration _timeout;
+
+  static const _envBaseUrl =
+      String.fromEnvironment('ZIPMINATOR_API_BASE_URL', defaultValue: '');
+
+  static String _defaultBaseUrl() {
+    if (_envBaseUrl.isNotEmpty) return _envBaseUrl;
+    if (kIsWeb) return 'http://localhost:8000';
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return 'http://10.0.2.2:8000';
+    }
+    return 'http://localhost:8000';
+  }
+
+  /// POST {level, text} to ``/api/anonymize`` and return the anonymized text.
+  ///
+  /// Throws [AnonymizerApiException] on any failure. The Riverpod notifier
+  /// catches that and falls back to on-device anonymization.
+  Future<String> anonymize({required int level, required String text}) async {
+    final uri = Uri.parse('$_baseUrl/api/anonymize');
+    final http.Response resp;
+    try {
+      resp = await _http
+          .post(
+            uri,
+            headers: const {'Content-Type': 'application/json'},
+            body: jsonEncode({'level': level, 'text': text}),
+          )
+          .timeout(_timeout);
+    } on TimeoutException catch (e) {
+      throw AnonymizerApiException('Anonymizer API timed out: $e');
+    } catch (e) {
+      throw AnonymizerApiException('Anonymizer API unreachable: $e');
+    }
+
+    if (resp.statusCode != 200) {
+      throw AnonymizerApiException(
+        'Anonymizer API returned ${resp.statusCode}: ${resp.body}',
+      );
+    }
+
+    final dynamic body = jsonDecode(resp.body);
+    if (body is! Map || body['anonymized_text'] is! String) {
+      throw AnonymizerApiException(
+        'Anonymizer API returned malformed body: ${resp.body}',
+      );
+    }
+    return body['anonymized_text'] as String;
+  }
+
+  void close() => _http.close();
+}
+
+class AnonymizerApiException implements Exception {
+  AnonymizerApiException(this.message);
+  final String message;
+  @override
+  String toString() => 'AnonymizerApiException: $message';
+}
+
+/// Riverpod-overridable provider for the API client. Tests inject a fake.
+final anonymizerApiServiceProvider = Provider<AnonymizerApiService>((ref) {
+  final svc = AnonymizerApiService();
+  ref.onDispose(svc.close);
+  return svc;
+});
+
+/// Manages 10-level anonymization by:
+///   1. Posting `{level, text}` to ``POST /api/anonymize`` (FastAPI backend).
+///   2. Falling back to on-device PII-match-based anonymization if the API is
+///      unreachable (offline mode, dev environments without the API server).
+///
+/// On-device fallback uses [PiiNotifier]'s Rust-backed scan, then applies
+/// level-appropriate transforms locally.
 class AnonymizerNotifier extends Notifier<AnonymizerState> {
   @override
   AnonymizerState build() => const AnonymizerState();
@@ -77,36 +165,48 @@ class AnonymizerNotifier extends Notifier<AnonymizerState> {
   }
 
   /// Run anonymization on [text] at the currently selected level.
-  void anonymize(String text) {
+  ///
+  /// Calls the API first; on any error, falls back to on-device redaction so
+  /// the UI keeps working offline.
+  Future<void> anonymize(String text) async {
     if (text.isEmpty) return;
     state = state.copyWith(isProcessing: true, error: null);
     final stopwatch = Stopwatch()..start();
+    final level = state.selectedLevel;
 
+    // Always run the local PII scan so the UI can surface match counts
+    // and highlights regardless of which path produces the redacted text.
+    final piiNotifier = ref.read(piiProvider.notifier);
+    piiNotifier.scan(text);
+    final matches = ref.read(piiProvider).matches;
+
+    String anonymized;
+    String? apiError;
     try {
-      // Scan for PII using existing Rust-backed provider
-      final piiNotifier = ref.read(piiProvider.notifier);
-      piiNotifier.scan(text);
-      final piiState = ref.read(piiProvider);
-      final matches = piiState.matches;
-
-      // Apply anonymization transforms
-      final anonymized = _applyLevel(text, matches, state.selectedLevel);
-      stopwatch.stop();
-
-      state = AnonymizerState(
-        selectedLevel: state.selectedLevel,
-        result: AnonymizedResult(
-          originalText: text,
-          anonymizedText: anonymized,
-          level: state.selectedLevel,
-          matchCount: matches.length,
-          processingTime: stopwatch.elapsed,
-        ),
-      );
+      final api = ref.read(anonymizerApiServiceProvider);
+      anonymized = await api.anonymize(level: level, text: text);
+    } on AnonymizerApiException catch (e) {
+      apiError = e.message;
+      anonymized = _applyLevel(text, matches, level);
     } catch (e) {
-      stopwatch.stop();
-      state = state.copyWith(isProcessing: false, error: e.toString());
+      apiError = e.toString();
+      anonymized = _applyLevel(text, matches, level);
     }
+
+    stopwatch.stop();
+    state = AnonymizerState(
+      selectedLevel: level,
+      // `error` carries the API failure reason so observability/tests can
+      // distinguish API-driven from local-fallback runs without breaking the UI.
+      error: apiError,
+      result: AnonymizedResult(
+        originalText: text,
+        anonymizedText: anonymized,
+        level: level,
+        matchCount: matches.length,
+        processingTime: stopwatch.elapsed,
+      ),
+    );
   }
 
   /// Apply anonymization at the given level to text with detected PII matches.

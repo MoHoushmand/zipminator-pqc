@@ -20,6 +20,7 @@ pub mod config;
 pub mod local_llm;
 pub mod ollama;
 pub mod page_context;
+pub mod pqc_envelope;
 pub mod prompt_guard;
 
 #[cfg(feature = "tauri-shell")]
@@ -30,7 +31,10 @@ pub use config::{AiConfig, AiMode};
 #[cfg(feature = "tauri-shell")]
 pub use sidebar::{
     ai_chat, ai_clear_history, ai_download_model, ai_extract_page_context, ai_get_config,
-    ai_load_model, ai_rewrite, ai_set_config, ai_summarize, initial_state, AiState,
+    ai_load_model, ai_ollama_chat_stream, ai_ollama_ensure_default_model, ai_ollama_list_models,
+    ai_ollama_pull_model, ai_pqc_envelope_session_close, ai_pqc_envelope_session_init,
+    ai_pqc_envelope_unwrap_chunk, ai_pqc_envelope_wrap_chunk, ai_rewrite, ai_set_config,
+    ai_summarize, initial_state, AiState,
 };
 
 /// Selects which LLM backend handles a request.

@@ -95,6 +95,38 @@ const EVENT_AI_START = "ai-generation-start";
 const EVENT_AI_DONE = "ai-generation-done";
 const EVENT_MODEL_DOWNLOAD = "ai-model-download";
 const EVENT_AI_ERROR = "ai-error";
+const EVENT_OLLAMA_PULL = "ai-ollama-pull";
+const EVENT_AI_PQC_CHUNK = "ai-pqc-chunk";
+
+// ---------------------------------------------------------------------------
+// Ollama types
+// ---------------------------------------------------------------------------
+
+export interface OllamaModelInfo {
+  name: string;
+  model?: string;
+  size?: number;
+  modified_at?: string;
+}
+
+export interface OllamaPullProgress {
+  status: string;
+  digest?: string;
+  total?: number;
+  completed?: number;
+}
+
+export interface PqcEnvelopeSession {
+  session_id: string;
+  public_key: string;
+  kem_ct: string;
+}
+
+export interface PqcEnvelope {
+  ct: string;
+  kem_ct: string;
+  nonce: string;
+}
 
 // ---------------------------------------------------------------------------
 // Tauri bridge helpers — dynamic import so the file compiles without Tauri
@@ -211,6 +243,39 @@ export interface UseAIResult {
 
   /** Load a local model from path. */
   loadModel: (modelPath: string) => Promise<string | null>;
+
+  // --- Ollama integration (Pillar 6 Q-AI) ---
+
+  /** List models available on the local Ollama daemon. */
+  ollamaListModels: () => Promise<OllamaModelInfo[]>;
+
+  /** Pull a model via Ollama; emits progress events. */
+  ollamaPullModel: (modelName: string) => Promise<string | null>;
+
+  /** Auto-pull the default Ollama model on first run if missing. */
+  ollamaEnsureDefaultModel: () => Promise<boolean>;
+
+  /** Stream a chat through Ollama, optionally PQC-wrapped. */
+  ollamaChatStream: (
+    tabId: string,
+    message: string,
+    pqcSessionId?: string
+  ) => Promise<string | null>;
+
+  /** Most recent Ollama pull progress event (null when not pulling). */
+  ollamaPullProgress: OllamaPullProgress | null;
+
+  /** Most recent PQC-wrapped chunk (null when no chunks yet). */
+  pqcLastChunk: PqcEnvelope | null;
+
+  /** Active PQC session (null when none initialised yet). */
+  pqcSession: PqcEnvelopeSession | null;
+
+  /** Initialise a new PQC envelope session (returns session metadata). */
+  pqcInitSession: () => Promise<PqcEnvelopeSession | null>;
+
+  /** Close the active PQC envelope session. */
+  pqcCloseSession: () => Promise<void>;
 }
 
 // ---------------------------------------------------------------------------
@@ -224,6 +289,10 @@ export function useAI(): UseAIResult {
   const [streamingText, setStreamingText] = useState("");
   const [downloadProgress, setDownloadProgress] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [ollamaPullProgress, setOllamaPullProgress] =
+    useState<OllamaPullProgress | null>(null);
+  const [pqcLastChunk, setPqcLastChunk] = useState<PqcEnvelope | null>(null);
+  const [pqcSession, setPqcSession] = useState<PqcEnvelopeSession | null>(null);
 
   // Accumulate streaming tokens in a ref to avoid stale closure issues.
   const streamBufferRef = useRef("");
@@ -279,12 +348,37 @@ export function useAI(): UseAIResult {
         }
       );
 
+      const unlistenOllamaPull = await listenToEvent<OllamaPullProgress>(
+        EVENT_OLLAMA_PULL,
+        (progress) => {
+          if (!mounted) return;
+          setOllamaPullProgress(progress);
+          if (
+            progress.total &&
+            progress.total > 0 &&
+            progress.completed !== undefined
+          ) {
+            setDownloadProgress(progress.completed / progress.total);
+          }
+        }
+      );
+
+      const unlistenPqcChunk = await listenToEvent<PqcEnvelope>(
+        EVENT_AI_PQC_CHUNK,
+        (envelope) => {
+          if (!mounted) return;
+          setPqcLastChunk(envelope);
+        }
+      );
+
       unlistenRefs.current = [
         unlistenToken,
         unlistenStart,
         unlistenDone,
         unlistenDownload,
         unlistenError,
+        unlistenOllamaPull,
+        unlistenPqcChunk,
       ];
     };
 
@@ -495,6 +589,123 @@ export function useAI(): UseAIResult {
     [refreshConfig]
   );
 
+  // --- Ollama integration ---
+
+  const ollamaListModels = useCallback(async (): Promise<OllamaModelInfo[]> => {
+    if (!IS_TAURI) {
+      try {
+        const res = await fetch("http://localhost:11434/api/tags");
+        if (!res.ok) return [];
+        const data = (await res.json()) as { models?: OllamaModelInfo[] };
+        return data.models ?? [];
+      } catch {
+        return [];
+      }
+    }
+    try {
+      return await invokeCommand<OllamaModelInfo[]>("ai_ollama_list_models");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+      return [];
+    }
+  }, []);
+
+  const ollamaPullModel = useCallback(
+    async (modelName: string): Promise<string | null> => {
+      if (!IS_TAURI) {
+        setError("Ollama pull is only available in the desktop app.");
+        return null;
+      }
+      setOllamaPullProgress({ status: "starting" });
+      setDownloadProgress(0);
+      setError(null);
+      try {
+        const result = await invokeCommand<string>("ai_ollama_pull_model", {
+          modelName,
+        });
+        setDownloadProgress(null);
+        setOllamaPullProgress(null);
+        await refreshConfig();
+        return result;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        setError(msg);
+        setDownloadProgress(null);
+        setOllamaPullProgress(null);
+        return null;
+      }
+    },
+    [refreshConfig]
+  );
+
+  const ollamaEnsureDefaultModel = useCallback(async (): Promise<boolean> => {
+    if (!IS_TAURI) return false;
+    try {
+      return await invokeCommand<boolean>("ai_ollama_ensure_default_model");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+      return false;
+    }
+  }, []);
+
+  const ollamaChatStream = useCallback(
+    async (
+      tabId: string,
+      message: string,
+      pqcSessionId?: string
+    ): Promise<string | null> => {
+      setError(null);
+      try {
+        if (IS_TAURI) {
+          const response = await invokeCommand<AiResponse>(
+            "ai_ollama_chat_stream",
+            {
+              tabId,
+              message,
+              pqcSessionId: pqcSessionId ?? null,
+            }
+          );
+          return response.text;
+        }
+        return await httpChat(message);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        setError(msg);
+        setGenerating(false);
+        return null;
+      }
+    },
+    []
+  );
+
+  const pqcInitSession =
+    useCallback(async (): Promise<PqcEnvelopeSession | null> => {
+      if (!IS_TAURI) return null;
+      try {
+        const session = await invokeCommand<PqcEnvelopeSession>(
+          "ai_pqc_envelope_session_init"
+        );
+        setPqcSession(session);
+        return session;
+      } catch (err) {
+        setError(err instanceof Error ? err.message : String(err));
+        return null;
+      }
+    }, []);
+
+  const pqcCloseSession = useCallback(async (): Promise<void> => {
+    if (!IS_TAURI || !pqcSession) return;
+    try {
+      await invokeCommand<boolean>("ai_pqc_envelope_session_close", {
+        sessionId: pqcSession.session_id,
+      });
+    } catch {
+      // best effort
+    }
+    setPqcSession(null);
+    setPqcLastChunk(null);
+  }, [pqcSession]);
+
   return {
     config,
     configLoading,
@@ -510,5 +721,16 @@ export function useAI(): UseAIResult {
     updateConfig,
     downloadModel,
     loadModel,
+    // Ollama integration
+    ollamaListModels,
+    ollamaPullModel,
+    ollamaEnsureDefaultModel,
+    ollamaChatStream,
+    ollamaPullProgress,
+    // PQC envelope streaming
+    pqcLastChunk,
+    pqcSession,
+    pqcInitSession,
+    pqcCloseSession,
   };
 }

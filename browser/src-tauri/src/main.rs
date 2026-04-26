@@ -187,6 +187,16 @@ fn main() {
             ai::sidebar::ai_clear_history,
             ai::sidebar::ai_download_model,
             ai::sidebar::ai_load_model,
+            // ── AI Ollama integration (Pillar 6) ────────────────────────────
+            ai::sidebar::ai_ollama_list_models,
+            ai::sidebar::ai_ollama_pull_model,
+            ai::sidebar::ai_ollama_ensure_default_model,
+            ai::sidebar::ai_ollama_chat_stream,
+            // ── AI PQC envelope streaming (Pillar 6) ────────────────────────
+            ai::sidebar::ai_pqc_envelope_session_init,
+            ai::sidebar::ai_pqc_envelope_wrap_chunk,
+            ai::sidebar::ai_pqc_envelope_unwrap_chunk,
+            ai::sidebar::ai_pqc_envelope_session_close,
             // ── Mobile WebView PQC proxy (Pillar 8 mobile target) ──────────
             mobile::pqc_proxy_command,
         ])

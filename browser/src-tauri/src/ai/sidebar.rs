@@ -21,7 +21,9 @@ use crate::ai::local_llm::{
     ChatMessage, InferenceRequest, LocalLlmEngine, Role, TokenEvent, CHAT_SYSTEM_PROMPT,
     SUMMARIZE_SYSTEM_PROMPT, WRITING_SYSTEM_PROMPT,
 };
+use crate::ai::ollama::{OllamaClient, OllamaMessage, OllamaModelInfo, OllamaStreamEvent, PullProgress};
 use crate::ai::page_context::{PageContext, RawPageData};
+use crate::ai::pqc_envelope::{self, PqcEnvelope, PqcEnvelopeSession};
 use crate::ai::prompt_guard;
 
 // ---------------------------------------------------------------------------
@@ -38,6 +40,10 @@ pub const EVENT_AI_DONE: &str = "ai-generation-done";
 pub const EVENT_MODEL_DOWNLOAD: &str = "ai-model-download";
 /// Event emitted when an error occurs in the AI pipeline.
 pub const EVENT_AI_ERROR: &str = "ai-error";
+/// Event emitted on Ollama pull progress (model auto-download).
+pub const EVENT_OLLAMA_PULL: &str = "ai-ollama-pull";
+/// Event emitted for each PQC-wrapped streaming chunk.
+pub const EVENT_AI_PQC_CHUNK: &str = "ai-pqc-chunk";
 
 // ---------------------------------------------------------------------------
 // Sidebar state (held in Tauri's managed state)
@@ -658,6 +664,272 @@ async fn run_cloud_chat(
         .map_err(|e| AiError::new("cloud_error", e.to_string()))?;
 
     Ok(result.text)
+}
+
+// ---------------------------------------------------------------------------
+// Ollama integration commands (Pillar 6 Q-AI: local model auto-download +
+// model picker + chat streaming with PQC-envelope wrapping)
+// ---------------------------------------------------------------------------
+
+/// Default Ollama base URL used when the config has no explicit override.
+const DEFAULT_OLLAMA_URL: &str = "http://localhost:11434";
+
+/// Default model auto-pulled on first run.
+pub const DEFAULT_OLLAMA_MODEL: &str = "llama3.2";
+
+fn build_ollama_client(state_guard: &SidebarState, model_override: Option<&str>) -> OllamaClient {
+    // The config currently routes all local URLs through the cloud_api_endpoint
+    // when in cloud mode. For Ollama (which is always local) we use a fixed
+    // localhost URL unless the user has overridden it via cloud_api_endpoint
+    // explicitly to an Ollama endpoint.
+    let base = if state_guard
+        .config
+        .cloud_api_endpoint
+        .contains(":11434")
+    {
+        state_guard.config.cloud_api_endpoint.as_str()
+    } else {
+        DEFAULT_OLLAMA_URL
+    };
+    let model = match model_override {
+        Some(m) => m,
+        None if state_guard.config.cloud_model.is_empty() => DEFAULT_OLLAMA_MODEL,
+        None => {
+            // When mode is Local + Ollama, cloud_model is repurposed as the
+            // active Ollama model name (e.g. "llama3.2", "phi3").
+            state_guard.config.cloud_model.as_str()
+        }
+    };
+    OllamaClient::new(base, model)
+}
+
+/// List models available on the local Ollama daemon.
+///
+/// Returns an empty list if Ollama is not running. The frontend uses this to
+/// populate the model-picker dropdown in `AISidebar.tsx`.
+#[tauri::command]
+pub async fn ai_ollama_list_models(
+    state: State<'_, AiState>,
+) -> Result<Vec<OllamaModelInfo>, AiError> {
+    let client = {
+        let guard = state.lock().await;
+        build_ollama_client(&guard, None)
+    };
+    client
+        .list_models()
+        .await
+        .map_err(|e| AiError::new("ollama_list_failed", e.to_string()))
+}
+
+/// Pull a model from the Ollama registry, streaming progress events to the
+/// frontend on the `EVENT_OLLAMA_PULL` channel.
+///
+/// Spec contract: "First-run flow auto-downloads default model `llama3.2` via
+/// Ollama API (`POST http://localhost:11434/api/pull` with stream).
+/// UI shows progress (download size in MB)."
+#[tauri::command]
+pub async fn ai_ollama_pull_model(
+    state: State<'_, AiState>,
+    app: AppHandle,
+    model_name: String,
+) -> Result<String, AiError> {
+    let client = {
+        let guard = state.lock().await;
+        build_ollama_client(&guard, Some(&model_name))
+    };
+
+    let (tx, mut rx) = mpsc::channel::<PullProgress>(64);
+    let app_clone = app.clone();
+    tokio::spawn(async move {
+        while let Some(progress) = rx.recv().await {
+            let _ = app_clone.emit(EVENT_OLLAMA_PULL, &progress);
+        }
+    });
+
+    client
+        .pull_model(&model_name, Some(tx))
+        .await
+        .map_err(|e| AiError::new("ollama_pull_failed", e.to_string()))?;
+
+    // Update config with the now-active local model.
+    {
+        let mut guard = state.lock().await;
+        guard.config.cloud_model = model_name.clone();
+        guard.config.mode = AiMode::Local;
+    }
+
+    Ok(model_name)
+}
+
+/// Auto-pull the default model on first run if it is not already present.
+///
+/// Idempotent: a no-op when `llama3.2` is already in `/api/tags`.
+/// Returns `true` if the model was pulled, `false` if it was already present.
+#[tauri::command]
+pub async fn ai_ollama_ensure_default_model(
+    state: State<'_, AiState>,
+    app: AppHandle,
+) -> Result<bool, AiError> {
+    let already_present = {
+        let guard = state.lock().await;
+        let client = build_ollama_client(&guard, Some(DEFAULT_OLLAMA_MODEL));
+        client.has_model(DEFAULT_OLLAMA_MODEL).await.unwrap_or(false)
+    };
+
+    if already_present {
+        // Already set up — just mark the config so the UI shows the model.
+        let mut guard = state.lock().await;
+        if guard.config.cloud_model.is_empty() {
+            guard.config.cloud_model = DEFAULT_OLLAMA_MODEL.to_string();
+        }
+        return Ok(false);
+    }
+
+    ai_ollama_pull_model(state, app, DEFAULT_OLLAMA_MODEL.to_string()).await?;
+    Ok(true)
+}
+
+/// Stream a chat completion through Ollama, optionally wrapping each chunk
+/// in a PQC envelope.
+///
+/// When `pqc_session_id` is provided, every emitted token chunk is wrapped
+/// using `pqc_envelope::wrap_chunk` and emitted on `EVENT_AI_PQC_CHUNK`. When
+/// `None`, raw token text is emitted on `EVENT_AI_TOKEN` for backward
+/// compatibility with the existing UI streaming path.
+#[tauri::command]
+pub async fn ai_ollama_chat_stream(
+    state: State<'_, AiState>,
+    app: AppHandle,
+    tab_id: String,
+    message: String,
+    pqc_session_id: Option<String>,
+) -> Result<AiResponse, AiError> {
+    // Gate: PromptGuard scan before any LLM call.
+    let safety = prompt_guard::scan(&message);
+    if !safety.is_safe {
+        return Err(AiError::new(
+            "prompt_injection_blocked",
+            format!(
+                "Your message was blocked by the prompt safety scanner. Detected issues: {}",
+                safety.threats.join("; ")
+            ),
+        ));
+    }
+
+    let (client, mut messages) = {
+        let mut guard = state.lock().await;
+        let client = build_ollama_client(&guard, None);
+        let history = guard.chat_histories.entry(tab_id.clone()).or_default();
+        history.push(ChatMessage {
+            role: Role::User,
+            content: message.clone(),
+        });
+        let messages: Vec<OllamaMessage> = history
+            .iter()
+            .map(|m| OllamaMessage {
+                role: match m.role {
+                    Role::User => "user".into(),
+                    Role::Assistant => "assistant".into(),
+                    Role::System => "system".into(),
+                },
+                content: m.content.clone(),
+            })
+            .collect();
+        (client, messages)
+    };
+
+    // Prepend a system message to anchor the assistant.
+    messages.insert(
+        0,
+        OllamaMessage {
+            role: "system".into(),
+            content: CHAT_SYSTEM_PROMPT.to_string(),
+        },
+    );
+
+    let _ = app.emit(EVENT_AI_START, ());
+
+    // Spawn forwarder that wraps each chunk in PQC envelope (if session
+    // present) and emits the wrapped chunk on EVENT_AI_PQC_CHUNK; the raw
+    // token also goes out on EVENT_AI_TOKEN so existing UI keeps working.
+    let (tx, mut rx) = mpsc::channel::<OllamaStreamEvent>(128);
+    let app_clone = app.clone();
+    let pqc_sid = pqc_session_id.clone();
+    tokio::spawn(async move {
+        while let Some(ev) = rx.recv().await {
+            let token_event = TokenEvent {
+                token: ev.token.clone(),
+                done: ev.done,
+            };
+            let _ = app_clone.emit(EVENT_AI_TOKEN, &token_event);
+
+            if let Some(sid) = &pqc_sid {
+                if !ev.token.is_empty() {
+                    if let Ok(env) = pqc_envelope::wrap_chunk(sid, &ev.token) {
+                        let _ = app_clone.emit(EVENT_AI_PQC_CHUNK, &env);
+                    }
+                }
+            }
+        }
+    });
+
+    let result = client
+        .chat_stream(&messages, tx)
+        .await
+        .map_err(|e| AiError::new("ollama_chat_failed", e.to_string()))?;
+
+    {
+        let mut guard = state.lock().await;
+        if let Some(history) = guard.chat_histories.get_mut(&tab_id) {
+            history.push(ChatMessage {
+                role: Role::Assistant,
+                content: result.clone(),
+            });
+        }
+    }
+
+    let _ = app.emit(EVENT_AI_DONE, ());
+
+    Ok(AiResponse {
+        text: result,
+        mode: AiMode::Local,
+    })
+}
+
+// ---------------------------------------------------------------------------
+// PQC envelope commands (Pillar 6 Q-AI: streaming PQC tunnel)
+// ---------------------------------------------------------------------------
+
+/// Initialize a PQC envelope session for AI streaming.
+#[tauri::command]
+pub async fn ai_pqc_envelope_session_init() -> Result<PqcEnvelopeSession, AiError> {
+    pqc_envelope::session_init().map_err(|e| AiError::new("pqc_session_init_failed", e.to_string()))
+}
+
+/// Wrap a single plaintext chunk into a PQC envelope.
+#[tauri::command]
+pub async fn ai_pqc_envelope_wrap_chunk(
+    session_id: String,
+    plaintext: String,
+) -> Result<PqcEnvelope, AiError> {
+    pqc_envelope::wrap_chunk(&session_id, &plaintext)
+        .map_err(|e| AiError::new("pqc_wrap_failed", e.to_string()))
+}
+
+/// Unwrap a PQC envelope back to plaintext.
+#[tauri::command]
+pub async fn ai_pqc_envelope_unwrap_chunk(
+    session_id: String,
+    envelope: PqcEnvelope,
+) -> Result<String, AiError> {
+    pqc_envelope::unwrap_chunk(&session_id, &envelope)
+        .map_err(|e| AiError::new("pqc_unwrap_failed", e.to_string()))
+}
+
+/// Tear down a PQC envelope session.
+#[tauri::command]
+pub async fn ai_pqc_envelope_session_close(session_id: String) -> Result<bool, AiError> {
+    Ok(pqc_envelope::session_close(&session_id))
 }
 
 // ---------------------------------------------------------------------------

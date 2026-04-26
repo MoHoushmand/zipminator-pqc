@@ -6,11 +6,13 @@
 
 use std::path::Path;
 
+use hkdf::Hkdf;
 use serde::Serialize;
 use sha2::{Digest, Sha256};
+use zeroize::Zeroize;
 
 use crate::em_canary::EmCanaryPolicy;
-use crate::entropy_bridge::{EntropyBridge, EntropyBridgeError, FilePoolSource};
+use crate::entropy_bridge::{EntropyBridge, EntropyBridgeError, FilePoolSource, PoolEntropySource};
 use crate::mesh_key::MeshKey;
 use crate::puek::PuekEnrollment;
 use crate::siphash_key::SipHashKey;
@@ -21,8 +23,61 @@ pub const NVS_MAGIC: &[u8; 6] = b"ZMESH\x01";
 /// Magic bytes identifying a Zipminator NVS mesh binary blob (v2, with PUEK + EM Canary).
 pub const NVS_MAGIC_V2: &[u8; 6] = b"ZMESH\x02";
 
+/// Magic bytes identifying a Zipminator NVS mesh binary blob (v3, with per-module Wave-1 keys).
+pub const NVS_MAGIC_V3: &[u8; 6] = b"ZMESH\x03";
+
 /// Size of the SHA-256 checksum appended to the NVS binary.
 const NVS_CHECKSUM_SIZE: usize = 32;
+
+/// Size of each per-module key (16 bytes, matches `MeshKey`).
+pub const WAVE1_MODULE_KEY_SIZE: usize = 16;
+
+/// Names of the 6 Wave-1 physical-cryptography modules whose keys
+/// are emitted in the V3 NVS binary, in the order they appear.
+pub const WAVE1_MODULE_NAMES: [&str; 6] = [
+    "csi_entropy",
+    "puek",
+    "em_canary",
+    "vital_auth",
+    "topo_auth",
+    "spatiotemporal",
+];
+
+/// Per-module keys for the 6 Wave-1 physical-crypto modules.
+///
+/// Every key is 16 bytes, derived from the QRNG pool via HKDF-SHA256 with a
+/// distinct info string per module so module compromise cannot leak across
+/// modules.
+#[derive(Debug, Clone)]
+pub struct Wave1ModuleKeys {
+    /// Key material for `csi_entropy` (CSI Entropy Harvester).
+    pub csi_entropy: [u8; WAVE1_MODULE_KEY_SIZE],
+    /// Key material for `puek` (Physical Unclonable Environment Key).
+    pub puek: [u8; WAVE1_MODULE_KEY_SIZE],
+    /// Key material for `em_canary` (EM Canary Session Controller).
+    pub em_canary: [u8; WAVE1_MODULE_KEY_SIZE],
+    /// Key material for `vital_auth` (Vital-Sign Continuous Auth).
+    pub vital_auth: [u8; WAVE1_MODULE_KEY_SIZE],
+    /// Key material for `topo_auth` (Topological Mesh Authentication).
+    pub topo_auth: [u8; WAVE1_MODULE_KEY_SIZE],
+    /// Key material for `spatiotemporal` (Spatiotemporal Non-Repudiation).
+    pub spatiotemporal: [u8; WAVE1_MODULE_KEY_SIZE],
+}
+
+impl Wave1ModuleKeys {
+    /// Iterate over `(module_name, key_bytes)` pairs in canonical order.
+    pub fn iter(&self) -> impl Iterator<Item = (&'static str, &[u8; WAVE1_MODULE_KEY_SIZE])> {
+        [
+            (WAVE1_MODULE_NAMES[0], &self.csi_entropy),
+            (WAVE1_MODULE_NAMES[1], &self.puek),
+            (WAVE1_MODULE_NAMES[2], &self.em_canary),
+            (WAVE1_MODULE_NAMES[3], &self.vital_auth),
+            (WAVE1_MODULE_NAMES[4], &self.topo_auth),
+            (WAVE1_MODULE_NAMES[5], &self.spatiotemporal),
+        ]
+        .into_iter()
+    }
+}
 
 /// A complete key set for one mesh provisioning epoch.
 #[derive(Debug, Clone, Serialize)]
@@ -46,6 +101,23 @@ pub struct MeshKeySetV2 {
     pub puek_enrollment: Option<PuekEnrollmentData>,
     /// Optional EM Canary policy for anomaly-driven session control.
     pub canary_policy: Option<CanaryPolicyData>,
+}
+
+/// Parsed result of a V3 NVS binary blob (includes Wave-1 module keys).
+#[derive(Debug, Clone)]
+pub struct ParsedNvsV3 {
+    /// Mesh network identifier.
+    pub mesh_id: String,
+    /// 16-byte PSK for beacon auth.
+    pub psk: [u8; 16],
+    /// 16-byte SipHash key for frame integrity.
+    pub siphash: [u8; 16],
+    /// Optional PUEK enrollment data.
+    pub puek: Option<PuekEnrollmentData>,
+    /// Optional EM Canary policy.
+    pub canary: Option<CanaryPolicyData>,
+    /// Per-module keys for the 6 Wave-1 modules.
+    pub module_keys: Wave1ModuleKeys,
 }
 
 /// Parsed result of a V2 NVS binary blob.
@@ -343,6 +415,376 @@ impl MeshProvisioner {
         buf.extend_from_slice(&checksum);
 
         Ok(buf)
+    }
+
+    /// Derive per-module 16-byte keys for the 6 Wave-1 physical-crypto modules.
+    ///
+    /// Each key is derived via HKDF-SHA256 from the QRNG pool with a
+    /// distinct info string per module:
+    ///
+    /// - `zipminator-mesh-module-csi_entropy-v1`
+    /// - `zipminator-mesh-module-puek-v1`
+    /// - `zipminator-mesh-module-em_canary-v1`
+    /// - `zipminator-mesh-module-vital_auth-v1`
+    /// - `zipminator-mesh-module-topo_auth-v1`
+    /// - `zipminator-mesh-module-spatiotemporal-v1`
+    ///
+    /// The salt is the standard `mesh_id:epoch:N` string used elsewhere.
+    pub fn derive_wave1_module_keys(
+        &mut self,
+        mesh_id: &str,
+    ) -> Result<Wave1ModuleKeys, EntropyBridgeError> {
+        if mesh_id.is_empty() {
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "mesh_id must not be empty".into(),
+            ));
+        }
+
+        // Read 32 bytes of fresh entropy as IKM.
+        let mut source = FilePoolSource::new(&self.pool_path)?;
+        let mut ikm = [0u8; 32];
+        source.read_entropy(&mut ikm)?;
+
+        let salt = format!("{}:epoch:{}", mesh_id, self.epoch).into_bytes();
+        let hk = Hkdf::<Sha256>::new(Some(&salt), &ikm);
+
+        let mut csi_entropy = [0u8; WAVE1_MODULE_KEY_SIZE];
+        let mut puek = [0u8; WAVE1_MODULE_KEY_SIZE];
+        let mut em_canary = [0u8; WAVE1_MODULE_KEY_SIZE];
+        let mut vital_auth = [0u8; WAVE1_MODULE_KEY_SIZE];
+        let mut topo_auth = [0u8; WAVE1_MODULE_KEY_SIZE];
+        let mut spatiotemporal = [0u8; WAVE1_MODULE_KEY_SIZE];
+
+        hk.expand(b"zipminator-mesh-module-csi_entropy-v1", &mut csi_entropy)
+            .map_err(|_| EntropyBridgeError::KeyDerivationFailed)?;
+        hk.expand(b"zipminator-mesh-module-puek-v1", &mut puek)
+            .map_err(|_| EntropyBridgeError::KeyDerivationFailed)?;
+        hk.expand(b"zipminator-mesh-module-em_canary-v1", &mut em_canary)
+            .map_err(|_| EntropyBridgeError::KeyDerivationFailed)?;
+        hk.expand(b"zipminator-mesh-module-vital_auth-v1", &mut vital_auth)
+            .map_err(|_| EntropyBridgeError::KeyDerivationFailed)?;
+        hk.expand(b"zipminator-mesh-module-topo_auth-v1", &mut topo_auth)
+            .map_err(|_| EntropyBridgeError::KeyDerivationFailed)?;
+        hk.expand(
+            b"zipminator-mesh-module-spatiotemporal-v1",
+            &mut spatiotemporal,
+        )
+        .map_err(|_| EntropyBridgeError::KeyDerivationFailed)?;
+
+        ikm.zeroize();
+
+        Ok(Wave1ModuleKeys {
+            csi_entropy,
+            puek,
+            em_canary,
+            vital_auth,
+            topo_auth,
+            spatiotemporal,
+        })
+    }
+
+    /// Produce a V3 NVS-compatible binary blob with per-module Wave-1 keys.
+    ///
+    /// V3 extends V2 by appending 6 × 16 byte module keys after the canary
+    /// section but before the SHA-256 checksum. Layout:
+    ///
+    /// ```text
+    /// [magic: 6B "ZMESH\x03"]
+    /// [mesh_id_len: 2B LE] [mesh_id: N bytes]
+    /// [psk: 16B] [siphash: 16B]
+    /// [has_puek: 1B] [puek_data: variable]
+    /// [has_canary: 1B] [canary_data: variable]
+    /// [module_count: 1B = 6]
+    /// [csi_entropy_key: 16B]
+    /// [puek_key: 16B]
+    /// [em_canary_key: 16B]
+    /// [vital_auth_key: 16B]
+    /// [topo_auth_key: 16B]
+    /// [spatiotemporal_key: 16B]
+    /// [sha256_checksum: 32B]
+    /// ```
+    ///
+    /// Total fixed-cost bytes added vs V2: `1 + 6*16 = 97`.
+    pub fn provision_nvs_v3_binary(
+        &mut self,
+        mesh_id: &str,
+        puek: Option<&PuekEnrollmentData>,
+        canary: Option<&CanaryPolicyData>,
+    ) -> Result<Vec<u8>, EntropyBridgeError> {
+        if mesh_id.is_empty() {
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "mesh_id must not be empty".into(),
+            ));
+        }
+        let id_bytes = mesh_id.as_bytes();
+        if id_bytes.len() > u16::MAX as usize {
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "mesh_id exceeds maximum length (65535 bytes)".into(),
+            ));
+        }
+
+        // Derive base keys (PSK + SipHash).
+        let salt = format!("{}:epoch:{}", mesh_id, self.epoch).into_bytes();
+        let source = FilePoolSource::new(&self.pool_path)?;
+        let mut bridge = EntropyBridge::new(source);
+        let (mesh_key, siphash_key) = bridge.derive_mesh_key_pair(Some(&salt))?;
+
+        // Derive Wave-1 module keys.
+        let module_keys = self.derive_wave1_module_keys(mesh_id)?;
+
+        let mut buf = Vec::with_capacity(384);
+
+        // Magic header (v3)
+        buf.extend_from_slice(NVS_MAGIC_V3);
+        // Mesh ID length (u16 LE)
+        buf.extend_from_slice(&(id_bytes.len() as u16).to_le_bytes());
+        // Mesh ID bytes
+        buf.extend_from_slice(id_bytes);
+        // PSK (16 bytes)
+        buf.extend_from_slice(mesh_key.as_bytes());
+        // SipHash key (16 bytes)
+        buf.extend_from_slice(siphash_key.as_bytes());
+
+        // PUEK section
+        match puek {
+            Some(p) => {
+                buf.push(1);
+                let count = p.eigenmodes.len() as u16;
+                buf.extend_from_slice(&count.to_le_bytes());
+                for eigenmode in &p.eigenmodes {
+                    buf.extend_from_slice(&eigenmode.to_le_bytes());
+                }
+                buf.extend_from_slice(&p.threshold.to_le_bytes());
+            }
+            None => {
+                buf.push(0);
+            }
+        }
+
+        // Canary section
+        match canary {
+            Some(c) => {
+                buf.push(1);
+                buf.extend_from_slice(&c.elevated_threshold.to_le_bytes());
+                buf.extend_from_slice(&c.high_threshold.to_le_bytes());
+                buf.extend_from_slice(&c.critical_threshold.to_le_bytes());
+                buf.extend_from_slice(&c.max_consecutive_anomalies.to_le_bytes());
+                let mut flags: u8 = 0;
+                if c.rekey_on_elevated {
+                    flags |= 0x01;
+                }
+                if c.terminate_on_critical {
+                    flags |= 0x02;
+                }
+                buf.push(flags);
+            }
+            None => {
+                buf.push(0);
+            }
+        }
+
+        // Module key section: count byte + 6 × 16 byte keys, in WAVE1_MODULE_NAMES order.
+        buf.push(WAVE1_MODULE_NAMES.len() as u8);
+        buf.extend_from_slice(&module_keys.csi_entropy);
+        buf.extend_from_slice(&module_keys.puek);
+        buf.extend_from_slice(&module_keys.em_canary);
+        buf.extend_from_slice(&module_keys.vital_auth);
+        buf.extend_from_slice(&module_keys.topo_auth);
+        buf.extend_from_slice(&module_keys.spatiotemporal);
+
+        // SHA-256 checksum over everything so far
+        let checksum = Sha256::digest(&buf);
+        buf.extend_from_slice(&checksum);
+
+        Ok(buf)
+    }
+
+    /// Parse a V3 NVS binary blob, validating checksum and recovering all keys.
+    pub fn parse_nvs_v3_binary(blob: &[u8]) -> Result<ParsedNvsV3, EntropyBridgeError> {
+        if blob.len() < NVS_MAGIC_V3.len() + 2 + NVS_CHECKSUM_SIZE {
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "blob too short for V3 format".into(),
+            ));
+        }
+        if &blob[..6] != NVS_MAGIC_V3 {
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "invalid V3 magic bytes".into(),
+            ));
+        }
+
+        // Verify checksum.
+        let (payload, stored_checksum) = blob.split_at(blob.len() - NVS_CHECKSUM_SIZE);
+        let computed = Sha256::digest(payload);
+        if computed.as_slice() != stored_checksum {
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "V3 checksum mismatch".into(),
+            ));
+        }
+
+        let mut pos = 6;
+
+        // Mesh ID
+        let id_len = u16::from_le_bytes([payload[pos], payload[pos + 1]]) as usize;
+        pos += 2;
+        if pos + id_len > payload.len() {
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "truncated mesh_id".into(),
+            ));
+        }
+        let mesh_id = String::from_utf8(payload[pos..pos + id_len].to_vec()).map_err(|e| {
+            EntropyBridgeError::PoolNotAccessible(format!("invalid mesh_id UTF-8: {e}"))
+        })?;
+        pos += id_len;
+
+        // PSK
+        if pos + 16 > payload.len() {
+            return Err(EntropyBridgeError::PoolNotAccessible("truncated PSK".into()));
+        }
+        let mut psk = [0u8; 16];
+        psk.copy_from_slice(&payload[pos..pos + 16]);
+        pos += 16;
+
+        // SipHash
+        if pos + 16 > payload.len() {
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "truncated SipHash key".into(),
+            ));
+        }
+        let mut sip = [0u8; 16];
+        sip.copy_from_slice(&payload[pos..pos + 16]);
+        pos += 16;
+
+        // PUEK section (same encoding as V2)
+        if pos + 1 > payload.len() {
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "truncated has_puek".into(),
+            ));
+        }
+        let has_puek = payload[pos];
+        pos += 1;
+        let puek_data = if has_puek == 1 {
+            if pos + 2 > payload.len() {
+                return Err(EntropyBridgeError::PoolNotAccessible(
+                    "truncated puek eigenmode count".into(),
+                ));
+            }
+            let eigenmode_count = u16::from_le_bytes([payload[pos], payload[pos + 1]]) as usize;
+            pos += 2;
+            let eigenmodes_bytes = eigenmode_count * 8;
+            if pos + eigenmodes_bytes + 8 > payload.len() {
+                return Err(EntropyBridgeError::PoolNotAccessible(
+                    "truncated puek data".into(),
+                ));
+            }
+            let mut eigenmodes = Vec::with_capacity(eigenmode_count);
+            for _ in 0..eigenmode_count {
+                let val = f64::from_le_bytes(payload[pos..pos + 8].try_into().unwrap());
+                eigenmodes.push(val);
+                pos += 8;
+            }
+            let threshold = f64::from_le_bytes(payload[pos..pos + 8].try_into().unwrap());
+            pos += 8;
+            Some(PuekEnrollmentData::new(eigenmodes, threshold))
+        } else {
+            None
+        };
+
+        // Canary section (same encoding as V2)
+        if pos + 1 > payload.len() {
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "truncated has_canary".into(),
+            ));
+        }
+        let has_canary = payload[pos];
+        pos += 1;
+        let canary_data = if has_canary == 1 {
+            if pos + 29 > payload.len() {
+                return Err(EntropyBridgeError::PoolNotAccessible(
+                    "truncated canary data".into(),
+                ));
+            }
+            let elevated = f64::from_le_bytes(payload[pos..pos + 8].try_into().unwrap());
+            pos += 8;
+            let high = f64::from_le_bytes(payload[pos..pos + 8].try_into().unwrap());
+            pos += 8;
+            let critical = f64::from_le_bytes(payload[pos..pos + 8].try_into().unwrap());
+            pos += 8;
+            let max_consecutive = u32::from_le_bytes(payload[pos..pos + 4].try_into().unwrap());
+            pos += 4;
+            let flags = payload[pos];
+            pos += 1;
+            Some(CanaryPolicyData {
+                elevated_threshold: elevated,
+                high_threshold: high,
+                critical_threshold: critical,
+                max_consecutive_anomalies: max_consecutive,
+                rekey_on_elevated: flags & 0x01 != 0,
+                terminate_on_critical: flags & 0x02 != 0,
+            })
+        } else {
+            None
+        };
+
+        // Module key section
+        if pos + 1 > payload.len() {
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "truncated module_count".into(),
+            ));
+        }
+        let module_count = payload[pos] as usize;
+        pos += 1;
+        if module_count != WAVE1_MODULE_NAMES.len() {
+            return Err(EntropyBridgeError::PoolNotAccessible(format!(
+                "expected {} module keys, got {}",
+                WAVE1_MODULE_NAMES.len(),
+                module_count
+            )));
+        }
+        let bytes_needed = module_count * WAVE1_MODULE_KEY_SIZE;
+        if pos + bytes_needed > payload.len() {
+            return Err(EntropyBridgeError::PoolNotAccessible(
+                "truncated module key data".into(),
+            ));
+        }
+
+        let mut module_keys = Wave1ModuleKeys {
+            csi_entropy: [0u8; 16],
+            puek: [0u8; 16],
+            em_canary: [0u8; 16],
+            vital_auth: [0u8; 16],
+            topo_auth: [0u8; 16],
+            spatiotemporal: [0u8; 16],
+        };
+        module_keys
+            .csi_entropy
+            .copy_from_slice(&payload[pos..pos + 16]);
+        pos += 16;
+        module_keys.puek.copy_from_slice(&payload[pos..pos + 16]);
+        pos += 16;
+        module_keys
+            .em_canary
+            .copy_from_slice(&payload[pos..pos + 16]);
+        pos += 16;
+        module_keys
+            .vital_auth
+            .copy_from_slice(&payload[pos..pos + 16]);
+        pos += 16;
+        module_keys
+            .topo_auth
+            .copy_from_slice(&payload[pos..pos + 16]);
+        pos += 16;
+        module_keys
+            .spatiotemporal
+            .copy_from_slice(&payload[pos..pos + 16]);
+
+        Ok(ParsedNvsV3 {
+            mesh_id,
+            psk,
+            siphash: sip,
+            puek: puek_data,
+            canary: canary_data,
+            module_keys,
+        })
     }
 
     /// Parse a V2 NVS binary blob back into its components.
@@ -900,6 +1342,136 @@ mod tests {
             &parsed.siphash, sip_v1,
             "V2 SipHash must match V1 derivation"
         );
+    }
+
+    // --- NVS V3 binary tests (per-module Wave-1 keys) ---
+
+    #[test]
+    fn test_nvs_v3_emits_six_module_keys() {
+        let (_dir, pool_path) = create_test_pool(4096);
+        let mut prov = MeshProvisioner::new(&pool_path, "v3-six").unwrap();
+        let blob = prov.provision_nvs_v3_binary("v3-six", None, None).unwrap();
+        let parsed = MeshProvisioner::parse_nvs_v3_binary(&blob).unwrap();
+
+        // Acceptance criterion #3: all 6 Wave-1 module keys present.
+        assert_eq!(WAVE1_MODULE_NAMES.len(), 6, "must have exactly 6 modules");
+        let mut all_keys: Vec<&[u8; 16]> = Vec::new();
+        for (name, key) in parsed.module_keys.iter() {
+            assert!(
+                WAVE1_MODULE_NAMES.contains(&name),
+                "unexpected module name: {name}"
+            );
+            // Each key must be non-zero.
+            assert!(
+                key.iter().any(|&b| b != 0),
+                "module key {name} is all zeros (derivation failed)"
+            );
+            all_keys.push(key);
+        }
+        assert_eq!(all_keys.len(), 6);
+
+        // Module keys must be domain-separated: no two are equal.
+        for i in 0..all_keys.len() {
+            for j in (i + 1)..all_keys.len() {
+                assert_ne!(
+                    all_keys[i], all_keys[j],
+                    "module keys at index {i} and {j} collide (HKDF info string broken)"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_nvs_v3_module_keys_distinct_from_psk_and_siphash() {
+        let (_dir, pool_path) = create_test_pool(4096);
+        let mut prov = MeshProvisioner::new(&pool_path, "v3-distinct").unwrap();
+        let blob = prov
+            .provision_nvs_v3_binary("v3-distinct", None, None)
+            .unwrap();
+        let parsed = MeshProvisioner::parse_nvs_v3_binary(&blob).unwrap();
+
+        for (name, key) in parsed.module_keys.iter() {
+            assert_ne!(
+                key.as_slice(),
+                parsed.psk.as_slice(),
+                "module {name} key collides with PSK (info string collision)"
+            );
+            assert_ne!(
+                key.as_slice(),
+                parsed.siphash.as_slice(),
+                "module {name} key collides with SipHash key"
+            );
+        }
+    }
+
+    #[test]
+    fn test_nvs_v3_magic_bytes() {
+        let (_dir, pool_path) = create_test_pool(4096);
+        let mut prov = MeshProvisioner::new(&pool_path, "v3-magic").unwrap();
+        let blob = prov
+            .provision_nvs_v3_binary("v3-magic", None, None)
+            .unwrap();
+        assert_eq!(&blob[..6], b"ZMESH\x03");
+        assert_ne!(&blob[..6], b"ZMESH\x01");
+        assert_ne!(&blob[..6], b"ZMESH\x02");
+    }
+
+    #[test]
+    fn test_nvs_v3_checksum_validates() {
+        let (_dir, pool_path) = create_test_pool(4096);
+        let mut prov = MeshProvisioner::new(&pool_path, "v3-cksum").unwrap();
+        let blob = prov.provision_nvs_v3_binary("v3-cksum", None, None).unwrap();
+
+        // Tamper with a random byte and ensure parse fails.
+        let mut corrupted = blob.clone();
+        corrupted[20] ^= 0xFF;
+        let result = MeshProvisioner::parse_nvs_v3_binary(&corrupted);
+        assert!(result.is_err(), "tampered V3 blob must fail checksum");
+    }
+
+    #[test]
+    fn test_nvs_v3_with_puek_and_canary() {
+        let (_dir, pool_path) = create_test_pool(4096);
+        let mut prov = MeshProvisioner::new(&pool_path, "v3-pc").unwrap();
+        let puek = PuekEnrollmentData::new(vec![0.5, 0.4, 0.3], 0.9);
+        let canary = CanaryPolicyData {
+            elevated_threshold: 0.05,
+            high_threshold: 0.20,
+            critical_threshold: 0.40,
+            max_consecutive_anomalies: 3,
+            rekey_on_elevated: true,
+            terminate_on_critical: true,
+        };
+        let blob = prov
+            .provision_nvs_v3_binary("v3-pc", Some(&puek), Some(&canary))
+            .unwrap();
+        let parsed = MeshProvisioner::parse_nvs_v3_binary(&blob).unwrap();
+
+        assert_eq!(parsed.mesh_id, "v3-pc");
+        let p = parsed.puek.as_ref().expect("puek present");
+        assert_eq!(p.eigenmodes, vec![0.5, 0.4, 0.3]);
+        assert!((p.threshold - 0.9).abs() < 1e-10);
+        let c = parsed.canary.as_ref().expect("canary present");
+        assert_eq!(c.max_consecutive_anomalies, 3);
+
+        // Module keys still all 6, all distinct, all non-zero.
+        let mut count = 0;
+        for (_name, key) in parsed.module_keys.iter() {
+            assert!(key.iter().any(|&b| b != 0));
+            count += 1;
+        }
+        assert_eq!(count, 6);
+    }
+
+    #[test]
+    fn test_nvs_v3_module_key_order_matches_canonical_names() {
+        let (_dir, pool_path) = create_test_pool(4096);
+        let mut prov = MeshProvisioner::new(&pool_path, "v3-order").unwrap();
+        let blob = prov.provision_nvs_v3_binary("v3-order", None, None).unwrap();
+        let parsed = MeshProvisioner::parse_nvs_v3_binary(&blob).unwrap();
+
+        let names: Vec<&str> = parsed.module_keys.iter().map(|(n, _)| n).collect();
+        assert_eq!(names, WAVE1_MODULE_NAMES.to_vec());
     }
 
     #[test]

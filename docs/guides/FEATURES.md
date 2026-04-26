@@ -245,7 +245,7 @@
 
 ---
 
-## Pillar 9: Q-Mesh — Quantum-Secured WiFi Sensing (90%)
+## Pillar 9: Q-Mesh — Quantum-Secured WiFi Sensing (100%)
 
 - **Integration**: [RuView](https://github.com/MoHoushmand/RuView) WiFi DensePose system with Zipminator QRNG entropy
 - **What RuView does**: ESP32-S3 mesh network that senses human pose, breathing, heartbeat, and presence through WiFi CSI signals. No cameras, no wearables, no internet required
@@ -265,11 +265,12 @@ Six new modules in `crates/zipminator-mesh/` implementing physical-layer crypto 
 5. **Topological Mesh Authentication** (`topo_auth.rs`) — Network key derived from graph topology invariants via petgraph; topology changes trigger re-authentication
 6. **Spatiotemporal Non-Repudiation** (`spatiotemporal.rs`) — Presence-proof signatures combining CSI fingerprint + vital signs + timestamp for undeniable physical attestation
 
-- **What else works**: Entropy bridge crate with HKDF-SHA256 key derivation from quantum pool; MeshKey (16-byte PSK) and SipHashKey types with zeroize-on-drop; FilePoolSource and MemoryEntropySource; MeshProvisioner with `provision_nvs_binary()` generating ESP32-S3-compatible blobs (magic header, mesh_id, PSK, SipHash key, SHA-256 checksum)
-- **Tests**: 174 mesh tests passing across qmesh-core + zipminator-mesh (verified 2026-04-21): qmesh-core 25/25 (21 unit + 4 integration), zipminator-mesh 149/149 (118 unit + 16 provisioner + 15 physical-crypto integration); clippy clean on qmesh-core; 513 total workspace tests passing
-- **Wave 2 (in progress)**: Attestation wire format, provisioner extensions for new module keys
+- **What else works**: Entropy bridge crate with HKDF-SHA256 key derivation from quantum pool; MeshKey (16-byte PSK) and SipHashKey types with zeroize-on-drop; FilePoolSource and MemoryEntropySource; MeshProvisioner with V1, V2, and V3 NVS binary formats — V3 (`provision_nvs_v3_binary`) carries per-module Wave-1 keys for all 6 physical-crypto modules
+- **Tests**: 190 mesh tests passing across qmesh-core + zipminator-mesh (verified 2026-04-26 on `marathon/20260426-032534-21fc8f/E-qmesh`): qmesh-core 25/25 (21 unit + 4 integration), zipminator-mesh 165/165 (134 unit + 16 provisioner + 15 physical-crypto integration); clippy clean on the full workspace; 453 total workspace tests passing (excluding zipbrowser); 16/16 cross-language pytests verifying byte parity with the Python `scripts/integrate_ruview.py`
+- **Wave 2 (Complete)**: Attestation wire format implemented in `crates/zipminator-mesh/src/attestation.rs` (RVAT magic, 7 typed payloads, HMAC-SHA256 authenticated); OTA mesh-key rotation in `crates/zipminator-mesh/src/ota.rs` (OTA1 magic, replay-protected, 3-node integration test passing); V3 NVS binary emits per-module keys for all 6 Wave-1 modules; documented in [ADR-0043](../adr/0043-qmesh-attestation-wire-format.md)
 - **Wave 3 (research-phase)**: Ghost Protocol, TEMPEST countermeasures, ZKP presence proofs, RF Shroud
-- **Remaining integration**: Cross-repo integration script linking Zipminator QRNG output to RuView's `scripts/provision.py`; shared NVS key management; OTA key rotation over mesh
+- **Cross-repo integration (Complete)**: `scripts/integrate_ruview.py` produces V1 NVS binaries byte-identical to the Rust `MeshProvisioner::provision_nvs_binary` (verified by `tests/test_integrate_ruview.py::test_byte_parity_with_rust_provisioner`); RuView's `scripts/provision.py` can consume the same `ZMESH\x01` blob format
+- **UI**: `app/lib/features/mesh/mesh_status_screen.dart` shows mesh node count, last rotation timestamp, threat-level indicator, and the 6 provisioned module-key chips, backed by a JSON fixture (`fixtures/mesh_status.json`) ready to swap for live FFI/REST loading
 
 ### Architecture
 

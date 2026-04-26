@@ -245,6 +245,31 @@ impl SrtpContext {
     }
 }
 
+// ── Voicemail key derivation ─────────────────────────────────────────────
+//
+// When a call ends, the speaker may leave an encrypted voicemail using the
+// session's PQ-SRTP shared secret. We derive a separate AES-256-GCM key for
+// voicemail material via HKDF-SHA-256 with a domain-separated info string so
+// the server (which only relays SRTP) cannot decrypt the voicemail blob.
+
+const VOICEMAIL_KEY_INFO: &[u8] = b"zipminator-voicemail-key";
+
+/// Derive a 32-byte AES-256-GCM key for an encrypted voicemail leg from the
+/// live call's ML-KEM-768 shared secret. The same `secret` will yield the same
+/// key on both sides (deterministic), enabling the recipient to decrypt the
+/// voicemail blob on retrieval.
+///
+/// Uses domain separation (`b"zipminator-voicemail-key"`) so the voicemail
+/// key is independent of the SRTP master key and frame key derived from the
+/// same shared secret.
+pub fn derive_voicemail_key(secret: &[u8; 32]) -> [u8; 32] {
+    let hk = Hkdf::<Sha256>::new(None, secret);
+    let mut key = [0u8; 32];
+    hk.expand(VOICEMAIL_KEY_INFO, &mut key)
+        .expect("HKDF expand for voicemail key: 32 bytes well within bounds");
+    key
+}
+
 // ── Tests ──────────────────────────────────────────────────────────────────
 
 #[cfg(test)]
@@ -375,19 +400,20 @@ mod tests {
 
     #[test]
     fn kat_master_key_matches_reference() {
+        // Generated against this codebase's HKDF-SHA-256 with empty salt and
+        // info="zipminator-srtp-master-key", L=16, IKM=0x01..0x20. Cross-checked
+        // against the upstream `hkdf 0.12` crate. Any drift here means the
+        // derivation has changed and downstream FFI / TS clients will mismatch.
         let km = derive_srtp_keys(&TEST_SS);
-        // Expected: HKDF-SHA256(ikm=0x01..0x20, salt=none, info="zipminator-srtp-master-key", L=16)
         let expected_key: [u8; 16] = [
-            0x5f, 0x0b, 0x7c, 0x4d, 0xa1, 0x9e, 0x3b, 0x6c, 0x8d, 0x72, 0xf4, 0x21, 0xce, 0x5a,
-            0x93, 0x77,
+            0x97, 0x92, 0x76, 0x2a, 0x43, 0x44, 0x09, 0x3e, 0xab, 0xfe, 0x18, 0x25, 0x06, 0xea,
+            0x63, 0x7f,
         ];
-        // Verify our output is non-zero and stable; exact value pinned below.
-        // If the KAT value above does not match, replace with the actual output from
-        // `cargo test -- --nocapture srtp::tests::kat_print` (see helper below).
-        assert_ne!(km.master_key, [0u8; 16], "master key must not be all-zero");
-        // Pin the actual computed value so regressions are caught.
-        // (The first run generates the pin; subsequent runs detect drift.)
-        let _ = expected_key; // kept for documentation — see kat_pin_master_key below
+        let expected_salt: [u8; 14] = [
+            0x10, 0xe3, 0x06, 0x1e, 0x6c, 0x55, 0x0b, 0xfd, 0x13, 0x7f, 0xa9, 0x54, 0xeb, 0x6d,
+        ];
+        assert_eq!(km.master_key, expected_key, "SRTP master key KAT drift");
+        assert_eq!(km.master_salt, expected_salt, "SRTP master salt KAT drift");
     }
 
     #[test]
@@ -402,6 +428,63 @@ mod tests {
             first_run, second_run,
             "HKDF output must be stable across calls"
         );
+    }
+
+    // ── Voicemail key derivation tests ───────────────────────────────────
+
+    #[test]
+    fn voicemail_key_is_32_bytes() {
+        let k = derive_voicemail_key(&TEST_SS);
+        assert_eq!(k.len(), 32, "voicemail key must be 32 bytes (AES-256)");
+    }
+
+    #[test]
+    fn voicemail_key_is_deterministic() {
+        let a = derive_voicemail_key(&TEST_SS);
+        let b = derive_voicemail_key(&TEST_SS);
+        assert_eq!(a, b);
+    }
+
+    #[test]
+    fn voicemail_key_distinct_from_srtp_master_key() {
+        let km = derive_srtp_keys(&TEST_SS);
+        let vm = derive_voicemail_key(&TEST_SS);
+        // First 16 bytes of voicemail key must not equal the 16-byte SRTP master key —
+        // independent HKDF info strings guarantee distinct material.
+        assert_ne!(&vm[..16], &km.master_key[..]);
+    }
+
+    #[test]
+    fn voicemail_key_distinct_for_distinct_secrets() {
+        let a = derive_voicemail_key(&ZERO_SS);
+        let b = derive_voicemail_key(&ONES_SS);
+        let c = derive_voicemail_key(&TEST_SS);
+        assert_ne!(a, b);
+        assert_ne!(a, c);
+        assert_ne!(b, c);
+    }
+
+    #[test]
+    fn kat_voicemail_key() {
+        // Pinned against HKDF-SHA-256 with empty salt and
+        // info="zipminator-voicemail-key", L=32, IKM=0x01..0x20.
+        let expected: [u8; 32] = [
+            0x18, 0xec, 0xef, 0x67, 0x37, 0xc3, 0x49, 0x8e, 0xc3, 0xca, 0x66, 0xc8, 0xcd, 0x7a,
+            0xd3, 0x07, 0x67, 0xc1, 0x63, 0x2d, 0x5e, 0xfc, 0x6c, 0x08, 0x91, 0xbd, 0x62, 0xa1,
+            0x15, 0x5e, 0x0a, 0xed,
+        ];
+        assert_eq!(derive_voicemail_key(&TEST_SS), expected);
+    }
+
+    // ── SrtpContext::from_shared_secret accepts the canonical 32-byte input ──
+    #[test]
+    fn srtp_context_from_32_byte_array_works() {
+        // Confirm the existing API accepts a 32-byte ML-KEM-768 shared secret
+        // and produces a working context (PQ-SRTP entrypoint).
+        let ctx = SrtpContext::from_shared_secret(&TEST_SS).expect("32-byte input must work");
+        let pt = b"hello PQ-SRTP";
+        let ct = ctx.protect(pt, 0).unwrap();
+        assert_eq!(ctx.unprotect(&ct, 0).unwrap(), pt);
     }
 
     // ── FFI test ──────────────────────────────────────────────────────────

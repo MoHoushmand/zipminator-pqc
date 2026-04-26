@@ -10,7 +10,63 @@
 
 import { EventEmitter } from 'events';
 import { signalingService, SignalingMessage } from './SignalingService';
-import type { CallState, CallEvent, MediaConfig, PqcHandshakePayload } from './VoipService.types';
+import type {
+    CallState,
+    CallEvent,
+    MediaConfig,
+    PqcHandshakePayload,
+    EncryptedVoicemail,
+} from './VoipService.types';
+
+/**
+ * HKDF-SHA-256 helper for the encrypted-voicemail leg. WebCrypto is async and
+ * not available in some test envs; we use Node's crypto when available
+ * (jsdom-bun, jest), and fall back to Web Crypto in the actual browser.
+ */
+async function deriveVoicemailKey(sharedSecret: Uint8Array): Promise<Uint8Array> {
+    if (typeof globalThis.crypto?.subtle !== 'undefined') {
+        const baseKey = await globalThis.crypto.subtle.importKey(
+            'raw',
+            sharedSecret as BufferSource,
+            { name: 'HKDF' },
+            false,
+            ['deriveBits'],
+        );
+        const bits = await globalThis.crypto.subtle.deriveBits(
+            {
+                name: 'HKDF',
+                hash: 'SHA-256',
+                salt: new Uint8Array(0),
+                info: new TextEncoder().encode('zipminator-voicemail-key'),
+            },
+            baseKey,
+            256,
+        );
+        return new Uint8Array(bits);
+    }
+    // Node fallback (tests via ts-jest)
+    const { createHmac } = await import('crypto');
+    const prk = createHmac('sha256', Buffer.alloc(32, 0))
+        .update(Buffer.from(sharedSecret))
+        .digest();
+    const info = Buffer.from('zipminator-voicemail-key');
+    const out = Buffer.alloc(32);
+    let prev = Buffer.alloc(0);
+    let pos = 0;
+    let counter = 1;
+    while (pos < 32) {
+        const h = createHmac('sha256', prk);
+        h.update(prev);
+        h.update(info);
+        h.update(Buffer.from([counter]));
+        prev = h.digest();
+        const toCopy = Math.min(prev.length, 32 - pos);
+        prev.copy(out, pos, 0, toCopy);
+        pos += toCopy;
+        counter++;
+    }
+    return new Uint8Array(out);
+}
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -29,11 +85,18 @@ export class VoipService extends EventEmitter {
     private callState: CallState = 'idle';
     private muted = false;
     private cameraOff = false;
+    private liveSharedSecret: Uint8Array | null = null;
+    private stateHistory: CallState[] = [];
+    private currentCallId: string | null = null;
 
     async startCall(targetId: string, config: MediaConfig = DEFAULT_MEDIA_CONFIG): Promise<void> {
         if (this.callState !== 'idle') return;
 
         this.targetPeerId = targetId;
+        this.currentCallId = `call-${Date.now()}-${targetId}`;
+        this.stateHistory = [];
+        this.liveSharedSecret = null;
+        this._setState('outgoing');
         this._setState('offering');
 
         try {
@@ -90,6 +153,9 @@ export class VoipService extends EventEmitter {
                 await this.pc.setRemoteDescription(
                     new RTCSessionDescription({ type: 'answer', sdp: msg.sdp ?? '' })
                 );
+                if (this.callState === 'ringing' || this.callState === 'offering') {
+                    this._setState('connecting');
+                }
                 break;
             case 'candidate':
                 await this._addIceCandidate(msg.candidate);
@@ -100,7 +166,77 @@ export class VoipService extends EventEmitter {
     }
 
     endCall(): void {
+        if (this.callState !== 'idle' && this.callState !== 'ended') {
+            this._setState('hangup');
+        }
         this._teardown('ended');
+    }
+
+    getStateHistory(): CallState[] {
+        return [...this.stateHistory];
+    }
+
+    markRinging(): void {
+        if (this.callState === 'outgoing' || this.callState === 'offering') {
+            this._setState('ringing');
+        }
+    }
+
+    markMediaFlowing(sharedSecret?: Uint8Array): void {
+        if (this.callState === 'connected') {
+            if (sharedSecret) this.liveSharedSecret = new Uint8Array(sharedSecret);
+            this._setState('media-flow');
+        }
+    }
+
+    /**
+     * Record an encrypted voicemail. Web variant uses WebCrypto AES-GCM (with
+     * Node fallback for tests). The blob is encrypted under a key derived from
+     * the live shared secret so the relay server cannot decrypt.
+     */
+    async recordEncryptedVoicemail(
+        audio: Uint8Array,
+        opts?: { callId?: string; secret?: Uint8Array },
+    ): Promise<EncryptedVoicemail> {
+        const secret = opts?.secret ? new Uint8Array(opts.secret) : this.liveSharedSecret;
+        if (!secret) {
+            throw new Error('recordEncryptedVoicemail: no live shared secret');
+        }
+        const key = await deriveVoicemailKey(secret);
+        const nonce = (typeof globalThis.crypto?.getRandomValues === 'function')
+            ? globalThis.crypto.getRandomValues(new Uint8Array(12))
+            : new Uint8Array(12); // tests use a deterministic zero nonce
+        let ciphertext: Uint8Array;
+        if (typeof globalThis.crypto?.subtle !== 'undefined') {
+            const cryptoKey = await globalThis.crypto.subtle.importKey(
+                'raw',
+                key as BufferSource,
+                'AES-GCM',
+                false,
+                ['encrypt'],
+            );
+            const ct = await globalThis.crypto.subtle.encrypt(
+                { name: 'AES-GCM', iv: nonce },
+                cryptoKey,
+                audio as BufferSource,
+            );
+            ciphertext = new Uint8Array(ct);
+        } else {
+            const { createCipheriv } = await import('crypto');
+            const cipher = createCipheriv('aes-256-gcm', Buffer.from(key), Buffer.from(nonce));
+            const enc = Buffer.concat([cipher.update(Buffer.from(audio)), cipher.final()]);
+            const tag = cipher.getAuthTag();
+            ciphertext = new Uint8Array(Buffer.concat([enc, tag]));
+        }
+        const blob: EncryptedVoicemail = {
+            ciphertext: Buffer.from(ciphertext).toString('base64'),
+            nonce: Buffer.from(nonce).toString('base64'),
+            callId: opts?.callId ?? this.currentCallId ?? 'unknown',
+            recordedAtMs: Date.now(),
+        };
+        this._setState('encrypted_voicemail');
+        this.emit('voicemail_recorded', blob);
+        return blob;
     }
 
     toggleMute(): boolean {
@@ -127,6 +263,7 @@ export class VoipService extends EventEmitter {
 
     private _setState(next: CallState): void {
         this.callState = next;
+        this.stateHistory.push(next);
         const event: CallEvent = { state: next, peerId: this.targetPeerId ?? '' };
         this.emit('state_change', event);
     }

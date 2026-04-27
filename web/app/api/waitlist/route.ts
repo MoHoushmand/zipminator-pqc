@@ -92,7 +92,6 @@ export async function POST(request: NextRequest) {
       ip_address: ip !== 'unknown' ? ip : undefined,
       user_agent: request.headers.get('user-agent') || undefined,
       referrer: request.headers.get('referer') || undefined,
-      user_id: data.userId || undefined,
     }])
     .select()
     .single()

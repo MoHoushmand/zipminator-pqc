@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
+import { sendUserConfirmation, sendSalesAlert, isEmailServiceReady } from '@/lib/email'
 
 const waitlistSchema = z.object({
   fullName: z.string().min(2).max(100),
@@ -108,6 +109,25 @@ export async function POST(request: NextRequest) {
       { error: 'Failed to save. Please try again or contact mo@qdaria.com', code: 'DATABASE_ERROR' },
       { status: 500 }
     )
+  }
+
+  if (isEmailServiceReady()) {
+    const emailData = {
+      fullName: data.fullName,
+      companyName: data.companyName,
+      email: data.email,
+      industry: data.industry,
+      expectedVolume: data.expectedVolume,
+      useCase: data.useCase,
+      couponCode: data.couponCode,
+      submissionId: submission?.id || requestId,
+    }
+    Promise.all([
+      sendUserConfirmation(emailData),
+      sendSalesAlert(emailData),
+    ]).catch((err) => {
+      console.error(`[${requestId}] Email send failed:`, err)
+    })
   }
 
   return NextResponse.json({

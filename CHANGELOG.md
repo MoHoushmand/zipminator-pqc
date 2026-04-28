@@ -96,10 +96,10 @@ Release candidate for the v1.0.0 stable tag. All 9 PQC super-app pillars are cod
 - Production SMTP/IMAP hosting (Hetzner or equivalent) not provisioned; Docker compose stack is ready but unhosted
 - FIPS 140-3 CMVP validation, SOC 2 Type II, USPTO non-provisional conversions, and enterprise pilot onboarding remain human-gated (see Human-Gated Items in `docs/guides/FEATURES.md`)
 
-## [1.0.0] - 2026-04-19
+## [1.0.0-beta.1] - 2026-04-19
 
 ### Added
-- First stable v1.0.0 of the Zipminator PQC super-app covering all 9 pillars: Quantum Vault and Self-Destruct Storage; PQC Messenger; Quantum VoIP and Video; Q-VPN (PQ-WireGuard); 10-Level Anonymization Suite; Q-AI PQC AI Assistant; Quantum-Secure Email; ZipBrowser (PQC AI Browser); Q-Mesh (Quantum-Secured WiFi Sensing).
+- First feature-complete preview of the Zipminator PQC super-app covering all 9 pillars: Quantum Vault and Self-Destruct Storage; PQC Messenger; Quantum VoIP and Video; Q-VPN (PQ-WireGuard); 10-Level Anonymization Suite; Q-AI PQC AI Assistant; Quantum-Secure Email; ZipBrowser (PQC AI Browser); Q-Mesh (Quantum-Secured WiFi Sensing).
 - Flutter super-app `app/` promoted to canonical mobile surface (iOS, Android, macOS, Linux, Windows) with 47 TestFlight builds since first submission.
 - Rust workspace `crates/zipminator-core` exposes a from-scratch ML-KEM-768 implementation with NTT, Montgomery and Barrett reductions, `subtle` constant-time guards, and `zeroize` key hygiene.
 - PyO3 Python bindings published to PyPI under `zipminator` with extras for `data`, `anonymization`, `cli`, `quantum`, `jupyter`, `email`, `benchmark`, `dev`, `all`.

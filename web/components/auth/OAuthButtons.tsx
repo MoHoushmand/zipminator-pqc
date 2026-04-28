@@ -1,6 +1,7 @@
 'use client'
 
 import { signIn } from 'next-auth/react'
+import { useSearchParams } from 'next/navigation'
 
 const providers = [
   {
@@ -36,12 +37,15 @@ const providers = [
 ]
 
 export default function OAuthButtons() {
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callbackUrl') || '/'
+
   return (
     <div className="space-y-3">
       {providers.map((provider) => (
         <button
           key={provider.id}
-          onClick={() => signIn(provider.id, { callbackUrl: '/dashboard' })}
+          onClick={() => signIn(provider.id, { callbackUrl })}
           className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-white/10 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all duration-200 font-medium"
         >
           {provider.icon}

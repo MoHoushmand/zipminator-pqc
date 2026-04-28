@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.config import settings
 from src.routes import health, auth, keys, crypto, anonymize, signaling, messages, voip, email, ai
-from api.src.routes import messenger
+from src.routes import messenger
 from src.middleware.logging import LoggingMiddleware
 import logging
 

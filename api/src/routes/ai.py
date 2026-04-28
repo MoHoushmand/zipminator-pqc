@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field
 from zipminator.ai.prompt_guard import PromptGuard
 from zipminator.ai.pqc_tunnel import PQCTunnel
 from zipminator.crypto.pii_scanner import PIIScanner
-from api.src.services.llm_service import OllamaClient
+from src.services.llm_service import OllamaClient
 
 logger = logging.getLogger(__name__)
 router = APIRouter()

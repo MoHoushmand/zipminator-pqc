@@ -7,7 +7,7 @@ import ComposePage from '../page'
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
 vi.mock('framer-motion', () => {
-  const passthroughTag = (Tag: keyof JSX.IntrinsicElements) =>
+  const passthroughTag = (Tag: keyof React.JSX.IntrinsicElements) =>
     ({ children, ...props }: React.HTMLAttributes<HTMLElement>) =>
       React.createElement(Tag, props, children)
   return {

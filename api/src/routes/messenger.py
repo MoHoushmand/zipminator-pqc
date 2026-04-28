@@ -12,7 +12,7 @@ import os
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 
-from api.src.db.message_store import MessageStore
+from src.db.message_store import MessageStore
 
 router = APIRouter()
 

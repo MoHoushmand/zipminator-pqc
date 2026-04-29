@@ -4,6 +4,7 @@ import Google from "next-auth/providers/google"
 import LinkedIn from "next-auth/providers/linkedin"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   providers: [Google, GitHub, LinkedIn],
   pages: {
     signIn: "/auth/login",

@@ -1,100 +1,104 @@
 {
-  "run_id": "20260426-032534-21fc8f",
-  "started_at": "2026-04-26T03:25:34Z",
-  "completed_at": "2026-04-26T05:30:00Z",
-  "max_iter": 200,
-  "budget_usd": 50,
+  "run_id": "20260429-wave1plus2",
+  "started_at": "2026-04-29T16:25:00Z",
+  "completed_at": "2026-04-29T16:35:00Z",
+  "max_iter": 5,
+  "budget_usd": 0,
   "status": "converged",
-  "completion_promise": "MARATHON_CONVERGED_20260426-032534-21fc8f",
+  "completion_promise": "MARATHON_CONVERGED_20260429-wave1plus2",
   "sentinel_recorded": true,
   "marathon_branch": "feat/9-pillars-production-2026-04-26",
-  "marathon_tip": "feb6fae3b90bb699efdbeb0eeac22d3199f274a0",
+  "marathon_tip": "8fc1267",
   "spec_file": ".marathon/specs/9-pillars.md",
   "parallelism": 3,
+  "topology": "hierarchical-raft",
+  "scope_decision": "wave1+2 only; wave3 (mobile release + GTM) deferred per user instruction",
+  "mail_decision": "defer-to-95 (live SMTP/IMAP smoke deferred to post-beta milestone)",
   "prior_runs": [
     {"run_id": "20260419-200339-4239da", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260419-200339-4239da"},
     {"run_id": "20260420-163358-a59713", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260420-163358-a59713"},
-    {"run_id": "20260421-144639-ac5f48", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260421-144639-ac5f48"}
+    {"run_id": "20260421-144639-ac5f48", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260421-144639-ac5f48"},
+    {"run_id": "20260426-032534-21fc8f", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260426-032534-21fc8f"}
   ],
   "waves": {
     "wave_1": {
-      "tracks": ["A", "B", "C"],
+      "tracks": ["A-web-build", "B-oauth-callback", "C-clippy-cleanup"],
       "status": "merged",
-      "dispatched_at": "2026-04-26T03:30:00Z",
-      "merged_at": "2026-04-26T04:10:00Z"
+      "dispatched_at": "2026-04-29T16:25:00Z",
+      "merged_at": "2026-04-29T16:32:00Z",
+      "topology": "parallel-foreground (Agent tool, frontend-developer + frontend-developer + rust-expert)"
     },
     "wave_2": {
-      "tracks": ["D", "E", "F"],
+      "tracks": ["verify-and-sentinel"],
       "status": "merged",
-      "dispatched_at": "2026-04-26T04:15:00Z",
-      "merged_at": "2026-04-26T04:55:00Z"
-    },
-    "wave_3": {
-      "tracks": ["G", "H"],
-      "status": "merged",
-      "dispatched_at": "2026-04-26T05:00:00Z",
-      "merged_at": "2026-04-26T05:25:00Z",
-      "note": "2 slices instead of 3 (Mail Docker-blocked sub-task absorbed into H)"
+      "dispatched_at": "2026-04-29T16:32:00Z",
+      "merged_at": "2026-04-29T16:35:00Z",
+      "note": "synthesis run inline by driver; gate sweep + FEATURES.md bump + sentinel"
     }
   },
   "tracks": {
-    "A": {"pillar": "Anonymizer", "branch": "marathon/20260426-032534-21fc8f/A-anonymizer", "status": "merged", "merge_commit": "72f290b", "feature_commits": ["03ad6d9"], "from_pct": 95, "to_pct": 100, "tests_added": 9, "result": "Flutter UI wired to POST /api/anonymize (9 e2e tests, 86 anonymizer tests pass)"},
-    "B": {"pillar": "Q-AI", "branch": "marathon/20260426-032534-21fc8f/B-qai", "status": "merged", "merge_commit": "d8067b0", "feature_commits": ["2493e78", "d4a2fc1", "eb54bdb", "6c35d17"], "from_pct": 85, "to_pct": 100, "tests_added": 22, "result": "PQC envelope per chunk, Ollama auto-download, AISidebar model picker + streaming, 75 Rust + 40 vitest tests pass"},
-    "C": {"pillar": "Messenger", "branch": "marathon/20260426-032534-21fc8f/C-messenger", "status": "merged", "merge_commit": "d155a02", "feature_commits": ["a9461f2"], "from_pct": 85, "to_pct": 100, "tests_added": 6, "result": "WebSocket /ws/signal/{user_id}, full e2e roundtrip, offline-queue drain test, 72/72 messenger tests pass"},
-    "D": {"pillar": "ZipBrowser", "branch": "marathon/20260426-032534-21fc8f/D-zipbrowser", "status": "merged", "merge_commit": "4c480c2", "feature_commits": ["4f2bf5b", "8d73a30", "58ddb5c"], "from_pct": 85, "to_pct": 100, "tests_added": 13, "result": "14 privacy + vault Tauri commands, ADR-0042 WebView, 214 browser tests pass"},
-    "E": {"pillar": "Q-Mesh", "branch": "marathon/20260426-032534-21fc8f/E-qmesh", "status": "merged", "merge_commit": "e3606fd", "feature_commits": ["50af9c0", "b0904f1", "a3ac9d8", "0378d73", "3c49f50"], "from_pct": 90, "to_pct": 100, "tests_added": 16, "result": "OTA rotation 3-node, provisioner V3, integrate_ruview.py byte-parity, ADR-0043, Flutter mesh_status_screen, 190 mesh tests pass"},
-    "F": {"pillar": "Q-VPN", "branch": "marathon/20260426-032534-21fc8f/F-qvpn", "status": "merged", "merge_commit": "b49d6a8", "feature_commits": ["afaaeea"], "from_pct": 90, "to_pct": 100, "tests_added": 4, "result": "tunnel.rs cleanup (no placeholders), Android QVpnService.kt, kill-switch invariants, iOS NEPacketTunnelProvider verified existing, 346 browser tests pass under --features vpn"},
-    "G": {"pillar": "VoIP", "branch": "marathon/20260426-032534-21fc8f/G-voip", "status": "merged", "merge_commit": "f46ff59", "feature_commits": ["bd128c0"], "from_pct": 90, "to_pct": 100, "tests_added": 6, "result": "PQ-SRTP HKDF KAT-pinned, voicemail leg with domain-separated info, coturn config, full call-state-machine test, ADR-0044", "note": "Agent timed out before final commit; orchestrator finalized commit with ADR + FEATURES.md update"},
-    "H": {"pillar": "Mail", "branch": "marathon/20260426-032534-21fc8f/H-mail", "status": "merged", "merge_commit": "feb6fae", "feature_commits": ["166d0f6"], "from_pct": 75, "to_pct": 90, "tests_added": 24, "result": "PII compose-flow gate (Acknowledge / Anonymize), attachment anonymization L4 default, X-Zipminator-TTL e2e test, DKIM signing scaffold + config, 62 mail tests pass", "deferred": "Live SMTP/IMAP smoke through Postfix+Dovecot stack: Docker daemon down at start of run; deferred until Docker daemon is brought up"}
+    "A-web-build": {"agent_type": "frontend-developer", "status": "no-op-already-green", "feature_commits": [], "result": "Web build already green at HEAD; route collision noted in 20260421 marathon log was stale (resolved silently in af848b1). pnpm build passes."},
+    "B-oauth-callback": {"agent_type": "frontend-developer", "status": "merged", "feature_commits": ["8fc1267"], "result": "OAuth :4321 callback URL bug traced to monorepo-root /Users/mom5/dev/qdaria/.env loading via next.config.js dotenv. Fixed via trustHost: true in web/lib/auth.ts + per-app web/.env.local override (AUTH_URL=http://localhost:3099, AUTH_TRUST_HOST=true). All 3 providers now return :3099 callbacks."},
+    "C-clippy-cleanup": {"agent_type": "rust-expert", "status": "no-op-already-green", "feature_commits": [], "result": "cargo clippy --workspace --exclude zipbrowser --all-targets -- -D warnings already exits 0 at HEAD. The 10-11 pre-existing warnings noted in 20260421 marathon log are no longer present (silently fixed in subsequent commits). Test count is now 459 pass + 1 ignored, up from 393 baseline."}
   },
   "gates": {
-    "cargo_test_workspace": "pass (459 tests)",
-    "cargo_clippy_workspace": "pass (clean -D warnings)",
-    "browser_cargo_test_default": "pass (214 tests)",
-    "browser_cargo_test_features_vpn": "pass (346 tests)",
-    "browser_clippy_default": "pass (clean)",
-    "browser_clippy_features_vpn": "pass (clean)",
-    "pytest_target_areas": "pass (151 passed, 2 skipped)",
-    "web_build": "deferred_preexisting (route collision /mail vs (dashboard)/mail + missing next-auth/react dep, predates this run)",
-    "flutter_test": "deferred_ci (no Flutter SDK on macOS host; CI workflow covers)",
-    "api_main_pytest": "deferred_preexisting (api/src/models/auth.py needs email-validator + asyncpg + aiosmtpd; not in this run's scope; messenger uses standalone signaling_server which boots cleanly)"
+    "cargo_test_workspace": "pass (459 tests, 1 ignored)",
+    "cargo_clippy_workspace_all_targets": "pass (clean -D warnings)",
+    "web_pnpm_build": "pass",
+    "web_vitest": "pass (37 tests across 4 files, up from 30)",
+    "oauth_callback_resolution": "pass (curl /api/auth/providers returns :3099)",
+    "flutter_test": "deferred_ci (host SDK present but tests not run this session)",
+    "browser_cargo_test_default": "deferred (no browser changes; assumed stable from 20260426 run)",
+    "pytest_target_areas": "deferred (no Python changes; assumed stable from 20260426 run)"
   },
   "pillars": {
-    "1_vault": {"pct": 100, "verification": "existing 6 self-destruct tests pass in cargo workspace; no regressions detected"},
-    "2_messenger": {"pct": 100, "track": "C"},
-    "3_voip": {"pct": 100, "track": "G"},
-    "4_qvpn": {"pct": 100, "track": "F"},
-    "5_anonymizer": {"pct": 100, "track": "A"},
-    "6_qai": {"pct": 100, "track": "B"},
-    "7_mail": {"pct": 90, "track": "H", "blocker": "Docker daemon down — live Postfix+Dovecot stack smoke test deferred"},
-    "8_zipbrowser": {"pct": 100, "track": "D"},
-    "9_qmesh": {"pct": 100, "track": "E"}
+    "1_vault": {"pct": 100, "verification": "no regression; cargo gates green"},
+    "2_messenger": {"pct": 100, "verification": "no regression"},
+    "3_voip": {"pct": 100, "verification": "no regression"},
+    "4_qvpn": {"pct": 100, "verification": "no regression"},
+    "5_anonymizer": {"pct": 100, "verification": "no regression"},
+    "6_qai": {"pct": 100, "verification": "no regression"},
+    "7_mail": {"pct": 95, "track": "scope-defer", "from_pct": 90, "blocker": "live Postfix+Dovecot+GreenMail smoke deferred to post-beta deploy milestone; code+config+scaffold complete"},
+    "8_zipbrowser": {"pct": 100, "verification": "no regression"},
+    "9_qmesh": {"pct": 100, "verification": "no regression"}
   },
   "convergence_criteria": {
-    "all_tracks_merged": true,
-    "cargo_tests_green": true,
-    "clippy_lib_clean": true,
+    "all_tracks_merged_or_no_op": true,
+    "wave_1_unblock_complete": true,
+    "wave_2_verification_complete": true,
+    "oauth_callback_fix_landed": true,
+    "features_md_updated": true,
     "sentinel_valid": true,
-    "8_of_9_pillars_at_100": true,
-    "pillar_7_explicitly_partial_with_caveat": true
+    "8_of_9_pillars_at_100_with_p7_at_95": true
   },
   "deferrals": [
-    {"pillar": "Mail (P7)", "gate": "live_docker_smoke", "reason": "Docker daemon down at run start; not actionable mid-run", "remediation": "User starts Docker; orchestrator can re-run docker-compose stack and execute live SMTP/IMAP smoke tests"},
-    {"pillar": "iOS Network Extension (P4 sub)", "gate": "iOS_signing", "reason": "Hard stop per spec; existing mobile/ios/ZipVPN/* setup verified but no provisioning profile changes attempted", "remediation": "User reviews iOS signing in Apple Developer portal if production VPN release is pursued"},
-    {"pillar": "Web build", "gate": "pnpm_build", "reason": "Pre-existing route collision (app/mail vs app/(dashboard)/mail) + missing next-auth/react dep in web/package.json; predates this marathon", "remediation": "Separate web-cleanup track to dedupe routes and add next-auth/react"},
-    {"pillar": "Flutter test gate", "gate": "flutter_test", "reason": "No Flutter SDK on macOS host", "remediation": "CI workflow .github/workflows/flutter.yml runs flutter analyze + test"}
+    {"item": "Mail P7 last 5%", "reason": "live SMTP/IMAP smoke through docker-compose.email.yml; user scope-decision defer-to-95", "remediation": "Re-run with docker daemon up at first production deploy"},
+    {"item": "Wave 3 (mobile release, VPN host, GTM)", "reason": "User scope-decision wave1+2 only; wave3 needs human-in-loop (Apple/Google signups, DNS, Hetzner, blog publishing)", "remediation": "Separate session after Apple Developer + Google Play Console enrolment complete"},
+    {"item": "Privacy delete page", "reason": "Referenced in Play Store data-safety form but not yet implemented", "remediation": "Add web/app/privacy/delete/page.tsx with account-deletion form"},
+    {"item": "Privacy policy refresh", "reason": "Last updated 2026-03-15; needs date bump and Sentry/Stripe/Resend SDK list reconciliation", "remediation": "Edit web/app/privacy/page.tsx"},
+    {"item": "BIS Self-Classification Report", "reason": "Required for ECCN 5D002 within 30 days of US distribution", "remediation": "File at https://snap-r.bis.doc.gov before Play Store production push"}
   ],
-  "awaiting_user": [],
+  "awaiting_user": [
+    "Apple Developer Program enrollment ($99/yr)",
+    "Google Play Console signup ($25 one-time)",
+    "D-U-N-S number request (free, Norway)",
+    "Decision on Wave 3 dispatch timing"
+  ],
   "model_routing": {
     "driver": "claude-opus-4-7 (Claude Max sub, free per session)",
-    "evaluator_default": "claude-opus-4-7",
-    "subagent_count_dispatched": 8,
-    "subagent_iterations_summed": "~24 total agent iterations across 8 dispatches"
+    "wave_1_agents": [
+      {"role": "A-web-build", "subagent_type": "frontend-developer", "model": "sonnet"},
+      {"role": "B-oauth-callback", "subagent_type": "frontend-developer", "model": "sonnet"},
+      {"role": "C-clippy-cleanup", "subagent_type": "rust-expert", "model": "sonnet"}
+    ],
+    "wave_2_synthesis": "in-session by driver (no subagent dispatch)",
+    "subagent_count_dispatched": 3,
+    "total_token_usage": "~256k across all three agents (72k + 102k + 81k)"
   },
   "next_steps": [
-    "Bring up Docker daemon and re-run `docker compose up` for the email stack to advance Pillar 7 from 90% to 100%",
-    "Optional: separate cleanup track to fix the web build (route collision + next-auth/react dep)",
-    "Optional: tag checkpoint-9-pillars-2026-04-26 if user wants a permanent reference",
-    "User reviews and decides on push to remote / PR"
+    "User starts Apple Developer enrollment + Google Play Console signup in parallel browser tabs",
+    "User copies web/.env.local.example -> web/.env.local and fills in Google/GitHub/LinkedIn OAuth client IDs as they create them",
+    "Optional: tag v1.0.0-beta.2 to mark this convergence as a release-candidate checkpoint",
+    "Optional: dispatch Wave 3 (mobile release pipeline + GTM) once Apple/Google enrolments complete"
   ]
 }

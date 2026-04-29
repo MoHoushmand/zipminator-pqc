@@ -2,9 +2,11 @@
 
 > **Single Source of Truth** for all pillar statuses. Updated after every code change session.
 >
-> Last verified: 2026-04-26 | branch: feat/9-pillars-production-2026-04-26 | Verifier: Marathon run 20260426-032534-21fc8f (8 tracks A/B/C/D/E/F/G/H merged)
+> Last verified: 2026-04-29 | branch: feat/9-pillars-production-2026-04-26 | Verifier: Marathon run 20260429-wave1plus2 (3 parallel agents A/B/C; mail deferred to 95% per scope decision)
 >
 > See Open Work Matrix for the canonical list of remaining work. The prior `implementation_plan.md` has been archived to `_archive/docs/guides/2026-04-18/implementation_plan.md`.
+>
+> **Apr 29 update**: Marathon Wave 1+2 (run 20260429-wave1plus2) ran 3 parallel agents on disjoint scopes (A: web build, B: OAuth callback URL, C: clippy test-code cleanup). Two of three found state already clean post `af848b1`; Agent B traced the OAuth `:4321` callback bug to a monorepo-root `.env` leak and fixed via `trustHost: true` in `web/lib/auth.ts` + per-app `.env.local` override (commit 8fc1267). Pillar 7 Mail bumped 90% → 95% per scope decision (live SMTP/IMAP smoke deferred to post-beta milestone, code+config+scaffold complete). Verified: cargo test 459 pass + 1 ignored, vitest 37 pass (up from 30), pnpm build green, clippy `--all-targets` clean. Sentinel: MARATHON_CONVERGED_20260429-wave1plus2.
 >
 > **Apr 26 update**: Marathon run 20260426-032534-21fc8f converged 8 of 9 pillars to 100% production-ready (Pillar 7 Mail at 90% pending Docker daemon for live SMTP/IMAP smoke). Net tests added: 459 cargo workspace + 214 browser + 110 pytest target areas + 40 vitest = ~823 verified per gate sweep. Sentinel: MARATHON_CONVERGED_20260426-032534-21fc8f.
 > **Apr 18 update**: Consolidated FEATURES.md + implementation_plan.md into single SSoT. Reconciled Rust test counts from live `cargo test --workspace --exclude zipbrowser` run (393 passed + 1 ignored; zipbrowser 157 build-gated on web dist). Added 6-track Open Work Matrix for parallel marathon execution (E/M/B/S/V/G).
@@ -29,7 +31,7 @@
 | 4 | **Q-VPN** | **100%** | Done | Done | Done | Done | Packet wrapping verified (1500 B MTU roundtrip, monotonic AEAD counter); iOS NEPacketTunnelProvider + Android VpnService (`com.qdaria.zipminator.QVpnService`) wired; kill-switch invariant tested through Reconnecting cycle |
 | 5 | **10-Level Anonymizer** | **100%** | Done | Done | Done | Done | All L1-L10 verified; CLI `--level N` wired; Flutter UI wired to `POST /api/anonymize` (9 new e2e tests, 86 anonymizer tests pass) |
 | 6 | **Q-AI Assistant** | **100%** | Done | Done | Done | Done | Prompt guard (18 patterns) + Ollama auto-download + Tauri sidebar integration + streaming chat + PQC envelope per chunk (`{ct, kem_ct, nonce}`); `ai_ollama_pull_model` / `ai_ollama_ensure_default_model` Tauri commands; 75 Rust AI tests + 40 vitest tests pass |
-| 7 | **Quantum Mail** | **90%** | Done | Done | Done | Partial | PQC envelope + SMTP/IMAP transport + server-side self-destruct TTL + DKIM config + attachment anonymization (L4 default) wired into compose pipeline + pre-send PII gate (Acknowledge / Anonymize) (62 mail tests + 7 vitest pii-gate; live SMTP/IMAP smoke through Postfix+Dovecot still requires Docker daemon) |
+| 7 | **Quantum Mail** | **95%** | Done | Done | Done | Partial | PQC envelope + SMTP/IMAP transport + server-side self-destruct TTL + DKIM config + attachment anonymization (L4 default) wired into compose pipeline + pre-send PII gate (Acknowledge / Anonymize) (62 mail tests + 7 vitest pii-gate; live SMTP/IMAP smoke through Postfix+Dovecot deferred to post-beta milestone per 2026-04-29 scope decision; config files + scaffold + opt-in dkimpy signer all in place, blocked only on production deploy of Docker mail stack) |
 | 8 | **ZipBrowser** | **100%** | Done | Done | Done | Done | 14 new privacy + vault Tauri commands (`vault_*`, `privacy_*`); 7-subsystem PrivacyDashboard grid; QuantumScanner per-tab grade; `Engine: System WebView` pill linking to ADR-0042; 214 browser tests pass; cargo build --release green |
 | 9 | **Q-Mesh (RuView)** | **100%** | Done | Done | Done | Done | Wave 2: attestation wire format (ADR-0043, 21 unit tests); provisioner V3 emits per-module keys for 6 Wave-1 modules (CSI/PUEK/EM canary/vital-auth/topo-auth/spatiotemporal); cross-repo `scripts/integrate_ruview.py` with byte-parity pytest (16 tests, RFC 5869 KAT); OTA key rotation 3-node test (`OtaRotationMessage`); Flutter `mesh_status_screen.dart` with status panel; 190 mesh tests pass |
 
@@ -637,12 +639,20 @@ Preset lives at `~/.claude/prompts/AESR/v7/presets/zipminator-open-items.md`. 6 
 | 20260419-200339-4239da        | 2026-04-19 | E/M/B/S/V/G | MARATHON_CONVERGED_20260419-200339-4239da      | 561 tests pass; 3/4 gates green; flutter deferred to CI                                                             |
 | 20260420-163358-a59713        | 2026-04-20 | E/M/B/S/V/G | MARATHON_CONVERGED_20260420-163358-a59713      | 6-track iter complete; 72 flutter + 27 pytest + cargo green; 14 clippy warnings remain                              |
 | 20260421-144639-ac5f48        | 2026-04-21 | E/M/B/S/V/G | MARATHON_CONVERGED_20260421-144639-ac5f48      | 911+ tests green (438+ cargo, 179 zipbrowser, 19 pq-wg, 174 qmesh, 60 flutter, 41 email); clippy lib clean; web build + clippy-all-targets deferred pre-existing |
+| 20260426-032534-21fc8f        | 2026-04-26 | A/B/C/D/E/F/G/H | MARATHON_CONVERGED_20260426-032534-21fc8f  | 8/9 pillars at 100%; mail at 90% pending Docker; 459 cargo + 214 browser + 110 pytest + 40 vitest = ~823 tests       |
+| 20260429-wave1plus2           | 2026-04-29 | A/B/C       | MARATHON_CONVERGED_20260429-wave1plus2         | Wave1+2 unblock: OAuth `:4321` callback fix (commit 8fc1267, Agent B); web build + clippy-all-targets verified clean; mail bumped to 95% per defer-to-95 scope; vitest 30→37; cargo 459 pass+1 ignored |
 
-Remaining open items after 20260421-144639-ac5f48 (pre-existing blockers, out of verification-only scope):
-- Web build: route collision at `app/mail/page.tsx` vs `app/(dashboard)/mail/page.tsx` + missing `next-auth/react` dependency in `web/package.json`.
-- Clippy `--all-targets`: 5 pre-existing warnings in `zipminator-core` test code, 5+ in `zipminator-mesh` test code, 1 in `zipminator-bench`.
-- Flutter test gate: host macOS has no Flutter SDK; CI workflow handles this.
-- macOS PQ-WireGuard kernel module: Linux-only; cannot build/load on Darwin.
+Remaining open items after 20260429-wave1plus2 (post-Wave1+2):
+- ~~Web build: route collision at `app/mail/page.tsx` vs `app/(dashboard)/mail/page.tsx`~~ — RESOLVED. Marathon notes were stale; only `app/mail/` exists at HEAD post `af848b1`.
+- ~~Clippy `--all-targets` 10+ pre-existing warnings~~ — RESOLVED. Already clean at HEAD (likely fixed silently in prior commits).
+- ~~OAuth callback URL leak to `:4321`~~ — RESOLVED in commit 8fc1267 via `trustHost: true` + `web/.env.local`.
+- Mail Pillar 7 last-5%: live SMTP/IMAP smoke through `docker-compose.email.yml` (Postfix+Dovecot+GreenMail+mail-transport) — deferred per 2026-04-29 scope decision; unblocks at first production deploy.
+- Mobile release pipeline: TestFlight (iOS) and Play Store (Android) — gated on Apple Developer Program enrollment ($99/yr) and Google Play Console signup ($25). Walkthroughs at `docs/play-store/listing.md` and `docs/play-store/data-safety.md`.
+- VPN production deploy: PQ-WireGuard kernel module on Hetzner/AWS Linux host — cannot build/load on Darwin (host limitation, not code).
+- Flutter test gate: host macOS has Flutter SDK installed (verified 2026-04-29); existing CI workflow `.github/workflows/flutter.yml` handles matrix testing.
+- Privacy policy refresh: `web/app/privacy/page.tsx` "Last updated" still shows 2026-03-15.
+- Privacy delete page: `https://zipminator.zip/privacy/delete` referenced in Play Store data safety form but page does not exist; needs `web/app/privacy/delete/page.tsx`.
+- BIS Self-Classification Report: required within 30 days of first US distribution for ECCN 5D002 encryption export. File at https://snap-r.bis.doc.gov.
 
 ---
 
@@ -663,4 +673,4 @@ FIPS language note: public materials must say "Implements NIST FIPS 203 (ML-KEM-
 
 ---
 
-*Last verified: 2026-04-21 | branch: chore/claude-root-consolidation | QDaria AS | FEATURES.md is the single source of truth*
+*Last verified: 2026-04-29 | branch: feat/9-pillars-production-2026-04-26 | QDaria AS | FEATURES.md is the single source of truth*

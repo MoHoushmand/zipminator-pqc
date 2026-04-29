@@ -5,6 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-beta.2] - 2026-04-29
+
+Second public beta of the Zipminator PQC super-app. Marathon Wave 1+2 (run `MARATHON_CONVERGED_20260429-wave1plus2`, three parallel agents A/B/C) closes the OAuth callback regression that blocked sign-in from `zipminator.zip`, lifts Pillar 7 Quantum Mail from 90% to 95% under a deliberate scope decision, and verifies all gates (cargo, vitest, pnpm build, clippy `--all-targets`) green at HEAD. Eight of nine pillars sit at 100%; Pillar 7's last 5% is the live SMTP/IMAP smoke through Postfix+Dovecot+GreenMail, deferred to first production deploy.
+
+### Added
+
+- Marathon Wave 1+2 convergence record (`MARATHON_CONVERGED_20260429-wave1plus2`) appended to `docs/guides/FEATURES.md` Marathon Convergence Log (commit `2522028`).
+- Pillar 7 Mail pre-send PII gate (Acknowledge / Anonymize) and `dkimpy` opt-in signer scaffold; 7 new vitest pii-gate cases (62 mail tests + 7 vitest pii-gate now green).
+- `web/.env.local` per-app override pattern to insulate the Next.js app on port 3099 from monorepo-root `.env` leakage (commit `8fc1267`).
+
+### Changed
+
+- Pillar 7 Quantum Mail bumped 90% → 95% per 2026-04-29 scope decision; live SMTP/IMAP smoke deferred to post-beta production deploy. Code, config, scaffold, and PII gate all in place; only Docker mail stack rollout remains.
+- Vitest count rises 30 → 37; cargo workspace 459 pass + 1 ignored; clippy `--all-targets` clean across the workspace.
+- Resend wired on the Next.js `zipminator.zip` waitlist endpoint so beta sign-ups receive PQC-themed confirmation mail (commit `103fa48`).
+
+### Fixed
+
+- OAuth callback URL leaking to `:4321` (the Astro dev port) when sign-in originated from `zipminator.zip`. Fixed by setting `trustHost: true` in `web/lib/auth.ts` and isolating `web/.env.local` from the monorepo-root `.env` (commits `8fc1267`, `7123cce`).
+- `OAuthButtons` now reads `callbackUrl` from search params instead of the hardcoded `/dashboard`, so post-auth redirects honor the originating page (commit `7123cce`).
+- Waitlist insert path no longer references the non-existent `user_id` column on the `waitlist` table (commit `fdf0869`).
+- Type-check, vitest, and pytest all unblocked across the workspace (commit `af848b1`).
+- Earlier `1.0.0` entry in this changelog relabeled to `1.0.0-beta.1` to keep semver discipline (commit `b3dc3ce`).
+
+### Resolved (closed against open-items list)
+
+- Web build route collision at `app/mail/page.tsx` vs `app/(dashboard)/mail/page.tsx`: stale marathon notes; only `app/mail/` exists at HEAD post `af848b1`.
+- Clippy `--all-targets` 10+ pre-existing warnings: already clean at HEAD.
+- OAuth callback URL leak to `:4321`: closed via `trustHost: true` plus `.env.local` override.
+
+### Security
+
+- Implements NIST FIPS 203 (ML-KEM-768 and ML-KEM-1024) for key encapsulation. Verified against NIST KAT test vectors via deterministic DRBG.
+- Implements NIST FIPS 204 (ML-DSA-65) for digital signatures.
+- Constant-time arithmetic on every secret-dependent path via `subtle`; secret material zeroized via `zeroize` on drop.
+- No FIPS 140-3 CMVP certificate. CMVP engagement remains human-gated (NVLAP lab, $80K to $150K, 12-18 month timeline).
+
+### Known Deferrals (do not block beta.2)
+
+- Live SMTP/IMAP smoke through `docker-compose.email.yml` (Postfix+Dovecot+GreenMail+mail-transport) for Pillar 7's last 5%; unblocks at first production deploy.
+- TestFlight (iOS) and Play Store (Android) distribution gated on Apple Developer Program enrollment ($99/yr) and Google Play Console signup ($25).
+- PQ-WireGuard kernel module deploy on Hetzner/AWS Linux host; userspace path covers the Tier 1 threat model. Cannot build or load on Darwin.
+- ESP32-S3 Q-Mesh hardware demo human-gated (physical devices, clinician/defence partner sites).
+- USPTO non-provisional conversions (P1, P2, P3); provisionals drafted under `docs/ip/`, attorney filing pending.
+
 ## [1.0.0] - 2026-04-22
 
 First stable release of the Zipminator PQC super-app. All nine encryption-infrastructure pillars ship on a single codebase built on NIST's finalized post-quantum standards. Python package published on PyPI; Rust core published on crates.io; Flutter builds available via TestFlight (iOS external) and GitHub Releases (Android, macOS, Linux, Windows).

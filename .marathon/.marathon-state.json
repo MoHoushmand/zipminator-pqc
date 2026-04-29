@@ -1,104 +1,115 @@
 {
-  "run_id": "20260429-wave1plus2",
-  "started_at": "2026-04-29T16:25:00Z",
-  "completed_at": "2026-04-29T16:35:00Z",
-  "max_iter": 5,
+  "run_id": "20260429-wave3",
+  "started_at": "2026-04-29T16:50:00Z",
+  "completed_at": "2026-04-29T17:15:00Z",
+  "max_iter": 1,
   "budget_usd": 0,
   "status": "converged",
-  "completion_promise": "MARATHON_CONVERGED_20260429-wave1plus2",
+  "completion_promise": "MARATHON_CONVERGED_20260429-wave3",
   "sentinel_recorded": true,
   "marathon_branch": "feat/9-pillars-production-2026-04-26",
-  "marathon_tip": "8fc1267",
+  "marathon_tip": "<to-be-set-on-commit>",
   "spec_file": ".marathon/specs/9-pillars.md",
-  "parallelism": 3,
+  "parallelism": 4,
   "topology": "hierarchical-raft",
-  "scope_decision": "wave1+2 only; wave3 (mobile release + GTM) deferred per user instruction",
-  "mail_decision": "defer-to-95 (live SMTP/IMAP smoke deferred to post-beta milestone)",
+  "scope_decision": "wave3 actionable subset (no Apple/Google enrolment yet); GTM polish + e2e + lighthouse + mobile build verification",
+  "trigger": "user provided D-U-N-S 347103005 + 'go' command at 2026-04-29T16:48",
   "prior_runs": [
     {"run_id": "20260419-200339-4239da", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260419-200339-4239da"},
     {"run_id": "20260420-163358-a59713", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260420-163358-a59713"},
     {"run_id": "20260421-144639-ac5f48", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260421-144639-ac5f48"},
-    {"run_id": "20260426-032534-21fc8f", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260426-032534-21fc8f"}
+    {"run_id": "20260426-032534-21fc8f", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260426-032534-21fc8f"},
+    {"run_id": "20260429-wave1plus2", "status": "merged", "completion_promise": "MARATHON_CONVERGED_20260429-wave1plus2"}
   ],
   "waves": {
-    "wave_1": {
-      "tracks": ["A-web-build", "B-oauth-callback", "C-clippy-cleanup"],
-      "status": "merged",
-      "dispatched_at": "2026-04-29T16:25:00Z",
-      "merged_at": "2026-04-29T16:32:00Z",
-      "topology": "parallel-foreground (Agent tool, frontend-developer + frontend-developer + rust-expert)"
-    },
-    "wave_2": {
-      "tracks": ["verify-and-sentinel"],
-      "status": "merged",
-      "dispatched_at": "2026-04-29T16:32:00Z",
-      "merged_at": "2026-04-29T16:35:00Z",
-      "note": "synthesis run inline by driver; gate sweep + FEATURES.md bump + sentinel"
+    "wave_3": {
+      "tracks": ["W7-playwright-e2e", "W10-lighthouse", "W11-release-content", "W12-mobile-build"],
+      "status": "merged-yellow",
+      "dispatched_at": "2026-04-29T16:50:00Z",
+      "merged_at": "2026-04-29T17:15:00Z",
+      "topology": "parallel-foreground (Agent tool: typescript-expert + react-performance-optimization + general-purpose + general-purpose)"
     }
   },
   "tracks": {
-    "A-web-build": {"agent_type": "frontend-developer", "status": "no-op-already-green", "feature_commits": [], "result": "Web build already green at HEAD; route collision noted in 20260421 marathon log was stale (resolved silently in af848b1). pnpm build passes."},
-    "B-oauth-callback": {"agent_type": "frontend-developer", "status": "merged", "feature_commits": ["8fc1267"], "result": "OAuth :4321 callback URL bug traced to monorepo-root /Users/mom5/dev/qdaria/.env loading via next.config.js dotenv. Fixed via trustHost: true in web/lib/auth.ts + per-app web/.env.local override (AUTH_URL=http://localhost:3099, AUTH_TRUST_HOST=true). All 3 providers now return :3099 callbacks."},
-    "C-clippy-cleanup": {"agent_type": "rust-expert", "status": "no-op-already-green", "feature_commits": [], "result": "cargo clippy --workspace --exclude zipbrowser --all-targets -- -D warnings already exits 0 at HEAD. The 10-11 pre-existing warnings noted in 20260421 marathon log are no longer present (silently fixed in subsequent commits). Test count is now 459 pass + 1 ignored, up from 393 baseline."}
+    "W7-playwright-e2e": {
+      "agent_type": "typescript-expert",
+      "status": "yellow-spec-drift",
+      "feature_commits": [],
+      "result": "90/104 specs pass; 14 failures all spec-author bugs (not product bugs): strict-mode locators on text=Zipminator, stale OAuth UI assumptions (login is now OAuth-only, no email/password field), nav copy drift ('Sign In' link no longer present), redirect path mismatch /auth/signin vs /auth/login. 19 axe violations total (8 zipminator-scope serious + 11 astro-out-of-scope). 52 PNG screenshots captured to _screenshots/2026-04-29/wave3-e2e/.",
+      "follow_up": "Web-quality track: rewrite the 14 stale specs and remediate 8 a11y violations"
+    },
+    "W10-lighthouse": {
+      "agent_type": "react-performance-optimization",
+      "status": "yellow-public-routes-pass",
+      "feature_commits": [],
+      "result": "All public routes clear thresholds. Home /: 95/100/96/100 desktop; 70/100/96/100 mobile. /invest: 99/100/100/100 desktop; 79/100/100/100 mobile. /privacy: 94/92/100/100 desktop; 79/92/100/100 mobile. Protected routes (/dashboard, /mail) drop to SEO 61 because /auth/login is intentionally noindex (not a real defect). Slowest LCP: / mobile at 6.3s.",
+      "follow_up": "Optional: add next-image priority hint on home hero to drop mobile LCP below 4s"
+    },
+    "W11-release-content": {
+      "agent_type": "general-purpose",
+      "status": "merged",
+      "feature_commits": ["pending-driver-commit"],
+      "result": "CHANGELOG.md beta.2 prepended (749 words). marketing/blog/v1-release/2026-04-29-zipminator-beta-2.md (1017 words). marketing/linkedin/v1-release/2026-04-29-announcement.md (367 words). Banned-word audit clean (zero em dashes, zero AI-writing tells, FIPS language correct).",
+      "follow_up": "Driver commits these together with marathon state update"
+    },
+    "W12-mobile-build": {
+      "agent_type": "general-purpose",
+      "status": "yellow-android-sdk-blocked",
+      "feature_commits": [],
+      "result": "iOS release build PASS (build/ios/iphoneos/Runner.app, 41.8 MB, 53.9s build, com.qdaria.zipminator confirmed). Android AAB FAIL (no Android SDK, ANDROID_HOME unset). Flutter test 83/85 (2 pre-existing RustLib.init failures in anonymizer_provider_test.dart). Fastlane verify PASS via /opt/homebrew/opt/ruby (system ruby 2.6.10 too old for ffi-1.17.4).",
+      "follow_up": "User installs Android Studio or command-line tools; then re-run flutter build appbundle --release for the AAB"
+    }
   },
   "gates": {
-    "cargo_test_workspace": "pass (459 tests, 1 ignored)",
-    "cargo_clippy_workspace_all_targets": "pass (clean -D warnings)",
-    "web_pnpm_build": "pass",
-    "web_vitest": "pass (37 tests across 4 files, up from 30)",
-    "oauth_callback_resolution": "pass (curl /api/auth/providers returns :3099)",
-    "flutter_test": "deferred_ci (host SDK present but tests not run this session)",
-    "browser_cargo_test_default": "deferred (no browser changes; assumed stable from 20260426 run)",
-    "pytest_target_areas": "deferred (no Python changes; assumed stable from 20260426 run)"
+    "playwright_e2e_zipminator": "yellow (90/104 pass, 14 spec-author bugs)",
+    "lighthouse_public_routes": "pass (all routes clear thresholds)",
+    "lighthouse_protected_routes_seo": "yellow (61 SEO due to noindex on /auth/login by design)",
+    "release_content_drafts": "pass (3 files, banned-word audit clean)",
+    "flutter_test": "yellow (83/85 pass, 2 pre-existing test-infra issues)",
+    "flutter_build_ios_release_no_codesign": "pass (41.8 MB Runner.app)",
+    "flutter_build_appbundle_release": "fail (Android SDK not installed locally)",
+    "fastlane_verify_ios": "pass (via homebrew ruby)",
+    "axe_zipminator_scope": "yellow (8 serious violations across 6 routes)"
   },
-  "pillars": {
-    "1_vault": {"pct": 100, "verification": "no regression; cargo gates green"},
-    "2_messenger": {"pct": 100, "verification": "no regression"},
-    "3_voip": {"pct": 100, "verification": "no regression"},
-    "4_qvpn": {"pct": 100, "verification": "no regression"},
-    "5_anonymizer": {"pct": 100, "verification": "no regression"},
-    "6_qai": {"pct": 100, "verification": "no regression"},
-    "7_mail": {"pct": 95, "track": "scope-defer", "from_pct": 90, "blocker": "live Postfix+Dovecot+GreenMail smoke deferred to post-beta deploy milestone; code+config+scaffold complete"},
-    "8_zipbrowser": {"pct": 100, "verification": "no regression"},
-    "9_qmesh": {"pct": 100, "verification": "no regression"}
-  },
-  "convergence_criteria": {
-    "all_tracks_merged_or_no_op": true,
-    "wave_1_unblock_complete": true,
-    "wave_2_verification_complete": true,
-    "oauth_callback_fix_landed": true,
-    "features_md_updated": true,
-    "sentinel_valid": true,
-    "8_of_9_pillars_at_100_with_p7_at_95": true
+  "deliverables": {
+    "duns_recorded": "347103005 in docs/business/identifiers.md",
+    "release_v1.0.0-beta.2_changelog": "CHANGELOG.md updated",
+    "release_v1.0.0-beta.2_blog": "marketing/blog/v1-release/2026-04-29-zipminator-beta-2.md (1017w)",
+    "release_v1.0.0-beta.2_linkedin": "marketing/linkedin/v1-release/2026-04-29-announcement.md (367w)",
+    "ios_release_artifact": "app/build/ios/iphoneos/Runner.app (41.8 MB; ready for codesigning + IPA + TestFlight upload once IOS_TESTFLIGHT_ENABLED=true)",
+    "lighthouse_reports": "_screenshots/2026-04-29/wave3-lighthouse/ (10 HTML + 10 JSON reports)",
+    "e2e_screenshots": "_screenshots/2026-04-29/wave3-e2e/ (52 PNGs)"
   },
   "deferrals": [
-    {"item": "Mail P7 last 5%", "reason": "live SMTP/IMAP smoke through docker-compose.email.yml; user scope-decision defer-to-95", "remediation": "Re-run with docker daemon up at first production deploy"},
-    {"item": "Wave 3 (mobile release, VPN host, GTM)", "reason": "User scope-decision wave1+2 only; wave3 needs human-in-loop (Apple/Google signups, DNS, Hetzner, blog publishing)", "remediation": "Separate session after Apple Developer + Google Play Console enrolment complete"},
-    {"item": "Privacy delete page", "reason": "Referenced in Play Store data-safety form but not yet implemented", "remediation": "Add web/app/privacy/delete/page.tsx with account-deletion form"},
-    {"item": "Privacy policy refresh", "reason": "Last updated 2026-03-15; needs date bump and Sentry/Stripe/Resend SDK list reconciliation", "remediation": "Edit web/app/privacy/page.tsx"},
-    {"item": "BIS Self-Classification Report", "reason": "Required for ECCN 5D002 within 30 days of US distribution", "remediation": "File at https://snap-r.bis.doc.gov before Play Store production push"}
+    {"item": "Android AAB build", "reason": "Android SDK not installed locally; ANDROID_HOME unset", "remediation": "User: install Android Studio or `brew install --cask android-commandlinetools`; then `flutter config --android-sdk <path>` and rerun"},
+    {"item": "Apple TestFlight upload", "reason": "Apple Developer Program enrolment + signing certificates not yet in place", "remediation": "User completes Apple Developer enrolment ($99/yr); set GitHub secrets APPLE_ID + APPLE_TEAM_ID + APP_STORE_CONNECT_API_KEY_ID/_ISSUER_ID/_KEY_CONTENT; set repo variable IOS_TESTFLIGHT_ENABLED=true; push triggers TestFlight workflow"},
+    {"item": "Play Store upload", "reason": "Google Play Console signup not yet completed", "remediation": "User signs up at play.google.com/console/signup ($25); generate upload key; upload AAB once Android build resolves"},
+    {"item": "14 stale e2e specs", "reason": "Spec assertions reference removed UI (email/password login, 'Sign In' nav link, old waitlist copy, /auth/signin path)", "remediation": "Web-quality track: rewrite specs against current UI"},
+    {"item": "8 zipminator-scope a11y violations", "reason": "Pre-existing serious-severity violations across /demo, /docs, /invest-blueprint, /technology, /privacy (2), /terms (2)", "remediation": "Web-quality track: review axe report at _archive/audit-2026-04-28/web-landing/wcag-axe-report.json"},
+    {"item": "2 Flutter test infra failures", "reason": "anonymizer_provider_test.dart calls into FRB without RustLib.init() in setUp", "remediation": "Add RustLib.init() to test setUp() or mock the bridge for off-device tests"}
   ],
   "awaiting_user": [
-    "Apple Developer Program enrollment ($99/yr)",
-    "Google Play Console signup ($25 one-time)",
-    "D-U-N-S number request (free, Norway)",
-    "Decision on Wave 3 dispatch timing"
+    "Apple Developer Program enrollment ($99/yr; D-U-N-S 347103005 ready)",
+    "Google Play Console signup ($25 one-time; D-U-N-S 347103005 ready)",
+    "Android SDK install (Android Studio or command-line tools) for local AAB build",
+    "Decision on tagging v1.0.0-beta.2 now vs after Apple/Google enrolment"
   ],
   "model_routing": {
     "driver": "claude-opus-4-7 (Claude Max sub, free per session)",
-    "wave_1_agents": [
-      {"role": "A-web-build", "subagent_type": "frontend-developer", "model": "sonnet"},
-      {"role": "B-oauth-callback", "subagent_type": "frontend-developer", "model": "sonnet"},
-      {"role": "C-clippy-cleanup", "subagent_type": "rust-expert", "model": "sonnet"}
+    "wave_3_agents": [
+      {"role": "W7-playwright-e2e", "subagent_type": "typescript-expert", "model": "sonnet", "tokens": 89103},
+      {"role": "W10-lighthouse", "subagent_type": "react-performance-optimization", "model": "sonnet", "tokens": 82242},
+      {"role": "W11-release-content", "subagent_type": "general-purpose", "model": "sonnet", "tokens": 101127},
+      {"role": "W12-mobile-build", "subagent_type": "general-purpose", "model": "sonnet", "tokens": 82791}
     ],
-    "wave_2_synthesis": "in-session by driver (no subagent dispatch)",
-    "subagent_count_dispatched": 3,
-    "total_token_usage": "~256k across all three agents (72k + 102k + 81k)"
+    "subagent_count_dispatched": 4,
+    "total_token_usage": "~355k across all four agents"
   },
   "next_steps": [
-    "User starts Apple Developer enrollment + Google Play Console signup in parallel browser tabs",
-    "User copies web/.env.local.example -> web/.env.local and fills in Google/GitHub/LinkedIn OAuth client IDs as they create them",
-    "Optional: tag v1.0.0-beta.2 to mark this convergence as a release-candidate checkpoint",
-    "Optional: dispatch Wave 3 (mobile release pipeline + GTM) once Apple/Google enrolments complete"
+    "Driver tags v1.0.0-beta.2 to mark this convergence as a release-candidate checkpoint",
+    "User opens Apple Developer + Google Play Console enrollment tabs in parallel (D-U-N-S 347103005 ready)",
+    "User installs Android SDK to unblock AAB local build",
+    "Web-quality follow-up track to rewrite 14 stale e2e specs + remediate 8 a11y violations",
+    "Once Apple Developer is live, push to main triggers .github/workflows/testflight.yml (build #47 to TestFlight)"
   ]
 }

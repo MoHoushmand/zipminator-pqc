@@ -68,6 +68,12 @@ if [ "$SKIP_AAB" -eq 1 ]; then
   exit 0
 fi
 
+log "syncing app/.env from root monorepo .env (public-safe keys only)"
+if ! bash "$APP_DIR/scripts/sync-env-from-root.sh"; then
+  log "env sync failed; aborting build to avoid shipping broken auth"
+  exit 1
+fi
+
 if ! command -v sdkmanager >/dev/null 2>&1 && [ -z "${ANDROID_HOME:-}" ]; then
   log "ANDROID_HOME unset and sdkmanager missing; cannot build AAB"
   log "gates green; AAB step skipped. Install Android SDK then re-run."

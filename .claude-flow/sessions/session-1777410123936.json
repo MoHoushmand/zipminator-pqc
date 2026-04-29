@@ -1,0 +1,14 @@
+{
+  "id": "session-1777410123936",
+  "startedAt": "2026-04-28T21:02:03.936Z",
+  "cwd": "/Users/mom5/dev/qdaria/apps/zipminator/core",
+  "context": {},
+  "metrics": {
+    "edits": 0,
+    "commands": 0,
+    "tasks": 0,
+    "errors": 0
+  },
+  "endedAt": "2026-04-28T21:02:07.456Z",
+  "duration": 3521
+}

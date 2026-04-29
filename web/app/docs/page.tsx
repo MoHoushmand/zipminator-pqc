@@ -36,7 +36,7 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
           {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
         </button>
       </div>
-      <pre className="p-4 bg-gray-900/80 rounded-b-lg border border-white/10 overflow-x-auto text-sm leading-relaxed font-mono text-gray-300">
+      <pre tabIndex={0} role="region" aria-label="Code example" className="p-4 bg-gray-900/80 rounded-b-lg border border-white/10 overflow-x-auto text-sm leading-relaxed font-mono text-gray-300 focus:outline-none focus:ring-2 focus:ring-quantum-500">
         <code>{code}</code>
       </pre>
     </div>

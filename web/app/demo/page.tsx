@@ -53,10 +53,10 @@ function CodeBlock({ code, lang = 'bash' }: { code: string; lang?: string }) {
   return (
     <div className="relative group rounded-xl overflow-hidden border border-white/10">
       <div className="flex items-center justify-between px-4 py-2 bg-gray-900/80 border-b border-white/5">
-        <span className="text-xs text-gray-500 font-mono">{lang}</span>
+        <span className="text-xs text-gray-400 font-mono">{lang}</span>
         <button
           onClick={handleCopy}
-          className="text-gray-500 hover:text-quantum-400 transition-colors"
+          className="text-gray-400 hover:text-quantum-400 transition-colors"
           aria-label="Copy code"
         >
           {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
@@ -105,7 +105,7 @@ function TerminalDemo() {
           <div className="w-3 h-3 rounded-full bg-red-500/80" />
           <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
           <div className="w-3 h-3 rounded-full bg-green-500/80" />
-          <span className="ml-3 text-xs text-gray-500 font-mono">zipminator-terminal</span>
+          <span className="ml-3 text-xs text-gray-400 font-mono">zipminator-terminal</span>
         </div>
         <button
           onClick={run}
@@ -154,7 +154,7 @@ function KeySizes() {
         <div key={item.label} ref={item.counter.ref} className="card-quantum text-center py-6">
           <item.icon className="w-8 h-8 text-quantum-400 mx-auto mb-3" />
           <div className="text-3xl font-bold gradient-text font-mono">{item.counter.value}</div>
-          <div className="text-xs text-gray-500 uppercase tracking-wider mt-1">{item.unit}</div>
+          <div className="text-xs text-gray-400 uppercase tracking-wider mt-1">{item.unit}</div>
           <div className="text-sm font-semibold text-white mt-2">{item.label}</div>
         </div>
       ))}
@@ -222,7 +222,7 @@ zipminator encrypt secret.pdf --recipient alice@company.com`}
           <div className="mt-8">
             <KeySizes />
           </div>
-          <p className="text-gray-500 text-sm mt-6 text-center">
+          <p className="text-gray-400 text-sm mt-6 text-center">
             Kyber768 keys are derived from a structured lattice problem believed hard for both classical and quantum computers.
           </p>
         </div>
@@ -248,7 +248,7 @@ zipminator encrypt secret.pdf --recipient alice@company.com`}
                 className="card-quantum text-center py-5"
               >
                 <s.icon className="w-7 h-7 text-quantum-400 mx-auto mb-2" />
-                <div className="text-xs text-gray-500 uppercase tracking-wider">Step {s.step}</div>
+                <div className="text-xs text-gray-400 uppercase tracking-wider">Step {s.step}</div>
                 <div className="text-sm font-semibold text-white mt-1">{s.label}</div>
               </motion.div>
             ))}

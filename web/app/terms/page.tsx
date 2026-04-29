@@ -11,7 +11,7 @@ export default function TermsPage() {
     <div className="min-h-screen bg-gray-950 text-gray-300">
       <div className="container mx-auto max-w-3xl px-6 py-20">
         <h1 className="text-4xl font-bold text-white mb-2">Terms of Service</h1>
-        <p className="text-sm text-gray-500 mb-12">Last updated: March 15, 2026</p>
+        <p className="text-sm text-gray-400 mb-12">Last updated: March 15, 2026</p>
 
         <div className="space-y-10 leading-relaxed">
           <section>
@@ -130,17 +130,17 @@ export default function TermsPage() {
             <h2 className="text-xl font-semibold text-white mb-3">13. Contact</h2>
             <p>
               For questions about these Terms, contact us at{' '}
-              <a href="mailto:legal@qdaria.com" className="text-cyan-400 hover:underline">legal@qdaria.com</a>.
+              <a href="mailto:legal@qdaria.com" className="text-cyan-400 underline underline-offset-2 hover:text-cyan-300">legal@qdaria.com</a>.
             </p>
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-gray-400">
               QDaria AS, Oslo, Norway
             </p>
           </section>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-white/10 text-sm text-gray-500">
+        <div className="mt-16 pt-8 border-t border-white/10 text-sm text-gray-400">
           <p>
-            See also our <Link href="/privacy" className="text-cyan-400 hover:underline">Privacy Policy</Link>.
+            See also our <Link href="/privacy" className="text-cyan-400 underline underline-offset-2 hover:text-cyan-300">Privacy Policy</Link>.
           </p>
         </div>
       </div>

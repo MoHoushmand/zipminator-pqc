@@ -371,7 +371,7 @@ export default function TechnologyPage() {
                   <span className="text-sm font-semibold text-quantum-300">{ex.lang}</span>
                   <span className="text-xs text-gray-600 font-mono">example.{ex.lang === 'Python' ? 'py' : ex.lang === 'Rust' ? 'rs' : 'ts'}</span>
                 </div>
-                <pre className="p-4 text-sm text-gray-300 font-mono overflow-x-auto leading-relaxed">
+                <pre tabIndex={0} role="region" aria-label={`${ex.lang} code example`} className="p-4 text-sm text-gray-300 font-mono overflow-x-auto leading-relaxed focus:outline-none focus:ring-2 focus:ring-quantum-500">
                   <code>{ex.code}</code>
                 </pre>
               </motion.div>

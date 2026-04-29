@@ -11,14 +11,14 @@ export default function PrivacyPage() {
     <div className="min-h-screen bg-gray-950 text-gray-300">
       <div className="container mx-auto max-w-3xl px-6 py-20">
         <h1 className="text-4xl font-bold text-white mb-2">Privacy Policy</h1>
-        <p className="text-sm text-gray-500 mb-12">Last updated: April 29, 2026</p>
+        <p className="text-sm text-gray-400 mb-12">Last updated: April 29, 2026</p>
 
         <div className="space-y-10 leading-relaxed">
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">1. Introduction</h2>
             <p>
               QDaria AS (&quot;QDaria&quot;, &quot;we&quot;, &quot;us&quot;) operates the Zipminator application
-              and website at <Link href="https://www.zipminator.zip" className="text-cyan-400 hover:underline">www.zipminator.zip</Link>.
+              and website at <Link href="https://www.zipminator.zip" className="text-cyan-400 underline underline-offset-2 hover:text-cyan-300">www.zipminator.zip</Link>.
               This Privacy Policy explains how we collect, use, and protect your information when you use our services.
             </p>
           </section>
@@ -78,7 +78,7 @@ export default function PrivacyPage() {
             <p>
               We retain account information for as long as your account is active. You may request deletion
               of your account and associated data at any time by contacting{' '}
-              <a href="mailto:privacy@qdaria.com" className="text-cyan-400 hover:underline">privacy@qdaria.com</a>.
+              <a href="mailto:privacy@qdaria.com" className="text-cyan-400 underline underline-offset-2 hover:text-cyan-300">privacy@qdaria.com</a>.
               Encrypted content stored locally on your device is under your control.
             </p>
           </section>
@@ -126,9 +126,9 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-semibold text-white mb-3">11. Contact</h2>
             <p>
               For privacy-related inquiries, contact us at{' '}
-              <a href="mailto:privacy@qdaria.com" className="text-cyan-400 hover:underline">privacy@qdaria.com</a>.
+              <a href="mailto:privacy@qdaria.com" className="text-cyan-400 underline underline-offset-2 hover:text-cyan-300">privacy@qdaria.com</a>.
             </p>
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-gray-400">
               QDaria AS, Oslo, Norway
             </p>
           </section>

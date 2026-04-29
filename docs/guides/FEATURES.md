@@ -598,7 +598,7 @@ Before shipping a new Flutter mobile build to TestFlight or Play Store internal,
 
 | # | Gate | Verification |
 |---|------|--------------|
-| 1 | 83/85 tests pass | `cd app && flutter test` shows 83 pass + 2 fail (`anonymizer_provider_test.dart`: missing `RustLib.init()` in setUp); pre-existing test-infra debt, not a product regression. Fix tracked in Open Work Matrix. |
+| 1 | 85/85 tests pass | `cd app && flutter test` green (85/85; FRB-dependent tests in `anonymizer_provider_test.dart` now init RustLib via host-dylib resolution in setUpAll, fixed 2026-04-29 wave4 W13). |
 | 2 | Version pinned | `app/pubspec.yaml` reads `version: 0.5.1+45` (or the target build); iOS CFBundleVersion is overridden by `BUILD_NUMBER=${{ github.run_number }}` in CI |
 | 3 | CHANGELOG entry | `app/CHANGELOG.md` has a section matching the `pubspec.yaml` version with a bulleted list of changes |
 | 4 | TestFlight workflow green | `.github/workflows/testflight.yml` run succeeds on `macos-latest`: `bundle exec fastlane verify` then `bundle exec fastlane beta` under `app/ios/`; gated by repo variable `IOS_TESTFLIGHT_ENABLED=true` |

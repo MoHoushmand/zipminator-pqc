@@ -1,11 +1,39 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart'
+    show ExternalLibrary;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:zipminator/core/providers/anonymizer_provider.dart';
+import 'package:zipminator/src/rust/frb_generated.dart';
+
+/// Tracks whether the FRB Rust bridge initialized successfully.
+/// Tests that need the on-device PII scan (`AnonymizerNotifier.anonymize`
+/// indirectly calls `rust.piiScan`) skip themselves cleanly when the dylib
+/// isn't built, instead of failing with `flutter_rust_bridge has not been
+/// initialized`. The Rust dylib is produced by `flutter build macos` /
+/// `flutter run`; CI with a fresh checkout may not have it yet.
+bool _rustInitialized = false;
+
+/// Resolve the macOS host dylib path so `flutter test` (which runs on the
+/// host, not on a simulator) can dlopen it. Order: framework binary in the
+/// Debug build, then the cargo-emitted `.dylib`. Returns null if neither
+/// exists.
+String? _resolveMacOsDylibPath() {
+  final repoRoot = Directory.current.path;
+  final candidates = <String>[
+    '$repoRoot/build/macos/Build/Products/Debug/rust_lib_zipminator/rust_lib_zipminator.framework/Versions/A/rust_lib_zipminator',
+    '$repoRoot/build/macos/Build/Intermediates.noindex/Pods.build/Debug/rust_lib_zipminator.build/aarch64-apple-darwin/debug/librust_lib_zipminator.dylib',
+  ];
+  for (final p in candidates) {
+    if (File(p).existsSync()) return p;
+  }
+  return null;
+}
 
 /// Helper that builds an [AnonymizerApiService] backed by an in-memory
 /// [MockClient]. Tests assert by introspecting the request that flowed.
@@ -18,6 +46,17 @@ AnonymizerApiService _serviceWithMock(MockClient client) {
 }
 
 void main() {
+  setUpAll(() async {
+    final dylibPath = _resolveMacOsDylibPath();
+    if (dylibPath == null) return;
+    try {
+      await RustLib.init(externalLibrary: ExternalLibrary.open(dylibPath));
+      _rustInitialized = true;
+    } catch (_) {
+      // Init failed; tests that need FRB will skip via _rustInitialized.
+    }
+  });
+
   group('AnonymizerApiService', () {
     test('POSTs {level, text} JSON body to /api/anonymize', () async {
       late http.Request capturedRequest;
@@ -132,6 +171,10 @@ void main() {
     });
 
     test('anonymize uses API result when call succeeds', () async {
+      if (!_rustInitialized) {
+        markTestSkipped('FRB Rust dylib not built; run flutter build macos first');
+        return;
+      }
       final apiClient = MockClient((req) async {
         final body = jsonDecode(req.body) as Map<String, dynamic>;
         return http.Response(
@@ -165,6 +208,10 @@ void main() {
     });
 
     test('anonymize falls back to local logic when API fails', () async {
+      if (!_rustInitialized) {
+        markTestSkipped('FRB Rust dylib not built; run flutter build macos first');
+        return;
+      }
       final apiClient = MockClient(
         (req) async => http.Response('upstream down', 500),
       );

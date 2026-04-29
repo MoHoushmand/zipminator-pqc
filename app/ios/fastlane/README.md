@@ -1,31 +1,40 @@
-# Fastlane (iOS TestFlight)
+fastlane documentation
+----
 
-Path B: CI-only TestFlight uploads via App Store Connect API key.
+# Installation
 
-## Required GitHub secrets
+Make sure you have the latest version of the Xcode command line tools installed:
 
-Set these in GitHub repo settings, Secrets and variables, Actions:
-
-- `ASC_API_KEY_ID`: Key ID from App Store Connect (Users and Access, Keys). 10-char alphanumeric.
-- `ASC_API_ISSUER_ID`: Issuer ID shown at the top of the Keys page. UUID format.
-- `ASC_API_KEY_CONTENT`: Base64-encoded contents of the downloaded `.p8` file. Generate with `base64 -i AuthKey_XXXXXX.p8 | pbcopy` on macOS.
-
-Generate the API key at https://appstoreconnect.apple.com/access/api with role "App Manager" or higher. Download once; Apple does not allow re-download.
-
-## Manual lane
-
-```bash
-cd app/ios
-bundle exec fastlane beta
+```sh
+xcode-select --install
 ```
 
-Local env requires `ASC_API_KEY_ID`, `ASC_API_ISSUER_ID`, and `ASC_API_KEY_CONTENT` (base64 `.p8`).
+For _fastlane_ installation instructions, see [Installing _fastlane_](https://docs.fastlane.tools/#installing-fastlane)
 
-## Verification lane
+# Available Actions
 
-```bash
-cd app/ios
-bundle exec fastlane verify
+## iOS
+
+### ios beta
+
+```sh
+[bundle exec] fastlane ios beta
 ```
 
-Runs without uploading. Use in CI to smoke-test the wiring before flipping the `if` gate on the testflight job.
+Build and upload to TestFlight using App Store Connect API key
+
+### ios verify
+
+```sh
+[bundle exec] fastlane ios verify
+```
+
+Verify fastlane config without uploading
+
+----
+
+This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
+
+More information about _fastlane_ can be found on [fastlane.tools](https://fastlane.tools).
+
+The documentation of _fastlane_ can be found on [docs.fastlane.tools](https://docs.fastlane.tools).

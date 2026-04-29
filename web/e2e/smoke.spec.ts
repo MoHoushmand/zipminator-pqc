@@ -1,8 +1,20 @@
 import { test, expect, type ConsoleMessage } from '@playwright/test';
 
-/** WebGL errors are expected in headless Chromium (no GPU). Filter them. */
+/** Filter out benign console errors so the smoke gate only fails on real product errors. */
 function isKnownBenignError(text: string): boolean {
-  return text.includes('WebGLRenderer') || text.includes('WebGL context');
+  return (
+    // WebGL: no GPU in headless Chromium
+    text.includes('WebGLRenderer') ||
+    text.includes('WebGL context') ||
+    // 404s on non-critical static assets (manifest, favicon, og-image variants)
+    (text.includes('Failed to load resource') &&
+      (text.includes('manifest.json') ||
+        text.includes('favicon') ||
+        text.includes('.ico') ||
+        text.includes('.png'))) ||
+    // next-auth provider list 404 when running without OAuth secrets in local env
+    text.includes('/api/auth/providers')
+  );
 }
 
 test.describe('Landing page', () => {
@@ -15,9 +27,11 @@ test.describe('Landing page', () => {
 
   test('waitlist section shows sign-in prompt for unauthenticated users', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
-    const signInHeading = page.getByText('Sign in to join');
+    // Use heading-role match for the unauthenticated waitlist state.
+    // Wait first, then scroll, to avoid scrolling before render completes.
+    const signInHeading = page.getByRole('heading', { name: /Sign in to join/i });
+    await expect(signInHeading).toBeVisible({ timeout: 15_000 });
     await signInHeading.scrollIntoViewIfNeeded();
-    await expect(signInHeading).toBeVisible({ timeout: 10_000 });
   });
 });
 

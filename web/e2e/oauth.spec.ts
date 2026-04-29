@@ -2,80 +2,53 @@ import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.WEB_URL || 'http://localhost:3099';
 
-const TEST_ACCOUNTS = [
-  { email: 'mo@qdaria.com', name: 'Mo' },
-  { email: 'houshmand.81@gmail.com', name: 'H81' },
-  { email: 'dmo.houshmand@gmail.com', name: 'DMO' },
-];
+// Login is OAuth-only as of 2026-04-29 (no email/password). The historical
+// email-attempt sub-tests were removed when the form was deprecated; the
+// surface this spec verifies is the three OAuth provider buttons + a redirect
+// path to /api/auth/signin/<provider> when clicked.
 
 test.describe('OAuth Flow', () => {
-  test('login page renders with OAuth providers', async ({ page }) => {
+  test('login page renders 3 OAuth providers + back-link', async ({ page }) => {
     await page.goto(`${BASE_URL}/auth/login`);
 
-    // Verify login form exists
-    await expect(page.locator('input[type="email"], input[name="email"]')).toBeVisible();
+    // OAuth provider buttons (next-auth v5 wired via OAuthButtons.tsx)
+    for (const name of ['Google', 'GitHub', 'LinkedIn']) {
+      await expect(
+        page.getByRole('button', { name: new RegExp(`Continue with ${name}`) })
+      ).toBeVisible();
+    }
 
-    // Verify OAuth provider buttons (GitHub, Google, LinkedIn)
-    const githubBtn = page.locator('text=GitHub').or(page.locator('[aria-label*="GitHub"]'));
-    const googleBtn = page.locator('text=Google').or(page.locator('[aria-label*="Google"]'));
-
-    // At least one OAuth provider should be visible
-    const hasGithub = await githubBtn.isVisible().catch(() => false);
-    const hasGoogle = await googleBtn.isVisible().catch(() => false);
-    expect(hasGithub || hasGoogle).toBe(true);
+    // Back-to-home affordance
+    await expect(page.getByRole('link', { name: /Back to home/ })).toBeVisible();
 
     await page.screenshot({ path: 'test-results/e2e/web-login.png' });
   });
 
-  for (const account of TEST_ACCOUNTS) {
-    test(`email login attempt: ${account.name}`, async ({ page }) => {
-      await page.goto(`${BASE_URL}/auth/login`);
-
-      // Fill email field
-      const emailInput = page.locator('input[type="email"], input[name="email"]');
-      await emailInput.fill(account.email);
-
-      // Fill password field if visible
-      const passwordInput = page.locator('input[type="password"]');
-      if (await passwordInput.isVisible()) {
-        await passwordInput.fill('test-password-placeholder');
-      }
-
-      // Submit
-      const submitBtn = page.locator('button[type="submit"]').or(page.locator('text=Sign in'));
-      if (await submitBtn.isVisible()) {
-        await submitBtn.click();
-        await page.waitForTimeout(2000); // Wait for auth response
-      }
-
-      // Capture state (success or error)
-      await page.screenshot({
-        path: `test-results/e2e/web-login-${account.name.toLowerCase()}.png`
-      });
-    });
-  }
-
-  test('OAuth redirect to GitHub works', async ({ page }) => {
+  test('GitHub button initiates next-auth signin redirect', async ({ page }) => {
     await page.goto(`${BASE_URL}/auth/login`);
 
-    const githubBtn = page.locator('text=GitHub').or(page.locator('[aria-label*="GitHub"]'));
-    if (await githubBtn.isVisible()) {
-      // Click and verify redirect to GitHub OAuth
-      const [popup] = await Promise.all([
-        page.waitForEvent('popup').catch(() => null),
-        githubBtn.click(),
-      ]);
+    const githubBtn = page.getByRole('button', { name: /Continue with GitHub/ });
+    await expect(githubBtn).toBeVisible();
 
-      if (popup) {
-        // Verify we're on GitHub's auth page
-        await expect(popup).toHaveURL(/github\.com/);
-        await popup.screenshot({ path: 'test-results/e2e/web-github-oauth.png' });
-        await popup.close();
-      } else {
-        // May have navigated in same window
-        await page.waitForTimeout(2000);
-        await page.screenshot({ path: 'test-results/e2e/web-github-redirect.png' });
-      }
-    }
+    // Don't actually traverse to github.com (would need real OAuth app + secrets);
+    // instead, intercept the network request and confirm next-auth's signin handler is hit.
+    const signinPromise = page.waitForRequest(
+      (req) => req.url().includes('/api/auth/signin/github') || req.url().includes('github.com/login/oauth'),
+      { timeout: 5_000 }
+    );
+
+    await githubBtn.click();
+    const signinReq = await signinPromise.catch(() => null);
+
+    // Either the signin endpoint fired OR the page navigated; both prove the button works.
+    expect(signinReq !== null || page.url() !== `${BASE_URL}/auth/login`).toBe(true);
+
+    await page.screenshot({ path: 'test-results/e2e/web-github-redirect.png' });
+  });
+
+  test('auth error page renders Try-again CTA', async ({ page }) => {
+    await page.goto(`${BASE_URL}/auth/error?error=Default`);
+    await expect(page.getByRole('heading', { name: /Authentication Error/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Try again/ })).toBeVisible();
   });
 });

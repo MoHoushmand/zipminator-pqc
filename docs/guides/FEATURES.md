@@ -602,6 +602,7 @@ Before shipping a new Flutter mobile build to TestFlight or Play Store internal,
 | 2 | Version pinned | `app/pubspec.yaml` reads `version: 0.5.1+45` (or the target build); iOS CFBundleVersion is overridden by `BUILD_NUMBER=${{ github.run_number }}` in CI |
 | 3 | CHANGELOG entry | `app/CHANGELOG.md` has a section matching the `pubspec.yaml` version with a bulleted list of changes |
 | 4 | TestFlight workflow green | `.github/workflows/testflight.yml` run succeeds on `macos-latest`: `bundle exec fastlane verify` then `bundle exec fastlane beta` under `app/ios/`; gated by repo variable `IOS_TESTFLIGHT_ENABLED=true` |
+| 5 | Android AAB builds locally | `flutter build appbundle --release` produces `app/build/app/outputs/bundle/release/app-release.aab` (90.7 MB, verified 2026-04-30). R8 minify disabled pending keep-rule authoring for FRB + MediaPipe + FFI; AAB is upload-ready for Play Store Internal testing track |
 
 ---
 
@@ -643,6 +644,7 @@ Preset lives at `~/.claude/prompts/AESR/v7/presets/zipminator-open-items.md`. 6 
 | 20260429-wave1plus2           | 2026-04-29 | A/B/C       | MARATHON_CONVERGED_20260429-wave1plus2         | Wave1+2 unblock: OAuth `:4321` callback fix (commit 8fc1267, Agent B); web build + clippy-all-targets verified clean; mail bumped to 95% per defer-to-95 scope; vitest 30→37; cargo 459 pass+1 ignored |
 | 20260429-wave3                | 2026-04-29 | W7/W10/W11/W12 | MARATHON_CONVERGED_20260429-wave3            | Wave3 actionable subset: Playwright e2e 90/104 (14 spec-author bugs flagged); Lighthouse public routes clear thresholds; CHANGELOG/blog/LinkedIn drafts for v1.0.0-beta.2; iOS release build PASS (41.8 MB Runner.app); Android AAB BLOCKED on local SDK install; 8 zipminator a11y violations queued |
 | 20260429-wave4                | 2026-04-29 | W13/W14/+e2e/+a11y | MARATHON_CONVERGED_20260429-wave4         | Wave4 cleanup loop (3 dynamic-loop ticks): Flutter mobile gate 83/85 -> 85/85 (RustLib.init via setUpAll); /privacy/delete page + delete API route shipped; e2e specs 14 failing -> 5 failing (9 spec-author bugs fixed); 7/8 a11y violations remediated (gray-500 -> gray-400 contrast bump on privacy/terms/demo, underline always-on for inline links, tabIndex+role on scrollable code blocks in docs/technology); commits 39941e0 + 673de5e + a11y |
+| 20260430-wave5                | 2026-04-30 | release+toolchain  | MARATHON_CONVERGED_20260430-wave5         | Push v1.0.0-beta.2 to GitHub (branch + tag); Android toolchain end-to-end (cmdline-tools + JDK 21 + SDK 35/36 + build-tools + cargo-ndk + Rust 3-target install + license accept); flutter doctor: No issues found; AAB build success (90.7 MB, R8 disabled pending keep-rules); 5 e2e hydration failures -> 0 (4 fixed, 1 click-path pillar-name match); 1 deferred a11y violation closed (slate-500 -> slate-400 across 12 blueprint section components); commits 8fc1267 (pushed) + 1bde69d + 963ce11 + adf69da |
 
 Remaining open items after 20260429-wave1plus2 (post-Wave1+2):
 - ~~Web build: route collision at `app/mail/page.tsx` vs `app/(dashboard)/mail/page.tsx`~~ — RESOLVED. Marathon notes were stale; only `app/mail/` exists at HEAD post `af848b1`.

@@ -27,7 +27,7 @@
 
 | Identifier | Value | Source / where to find after enrolment |
 |---|---|---|
-| Apple ID (Developer account) | _your existing Apple ID, e.g. `mo@qdaria.com`_ | https://appleid.apple.com → confirm which Apple ID you used to enrol; this is the email Apple sends notices to |
+| Apple ID (Developer account) | **`houshmand.81@gmail.com`** (current Account Holder); planned migration to `mo@qdaria.com` via Account Holder Transfer post-v1.0.0 (template at `docs/business/apple-transfer-letter.md`) | https://appleid.apple.com → currently signed into iCloud + Xcode on the dev machine; verified via `defaults read MobileMeAccounts` 2026-04-30 |
 | **Team ID** | **5EK49H64WB** | https://developer.apple.com/account → Membership Details → "Team ID" (10-char alphanumeric) |
 | App Store Connect Team ID | usually identical to Team ID **5EK49H64WB** | https://appstoreconnect.apple.com → Users and Access → top-right org switcher; will show same string in 99% of single-team setups |
 | Bundle ID | `com.qdaria.zipminator` | Reserved in `app/android/app/build.gradle.kts` and `app/pubspec.yaml`; register at https://developer.apple.com/account/resources/identifiers/list |

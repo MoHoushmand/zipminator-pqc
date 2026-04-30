@@ -10,25 +10,22 @@ class LoggingMiddleware(BaseHTTPMiddleware):
     """Middleware for logging HTTP requests"""
 
     async def dispatch(self, request: Request, call_next):
-        """Log request and response"""
         start_time = time.time()
+        log_enabled = logger.isEnabledFor(logging.INFO)
 
-        # Log request
-        logger.info(f"Request: {request.method} {request.url.path}")
+        if log_enabled:
+            logger.info("Request: %s %s", request.method, request.url.path)
 
-        # Process request
         response = await call_next(request)
-
-        # Calculate duration
         duration = time.time() - start_time
 
-        # Log response
-        logger.info(
-            f"Response: {request.method} {request.url.path} "
-            f"Status: {response.status_code} Duration: {duration:.3f}s"
-        )
+        if log_enabled:
+            logger.info(
+                "Response: %s %s Status: %d Duration: %.3fs",
+                request.method, request.url.path,
+                response.status_code, duration,
+            )
 
-        # Add custom header with duration
-        response.headers["X-Process-Time"] = str(duration)
+        response.headers["X-Process-Time"] = f"{duration:.6f}"
 
         return response

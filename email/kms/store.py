@@ -214,16 +214,21 @@ async def release_hold(r: aioredis.Redis, hold_id: str) -> bool:
 
 
 async def list_holds(r: aioredis.Redis) -> list[HoldInfo]:
-    """Return all active holds."""
+    """Return all active holds.
+
+    One SMEMBERS + one MGET, regardless of hold count. Previously did
+    1 + N round-trips, which made 1000 holds take ~500ms over a 0.5ms
+    network instead of ~1ms.
+    """
     hold_ids = await r.smembers("hold:index")
-    holds: list[HoldInfo] = []
-    for hid in hold_ids:
-        hid_str = hid if isinstance(hid, str) else hid.decode()
-        raw = await r.get(f"hold:{hid_str}")
-        if raw:
-            data = json.loads(raw)
-            holds.append(HoldInfo(**data))
-    return holds
+    if not hold_ids:
+        return []
+    keys = [
+        f"hold:{hid if isinstance(hid, str) else hid.decode()}"
+        for hid in hold_ids
+    ]
+    raws = await r.mget(*keys)
+    return [HoldInfo(**json.loads(raw)) for raw in raws if raw is not None]
 
 
 async def is_held(r: aioredis.Redis, target_id: str) -> bool:

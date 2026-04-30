@@ -183,12 +183,28 @@ class MessageStore:
         if not recipients:
             return []
 
-        msg_ids = []
-        for recipient_id in recipients:
-            msg_id = self.store(
-                conversation_id, sender_id, recipient_id, ciphertext, ttl_seconds
+        if not isinstance(ciphertext, bytes):
+            raise TypeError(
+                f"ciphertext must be bytes, got {type(ciphertext).__name__}"
             )
-            msg_ids.append(msg_id)
+
+        now = time.time()
+        ttl_expires_at = now + ttl_seconds
+        msg_ids = [uuid.uuid4().hex for _ in recipients]
+        rows = [
+            (msg_id, conversation_id, sender_id, recipient_id,
+             ciphertext, now, ttl_expires_at)
+            for msg_id, recipient_id in zip(msg_ids, recipients)
+        ]
+
+        self._conn.executemany(
+            """INSERT INTO messages
+               (id, conversation_id, sender_id, recipient_id, ciphertext,
+                timestamp, ttl_expires_at, delivered)
+               VALUES (?, ?, ?, ?, ?, ?, ?, 0)""",
+            rows,
+        )
+        self._conn.commit()
         return msg_ids
 
     @staticmethod

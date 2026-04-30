@@ -157,7 +157,7 @@ export const SectionValuation = ({ scenario }: Props) => {
               >
                 {fmt(value, row.unit)}
               </p>
-              <p className="text-slate-500 text-xs mt-1 font-mono">
+              <p className="text-slate-400 text-xs mt-1 font-mono">
                 {fmt(row.conservative, row.unit)} - {fmt(row.optimistic, row.unit)}
               </p>
             </motion.div>
@@ -207,11 +207,11 @@ export const SectionValuation = ({ scenario }: Props) => {
                 }}>
                   {fmt(lifetimeRow[s], lifetimeRow.unit)}
                 </p>
-                <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-1">{s}</p>
+                <p className="text-[10px] text-slate-400 uppercase tracking-wider mt-1">{s}</p>
               </div>
             ))}
           </div>
-          <p className="text-xs text-slate-500 mt-3" style={{ fontFamily: 'var(--font-dm-sans)' }}>
+          <p className="text-xs text-slate-400 mt-3" style={{ fontFamily: 'var(--font-dm-sans)' }}>
             If any patent becomes standard-essential (e.g., NIST PQC mandates). Shown separately due to order-of-magnitude difference.
           </p>
         </motion.div>
@@ -260,7 +260,7 @@ export const SectionValuation = ({ scenario }: Props) => {
         >
           Valuation by Method
         </h3>
-        <p className="text-sm text-slate-500 mb-6" style={{ fontFamily: 'var(--font-dm-sans)' }}>
+        <p className="text-sm text-slate-400 mb-6" style={{ fontFamily: 'var(--font-dm-sans)' }}>
           Pre-revenue and per-patent valuations (millions USD)
         </p>
 

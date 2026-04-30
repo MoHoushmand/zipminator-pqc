@@ -107,7 +107,7 @@ const MetricCard = ({
     }}
   >
     <p
-      className="text-xs uppercase tracking-wider text-slate-500 mb-1"
+      className="text-xs uppercase tracking-wider text-slate-400 mb-1"
       style={{ fontFamily: 'var(--font-jetbrains)' }}
     >
       {label}
@@ -214,15 +214,15 @@ export const SectionPatentDeepDives = ({ scenario }: SectionPatentDeepDivesProps
               style={{ fontFamily: 'var(--font-dm-sans)' }}
             >
               <div>
-                <span className="text-slate-500">Inventor</span>
+                <span className="text-slate-400">Inventor</span>
                 <p className="text-slate-200">{patent.inventor}</p>
               </div>
               <div>
-                <span className="text-slate-500">Assignee</span>
+                <span className="text-slate-400">Assignee</span>
                 <p className="text-slate-200">{patent.assignee}</p>
               </div>
               <div>
-                <span className="text-slate-500">Filing</span>
+                <span className="text-slate-400">Filing</span>
                 <p
                   className="text-slate-200 font-mono"
                   style={{ fontFamily: 'var(--font-jetbrains)' }}
@@ -232,7 +232,7 @@ export const SectionPatentDeepDives = ({ scenario }: SectionPatentDeepDivesProps
                 </p>
               </div>
               <div>
-                <span className="text-slate-500">Jurisdiction</span>
+                <span className="text-slate-400">Jurisdiction</span>
                 <p className="text-slate-200">{patent.jurisdiction}</p>
               </div>
             </div>

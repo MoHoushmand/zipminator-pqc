@@ -90,7 +90,7 @@ export const SectionResearch = () => {
             <p className="text-2xl font-bold" style={{ color: item.color, fontFamily: 'var(--font-jetbrains)' }}>
               {item.value}
             </p>
-            <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">{item.label}</p>
+            <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-wider">{item.label}</p>
           </motion.div>
         ))}
       </motion.div>
@@ -139,19 +139,19 @@ export const SectionResearch = () => {
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-xs" style={{ fontFamily: 'var(--font-dm-sans)' }}>
                       <div>
-                        <span className="text-slate-500">ePrint</span>
+                        <span className="text-slate-400">ePrint</span>
                         <p className="text-slate-200 font-mono" style={{ fontFamily: 'var(--font-jetbrains)' }}>{paper.eprintId}</p>
                       </div>
                       <div>
-                        <span className="text-slate-500">Target</span>
+                        <span className="text-slate-400">Target</span>
                         <p className="text-slate-200">{paper.targetVenue}</p>
                       </div>
                       <div>
-                        <span className="text-slate-500">Deadline</span>
+                        <span className="text-slate-400">Deadline</span>
                         <p className="text-slate-200 font-mono" style={{ fontFamily: 'var(--font-jetbrains)' }}>{paper.deadline}</p>
                       </div>
                       <div>
-                        <span className="text-slate-500">GitHub</span>
+                        <span className="text-slate-400">GitHub</span>
                         <p className="text-slate-200 font-mono text-[11px]" style={{ fontFamily: 'var(--font-jetbrains)' }}>{paper.github}</p>
                       </div>
                     </div>
@@ -257,17 +257,17 @@ export const SectionResearch = () => {
           <div className="rounded-lg p-4" style={{ background: 'rgba(15,23,42,0.6)' }}>
             <p className="text-lg font-bold text-cyan-300" style={{ fontFamily: 'var(--font-jetbrains)' }}>6.8 MB</p>
             <p className="text-xs text-slate-400">Real quantum entropy</p>
-            <p className="text-[10px] text-slate-500 mt-1">35 IBM jobs, ibm_kingston 156 qubits</p>
+            <p className="text-[10px] text-slate-400 mt-1">35 IBM jobs, ibm_kingston 156 qubits</p>
           </div>
           <div className="rounded-lg p-4" style={{ background: 'rgba(15,23,42,0.6)' }}>
             <p className="text-lg font-bold text-amber-400" style={{ fontFamily: 'var(--font-jetbrains)' }}>9 KB</p>
             <p className="text-xs text-slate-400">CSI WiFi entropy</p>
-            <p className="text-[10px] text-slate-500 mt-1">Real wireless channel measurements</p>
+            <p className="text-[10px] text-slate-400 mt-1">Real wireless channel measurements</p>
           </div>
           <div className="rounded-lg p-4" style={{ background: 'rgba(15,23,42,0.6)' }}>
             <p className="text-lg font-bold text-emerald-400" style={{ fontFamily: 'var(--font-jetbrains)' }}>15 MB</p>
             <p className="text-xs text-slate-400">OS entropy pool</p>
-            <p className="text-[10px] text-slate-500 mt-1">os.urandom, provenance-separated</p>
+            <p className="text-[10px] text-slate-400 mt-1">os.urandom, provenance-separated</p>
           </div>
         </div>
       </motion.div>

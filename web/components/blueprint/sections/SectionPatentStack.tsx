@@ -134,7 +134,7 @@ export const SectionPatentStack = () => {
                     <ArrowDown />
                     {flow && (
                       <span
-                        className="text-xs text-slate-500 font-mono mt-0.5"
+                        className="text-xs text-slate-400 font-mono mt-0.5"
                         style={{ fontFamily: 'var(--font-jetbrains)' }}
                       >
                         {flow.label}
@@ -165,7 +165,7 @@ export const SectionPatentStack = () => {
                           {patent.id}
                         </span>
                         <span
-                          className="text-xs text-slate-500 font-mono"
+                          className="text-xs text-slate-400 font-mono"
                           style={{ fontFamily: 'var(--font-jetbrains)' }}
                         >
                           {patent.layer}

@@ -93,7 +93,7 @@ export const SectionPillars = () => {
           {/* Completion + Tests */}
           <div className="mb-3">
             <div className="mb-1 flex items-center justify-between">
-              <span className="text-xs font-mono text-slate-500">
+              <span className="text-xs font-mono text-slate-400">
                 {pillar.completion}% complete
               </span>
               {'tests' in pillar && (
@@ -120,7 +120,7 @@ export const SectionPillars = () => {
           {/* Comparable valuation */}
           {'compVal' in pillar && (
             <div className="mb-3 flex items-center justify-between text-[10px]">
-              <span className="text-slate-500">Comparable: {(pillar as typeof pillar & { comparable: string }).comparable}</span>
+              <span className="text-slate-400">Comparable: {(pillar as typeof pillar & { comparable: string }).comparable}</span>
               <span className="font-mono font-semibold" style={{ color: pillar.color }}>
                 {(pillar as typeof pillar & { compVal: string }).compVal}
               </span>

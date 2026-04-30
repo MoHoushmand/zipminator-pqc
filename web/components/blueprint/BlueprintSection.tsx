@@ -113,7 +113,7 @@ export const MetricCard = ({ label, value, sub, accent = '#22D3EE' }: MetricCard
       {value}
     </p>
     <p className="text-xs font-medium text-slate-300 uppercase tracking-wider">{label}</p>
-    {sub && <p className="text-[11px] text-slate-500 mt-1">{sub}</p>}
+    {sub && <p className="text-[11px] text-slate-400 mt-1">{sub}</p>}
   </div>
 )
 
@@ -274,7 +274,7 @@ export const EquationCard = ({ label, equation, description, accent = '#A78BFA' 
       boxShadow: `0 0 20px ${accent}10`,
     }}
   >
-    <p className="text-[10px] font-mono uppercase tracking-widest text-slate-500 mb-3">{label}</p>
+    <p className="text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-3">{label}</p>
     <p
       className="text-lg lg:text-xl font-mono text-slate-100 mb-2"
       style={{ fontFamily: 'var(--font-jetbrains)', letterSpacing: '0.02em' }}

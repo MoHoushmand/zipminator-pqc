@@ -12,16 +12,23 @@ test.describe('Zipminator Web Dashboard', () => {
   });
 
   test('features page shows 9 pillars', async ({ page }) => {
-    await page.goto(`${BASE_URL}/features`);
-    // Pillar names may appear in nav and content; .first() picks the content match.
-    await expect(page.getByText('Quantum Vault').first()).toBeVisible();
-    await expect(page.getByText('PQC Messenger').first()).toBeVisible();
-    await expect(page.getByText('Quantum VoIP').first()).toBeVisible();
-    await expect(page.getByText('Q-VPN').first()).toBeVisible();
-    await expect(page.getByText('Anonymizer').first()).toBeVisible();
-    await expect(page.getByText('Q-AI').first()).toBeVisible();
-    await expect(page.getByText('Quantum Mail').first()).toBeVisible();
-    await expect(page.getByText('Browser').first()).toBeVisible();
+    // /features uses Framer Motion fade-in; pillars are client-rendered.
+    // Pillar names on this page differ from FEATURES.md (Secure Messenger,
+    // PQ-SRTP VoIP, 10-Level Anonymizer, Quantum-Secure Email, Q-AI Assistant).
+    // Match the rendered copy, not the doc-canonical names.
+    await page.goto(`${BASE_URL}/features`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByText('PQC Encryption Engine').first()).toBeVisible({ timeout: 25_000 });
+    for (const pillar of [
+      'Secure Messenger',
+      'PQ-SRTP VoIP',
+      'Q-VPN',
+      '10-Level Anonymizer',
+      'Q-AI Assistant',
+      'Quantum-Secure Email',
+      'ZipBrowser',
+    ]) {
+      await expect(page.getByText(pillar).first()).toBeVisible({ timeout: 5_000 });
+    }
     await page.screenshot({ path: 'test-results/e2e/web-features.png', fullPage: true });
   });
 

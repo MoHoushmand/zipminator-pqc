@@ -179,7 +179,7 @@ export const SectionComprehensiveStatus = () => (
               {pillar.description}
             </p>
             {pillar.tests && (
-              <div className="flex items-center gap-2 text-xs text-slate-500 font-mono">
+              <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 {pillar.tests}
               </div>
@@ -276,11 +276,11 @@ export const SectionComprehensiveStatus = () => (
             fontFamily: 'var(--font-jetbrains)',
           }}
         >
-          <p className="text-xs text-slate-500 mb-2">Installation</p>
+          <p className="text-xs text-slate-400 mb-2">Installation</p>
           <p className="text-sm text-amber-300">pip install zipminator[all]</p>
-          <p className="text-xs text-slate-500 mt-3 mb-2">CLI Usage</p>
+          <p className="text-xs text-slate-400 mt-3 mb-2">CLI Usage</p>
           <p className="text-sm text-amber-300">zipminator anonymize --level 7 input.csv output.csv</p>
-          <p className="text-xs text-slate-500 mt-3 mb-2">API Key Gating</p>
+          <p className="text-xs text-slate-400 mt-3 mb-2">API Key Gating</p>
           <p className="text-sm text-slate-400">L1-L3: Free (basic anonymization). L4+: Requires ZIPMINATOR_API_KEY</p>
         </div>
       </GlowCard>

@@ -92,13 +92,13 @@ export const SectionIPScoring = () => {
               borderColor: `${item.color}33`,
             }}
           >
-            <p className="text-xs uppercase tracking-wider mb-2 text-slate-500" style={{ fontFamily: 'var(--font-jetbrains)' }}>
+            <p className="text-xs uppercase tracking-wider mb-2 text-slate-400" style={{ fontFamily: 'var(--font-jetbrains)' }}>
               {item.asset.split(':')[0]}
             </p>
             <p className="text-3xl font-bold mb-1" style={{ color: item.color, fontFamily: 'var(--font-jetbrains)' }}>
               {item.composite}
             </p>
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider">/10 composite</p>
+            <p className="text-[10px] text-slate-400 uppercase tracking-wider">/10 composite</p>
             <p className="text-xs text-slate-400 mt-2 font-mono" style={{ fontFamily: 'var(--font-jetbrains)' }}>
               {item.value}
             </p>
@@ -250,15 +250,15 @@ export const SectionIPScoring = () => {
           </div>
           <div className="flex-1 grid grid-cols-3 gap-3 text-center">
             <div className="rounded-lg p-3" style={{ background: 'rgba(15,23,42,0.6)' }}>
-              <p className="text-xs text-slate-500">Qualcomm comparison</p>
+              <p className="text-xs text-slate-400">Qualcomm comparison</p>
               <p className="text-sm font-mono text-slate-200" style={{ fontFamily: 'var(--font-jetbrains)' }}>~$6B/yr royalties</p>
             </div>
             <div className="rounded-lg p-3" style={{ background: 'rgba(15,23,42,0.6)' }}>
-              <p className="text-xs text-slate-500">ARM comparison</p>
+              <p className="text-xs text-slate-400">ARM comparison</p>
               <p className="text-sm font-mono text-slate-200" style={{ fontFamily: 'var(--font-jetbrains)' }}>~$3B/yr licenses</p>
             </div>
             <div className="rounded-lg p-3" style={{ background: 'rgba(15,23,42,0.6)' }}>
-              <p className="text-xs text-slate-500">QDaria target base</p>
+              <p className="text-xs text-slate-400">QDaria target base</p>
               <p className="text-sm font-mono text-slate-200" style={{ fontFamily: 'var(--font-jetbrains)' }}>18.2B WiFi devices</p>
             </div>
           </div>

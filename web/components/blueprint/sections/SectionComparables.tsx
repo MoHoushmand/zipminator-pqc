@@ -256,15 +256,15 @@ export const SectionComparables = () => (
       </p>
       <div className="grid grid-cols-3 gap-3">
         <div className="rounded-lg p-3 text-center" style={{ background: 'rgba(15,23,42,0.6)' }}>
-          <p className="text-xs text-slate-500">QDaria advantage</p>
+          <p className="text-xs text-slate-400">QDaria advantage</p>
           <p className="text-sm font-semibold text-cyan-300">3 patents, 9 pillars</p>
         </div>
         <div className="rounded-lg p-3 text-center" style={{ background: 'rgba(15,23,42,0.6)' }}>
-          <p className="text-xs text-slate-500">Closest comparable</p>
+          <p className="text-xs text-slate-400">Closest comparable</p>
           <p className="text-sm font-semibold text-amber-400">SandboxAQ $5.6B</p>
         </div>
         <div className="rounded-lg p-3 text-center" style={{ background: 'rgba(15,23,42,0.6)' }}>
-          <p className="text-xs text-slate-500">Unique differentiator</p>
+          <p className="text-xs text-slate-400">Unique differentiator</p>
           <p className="text-sm font-semibold text-emerald-400">Zero prior art</p>
         </div>
       </div>

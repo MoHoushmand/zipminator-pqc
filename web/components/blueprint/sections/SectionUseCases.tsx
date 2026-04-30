@@ -172,7 +172,7 @@ export const SectionUseCases = () => {
             </h4>
 
             {/* Orgs */}
-            <p className="mb-3 text-xs font-mono text-slate-500 leading-relaxed">
+            <p className="mb-3 text-xs font-mono text-slate-400 leading-relaxed">
               {uc.orgs}
             </p>
 

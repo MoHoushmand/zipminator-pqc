@@ -128,7 +128,7 @@ export const SectionAddressableUniverse = () => {
               <h4 className="text-base font-semibold text-slate-100" style={{ fontFamily: 'var(--font-fraunces)' }}>
                 {ADDRESSABLE_SECTORS[activeSector].sector}
               </h4>
-              <span className="text-xs font-mono text-slate-500" style={{ fontFamily: 'var(--font-jetbrains)' }}>
+              <span className="text-xs font-mono text-slate-400" style={{ fontFamily: 'var(--font-jetbrains)' }}>
                 {ADDRESSABLE_SECTORS[activeSector].orgs.length} organizations
               </span>
             </div>

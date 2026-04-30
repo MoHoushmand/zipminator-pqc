@@ -118,19 +118,19 @@ export const SectionRoadmap = () => {
       </h4>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="rounded-lg p-4" style={{ background: 'rgba(15,23,42,0.6)' }}>
-          <p className="text-xs text-slate-500 mb-1">Patent 1 PCT Deadline</p>
+          <p className="text-xs text-slate-400 mb-1">Patent 1 PCT Deadline</p>
           <p className="text-base font-bold text-cyan-300 font-mono" style={{ fontFamily: 'var(--font-jetbrains)' }}>March 24, 2027</p>
-          <p className="text-[10px] text-slate-500 mt-1">12 months from priority date</p>
+          <p className="text-[10px] text-slate-400 mt-1">12 months from priority date</p>
         </div>
         <div className="rounded-lg p-4" style={{ background: 'rgba(15,23,42,0.6)' }}>
-          <p className="text-xs text-slate-500 mb-1">Patent 2 PCT Deadline</p>
+          <p className="text-xs text-slate-400 mb-1">Patent 2 PCT Deadline</p>
           <p className="text-base font-bold text-amber-400 font-mono" style={{ fontFamily: 'var(--font-jetbrains)' }}>April 5, 2027</p>
-          <p className="text-[10px] text-slate-500 mt-1">12 months from priority date</p>
+          <p className="text-[10px] text-slate-400 mt-1">12 months from priority date</p>
         </div>
         <div className="rounded-lg p-4" style={{ background: 'rgba(15,23,42,0.6)' }}>
-          <p className="text-xs text-slate-500 mb-1">Patent 3 PCT Deadline</p>
+          <p className="text-xs text-slate-400 mb-1">Patent 3 PCT Deadline</p>
           <p className="text-base font-bold text-emerald-400 font-mono" style={{ fontFamily: 'var(--font-jetbrains)' }}>April 5, 2027</p>
-          <p className="text-[10px] text-slate-500 mt-1">12 months from priority date</p>
+          <p className="text-[10px] text-slate-400 mt-1">12 months from priority date</p>
         </div>
       </div>
     </motion.div>

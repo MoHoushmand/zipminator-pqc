@@ -53,15 +53,25 @@ android {
             } else {
                 signingConfigs.getByName("debug")
             }
+            // R8 trips over transitive javax.lang.model.* (annotation-processor
+            // classes pulled in via auto-value / javapoet; not runtime-needed).
+            // Disabling minify until proguard keep-rules are written for FRB,
+            // MediaPipe, and the FFI surface. Tracked in FEATURES.md.
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 }
 
 dependencies {
     // Google AI Edge LiteRT-LM runtime for on-device Gemma inference.
-    // https://github.com/google-ai-edge/gallery
-    implementation("com.google.ai.edge.litert:litert-lm:1.0.0")
-    // MediaPipe fallback (older models that use .task format).
+    // Disabled 2026-04-30: artifact com.google.ai.edge.litert:litert-lm:1.0.0
+    // is not published to any Maven repo (Google, Maven Central, JitPack).
+    // Re-enable once a public release ships. MediaPipe path remains the
+    // production runtime for Q-AI on Android.
+    // implementation("com.google.ai.edge.litert:litert-lm:1.0.0")
+
+    // MediaPipe (production on-device LLM runtime; .task format models).
     implementation("com.google.mediapipe:tasks-genai:0.10.22")
 }
 

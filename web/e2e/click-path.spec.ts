@@ -203,12 +203,24 @@ test.describe('@auth Login screen', () => {
 
 test.describe('@features Pillars surface on /features', () => {
   test('features page lists all 9 pillars', async ({ page }) => {
+    // Pillar copy on /features differs from FEATURES.md doc-canonical names.
+    // Match what is actually rendered in components/features/* (verified
+    // against curl /features 2026-04-30): "Secure Messenger", "PQ-SRTP VoIP",
+    // "10-Level Anonymizer", "Quantum-Secure Email", "Q-AI Assistant",
+    // "ZipBrowser", "Device Shield" (Q-Mesh proxy), "PQC Encryption Engine".
     await page.goto('/features', { waitUntil: 'domcontentloaded' });
     for (const pillar of [
-      'Quantum Vault', 'PQC Messenger', 'Quantum VoIP', 'Q-VPN',
-      'Anonymizer', 'Q-AI', 'Quantum Mail', 'Browser', 'Q-Mesh',
+      'PQC Encryption Engine',
+      'Secure Messenger',
+      'PQ-SRTP VoIP',
+      'Q-VPN',
+      '10-Level Anonymizer',
+      'Q-AI Assistant',
+      'Quantum-Secure Email',
+      'ZipBrowser',
+      'Device Shield',
     ]) {
-      await expect(page.getByText(new RegExp(pillar, 'i')).first()).toBeVisible({ timeout: 10_000 });
+      await expect(page.getByText(pillar, { exact: false }).first()).toBeVisible({ timeout: 10_000 });
     }
   });
 });

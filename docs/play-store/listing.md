@@ -9,10 +9,10 @@ Paste these into Play Console → **Main store listing**.
 ## App name (50 char limit)
 
 ```
-Zipminator: PQC Super-App
+Zipminator: Zipminator-PQC
 ```
 Length: 24 chars. Comfortably under cap; leaves room for localized variants.
-
+ 
 ---
 
 ## Short description (80 char limit)

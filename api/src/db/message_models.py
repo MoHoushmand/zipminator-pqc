@@ -5,7 +5,7 @@ Maps the Rust MessageStore trait to PostgreSQL via SQLAlchemy.
 
 from sqlalchemy import (
     Column, Integer, String, DateTime, Boolean, LargeBinary, Text,
-    ForeignKey, Index,
+    ForeignKey, Index, UniqueConstraint,
 )
 from datetime import datetime
 from src.db.database import Base
@@ -29,6 +29,13 @@ class Message(Base):
 
     __table_args__ = (
         Index("idx_msg_conv_seq", "conversation_id", "sequence"),
+        # Closes the SELECT-MAX-then-INSERT race in routes/messages.py:60-66.
+        # Two concurrent senders that read the same MAX(sequence) will both
+        # try to INSERT the same (conversation_id, sequence); the second one
+        # gets IntegrityError, the route retries with the new MAX. Without
+        # this constraint the duplicate insert silently succeeds and clients
+        # see two messages at the same sequence number.
+        UniqueConstraint("conversation_id", "sequence", name="uq_msg_conv_seq"),
     )
 
 

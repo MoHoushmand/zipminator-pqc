@@ -6,6 +6,7 @@ Uses SQLAlchemy MessageStore backed by PostgreSQL.
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
@@ -16,6 +17,11 @@ from src.db.database import get_db
 from src.db.models import User
 from src.db.message_models import Message, OfflineQueue
 from src.middleware.auth import get_current_user
+
+# Cap on retries when a concurrent sender claimed the same sequence first.
+# In practice 1-2 retries clears it; 5 is a generous ceiling that keeps the
+# pathological case bounded so a runaway loop can't hold a DB connection.
+_SEQUENCE_RETRY_MAX = 5
 
 router = APIRouter()
 
@@ -57,34 +63,45 @@ async def send_message(
     db: Session = Depends(get_db),
 ):
     """Send an encrypted message. The ciphertext is stored as-is (server never decrypts)."""
-    # Get next sequence number for conversation
-    last = (
-        db.query(Message)
-        .filter(Message.conversation_id == body.conversation_id)
-        .order_by(Message.sequence.desc())
-        .first()
-    )
-    next_seq = (last.sequence + 1) if last else 0
+    ciphertext = base64.b64decode(body.ciphertext_b64)
+    nonce = base64.b64decode(body.nonce_b64)
 
-    msg = Message(
-        id=str(uuid.uuid4()),
-        conversation_id=body.conversation_id,
-        sender_id=current_user.id,
-        recipient_id=body.recipient_id,
-        ciphertext=base64.b64decode(body.ciphertext_b64),
-        nonce=base64.b64decode(body.nonce_b64),
-        sequence=next_seq,
-    )
-    db.add(msg)
+    # Loop: read MAX(sequence), insert, retry on uq_msg_conv_seq collision.
+    # The UNIQUE (conversation_id, sequence) constraint in message_models.py
+    # turns the prior silent-overwrite race into a deterministic IntegrityError
+    # that we catch and re-read. Bounded by _SEQUENCE_RETRY_MAX.
+    for attempt in range(_SEQUENCE_RETRY_MAX):
+        last = (
+            db.query(Message)
+            .filter(Message.conversation_id == body.conversation_id)
+            .order_by(Message.sequence.desc())
+            .first()
+        )
+        next_seq = (last.sequence + 1) if last else 0
 
-    # Queue for offline delivery
-    offline = OfflineQueue(
-        recipient_id=body.recipient_id,
-        message_id=msg.id,
-    )
-    db.add(offline)
-    db.commit()
-    db.refresh(msg)
+        msg = Message(
+            id=str(uuid.uuid4()),
+            conversation_id=body.conversation_id,
+            sender_id=current_user.id,
+            recipient_id=body.recipient_id,
+            ciphertext=ciphertext,
+            nonce=nonce,
+            sequence=next_seq,
+        )
+        db.add(msg)
+        db.add(OfflineQueue(recipient_id=body.recipient_id, message_id=msg.id))
+
+        try:
+            db.commit()
+            db.refresh(msg)
+            break
+        except IntegrityError:
+            db.rollback()
+            if attempt == _SEQUENCE_RETRY_MAX - 1:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="sequence allocation failed after retries",
+                )
 
     return MessageResponse(
         id=msg.id,

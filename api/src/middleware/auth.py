@@ -5,15 +5,18 @@ from src.db.database import get_db, SessionLocal
 from src.db.models import User, APIKey
 from src.services.auth import decode_access_token
 from typing import Optional
+from collections import OrderedDict
 from datetime import datetime, timedelta
 from threading import Lock
 import hashlib
 
-# F1 fix scaffolding: in-process debounce for last_used_at flushes.
-# Each API key id gets its last-flushed time tracked here so we only
-# write to the DB at most once per FLUSH_INTERVAL_SECONDS per key.
+# Strategy (A) DEBOUNCE + LRU/TTL bound. Per-worker in-memory cache that
+# debounces last_used_at writes to one per key per _FLUSH_INTERVAL_SECONDS.
+# OrderedDict gives O(1) LRU semantics; _FLUSH_CACHE_MAX caps RSS so a
+# long-running worker can't leak unbounded memory across distinct API keys.
 _FLUSH_INTERVAL_SECONDS = 60
-_last_flushed: dict[int, datetime] = {}
+_FLUSH_CACHE_MAX = 10_000
+_last_flushed: "OrderedDict[int, datetime]" = OrderedDict()
 _flush_lock = Lock()
 
 
@@ -32,40 +35,23 @@ def _flush_last_used(api_key_id: int) -> None:
 
 
 def _should_flush(api_key_id: int) -> bool:
-    """TODO(mom5): pick a flush strategy and implement it here.
+    """Return True iff this request should write last_used_at for api_key_id.
 
-    Five candidates, all valid:
-
-    (A) DEBOUNCE: flush at most once per _FLUSH_INTERVAL_SECONDS per key.
-        In-memory only; loses state on uvicorn restart but that's fine for
-        analytics. Multi-worker: each worker flushes independently, so
-        worst-case write rate is workers * (1 / interval). Likely fine.
-
-    (B) DROP: return False unconditionally and remove last_used_at calls
-        elsewhere. Only correct if no consumer reads the column. Check
-        models.py + dashboards before choosing this.
-
-    (C) SAMPLE: flush 1 in N requests (e.g. random.random() < 0.01).
-        Probabilistic; preserves rough "last seen" semantics with bounded
-        write rate but breaks exact-time queries.
-
-    (D) WRITE-BEHIND QUEUE: push key id onto a threading.Queue, drain
-        every N seconds in a background task that does one bulk UPDATE.
-        Highest throughput, most code, needs a shutdown hook.
-
-    (E) REDIS SETEX: write to Redis with TTL = the interval. Requires
-        Redis to be reachable from this process. Trades DB writes for
-        Redis writes (cheaper but adds a dep).
-
-    Pick one. The body is 5-10 lines for any of them. Default = (A) debounce.
+    Strategy (A): DEBOUNCE with LRU+TTL bound. Decided 2026-05-01.
+    Per-worker scope; multi-worker write rate = workers * (1 / interval).
+    Bounded RSS: oldest-touched key evicted once cache exceeds _FLUSH_CACHE_MAX.
     """
     now = datetime.utcnow()
     cutoff = now - timedelta(seconds=_FLUSH_INTERVAL_SECONDS)
     with _flush_lock:
         last = _last_flushed.get(api_key_id)
         if last is not None and last > cutoff:
+            _last_flushed.move_to_end(api_key_id)
             return False
         _last_flushed[api_key_id] = now
+        _last_flushed.move_to_end(api_key_id)
+        if len(_last_flushed) > _FLUSH_CACHE_MAX:
+            _last_flushed.popitem(last=False)
         return True
 
 security = HTTPBearer()

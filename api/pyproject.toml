@@ -33,3 +33,6 @@ build-backend = "setuptools.build_meta"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+markers = [
+    "security_contract: tests pinning the stdin-not-argv key contract for rust_cli wrapper",
+]

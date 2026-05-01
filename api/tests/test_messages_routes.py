@@ -116,15 +116,10 @@ def test_sequence_is_monotonic_for_sequential_sends(authenticated_client) -> Non
 # ── Sequence race exposure (v2 G1 / v4 G1 pin) ──────────────────────────────
 
 
-@pytest.mark.xfail(
-    reason=(
-        "TODO_USER M1: messages.py:60-65 has a SELECT MAX + +1 race. Two "
-        "concurrent senders can produce duplicate sequences. This xfail flips "
-        "to PASS the day a UNIQUE constraint or atomic NEXTVAL lands."
-    ),
-    strict=False,
-)
 def test_concurrent_sends_have_distinct_sequences(authenticated_client) -> None:
+    """Closed by uq_msg_conv_seq UNIQUE constraint + retry loop in
+    routes/messages.py. Was xfailed pre-fix; now actively guards regression.
+    Reverting either the constraint or the retry will turn this red."""
     cid = "convo-race"
 
     def one_send() -> int:

@@ -885,10 +885,9 @@ final ratchetProvider =
 /// Provider that auto-connects to the signaling server when the app starts.
 /// Watch this from the root app widget to keep signaling alive app-wide.
 final signalingInitProvider = Provider<void>((ref) {
-  final auth = ref.watch(authProvider);
-  // ignore: avoid_print
-  if (auth.isAuthenticated) {
-    // Connect signaling after auth is confirmed.
+  final isAuthenticated =
+      ref.watch(authProvider.select((a) => a.isAuthenticated));
+  if (isAuthenticated) {
     Future.microtask(() {
       ref.read(ratchetProvider.notifier).connectToSignaling();
     });

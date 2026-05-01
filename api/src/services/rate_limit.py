@@ -27,14 +27,18 @@ class RateLimiter:
 
         redis_key = f"rate_limit:{key}"
 
-        self.redis_client.zremrangebyscore(redis_key, 0, window_start.timestamp())
-        current_count = self.redis_client.zcard(redis_key)
+        pipe = self.redis_client.pipeline()
+        pipe.zremrangebyscore(redis_key, 0, window_start.timestamp())
+        pipe.zcard(redis_key)
+        _, current_count = pipe.execute()
 
         if current_count >= limit:
             return False
 
-        self.redis_client.zadd(redis_key, {str(now.timestamp()): now.timestamp()})
-        self.redis_client.expire(redis_key, window_seconds)
+        pipe = self.redis_client.pipeline()
+        pipe.zadd(redis_key, {str(now.timestamp()): now.timestamp()})
+        pipe.expire(redis_key, window_seconds)
+        pipe.execute()
 
         return True
 
@@ -44,8 +48,10 @@ class RateLimiter:
         window_start = now - timedelta(seconds=window_seconds)
 
         redis_key = f"rate_limit:{key}"
-        self.redis_client.zremrangebyscore(redis_key, 0, window_start.timestamp())
-        current_count = self.redis_client.zcard(redis_key)
+        pipe = self.redis_client.pipeline()
+        pipe.zremrangebyscore(redis_key, 0, window_start.timestamp())
+        pipe.zcard(redis_key)
+        _, current_count = pipe.execute()
 
         return max(0, limit - current_count)
 

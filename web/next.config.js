@@ -11,6 +11,8 @@ dotenv.config({ path: path.join(monorepoRoot, '.env.local'), override: true });
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  reactCompiler: true,
+  cacheComponents: true,
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
@@ -35,7 +37,7 @@ const nextConfig = {
     formats: ['image/avif', 'image/webp'],
   },
   experimental: {
-    optimizeCss: false,
+    optimizeCss: true,
   },
 
   async headers() {

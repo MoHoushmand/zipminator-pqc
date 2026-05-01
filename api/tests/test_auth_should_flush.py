@@ -95,64 +95,36 @@ def test_concurrent_callers_for_same_key_only_one_flushes(monkeypatch):
 # your choice. ──────────────────────────────────────────────────────────
 
 
-def test_last_flushed_does_not_grow_unboundedly():
-    """After tracking 100 unique keys, _last_flushed should be bounded.
+def test_last_flushed_is_bounded_by_lru_cap():
+    """Strategy (A1) LRU: _last_flushed never exceeds _FLUSH_CACHE_MAX entries.
 
-    Currently FAILS because the dict grows without limit. The fix is one of:
-      (A1) LRU: bound size with collections.OrderedDict and pop oldest.
-      (A2) TTL: in _should_flush, also delete entries older than 10*interval.
-      (A3) Redis: replace the dict with redis SETEX.
-
-    Pick the strategy and uncomment the matching assertion.
+    Pin: pushing 1.5x the cap of unique keys leaves exactly _FLUSH_CACHE_MAX
+    entries. This is the v21 G4 / v12 G4 leak fix decided 2026-05-01.
     """
     from src.middleware import auth as auth_mod
 
     auth_mod._last_flushed.clear()
-    for key_id in range(10_000):
+    for key_id in range(int(auth_mod._FLUSH_CACHE_MAX * 1.5)):
         auth_mod._should_flush(api_key_id=key_id)
 
-    # User contribution required: pick MAX_TRACKED_KEYS for your strategy.
-    # MAX_TRACKED_KEYS = 4096   # If (A1) LRU(4096) is implemented
-    # MAX_TRACKED_KEYS = 0      # If (A3) Redis-backed (dict stays empty)
-    # assert len(auth_mod._last_flushed) <= MAX_TRACKED_KEYS
-
-    # Until a strategy is picked, this test is xfail to flag the gap clearly:
-    pytest.xfail(
-        "v21 G4: _last_flushed is unbounded. Pick LRU/TTL/Redis "
-        "and replace this xfail with the matching size assertion."
-    )
+    assert len(auth_mod._last_flushed) == auth_mod._FLUSH_CACHE_MAX
 
 
-def test_stale_entries_eventually_evicted_under_churn():
-    """Under sustained churn, entries older than 10*FLUSH_INTERVAL_SECONDS
-    should be evicted, not retained forever.
-
-    This test simulates 5 'days' of churn with the clock advanced past the
-    eviction window each iteration, and asserts that aged-out keys are
-    actually gone. Currently FAILS for the same reason as the test above.
+def test_lru_evicts_oldest_touched_key_first():
+    """Strategy (A1) LRU semantics: under churn that exceeds the cap, the
+    least-recently-touched key is the one evicted, not the most recent.
     """
     from src.middleware import auth as auth_mod
 
     auth_mod._last_flushed.clear()
-    eviction_window = timedelta(seconds=_FLUSH_INTERVAL_SECONDS * 10)
+    auth_mod._should_flush(api_key_id=1)  # oldest insertion
+    for key_id in range(2, auth_mod._FLUSH_CACHE_MAX + 1):
+        auth_mod._should_flush(api_key_id=key_id)
 
-    auth_mod._should_flush(api_key_id=42)
-    aged = datetime.utcnow() - eviction_window - timedelta(seconds=1)
-    auth_mod._last_flushed[42] = aged
-
-    # Force many other keys to enter (simulating churn that should age 42 out).
-    for new_key in range(100, 200):
-        auth_mod._should_flush(api_key_id=new_key)
-
-    # If TTL eviction is implemented, key 42 should be gone:
-    # assert 42 not in auth_mod._last_flushed
-
-    # If LRU eviction is implemented, key 42 should be gone after >MAX hits:
-    # assert 42 not in auth_mod._last_flushed
-
-    pytest.xfail(
-        "v21 G4: stale-entry eviction not implemented. Pick LRU or TTL."
-    )
+    assert 1 in auth_mod._last_flushed
+    auth_mod._should_flush(api_key_id=auth_mod._FLUSH_CACHE_MAX + 1)
+    assert 1 not in auth_mod._last_flushed
+    assert auth_mod._FLUSH_CACHE_MAX + 1 in auth_mod._last_flushed
 
 
 def test_clock_step_backward_does_not_break_invariant():

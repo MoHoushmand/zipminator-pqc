@@ -78,6 +78,11 @@ jobs:
         working-directory: app/ios
         run: pod install --repo-update
 
+      - name: Decode ASC API key for xcodebuild
+        env:
+          ASC_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+        run: printf '%s' "$ASC_API_KEY_CONTENT" | base64 -d > /tmp/AuthKey.p8
+
       - name: Fastlane verify (wiring check)
         working-directory: app/ios
         run: bundle exec fastlane verify

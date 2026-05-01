@@ -46,6 +46,16 @@ jobs:
           xcodebuild -version
           xcrun --sdk iphoneos --show-sdk-version
 
+      - name: Install iOS 26 platform if missing
+        run: |
+          if ! xcodebuild -showsdks | grep -q "iphoneos26"; then
+            echo "iOS 26 SDK missing — downloading via xcodebuild -downloadPlatform iOS"
+            sudo xcodebuild -downloadPlatform iOS -buildVersion latest 2>&1 | tail -20
+          else
+            echo "iOS 26 SDK already present"
+          fi
+          xcodebuild -showsdks | grep -i iphone
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:

@@ -213,18 +213,31 @@ export function AISidebar({
 
   // ---------------------------------------------------------------------------
   // Keyboard shortcut: Cmd+Shift+A
-  // ---------------------------------------------------------------------------
-
+  //
+  // KNOWN BUG (was double-toggling): App.tsx also listens for Cmd+Shift+A on
+  // window. When AISidebar is in controlled mode, both handlers fire on the
+  // same keypress: App.tsx flips parent state, then this handler calls
+  // setOpen() which routes to onToggle() and flips parent state AGAIN. Net
+  // effect = no change, shortcut appears broken.
+  //
+  // TODO(user): Pick one of two approaches and implement (5-10 lines):
+  //
+  //   Option A (single source of truth in parent):
+  //     Only attach this listener when UNcontrolled (no isOpen/onToggle props).
+  //     In controlled mode, App.tsx is the sole handler. Simplest.
+  //
+  //   Option B (single source of truth in child):
+  //     Keep this listener always; remove the Cmd+Shift+A block in App.tsx.
+  //     AISidebar owns its shortcut, parent just stores the state.
+  //
+  //   Trade-off: A keeps shortcuts grouped in App.tsx (good for discoverability
+  //   when audit-listing keybindings); B colocates the shortcut with the
+  //   component that uses it (good for portability if AISidebar is reused).
+  //
+  // Implement here:
   useEffect(() => {
-    const handleKeyDown = (e: globalThis.KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === "a") {
-        e.preventDefault();
-        setOpen((v) => !v);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+    // <write the fixed handler>
+  }, [/* dependencies */]);
 
   // ---------------------------------------------------------------------------
   // Responsive: collapse to icon on narrow windows

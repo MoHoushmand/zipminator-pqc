@@ -3,6 +3,25 @@ import GitHub from "next-auth/providers/github"
 import Google from "next-auth/providers/google"
 import LinkedIn from "next-auth/providers/linkedin"
 
+if (process.env.NODE_ENV === "production") {
+  const required = [
+    "AUTH_SECRET",
+    "AUTH_GOOGLE_ID",
+    "AUTH_GOOGLE_SECRET",
+    "AUTH_GITHUB_ID",
+    "AUTH_GITHUB_SECRET",
+    "AUTH_LINKEDIN_ID",
+    "AUTH_LINKEDIN_SECRET",
+  ]
+  const missing = required.filter((k) => !process.env[k])
+  if (missing.length > 0) {
+    throw new Error(
+      `[auth] missing required env vars in production: ${missing.join(", ")}. ` +
+        `OAuth will not work. Set in Vercel or .env.local before deploying.`
+    )
+  }
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   providers: [Google, GitHub, LinkedIn],

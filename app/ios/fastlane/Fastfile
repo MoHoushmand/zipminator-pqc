@@ -45,12 +45,18 @@ platform :ios do
       silent: false
     )
 
+    # Wait for processing so we can attach the build to internal testers.
+    # skip_submission stays true (we're not submitting for external Beta review yet);
+    # groups: distributes to internal testers without external review.
+    # ITC_GROUPS env (comma-separated) overrides the default group name.
     upload_to_testflight(
       api_key: api_key,
       app_identifier: "com.qdaria.zipminator",
       ipa: "build/Runner.ipa",
-      skip_waiting_for_build_processing: true,
+      skip_waiting_for_build_processing: false,
       skip_submission: true,
+      distribute_external: false,
+      groups: (ENV["ITC_GROUPS"] || "App Store Connect Users").split(","),
       changelog: ENV["CHANGELOG"] || "Zipminator build #{build_number}. See GitHub release notes."
     )
   end

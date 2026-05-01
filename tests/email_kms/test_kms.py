@@ -15,7 +15,12 @@ import time
 import pytest
 import pytest_asyncio
 
-# Add KMS source to path so we can import modules directly
+# The KMS pillar shadows stdlib basenames (`models`, `audit`, `store`) and
+# isn't a Python package (intentionally — `email/__init__.py` would shadow
+# Python's stdlib `email`). Drop any cached siblings from earlier collection
+# (e.g. email/keydir/models.py) before inserting the kms/ path.
+for _mod in ("models", "audit", "store"):
+    sys.modules.pop(_mod, None)
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "email", "kms"))
 
 from models import (

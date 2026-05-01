@@ -14,6 +14,7 @@ import React, {
   useRef,
   useEffect,
   useCallback,
+  memo,
   KeyboardEvent,
 } from "react";
 import ReactMarkdown from "react-markdown";
@@ -58,7 +59,7 @@ interface MessageBubbleProps {
   message: Message;
 }
 
-function MessageBubble({ message }: MessageBubbleProps) {
+const MessageBubble = memo(function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === "user";
 
   return (
@@ -141,7 +142,11 @@ function MessageBubble({ message }: MessageBubbleProps) {
       </div>
     </div>
   );
-}
+}, (prev, next) =>
+  prev.message.id === next.message.id &&
+  prev.message.content === next.message.content &&
+  prev.message.streaming === next.message.streaming
+);
 
 // ---------------------------------------------------------------------------
 // Main component
@@ -156,34 +161,37 @@ export function ChatPanel({ tabId, ai, pageContext, onExtractPage }: ChatPanelPr
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const streamingIdRef = useRef<string | null>(null);
 
-  // Scroll to bottom when messages change.
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
+    const id = requestAnimationFrame(() => {
+      endRef.current?.scrollIntoView({ behavior: "auto" });
+    });
+    return () => cancelAnimationFrame(id);
   }, [messages]);
 
-  // Update the streaming message bubble as tokens arrive.
   useEffect(() => {
     if (ai.generating && streamingIdRef.current) {
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === streamingIdRef.current
-            ? { ...m, content: ai.streamingText, streaming: true }
-            : m
-        )
-      );
+      const targetId = streamingIdRef.current;
+      const text = ai.streamingText;
+      setMessages((prev) => {
+        const idx = prev.findIndex((m) => m.id === targetId);
+        if (idx === -1) return prev;
+        const next = prev.slice();
+        next[idx] = { ...next[idx], content: text, streaming: true };
+        return next;
+      });
     }
   }, [ai.streamingText, ai.generating]);
 
-  // Mark streaming complete when done.
   useEffect(() => {
     if (!ai.generating && streamingIdRef.current) {
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === streamingIdRef.current
-            ? { ...m, streaming: false }
-            : m
-        )
-      );
+      const targetId = streamingIdRef.current;
+      setMessages((prev) => {
+        const idx = prev.findIndex((m) => m.id === targetId);
+        if (idx === -1) return prev;
+        const next = prev.slice();
+        next[idx] = { ...next[idx], streaming: false };
+        return next;
+      });
       streamingIdRef.current = null;
     }
   }, [ai.generating]);

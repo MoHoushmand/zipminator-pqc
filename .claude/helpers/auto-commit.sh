@@ -85,9 +85,7 @@ LANG_COUNT=0
 # ─── Commit ──────────────────────────────────────────────────────────
 COMMIT_MSG="chore${SCOPE}: auto-commit ${COUNT} files from session
 
-Files: ${RUST_COUNT} rs, ${PY_COUNT} py, ${DART_COUNT} dart, ${TS_COUNT} ts/tsx, ${OTHER_COUNT} other
-
-Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"
+Files: ${RUST_COUNT} rs, ${PY_COUNT} py, ${DART_COUNT} dart, ${TS_COUNT} ts/tsx, ${OTHER_COUNT} other"
 
 git commit -m "$COMMIT_MSG" 2>/dev/null || {
   echo "auto-commit: commit failed (pre-commit hook?), skipping"

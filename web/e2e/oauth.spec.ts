@@ -51,4 +51,61 @@ test.describe('OAuth Flow', () => {
     await expect(page.getByRole('heading', { name: /Authentication Error/i })).toBeVisible();
     await expect(page.getByRole('link', { name: /Try again/ })).toBeVisible();
   });
+
+  // ──────────────────────────────────────────────────────────────────
+  // v21 G5: tighter assertions + missing flow coverage.
+  // ──────────────────────────────────────────────────────────────────
+
+  test('GitHub button fires the signin endpoint specifically (not just any nav)', async ({ page }) => {
+    // The original assertion at oauth.spec.ts:44 is `signinReq !== null || page.url() !== ...`.
+    // That OR-truthy false-positives if a JS error or modal causes ANY URL change.
+    // This test pins the specific assertion: the signin endpoint MUST be hit.
+    await page.goto(`${BASE_URL}/auth/login`);
+    const signinPromise = page.waitForRequest(
+      (req) => req.url().includes('/api/auth/signin/github'),
+      { timeout: 5_000 }
+    );
+
+    await page.getByRole('button', { name: /Continue with GitHub/ }).click();
+    const signinReq = await signinPromise;
+
+    expect(signinReq).not.toBeNull();
+    expect(signinReq.url()).toContain('/api/auth/signin/github');
+  });
+
+  test('callback URL with malicious open-redirect is rejected', async ({ page }) => {
+    // CSRF / open-redirect: hitting the callback with a hostile callbackUrl
+    // must NOT navigate to the attacker domain. next-auth v5 should refuse
+    // any callbackUrl whose origin differs from BASE_URL.
+    await page.goto(
+      `${BASE_URL}/api/auth/signin/github?callbackUrl=https://evil.example.com/steal`
+    );
+    // Either we end up on the OAuth provider OR we stay on our origin.
+    // What we MUST NOT see: a navigation to evil.example.com with our session.
+    await page.waitForLoadState('domcontentloaded');
+    const finalUrl = page.url();
+    expect(finalUrl).not.toContain('evil.example.com');
+  });
+
+  test('error page handles arbitrary error param without XSS', async ({ page }) => {
+    // The error param flows through to the page. Confirm it is escaped, not
+    // rendered as HTML. A regression here is a stored-XSS primitive on a
+    // page users land on after a failed login.
+    const xssPayload = '<script>window.__pwned=true</script>';
+    await page.goto(`${BASE_URL}/auth/error?error=${encodeURIComponent(xssPayload)}`);
+    const pwned = await page.evaluate(() => (window as any).__pwned);
+    expect(pwned).toBeUndefined();
+  });
+
+  // TODO(mom5): user-contribution required.
+  // The sign-out flow is not currently tested. There are two viable shapes:
+  //   (S1) Click the sign-out button on /dashboard and assert redirect to /
+  //       (requires an authed storageState; see playwright.config.ts `authed`
+  //       project at line 36-42).
+  //   (S2) POST /api/auth/signout directly and assert the next-auth.session-token
+  //       cookie is cleared.
+  // Pick one. S1 is more end-to-end; S2 is faster and CI-friendlier.
+  test.skip('sign-out clears session', async ({ page }) => {
+    // Implement after picking S1 or S2.
+  });
 });

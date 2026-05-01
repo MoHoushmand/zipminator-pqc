@@ -390,6 +390,8 @@ deprecated/
 .claude/worktrees/
 web/screenshots/
 web/test-results/
+web/e2e/screenshots/
+web/e2e/.auth/
 .vercel
 _screenshots/
 docs/screenshots/

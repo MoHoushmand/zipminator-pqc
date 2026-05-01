@@ -14,9 +14,13 @@ and ``/v1`` for the attachment endpoint (existing email pipeline).
 
 from __future__ import annotations
 
+import hashlib
 import io
 import json
 import logging
+import re
+import secrets as _secrets
+import string
 
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Query, UploadFile, status
@@ -26,6 +30,12 @@ from pydantic import BaseModel, Field
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+_SSN_RE = re.compile(r"\b\d{3}-\d{2}-\d{4}\b")
+_EMAIL_RE = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
+_LONG_WORD_RE = re.compile(r"\b\w{5,}\b")
+_WORD_RE = re.compile(r"\b\w+\b")
+_OTP_CHARS = string.ascii_letters + string.digits
 
 # ── Content-type routing ──────────────────────────────────────────────────────
 
@@ -83,42 +93,28 @@ def _is_tabular(content_type: str, filename: str) -> bool:
 
 def _apply_text_anonymization(text: str, level: int) -> str:
     """Apply anonymization to plain text at the given level."""
-    import hashlib
-    import re
-    import string
-
     if level == 1:
-        # Minimal masking of recognisable patterns
-        text = re.sub(r"\b\d{3}-\d{2}-\d{4}\b", "***-**-****", text)  # SSN
-        text = re.sub(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b", "[EMAIL]", text)
-        return text
+        text = _SSN_RE.sub("***-**-****", text)
+        return _EMAIL_RE.sub("[EMAIL]", text)
 
     if level == 2:
-        # Partial redaction of words longer than 4 chars
         def partial(m: re.Match) -> str:
             w = m.group()
             return w[0] + "..." + w[-1] if len(w) > 2 else "***"
-        return re.sub(r"\b\w{5,}\b", partial, text)
+        return _LONG_WORD_RE.sub(partial, text)
 
     if level <= 5:
-        # Static masking — replace all words
-        return re.sub(r"\b\w+\b", "[REDACTED]", text)
+        return _WORD_RE.sub("[REDACTED]", text)
 
     if level <= 8:
-        # Hash each token
         def hash_token(m: re.Match) -> str:
-            h = hashlib.sha3_256(m.group().encode()).hexdigest()
-            return h[:8]
-        return re.sub(r"\b\w+\b", hash_token, text)
-
-    # Levels 9-10: OTP-style replacement
-    import secrets as _secrets
-    chars = string.ascii_letters + string.digits
+            return hashlib.sha3_256(m.group().encode()).hexdigest()[:8]
+        return _WORD_RE.sub(hash_token, text)
 
     def otp_token(m: re.Match) -> str:
-        return "".join(_secrets.choice(chars) for _ in range(len(m.group())))
+        return "".join(_secrets.choice(_OTP_CHARS) for _ in range(len(m.group())))
 
-    return re.sub(r"\b\w+\b", otp_token, text)
+    return _WORD_RE.sub(otp_token, text)
 
 
 def _serialize_dataframe(df: pd.DataFrame, content_type: str, filename: str) -> tuple[bytes, str, str]:

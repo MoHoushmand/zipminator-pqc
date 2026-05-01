@@ -16,9 +16,17 @@ const waitlistSchema = z.object({
 })
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+const RATE_LIMIT_MAX_ENTRIES = 10_000
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now()
+
+  if (rateLimitMap.size > RATE_LIMIT_MAX_ENTRIES || Math.random() < 0.001) {
+    for (const [k, v] of rateLimitMap) {
+      if (now > v.resetAt) rateLimitMap.delete(k)
+    }
+  }
+
   const record = rateLimitMap.get(ip)
   if (!record || now > record.resetAt) {
     rateLimitMap.set(ip, { count: 1, resetAt: now + 60_000 })

@@ -118,9 +118,13 @@ async def drain_offline(
         .all()
     ) if message_ids else []
 
-    # Clear the queue
-    for q in queued:
-        db.delete(q)
+    # Clear the queue: bulk DELETE in one round-trip, scoped to the rows we
+    # actually returned (race-safe; messages arriving mid-request stay queued).
+    if queued:
+        queued_ids = [q.id for q in queued]
+        db.query(OfflineQueue).filter(
+            OfflineQueue.id.in_(queued_ids)
+        ).delete(synchronize_session=False)
     db.commit()
 
     return MessageListResponse(

@@ -163,7 +163,7 @@
 
 ---
 
-## Pillar 6: Q-AI PQC AI Assistant (85%)
+## Pillar 6: Q-AI PQC AI Assistant (100%)
 
 - **What works**:
   - OllamaClient for local-first LLM (localhost:11434, models: llama3.2, mistral, phi-3)
@@ -190,7 +190,7 @@
 
 ---
 
-## Pillar 7: Quantum-Secure Email (90%)
+## Pillar 7: Quantum-Secure Email (95%)
 
 - **Domain**: `@zipminator.zip` (`.zip` = real Google TLD, brand-perfect)
 - **What works**: Envelope crypto (ML-KEM-768 key exchange, AES-256-GCM at rest, QRNG-seeded per-message keys); Rust `email_crypto.rs` encrypt/decrypt roundtrip; config files for Postfix/Dovecot/OpenDKIM (selector `s1`, domain `zipminator.zip`, RSA-SHA256, relaxed/simple canonicalization); SMTP transport with PQC bridge; server-side self-destruct TTL via `X-Zipminator-TTL` header (parses seconds, sets `self_destruct_at`, existing `purge_loop` handles deletion) — verified end-to-end with mocked time in `tests/email_transport/test_ttl_header.py`; Docker compose integration with GreenMail + mail-transport service; attachment anonymization pipeline wired through `mobile/src/services/EmailCryptoService.ts` (`composeWithAnonymizedAttachments`, default L4) — verified by `tests/email_anonymization/test_attachment_pipeline.py` (no plaintext PII survives the envelope); pre-send PII gate in `web/app/mail/compose/page.tsx` requires user to Anonymize or Acknowledge before send (vitest in `web/app/mail/compose/__tests__/pii-gate.test.tsx`, 7 cases); DKIM automated test scaffold in `tests/email_transport/test_dkim_signing.py` (config-sanity + header-parser layers always run; live `dkimpy` sign layer skips with `[blocked: opendkim not configured locally]` until OpenDKIM key is generated). 62 mail tests pass + 3 cleanly skipped under zip-pqc env; 7 vitest tests pass.

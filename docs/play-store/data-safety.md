@@ -14,7 +14,7 @@ Paste these into Play Console → **App content** → **Data safety**. The form 
 |---|---|
 | Does your app collect or share any of the required user data types? | **Yes** |
 | Is all of the user data collected by your app encrypted in transit? | **Yes** (TLS 1.3 + ML-KEM-768 hybrid for application data; standard HTTPS for OAuth flows) |
-| Do you provide a way for users to request that their data be deleted? | **Yes** — URL: `https://zipminator.zip/privacy/delete` (action item: ensure this page exists; current `web/app/privacy/page.tsx` does not have a `/delete` sub-page) |
+| Do you provide a way for users to request that their data be deleted? | **Yes**. URL: `https://zipminator.zip/privacy/delete` (page lives at `web/app/privacy/delete/page.tsx`, 97 lines; verified shipping in `pnpm build` route table on 2026-05-01). |
 
 ---
 

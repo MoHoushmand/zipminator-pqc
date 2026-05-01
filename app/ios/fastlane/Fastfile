@@ -38,6 +38,7 @@ platform :ios do
         teamID: "5EK49H64WB",
         uploadSymbols: true
       },
+      xcargs: "-allowProvisioningUpdates -authenticationKeyID #{ENV['ASC_API_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_API_ISSUER_ID']} -authenticationKeyPath /tmp/AuthKey.p8",
       output_directory: "build",
       output_name: "Runner.ipa",
       clean: true,

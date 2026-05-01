@@ -1,0 +1,33 @@
+# Exclude all non-web surfaces from Vercel deploy.
+# We negate web/app/ and web/api/ so Next.js App Router and route handlers stay.
+
+app/
+api/
+browser/
+crates/
+mobile/
+vpn-server/
+quantum_entropy/
+papers/
+docs/
+tests/
+scripts/
+target/
+.claude-flow/
+.swarm/
+ruvector.db
+*.db
+
+# Re-include web's App Router and API route handlers (Next.js source).
+!web/app/
+!web/app/**
+!web/app/api/
+!web/app/api/**
+
+# Build artifacts (any depth) — never ship.
+**/build/
+**/dist/
+**/.next/
+**/node_modules/
+**/__pycache__/
+**/.venv/

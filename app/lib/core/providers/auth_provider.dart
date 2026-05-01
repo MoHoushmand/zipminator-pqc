@@ -51,6 +51,10 @@ class AuthState {
 class AuthNotifier extends Notifier<AuthState> {
   StreamSubscription<supabase.AuthState>? _sub;
 
+  // Auth & onboarding invariant: see CLAUDE.md "Authentication & Onboarding".
+  // Username MUST be picked by the user via /onboarding on first sign-in.
+  // Do NOT re-introduce auto-derivation from full_name or email here.
+
   @override
   AuthState build() {
     final user = SupabaseService.currentUser;
@@ -58,7 +62,6 @@ class AuthNotifier extends Notifier<AuthState> {
       _listenToAuthChanges();
     }
     ref.onDispose(() => _sub?.cancel());
-    if (user != null) _ensureUsername(user);
     return AuthState(user: user);
   }
 
@@ -69,46 +72,10 @@ class AuthNotifier extends Notifier<AuthState> {
       final user = data.session?.user;
       if (user != null) {
         state = state.copyWith(user: user, isLoading: false);
-        _ensureUsername(user);
       } else {
         state = const AuthState(); // Fully reset on sign-out.
       }
     });
-  }
-
-  /// Auto-generate username from OAuth profile if not set.
-  /// Skips onboarding for users who signed in via Google/GitHub/LinkedIn.
-  Future<void> _ensureUsername(User user) async {
-    final meta = user.userMetadata;
-    final existing = meta?['username'] as String?;
-    if (existing != null && existing.isNotEmpty) return;
-
-    // Derive username from email prefix or full_name
-    final email = user.email ?? '';
-    final fullName = meta?['full_name'] as String? ?? '';
-    String candidate;
-    if (fullName.isNotEmpty) {
-      candidate = fullName
-          .toLowerCase()
-          .replaceAll(RegExp(r'[^a-z0-9._-]'), '.')
-          .replaceAll(RegExp(r'\.{2,}'), '.');
-    } else if (email.contains('@')) {
-      candidate = email.split('@').first.toLowerCase();
-    } else {
-      return; // No data to derive from
-    }
-    if (candidate.length < 3) candidate = '${candidate}user';
-    if (candidate.length > 30) candidate = candidate.substring(0, 30);
-
-    try {
-      await SupabaseService.updateProfile(username: candidate);
-      final refreshed = SupabaseService.currentUser;
-      if (refreshed != null) {
-        state = state.copyWith(user: refreshed);
-      }
-    } catch (_) {
-      // Non-fatal; user can set username manually via onboarding
-    }
   }
 
   bool _requireSupabase() {

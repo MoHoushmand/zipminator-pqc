@@ -413,3 +413,15 @@ docs/guides/session-transcripts/
 
 # Temporary working directory
 _tmp/
+
+# -----------------------------------------------------------------------------
+# DKIM keys directory: parent dir name (`zipminator.zip`) accidentally matches
+# the `*.zip` archive ignore on line 315. Re-include the directory, then
+# re-exclude private key material so only the DNS-publishable .txt fragment
+# is tracked.
+# -----------------------------------------------------------------------------
+!email/mailserver/config/dkim/keys/zipminator.zip/
+!email/mailserver/config/dkim/keys/zipminator.zip/*.txt
+email/mailserver/config/dkim/keys/**/*.private
+email/mailserver/config/dkim/keys/**/*.key
+email/mailserver/config/dkim/keys/**/*.pem

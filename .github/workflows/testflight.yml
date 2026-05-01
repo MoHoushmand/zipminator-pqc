@@ -46,15 +46,19 @@ jobs:
           xcodebuild -version
           xcrun --sdk iphoneos --show-sdk-version
 
-      - name: Install iOS 26 platform if missing
+      - name: Install iOS 26 platform + device support
         run: |
-          if ! xcodebuild -showsdks | grep -q "iphoneos26"; then
-            echo "iOS 26 SDK missing — downloading via xcodebuild -downloadPlatform iOS"
-            sudo xcodebuild -downloadPlatform iOS -buildVersion latest 2>&1 | tail -20
-          else
-            echo "iOS 26 SDK already present"
-          fi
-          xcodebuild -showsdks | grep -i iphone
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i iphone || true
+          # Even with iOS 26 SDK present, device-support / runtime is separate.
+          # -downloadAllPlatforms grabs iOS, iOS-Simulator, watchOS, tvOS, visionOS.
+          # Skip-cache because runner image may have stale partial download.
+          sudo xcodebuild -runFirstLaunch || true
+          sudo xcodebuild -downloadAllPlatforms 2>&1 | tail -30 || true
+          # Show what we now have
+          xcrun simctl runtime list 2>&1 | head -20 || true
+          xcodebuild -showsdks
+          ls "$(xcode-select -p)/Platforms" 2>&1
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2

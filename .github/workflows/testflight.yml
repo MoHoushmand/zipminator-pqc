@@ -30,7 +30,6 @@ jobs:
       ASC_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
       ASC_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
       ASC_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
-      BUILD_NUMBER: ${{ github.run_number }}
       CHANGELOG: ${{ inputs.changelog || 'Internal build' }}
       LC_ALL: en_US.UTF-8
       LANG: en_US.UTF-8

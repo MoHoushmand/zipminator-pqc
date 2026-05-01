@@ -1,0 +1,30 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/mom5/dev/qdaria/apps/zipminator/core/.codex/hooks/python-env-guard.sh'",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/helpers/auto-commit.sh 2>/dev/null"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/helpers/transcript-autosave.sh 2>/dev/null"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -45,15 +45,15 @@ export const EMAIL_DB: Record<string, EmailDetail> = {
     subject: 'Re: Lattice-based KEM benchmarks for Q4 report',
     body: `Hi team,
 
-The ML-KEM-768 results from our latest test suite are promising. We achieved a median encapsulation time of 0.034ms across 10k iterations on a 156-qubit quantum processor.
+The ML-KEM-768 results from our latest test suite are promising. We achieved a median encapsulation time of ≤34 μs across 10k iterations on a 156-qubit quantum processor.
 
 Key findings:
-- Keygen: 0.028ms median (std dev 0.003ms)
-- Encapsulate: 0.034ms median (std dev 0.005ms)
-- Decapsulate: 0.031ms median (std dev 0.004ms)
+- Keygen: ≤28 μs median (std dev 3 μs)
+- Encapsulate: ≤34 μs median (std dev 5 μs)
+- Decapsulate: ≤31 μs median (std dev 4 μs)
 - Memory footprint: 3.2 KB per session context
 
-The hybrid X25519+ML-KEM-768 composite adds roughly 0.008ms overhead, which is negligible for our use case. I have attached the full benchmark report with statistical breakdowns.
+The hybrid X25519+ML-KEM-768 composite adds roughly ≤8 μs overhead, which is negligible for our use case. I have attached the full benchmark report with statistical breakdowns.
 
 For the Q4 report, I recommend we highlight the comparison against classical ECDH, where we see only a 12% latency increase for quantum resistance. That is a compelling story for enterprise adoption.
 

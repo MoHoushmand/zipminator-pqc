@@ -23,7 +23,7 @@ const features = [
   {
     icon: MessageCircle,
     title: 'Quantum Secure Messenger',
-    description: 'PQC Double Ratchet protocol for forward-secret, quantum-safe messaging',
+    description: 'PQ Double Ratchet (custom impl, audit planned 2026-Q3) for forward-secret post-quantum messaging',
     gradient: 'from-blue-500 to-cyan-500',
     tag: 'E2E PQC',
   },
@@ -44,14 +44,14 @@ const features = [
   {
     icon: Layers,
     title: '10-Level Anonymizer',
-    description: 'Progressive anonymization pipeline from basic to NSA-grade stealth',
+    description: 'Progressive anonymization pipeline (PII redaction, onion routing, traffic morphing)',
     gradient: 'from-pink-500 to-rose-500',
     tag: 'Multi-layer',
   },
   {
     icon: Compass,
     title: 'ZipBrowser',
-    description: 'PQC TLS + built-in Q-VPN + AI assistant. Zero telemetry, zero fingerprints',
+    description: 'PQC TLS + built-in Q-VPN + AI assistant. No third-party telemetry; no ad trackers; first-party diagnostics opt-in',
     gradient: 'from-violet-500 to-purple-500',
     tag: 'AI-powered',
   },
@@ -122,7 +122,7 @@ const SuperAppShowcase = () => {
 
           <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto">
             Messaging, calls, browsing, email, VPN, and more.
-            All wrapped in NIST-approved post-quantum cryptography.
+            All built on NIST PQC standards (FIPS 203 / 205).
           </p>
         </motion.div>
 

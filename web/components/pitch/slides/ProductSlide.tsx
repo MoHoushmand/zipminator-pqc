@@ -87,7 +87,7 @@ export default function ProductSlide({ scenario: _scenario }: { scenario?: Scena
           <span className="gradient-text">Suite</span>
         </h2>
         <p className="text-lg text-gray-400 max-w-2xl">
-          Nine deeply integrated modules, each built on NIST-approved
+          Nine deeply integrated modules, each built on NIST PQC standards (FIPS 203 / 205)
           post-quantum cryptography from the ground up.
         </p>
       </motion.div>

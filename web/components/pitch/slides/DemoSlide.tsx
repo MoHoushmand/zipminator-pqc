@@ -62,7 +62,7 @@ function VaultVisual() {
       <div className="flex items-center gap-2 text-xs text-gray-500">
         <FileKey className="w-3.5 h-3.5 text-quantum-400" /><span>Kyber768 KEM</span>
         <span className="text-white/20">|</span>
-        <Trash2 className="w-3.5 h-3.5 text-red-400" /><span>DoD 5220.22-M wipe</span>
+        <Trash2 className="w-3.5 h-3.5 text-red-400" /><span>NIST SP 800-88 Rev 1 wipe (DoD 5220.22-M-compatible)</span>
       </div>
     </div>
   )

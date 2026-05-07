@@ -62,7 +62,7 @@ export default function FeaturesPage() {
               { value: '10', label: 'Security Modules' },
               { value: '11+', label: 'Algorithms' },
               { value: '5', label: 'Platforms' },
-              { value: '0.034ms', label: 'Encryption' },
+              { value: '≤11 μs', label: 'Encap' },
             ].map((stat) => (
               <div key={stat.label} className="flex items-center gap-3 px-5 py-3 glass-panel rounded-xl">
                 <Shield className="w-4 h-4 text-quantum-400" />

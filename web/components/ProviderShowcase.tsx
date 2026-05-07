@@ -35,7 +35,7 @@ const ProviderShowcase = () => {
     },
     {
       name: 'GitHub',
-      description: 'MIT Open Source',
+      description: 'Apache-2.0 (commercial available)',
       icon: GitBranch,
       color: 'from-gray-500 to-gray-400',
       verified: true
@@ -188,18 +188,18 @@ const ProviderShowcase = () => {
           className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto"
         >
           <div className="card-quantum text-center">
-            <div className="text-3xl font-bold text-quantum-400 mb-2">408+</div>
+            <div className="text-3xl font-bold text-quantum-400 mb-2">925</div>
             <div className="text-gray-400">Tests Passing</div>
           </div>
 
           <div className="card-quantum text-center">
-            <div className="text-3xl font-bold text-quantum-400 mb-2">NIST Level 3</div>
+            <div className="text-3xl font-bold text-quantum-400 mb-2">NIST PQC Category 3 (≈AES-192)</div>
             <div className="text-gray-400">Security Level</div>
           </div>
 
           <div className="card-quantum text-center">
-            <div className="text-3xl font-bold text-quantum-400 mb-2">100%</div>
-            <div className="text-gray-400">Open-Source Licensed (MIT)</div>
+            <div className="text-3xl font-bold text-quantum-400 mb-2" title="Open source: Apache-2.0 (commercial license available); deps under Apache-2.0 / MIT / MPL-2.0 / LGPL-2.1 / BSD-3-Clause">Apache-2.0</div>
+            <div className="text-gray-400">License</div>
           </div>
         </motion.div>
 

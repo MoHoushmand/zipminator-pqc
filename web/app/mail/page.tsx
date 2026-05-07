@@ -46,7 +46,7 @@ const MOCK_EMAILS: MockEmail[] = [
     },
     subject: 'Re: Lattice-based KEM benchmarks for Q4 report',
     preview:
-      'The ML-KEM-768 results from our latest test suite are promising. We achieved a median encapsulation time of 0.034ms across 10k iterations on the IBM Heron r2...',
+      'The ML-KEM-768 results from our latest test suite are promising. We achieved a median encapsulation time of ≤11 μs across 10k iterations on the IBM Heron r2; full roundtrip ≤34 μs...',
     timestamp: NOW - 1800_000, // 30 min ago
     read: false,
     starred: true,

@@ -22,7 +22,7 @@ const ENCRYPTION_TYPES = [
   { name: 'HMAC-SHA256', percentage: 100, color: 'from-green-500 to-green-400' },
   { name: 'PQ Double Ratchet', percentage: 92, color: 'from-yellow-500 to-yellow-400' },
   { name: 'PQ-SRTP', percentage: 85, color: 'from-pink-500 to-pink-400' },
-  { name: 'Dilithium Signatures', percentage: 78, color: 'from-cyan-500 to-cyan-400' },
+  { name: 'Vault Operations', percentage: 78, color: 'from-cyan-500 to-cyan-400' },
   { name: 'SPHINCS+ Hash Sigs', percentage: 72, color: 'from-orange-500 to-orange-400' },
 ]
 

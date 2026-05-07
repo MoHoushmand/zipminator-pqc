@@ -31,7 +31,7 @@ const useCases = [
   {
     icon: ShieldCheck,
     title: 'Government & Defense',
-    description: 'NIST-approved cryptography for classified and sensitive information',
+    description: 'Cryptography on NIST PQC standards (FIPS 203 / 205) for classified and sensitive information',
     features: [
       'Classified data protection',
       'NIST compliance',

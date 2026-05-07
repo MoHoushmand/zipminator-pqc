@@ -119,8 +119,7 @@ export const TECHNOLOGY_STACK = [
   {
     category: 'Cryptography',
     items: [
-      'NIST FIPS 203 ML-KEM (Kyber768)',
-      'NIST FIPS 204 ML-DSA (Dilithium)',
+      'NIST FIPS 203 ML-KEM-768 (formerly Kyber768)',
       'X25519 hybrid key exchange',
       'AES-256-GCM',
       'ChaCha20-Poly1305',

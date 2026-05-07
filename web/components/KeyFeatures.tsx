@@ -14,13 +14,13 @@ const features = [
   {
     icon: ShieldCheck,
     title: 'FIPS 203 Kyber768',
-    description: 'NIST-approved post-quantum cryptography resistant to quantum attacks',
+    description: 'Post-quantum cryptography on NIST PQC standards (FIPS 203 / 205), resistant to quantum attacks',
     gradient: 'from-purple-500 via-pink-500 to-red-500',
     animationDelay: 0.1,
   },
   {
     icon: Zap,
-    title: '0.034ms Encryption',
+    title: '≤11 μs Encapsulation',
     description: 'Quantum-secure without sacrificing performance',
     gradient: 'from-yellow-500 via-orange-500 to-red-500',
     animationDelay: 0.2,
@@ -28,7 +28,7 @@ const features = [
   {
     icon: Github,
     title: 'Transparent Security',
-    description: 'Fully auditable code, MIT + Commercial licensing',
+    description: 'Fully auditable code, Apache-2.0 + Commercial licensing',
     gradient: 'from-green-500 via-emerald-500 to-teal-500',
     animationDelay: 0.3,
   },

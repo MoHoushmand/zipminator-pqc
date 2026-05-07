@@ -82,7 +82,7 @@ const terminalLines = [
   { text: 'Encapsulating shared secret with Kyber768...', delay: 3000, color: 'text-quantum-400' },
   { text: 'Ciphertext:  1088 bytes', delay: 3400, color: 'text-yellow-400' },
   { text: 'Encrypting with AES-256-GCM...', delay: 3800, color: 'text-quantum-400' },
-  { text: 'Done in 0.034ms. Output: report.pdf.zpq', delay: 4200, color: 'text-green-400' },
+  { text: 'Done in ≤34 μs. Output: report.pdf.zpq', delay: 4200, color: 'text-green-400' },
 ]
 
 function TerminalDemo() {

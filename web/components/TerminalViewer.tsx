@@ -21,14 +21,14 @@ const COMMANDS = [
         desc: 'Decrypt a file using your secret key.'
     },
     {
-        name: 'Sign Document',
-        cmd: 'zipminator sign -i contract.pdf -s secret.bin --quantum',
-        desc: 'Cryptographically sign a document (Dilithium-5).'
+        name: 'Inspect Capsule',
+        cmd: 'zipminator inspect -i encrypted.bin',
+        desc: 'View metadata of an encrypted capsule (algorithm, key id, timestamp).'
     },
     {
-        name: 'Verify Signature',
-        cmd: 'zipminator verify -i contract.pdf -s signature.sig -p public.bin',
-        desc: 'Verify a digital signature.'
+        name: 'Roadmap: Sign Document',
+        cmd: '# zipminator sign  (planned 2026-Q3)',
+        desc: 'Roadmap (Q3 2026): cryptographic signing via ML-DSA (FIPS 204).'
     }
 ]
 

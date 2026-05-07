@@ -31,7 +31,7 @@ const modules: {
     id: 'encryption',
     icon: Lock,
     title: 'PQC Encryption Engine',
-    tagline: 'ML-KEM-768 (Kyber) at 0.034 ms per operation with constant-time guarantees and zeroize-on-drop memory safety.',
+    tagline: 'ML-KEM-768 (Kyber) at ≤34 μs full roundtrip (keygen + encap + decap) with constant-time guarantees and zeroize-on-drop memory safety.',
     features: [
       'NIST FIPS 203 ML-KEM-768 key encapsulation',
       'Constant-time operations prevent timing side-channels',
@@ -45,7 +45,7 @@ const modules: {
     id: 'messenger',
     icon: MessageSquare,
     title: 'Quantum Secure Messenger',
-    tagline: 'PQC Double Ratchet protocol with per-message forward secrecy. Every message gets a unique key that is destroyed after decryption.',
+    tagline: 'PQ Double Ratchet (custom impl, audit planned 2026-Q3) with per-message forward secrecy. Every message gets a unique key that is destroyed after decryption.',
     features: [
       'Double Ratchet with ML-KEM replaces X25519 DH ratchet',
       'Per-message PQC key derivation (forward secrecy)',
@@ -129,12 +129,12 @@ const modules: {
     id: 'pii',
     icon: ScanSearch,
     title: 'Device Shield / PII Scanner',
-    tagline: 'Real-time PII detection scans files before encryption. Secure deletion uses DoD 5220.22-M three-pass overwrite.',
+    tagline: 'Real-time PII detection scans files before encryption. Secure deletion uses NIST SP 800-88 Rev 1 three-pass overwrite (DoD 5220.22-M-compatible).',
     features: [
       'Regex + NLP entity recognition for 15+ PII categories',
       'Credit card, SSN, passport, email, phone auto-detection',
       'Pre-encryption scan warns before sensitive data leaves device',
-      'DoD 5220.22-M 3-pass secure deletion (overwrite-verify-zero)',
+      'NIST SP 800-88 Rev 1 three-pass overwrite (DoD 5220.22-M-compatible) secure deletion (overwrite-verify-zero)',
       'Self-destruct timer: set files to auto-delete after N hours',
       'Audit log of all PII detections and deletion events',
     ],
@@ -142,12 +142,12 @@ const modules: {
 ]
 
 const securityStack = [
-  'ML-KEM-768 (FIPS 203)', 'ML-DSA-65 (FIPS 204)', 'PQC Double Ratchet',
+  'ML-KEM-768 (FIPS 203)', 'PQ Double Ratchet',
   'PQ-SRTP (RFC 3711)', 'PQ-WireGuard', 'PQC TLS 1.3',
   'IBM Quantum QRNG (156 qubits)', 'AES-256-GCM', 'HMAC-SHA-384',
   'X25519 (hybrid fallback)', 'Ed25519 (hybrid signatures)', 'Argon2id KDF',
   'HKDF-SHA-256', 'ChaCha20-Poly1305', 'BLAKE3 hashing',
-  'OpenPGP Composite Keys', 'WKD Key Discovery', 'DoD 5220.22-M Secure Delete',
+  'OpenPGP Composite Keys', 'WKD Key Discovery', 'NIST SP 800-88 Rev 1 Secure Delete (DoD 5220.22-M-compatible)',
   'Zeroize-on-Drop Memory', 'Constant-Time Operations', 'Canvas Fingerprint Randomization',
   'WebGL Renderer Spoofing', 'Cookie Jar Rotation', 'Tor-Style Onion Routing',
   'Traffic Shaping / Chaff', 'Decoy Identity Generation',

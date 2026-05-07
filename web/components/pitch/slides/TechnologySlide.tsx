@@ -70,7 +70,7 @@ const KEY_CALLOUTS = [
 
 const STANDARDS_TIMELINE = [
   { year: '2024', label: 'NIST FIPS 203', detail: 'ML-KEM standardized', done: true },
-  { year: '2025', label: 'NIST FIPS 204/205', detail: 'ML-DSA + SLH-DSA', done: true },
+  { year: '2026-Q3', label: 'Roadmap', detail: 'ML-DSA + SLH-DSA signatures', done: false },
   { year: '2027', label: 'CNSA 2.0', detail: 'NSA mandate for all NSS', done: false },
   { year: '2035', label: 'Full PQC', detail: 'Complete classical phase-out', done: false },
 ]
@@ -96,7 +96,7 @@ export default function TechnologySlide({ scenario: _scenario }: { scenario?: Sc
           <span className="gradient-text">Proven Standards</span>
         </h2>
         <p className="text-lg text-gray-400 max-w-2xl">
-          Every layer of our stack is grounded in NIST-approved algorithms,
+          Every layer of our stack is grounded in NIST PQC standards (FIPS 203 / 205),
           battle-tested protocols, and constant-time implementations.
         </p>
       </motion.div>

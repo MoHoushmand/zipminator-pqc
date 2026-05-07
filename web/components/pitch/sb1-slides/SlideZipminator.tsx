@@ -154,7 +154,6 @@ export const SlideZipminator: React.FC<SlideZiminatorProps> = ({ scenario: initi
               <div className="space-y-1.5">
                 {[
                   { std: 'FIPS 203 · ML-KEM', desc: 'Nøkkelinnkapsling (erstatter RSA)' },
-                  { std: 'FIPS 204 · ML-DSA', desc: 'Digitale signaturer (erstatter ECC)' },
                   { std: 'FIPS 205 · SLH-DSA', desc: 'Hash-baserte signaturer' },
                 ].map((s) => (
                   <div key={s.std} className="flex justify-between items-center">

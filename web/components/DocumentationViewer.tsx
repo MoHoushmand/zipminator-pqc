@@ -35,7 +35,7 @@ Built on **ML-KEM (Kyber)** standards, Zipminator is ready for the transition to
 ## 📦 Features
 
 * **Homomorphic Encryption:** Compute on encrypted data (Paillier).
-* **DoD 5220.22-M Deletion:** 3-pass overwrite for forensic-proof deletion.
+* **NIST SP 800-88 Rev 1 Deletion:** 3-pass overwrite (DoD 5220.22-M-compatible) for forensic-proof deletion.
 * **PII Auto-Redaction:** GDPR-compliant scanning.
 * **No-Account Mode:** Use our centralized API to access quantum entropy without needing your own quantum hardware tokens.`
     },

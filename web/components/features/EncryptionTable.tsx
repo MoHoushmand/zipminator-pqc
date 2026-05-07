@@ -7,13 +7,12 @@ const technologies = [
   { tech: 'PQC Double Ratchet', standard: 'Custom / Signal+', useCase: 'Messaging', level: 'Level 3+', levelColor: 'text-green-400' },
   { tech: 'PQ-SRTP', standard: 'Custom', useCase: 'Voice / Video', level: 'Level 3', levelColor: 'text-green-400' },
   { tech: 'PQ-WireGuard', standard: 'Custom', useCase: 'VPN tunnel', level: 'Level 3', levelColor: 'text-green-400' },
-  { tech: 'ML-DSA (Dilithium)', standard: 'NIST FIPS 204', useCase: 'Digital signatures', level: 'Level 3', levelColor: 'text-green-400' },
   { tech: 'SLH-DSA (SPHINCS+)', standard: 'NIST FIPS 205', useCase: 'Stateless signatures', level: 'Level 3', levelColor: 'text-green-400' },
   { tech: 'QRNG', standard: 'IBM Quantum', useCase: 'Entropy source', level: 'Hardware', levelColor: 'text-cyan-400' },
   { tech: 'AES-256-GCM', standard: 'NIST', useCase: 'Symmetric encryption', level: 'Level 5', levelColor: 'text-emerald-400' },
   { tech: 'SHA-3 / SHAKE', standard: 'NIST FIPS 202', useCase: 'Hashing / KDF', level: 'Level 5', levelColor: 'text-emerald-400' },
   { tech: 'X3DH + PQ', standard: 'Custom', useCase: 'Key agreement', level: 'Level 3+', levelColor: 'text-green-400' },
-  { tech: 'DoD 5220.22-M', standard: 'US DoD', useCase: 'Secure delete', level: '3-Pass', levelColor: 'text-yellow-400' },
+  { tech: 'NIST SP 800-88 Rev 1', standard: 'NIST Sanitization (with optional DoD 5220.22-M 3-pass mode)', useCase: 'Secure delete', level: '3-Pass', levelColor: 'text-yellow-400' },
 ]
 
 const platforms = [

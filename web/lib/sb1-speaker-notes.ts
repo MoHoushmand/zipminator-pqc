@@ -23,7 +23,7 @@ export const SPEAKER_NOTES: Record<number, string> = {
 
 **Kilde**: Evident AI Quantum Report 2024, 10% vekst i kvanteansettelser.`,
 
-  4: `**BC01 Zipminator**: Vår flaggskipplattform for post-kvantum kryptografi. Implementerer NIST FIPS 203 (ML-KEM-768), FIPS 204 (ML-DSA) og FIPS 205 (SLH-DSA). Alle standardisert august 2024.
+  4: `**BC01 Zipminator**: Vår flaggskipplattform for post-kvantum kryptografi. Implementerer NIST FIPS 203 (ML-KEM-768). FIPS 204 (ML-DSA) og FIPS 205 (SLH-DSA) er planlagt 2026-Q3. Alle standardisert august 2024.
 
 **Kostnadsmodell**: NOK 8–15M implementering, beskytter NOK 625 mrd. forvaltningskapital. 14 banker per implementering. Estimert ROI >400% over 5 år.
 

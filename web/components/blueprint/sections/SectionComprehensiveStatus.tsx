@@ -96,7 +96,7 @@ export const SectionComprehensiveStatus = () => (
             ['zipminator-bench', 'Performance benchmarks (keygen, encap, decap)', '15'],
             ['zipminator-fuzz', 'Fuzz testing (keygen, encapsulate, decapsulate)', '5'],
             ['zipminator-mesh', 'Q-Mesh entropy bridge for RuView ESP32', '4'],
-            ['zipminator-nist', 'NIST KAT vector verification (FIPS 203 compliance)', '2'],
+            ['zipminator-nist', 'NIST ACVP / KAT vector verification (FIPS 203 conformance harness)', '2'],
             ['Total', '', '156 pass, 4 ignored'],
           ]}
         />

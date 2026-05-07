@@ -15,7 +15,7 @@ const certifications = [
     icon: Lock,
   },
   {
-    name: 'NIST Level 3',
+    name: 'NIST PQC Category 3 (≈AES-192)',
     description: 'AES-192 equivalent post-quantum security',
     icon: Award,
   },
@@ -88,7 +88,7 @@ const TrustSignals = () => {
         >
           <div className="inline-block bg-quantum-900/30 border border-quantum-500/30 rounded-full px-6 py-3">
             <p className="text-lg text-quantum-300">
-              <span className="font-bold">408+</span> tests passing • <span className="font-bold">Memory-safe</span> Rust core • <span className="font-bold">Constant-time</span> crypto
+              <span className="font-bold">925</span> tests passing • <span className="font-bold">Memory-safe</span> Rust core • <span className="font-bold">Constant-time</span> crypto
             </p>
           </div>
         </motion.div>

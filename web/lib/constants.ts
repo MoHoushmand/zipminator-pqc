@@ -79,9 +79,9 @@ export const QUANTUM_PROVIDERS = [
 ]
 
 export const PERFORMANCE_STATS = {
-  encryptionSpeed: '0.034ms',
+  encryptionSpeed: '≤34 μs',
   qubits: 156,
-  securityLevel: 'NIST Level 3',
+  securityLevel: 'NIST PQC Category 3 (≈AES-192)',
   testsPassing: '287+',
   costReduction: '15x',
   memoryReduction: '32.3%',

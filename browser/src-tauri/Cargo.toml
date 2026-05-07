@@ -3,7 +3,7 @@ name = "zipbrowser"
 version = "0.1.0"
 edition = "2021"
 authors = ["Qdaria Inc. <team@qdaria.com>"]
-license = "MIT"
+license = "Apache-2.0"
 description = "ZipBrowser — Tauri v2 PQC browser with ML-KEM-768 HTTPS proxy, PQ-WireGuard VPN, AI sidebar, and QRNG privacy engine"
 
 [dependencies]

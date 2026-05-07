@@ -31,7 +31,7 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: 'Zipminator-PQC | Quantum-Secure Encryption Platform by QDaria',
-  description: 'Real quantum entropy from 156-qubit IBM hardware + NIST FIPS 203 Kyber768 cryptography. Post-quantum encryption that\'s fast, secure, and easy to integrate.',
+  description: 'Real quantum entropy pool harvested from IBM\'s 156-qubit ibm_kingston processor + ML-KEM-768 (NIST FIPS 203) post-quantum cryptography. Fast, secure, easy to integrate.',
   keywords: [
     'quantum encryption',
     'post-quantum cryptography',
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Zipminator-PQC | Quantum-Secure Encryption Platform by QDaria',
-    description: 'Real quantum entropy from 156-qubit IBM hardware + NIST FIPS 203 Kyber768 cryptography. Post-quantum encryption that\'s fast, secure, and easy to integrate.',
+    description: 'Real quantum entropy pool harvested from IBM\'s 156-qubit ibm_kingston processor + ML-KEM-768 (NIST FIPS 203) post-quantum cryptography. Fast, secure, easy to integrate.',
     url: 'https://zipminator.zip',
     siteName: 'Zipminator-PQC',
     locale: 'en_US',
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Zipminator-PQC | Quantum-Secure Encryption Platform by QDaria',
-    description: 'Real quantum entropy from 156-qubit IBM hardware + NIST FIPS 203 Kyber768 cryptography. Post-quantum encryption that\'s fast, secure, and easy to integrate.',
+    description: 'Real quantum entropy pool harvested from IBM\'s 156-qubit ibm_kingston processor + ML-KEM-768 (NIST FIPS 203) post-quantum cryptography. Fast, secure, easy to integrate.',
     site: '@qdaria',
     creator: '@qdaria',
   },
@@ -125,7 +125,7 @@ const softwareSchema = {
   name: 'Zipminator-PQC',
   applicationCategory: 'SecurityApplication',
   operatingSystem: 'Cross-platform',
-  description: 'Real quantum entropy from 156-qubit IBM hardware + NIST FIPS 203 Kyber768 cryptography. Post-quantum encryption that\'s fast, secure, and easy to integrate.',
+  description: 'Real quantum entropy pool harvested from IBM\'s 156-qubit ibm_kingston processor + ML-KEM-768 (NIST FIPS 203) post-quantum cryptography. Fast, secure, easy to integrate.',
   offers: {
     '@type': 'Offer',
     price: '0',
@@ -139,8 +139,8 @@ const softwareSchema = {
   },
   softwareVersion: '1.0.0',
   featureList: [
-    'NIST FIPS 203 Kyber768 encryption',
-    'Real quantum entropy from IBM 156-qubit hardware',
+    'ML-KEM-768 (NIST FIPS 203) encryption',
+    'Quantum entropy pool harvested from IBM 156-qubit ibm_kingston processor',
     'Cross-platform support (Rust, Python, JavaScript)',
     'Easy integration',
     'Open-source licensed',

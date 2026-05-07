@@ -15,7 +15,7 @@ import {
 const firsts = [
   {
     icon: Shield,
-    claim: 'First consumer super-app with NIST-approved PQC across all channels',
+    claim: 'First integrated consumer super-app with NIST PQC standards across all channels',
     detail:
       'Messaging, calls, email, VPN, and browsing: all protected by ML-KEM-768 in a single application',
   },
@@ -95,7 +95,7 @@ const WorldFirst = () => {
           </div>
 
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-            <span className="text-white">World&apos;s</span>{' '}
+            <span className="text-white">Among the</span>{' '}
             <span className="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 bg-clip-text text-transparent">
               First
             </span>

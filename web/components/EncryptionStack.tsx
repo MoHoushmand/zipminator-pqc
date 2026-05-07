@@ -25,8 +25,8 @@ const stackLayers = [
   },
   {
     icon: Key,
-    name: 'PQC Double Ratchet',
-    standard: 'Custom Protocol',
+    name: 'PQ Double Ratchet',
+    standard: 'Custom impl; audit planned 2026-Q3',
     description: 'Forward-secret, post-quantum messaging ratchet with per-message key derivation',
     color: 'from-blue-500 to-cyan-500',
   },
@@ -59,17 +59,10 @@ const stackLayers = [
     color: 'from-cyan-500 to-blue-500',
   },
   {
-    icon: Fingerprint,
-    name: 'ML-DSA (Dilithium)',
-    standard: 'NIST FIPS 204',
-    description: 'Lattice-based digital signatures for authentication and integrity',
-    color: 'from-pink-500 to-rose-500',
-  },
-  {
     icon: Trash2,
-    name: 'DoD 5220.22-M Deletion',
-    standard: 'Military Standard',
-    description: '3-pass overwrite ensuring data is irrecoverable after secure deletion',
+    name: 'NIST SP 800-88 Rev 1 Deletion',
+    standard: 'NIST Sanitization',
+    description: 'Cryptographic-erase aligned secure deletion (with optional DoD 5220.22-M 3-pass mode)',
     color: 'from-red-500 to-orange-500',
   },
   {
@@ -175,7 +168,7 @@ const EncryptionStack = () => {
           <div className="inline-flex items-center space-x-2 bg-quantum-900/30 border border-quantum-500/30 rounded-full px-5 py-2.5 mb-8">
             <Lock className="w-4 h-4 text-quantum-400" />
             <span className="text-sm font-semibold text-quantum-300">
-              16 Security Technologies
+              15 Security Technologies
             </span>
           </div>
 
@@ -185,7 +178,7 @@ const EncryptionStack = () => {
           </h2>
 
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Every layer of communication protected by NIST-approved
+            Every layer of communication protected by NIST PQC standards (FIPS 203 / 205)
             post-quantum cryptography
           </p>
         </motion.div>

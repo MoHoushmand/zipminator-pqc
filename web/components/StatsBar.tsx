@@ -6,7 +6,7 @@ import { Zap, Cpu, Shield, CheckCircle } from 'lucide-react'
 const stats = [
   {
     icon: Zap,
-    value: '0.034ms',
+    value: '≤11 μs encap',
     label: 'Encryption Speed',
     description: 'Lightning-fast quantum-secure encryption',
   },
@@ -18,13 +18,13 @@ const stats = [
   },
   {
     icon: Shield,
-    value: 'NIST Level 3',
+    value: 'NIST PQC Category 3 (≈AES-192)',
     label: 'Security',
     description: 'Government-approved standard',
   },
   {
     icon: CheckCircle,
-    value: '408+',
+    value: '925',
     label: 'Tests Passing',
     description: 'Comprehensive quality assurance',
   },

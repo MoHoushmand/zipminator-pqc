@@ -371,7 +371,7 @@ export default function DocsPage() {
           <div className="grid md:grid-cols-3 gap-6">
             {[
               { icon: Shield, title: 'NIST FIPS 203', desc: 'Implements ML-KEM-768 (Kyber768) as specified in the NIST post-quantum standard.' },
-              { icon: Key, title: 'NIST Level 3 Security', desc: 'Equivalent to AES-192 classical security. Resistant to both classical and quantum attacks.' },
+              { icon: Key, title: 'NIST PQC Category 3 (≈AES-192-equivalent strength)', desc: 'Equivalent to AES-192 classical security. Resistant to both classical and quantum attacks.' },
               { icon: Lock, title: 'KAT Verified', desc: 'All Known Answer Test vectors pass. Constant-time implementation with no timing side-channels.' },
             ].map((item) => (
               <motion.div key={item.title} variants={fadeUp} className="card-quantum text-center">

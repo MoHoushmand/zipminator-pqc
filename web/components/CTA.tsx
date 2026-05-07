@@ -112,7 +112,7 @@ const CTA = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
           >
-            Protect your data with NIST-approved post-quantum cryptography.
+            Protect your data with post-quantum cryptography on NIST PQC standards (FIPS 203 / 205).
             Join the beta. Ships free to early adopters.
           </motion.p>
 
@@ -154,13 +154,13 @@ const CTA = () => {
           >
             <div className="flex items-center space-x-2">
               <Star className="w-4 h-4 text-quantum-400" />
-              <span className="font-semibold text-white">Open-Source Licensed (MIT)</span>
-              <span>MIT-Licensed Crypto Core</span>
+              <span className="font-semibold text-white">Open Source: Apache-2.0</span>
+              <span>Apache-2.0 Crypto Core (commercial license available)</span>
             </div>
             <div className="hidden md:block w-px h-6 bg-gray-700" />
             <div className="flex items-center space-x-2">
               <Clock className="w-4 h-4 text-quantum-400" />
-              <span className="font-semibold text-white">408+</span>
+              <span className="font-semibold text-white">925</span>
               <span>Tests Passing</span>
             </div>
             <div className="hidden md:block w-px h-6 bg-gray-700" />

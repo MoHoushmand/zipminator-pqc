@@ -63,7 +63,7 @@ const Hero = () => {
             <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-quantum-900/40 to-purple-900/40 border border-quantum-400/30 rounded-full px-5 py-2.5 backdrop-blur-sm shadow-lg shadow-quantum-500/20 hover:shadow-quantum-500/40 transition-shadow duration-300">
               <Shield className="w-4 h-4 text-quantum-400 animate-pulse" />
               <span className="text-sm font-semibold bg-gradient-to-r from-quantum-300 to-purple-300 bg-clip-text text-transparent">
-                NIST FIPS 203 Approved Post-Quantum Cryptography
+                Post-Quantum Cryptography on NIST FIPS 203 Standards
               </span>
             </div>
           </motion.div>
@@ -107,7 +107,7 @@ const Hero = () => {
               className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-gray-300 hover:border-amber-400/40 hover:text-white transition-colors"
             >
               <span className="w-2 h-2 rounded-full bg-amber-400" aria-hidden="true" />
-              3 patents, 46 claims
+              3 patents filed (46 claims, priority 2026-Q1)
             </Link>
           </motion.div>
 
@@ -119,7 +119,7 @@ const Hero = () => {
             Real quantum entropy from{' '}
             <span className="text-quantum-400 font-bold">156-qubit quantum hardware</span>
             {' '}combined with{' '}
-            <span className="text-quantum-400 font-bold">NIST FIPS 203 Kyber768</span>
+            <span className="text-quantum-400 font-bold">ML-KEM-768 (FIPS 203)</span>
             {' '}cryptography for quantum-resistant security
           </motion.p>
 
@@ -181,7 +181,7 @@ const Hero = () => {
                   <Zap className="w-7 h-7 text-quantum-400" />
                 </div>
                 <div className="text-3xl font-bold bg-gradient-to-br from-quantum-400 to-purple-400 bg-clip-text text-transparent mb-2">
-                  0.034ms
+                  ≤11 μs encap
                 </div>
                 <div className="text-gray-400 font-medium">Encryption Speed</div>
               </div>
@@ -223,7 +223,7 @@ const Hero = () => {
                   <Shield className="w-7 h-7 text-quantum-400" />
                 </div>
                 <div className="text-3xl font-bold bg-gradient-to-br from-quantum-400 to-purple-400 bg-clip-text text-transparent mb-2">
-                  NIST Level 3
+                  NIST PQC Category 3 (≈AES-192)
                 </div>
                 <div className="text-gray-400 font-medium">Security Standard</div>
               </div>

@@ -13,7 +13,7 @@ const modules = [
     icon: Lock,
     name: 'PQC Encryption',
     color: 'from-quantum-500 to-indigo-500',
-    description: 'ML-KEM-768 (Kyber768) core engine with NIST FIPS 203 compliance. 0.034ms encryption, constant-time operations, memory-safe Rust implementation.',
+    description: 'ML-KEM-768 (NIST FIPS 203) core engine. ≤11 μs encapsulation, constant-time operations, memory-safe Rust implementation.',
   },
   {
     id: 'entropy',

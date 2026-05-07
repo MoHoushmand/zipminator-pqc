@@ -19,6 +19,9 @@ getrandom = { version = "0.2", features = ["std"] }
 # default-features = false disables NEON assembly that uses ___chkstk_darwin (macOS-only)
 pqcrypto-kyber = { version = "0.8", default-features = false, features = ["std"] }
 pqcrypto-traits = "0.3"
+# FIPS 203 final ML-KEM (ml-kem-spike-2026-05-07)
+# Sibling backend for ACVP validation, parallel to the in-tree CRYSTALS-Kyber-768 impl.
+ml-kem = { version = "0.3", default-features = false, features = ["zeroize"] }
 aes-gcm = "0.10"
 aes = "0.8"
 x25519-dalek = { version = "2", features = ["static_secrets"] }

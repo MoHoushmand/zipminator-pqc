@@ -45,6 +45,7 @@
 
 - **Encryption**: AES-256-GCM with keys derived from ML-KEM-768 (FIPS 203)
 - **Key seeding**: 32-byte seeds from real IBM Quantum entropy (`quantum_entropy_pool.bin`)
+- **2026-05-07 — FIPS 203 spike**: branch `spike/ml-kem-migration-2026-05-07` adds `ml-kem 0.3.0` (RustCrypto/KEMs) as a parallel KEM. ACVP-768 vectors verified 60/60 (25 keygen, 35 encap+decap) via `crates/zipminator-nist/tests/acvp_ml_kem_768.rs`. The in-tree `kyber768.rs` impl is retained; spike report at `docs/guides/plans/2026-05-07-mlkem-spike.md`.
 - **Formats**: CSV, JSON, Parquet, Excel via Pandas integration
 - **Compression**: AES-encrypted ZIP archives with configurable passwords
 - **Self-destruct**: Timer-based, DoD 5220.22-M 3-pass overwrite (zeros, ones, random), scheduled destruction, memory clearing. **Tauri UI wired**: `self_destruct_file` command with two-step confirmation, progress spinner, system path safety guard (6 tests)

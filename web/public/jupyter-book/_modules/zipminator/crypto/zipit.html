@@ -1,0 +1,906 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>zipminator.crypto.zipit &#8212; Zipminator</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=93784575" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=a56c686a"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/zipminator/crypto/zipit';</script>
+    <script src="../../../_static/custom.js?v=b141372c"></script>
+    <link rel="icon" href="../../../_static/Z.svg"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/zipminator-logo-dark.svg" class="logo__image only-light" alt="Zipminator - Home"/>
+    <img src="../../../_static/zipminator-logo-light.svg" class="logo__image only-dark pst-js-only" alt="Zipminator - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part I: Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part II: Core Cryptography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/core_crypto.html">Core Cryptography: Kyber768 KEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/entropy.html">Quantum Entropy</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../content/qmesh.html">Q-Mesh: Physical Cryptography</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../content/clearance_levels.html">Clearance Levels: L1 through L4</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part III: Data Protection</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/pii_scanning.html">PII Scanning</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../content/anonymization.html">10-Level Data Anonymization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../content/anonymization_levels.html">10-Level Anonymization System</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/self_destruct.html">Secure Self-Destruct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/zipndel.html">Zipndel: Encrypt &amp; Compress DataFrames</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IV: Jupyter &amp; Interactive</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/jupyter.html">Jupyter Integration</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part V: Tiers &amp; API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/subscription.html">Subscription Tiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/api_credentials.html">API Credentials &amp; Access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/api_reference.html">API Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VI: Compliance &amp; Use Cases</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/compliance.html">Compliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/use_cases/government.html">Use Case: Government and Public Sector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/use_cases/healthcare.html">Use Case: Healthcare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/use_cases/finance.html">Use Case: Finance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/use_cases/ecommerce.html">Use Case: E-Commerce</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/use_cases/defense.html">Use Case: Defense and Intelligence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VII: Interactive Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/01_quickstart.html">Getting Started with Zipminator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/02_anonymization.html">10-Level Anonymization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/03_qrng_entropy.html">Quantum Random Number Generation &amp; Entropy Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/04_compliance.html">Compliance and PII Scanning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/05_shor_demo.html">Shor’s Algorithm and the Quantum Threat to Classical Cryptography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/06_quantum_capabilities.html">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/07_vault_workflow.html">Data Vault Workflow: From Raw Data to Quantum-Safe Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/08_qmesh_physical_crypto.html">Q-Mesh: Physical Cryptography — Zero-Interaction Authentication</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VIII: Advanced Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/09_monte_carlo_prng_vs_qrng.html">Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/10_quantum_anonymization.html">Quantum-Certified Anonymization: How L10 Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/10_quantum_entropy_harvester.html">Quantum Entropy Harvester</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IX: CLI Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/cli.html">Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/cli_reference.html">CLI Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part X: Releases, Research &amp; IP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/papers.html">Research Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/patents.html">Patent Portfolio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/mesh_wave1.html">Q-Mesh: Physical Cryptography Wave 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/flutter_app.html">Flutter Super-App</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/appendix/anonymization_techniques.html">Appendix: Anonymization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/appendix/fips_203.html">Appendix: NIST FIPS 203 (ML-KEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/appendix/glossary.html">Appendix: Glossary</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator/issues/new?title=Issue%20on%20page%20%2F_modules/zipminator/crypto/zipit.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for zipminator.crypto.zipit</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyzipper</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">getpass</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.quantum_random</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumRandom</span><span class="p">,</span> <span class="n">getrandbits</span><span class="p">,</span> <span class="n">choice</span>
+
+<span class="c1"># Initialize Quantum Random Generator</span>
+<span class="n">qrand</span> <span class="o">=</span> <span class="n">QuantumRandom</span><span class="p">()</span>
+
+<span class="c1"># Import PII Scanner</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.pii_scanner</span><span class="w"> </span><span class="kn">import</span> <span class="n">PIIScanner</span>
+    <span class="n">PII_SCANNER_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">PII_SCANNER_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># Import Anonymization Engine</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.anonymization</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnonymizationEngine</span>
+    <span class="n">ANONYMIZATION_ENGINE_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">ANONYMIZATION_ENGINE_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># Import PQC</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.pqc</span><span class="w"> </span><span class="kn">import</span> <span class="n">PQC</span>
+    <span class="n">PQC_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">PQC_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="Zipndel">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.zipit.Zipndel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Zipndel</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for compressing and encrypting Pandas DataFrames and deleting the original file.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        file_name (str): The name of the file to be written, default is &#39;df&#39;.</span>
+<span class="sd">        file_format (str): The file format of the file to be written, default is &#39;csv&#39;.</span>
+<span class="sd">        self_destruct_enabled (bool): Whether to enable auto-activating self-destruct timer, default is False.</span>
+<span class="sd">        self_destruct_time (tuple): A tuple of (hours, minutes, seconds) until self-destruct, default is (672, 0, 0).</span>
+<span class="sd">        password (str): The password to use for the zip file, default is None.</span>
+<span class="sd">        encryption_algorithm (str): The encryption algorithm to use for the zip file, default is &#39;AES&#39;.</span>
+<span class="sd">        mask_columns (list): The list of columns to mask, default is None.</span>
+<span class="sd">        anonymize_columns (list): The list of columns to anonymize, default is None.</span>
+<span class="sd">        compliance_check (bool): Whether to perform a compliance check on the data, default is False.</span>
+<span class="sd">        audit_trail (bool): Whether to keep an audit trail, default is False.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        mask_columns(df: pd.DataFrame, columns: List[str]) -&gt; pd.DataFrame:</span>
+<span class="sd">            Mask sensitive data in the specified DataFrame columns by applying a SHA-256 hash function.</span>
+
+<span class="sd">        anonymize_columns(df: pd.DataFrame, columns: List[str]) -&gt; pd.DataFrame:</span>
+<span class="sd">            Anonymize sensitive data in the specified DataFrame columns by replacing it with random characters.</span>
+
+<span class="sd">        zipit(df: pd.DataFrame) -&gt; None:</span>
+<span class="sd">            Write the input DataFrame to a file, create a zip file with the written file, set a password for the zip file,</span>
+<span class="sd">            and delete the written file.</span>
+
+<span class="sd">        self_destruct(hours: int, minutes: int, seconds: int) -&gt; None:</span>
+<span class="sd">            Delete the compressed and encrypted file after a specified amount of time.</span>
+
+<span class="sd">        decompress_and_read() -&gt; pd.DataFrame:</span>
+<span class="sd">            Unzip the file, read it using pandas, and delete the unzipped file.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; df = pd.DataFrame({&#39;A&#39;: [1, 2, 3], &#39;B&#39;: [4, 5, 6], &#39;C&#39;: [7, 8, 9]})</span>
+<span class="sd">        &gt;&gt;&gt; Zipndel(file_name=&#39;my_file&#39;, password=&#39;my_password&#39;, mask_columns=[&#39;B&#39;], anonymize_columns=[&#39;C&#39;]).zipit(df)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Zipndel.__init__">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.zipit.Zipndel.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;df&#39;</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span> <span class="n">self_destruct_enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">self_destruct_time</span><span class="o">=</span><span class="p">(</span><span class="mi">672</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encryption_algorithm</span><span class="o">=</span><span class="s1">&#39;AES&#39;</span><span class="p">,</span> <span class="n">mask_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">anonymize_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compliance_check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">audit_trail</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">auto_pii_scan</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">anonymization_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">public_key_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the Zipndel object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_name (str): The name of the file to be written, default is &#39;df&#39;.</span>
+<span class="sd">            file_format (str): The file format of the file to be written, default is &#39;csv&#39;.</span>
+<span class="sd">            self_destruct_enabled (bool): Whether to enable auto-activating self-destruct timer, default is False.</span>
+<span class="sd">            self_destruct_time (tuple): A tuple of (hours, minutes, seconds) until self-destruct, default is (672, 0, 0).</span>
+<span class="sd">            password (str): The password to use for the zip file, default is None.</span>
+<span class="sd">            encryption_algorithm (str): The encryption algorithm to use for the zip file, default is &#39;AES&#39;.</span>
+<span class="sd">            mask_columns (list): The list of columns to mask, default is None.</span>
+<span class="sd">            anonymize_columns (list): The list of columns to anonymize, default is None.</span>
+<span class="sd">            compliance_check (bool): Whether to perform a compliance check on the data, default is False.</span>
+<span class="sd">            audit_trail (bool): Whether to keep an audit trail, default is False.</span>
+<span class="sd">            auto_pii_scan (bool): Whether to automatically scan for PII before encryption, default is True.</span>
+<span class="sd">            anonymization_level (int): Current anonymization level (1-10), default is 1.</span>
+<span class="sd">            public_key_file (str): Path to public key file for PQC encryption, default is None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="n">file_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_format</span> <span class="o">=</span> <span class="n">file_format</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">self_destruct_enabled</span> <span class="o">=</span> <span class="n">self_destruct_enabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">self_destruct_time</span> <span class="o">=</span> <span class="n">self_destruct_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encryption_algorithm</span> <span class="o">=</span> <span class="n">encryption_algorithm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_columns</span> <span class="o">=</span> <span class="n">mask_columns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anonymize_columns</span> <span class="o">=</span> <span class="n">anonymize_columns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compliance_check</span> <span class="o">=</span> <span class="n">compliance_check</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">audit_trail</span> <span class="o">=</span> <span class="n">audit_trail</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_pii_scan</span> <span class="o">=</span> <span class="n">auto_pii_scan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anonymization_level</span> <span class="o">=</span> <span class="n">anonymization_level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">public_key_file</span> <span class="o">=</span> <span class="n">public_key_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_pii_scan_results</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">public_key_file</span> <span class="ow">and</span> <span class="n">PQC_AVAILABLE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pqc</span> <span class="o">=</span> <span class="n">PQC</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">768</span><span class="p">)</span>  <span class="c1"># Default to Kyber768</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🛡️ PQC Enabled: Using Kyber768 for key encapsulation&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">public_key_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">PQC_AVAILABLE</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;⚠️ PQC requested but kyber-py not available. Falling back to standard password.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">public_key_file</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pqc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pqc</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Initialize anonymization engine</span>
+        <span class="k">if</span> <span class="n">ANONYMIZATION_ENGINE_AVAILABLE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_anonymization_engine</span> <span class="o">=</span> <span class="n">AnonymizationEngine</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_anonymization_engine</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;🔒 Secure Zip initialized with Quantum Entropy Support (Tier: </span><span class="si">{</span><span class="n">qrand</span><span class="o">.</span><span class="n">license_tier</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Zipndel.zipit">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.zipit.Zipndel.zipit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">zipit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write the input DataFrame to a file, create a zip file with the written file, set a password for the zip file,</span>
+<span class="sd">        and delete the written file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            df (pandas.DataFrame): The DataFrame to compress and encrypt.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Perform automatic PII scanning before encryption</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_pii_scan</span> <span class="ow">and</span> <span class="n">PII_SCANNER_AVAILABLE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_perform_pii_scan</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+        <span class="c1"># Apply anonymization using the engine if available</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_columns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anonymization_engine</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anonymization_engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span>
+                    <span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_columns</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">anonymization_level</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_columns</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">anonymize_columns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anonymization_engine</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anonymization_engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span>
+                    <span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">anonymize_columns</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">anonymization_level</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anonymize_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">anonymize_columns</span><span class="p">)</span>
+
+        <span class="n">write_func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;to_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_format</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">write_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">df_zip</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="si">}</span><span class="s2">.zip&quot;</span>
+        <span class="c1"># PQC Key Encapsulation</span>
+        <span class="n">kyber_ciphertext</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pqc</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">public_key_file</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">public_key_file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">pk</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+                <span class="n">ciphertext</span><span class="p">,</span> <span class="n">shared_secret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pqc</span><span class="o">.</span><span class="n">encapsulate</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">shared_secret</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
+                <span class="n">kyber_ciphertext</span> <span class="o">=</span> <span class="n">ciphertext</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🔑 Generated Quantum-Safe Password using Kyber768&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;   Password (Shared Secret Hex): </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">[:</span><span class="mi">16</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ PQC Encapsulation Failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="c1"># Fallback? Or raise? Raise is safer.</span>
+                <span class="k">raise</span> <span class="n">e</span>
+
+        <span class="k">with</span> <span class="n">pyzipper</span><span class="o">.</span><span class="n">AESZipFile</span><span class="p">(</span><span class="n">df_zip</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="n">pyzipper</span><span class="o">.</span><span class="n">ZIP_DEFLATED</span><span class="p">,</span> <span class="n">encryption</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pyzipper</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;WZ_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">encryption_algorithm</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">zf</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="s1">&#39;Enter password: &#39;</span><span class="p">)</span>
+            <span class="n">zf</span><span class="o">.</span><span class="n">setpassword</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+            <span class="n">zf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
+
+            <span class="c1"># Save Kyber ciphertext if applicable</span>
+            <span class="k">if</span> <span class="n">kyber_ciphertext</span><span class="p">:</span>
+                <span class="n">kyber_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">df_zip</span><span class="si">}</span><span class="s2">.kyber&quot;</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">kyber_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">kyber_ciphertext</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🔒 Saved Kyber Encapsulated Key to: </span><span class="si">{</span><span class="n">kyber_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="c1"># Add comment to zip</span>
+                <span class="n">zf</span><span class="o">.</span><span class="n">comment</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Encrypted with Kyber768. Key file: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">kyber_file</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+                    <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="c1"># Explicitly close the zip file to release file handles</span>
+            <span class="n">zf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c1"># Ensure original file is removed after zip creation</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">self_destruct_enabled</span><span class="p">:</span>
+            <span class="c1"># Use secure delete if self-destruct is enabled</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.self_destruct</span><span class="w"> </span><span class="kn">import</span> <span class="n">SelfDestruct</span>
+            <span class="n">sd</span> <span class="o">=</span> <span class="n">SelfDestruct</span><span class="p">(</span><span class="n">log_operations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">audit_trail</span><span class="p">)</span>
+            <span class="n">sd</span><span class="o">.</span><span class="n">secure_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Standard delete</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
+
+        <span class="c1"># Auto-activate self-destruct if enabled</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">self_destruct_enabled</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">self_destruct_time</span><span class="p">:</span>
+            <span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">,</span> <span class="n">seconds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">self_destruct_time</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;⏰ Self-destruct timer activated: </span><span class="si">{</span><span class="n">hours</span><span class="si">}</span><span class="s2">h </span><span class="si">{</span><span class="n">minutes</span><span class="si">}</span><span class="s2">m </span><span class="si">{</span><span class="n">seconds</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Store metadata for persistent timer</span>
+            <span class="n">metadata_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="si">}</span><span class="s2">.metadata.json&quot;</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;encrypted_at&#39;</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
+                <span class="s1">&#39;self_destruct_at&#39;</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="n">hours</span><span class="o">*</span><span class="mi">3600</span> <span class="o">+</span> <span class="n">minutes</span><span class="o">*</span><span class="mi">60</span> <span class="o">+</span> <span class="n">seconds</span><span class="p">),</span>
+                <span class="s1">&#39;self_destruct_enabled&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="si">}</span><span class="s2">.zip&quot;</span><span class="p">,</span>
+                <span class="s1">&#39;hours&#39;</span><span class="p">:</span> <span class="n">hours</span><span class="p">,</span>
+                <span class="s1">&#39;minutes&#39;</span><span class="p">:</span> <span class="n">minutes</span><span class="p">,</span>
+                <span class="s1">&#39;seconds&#39;</span><span class="p">:</span> <span class="n">seconds</span>
+            <span class="p">}</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">metadata_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># Start async timer thread</span>
+            <span class="n">timer_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
+                <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_self_destruct</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">self_destruct_time</span><span class="p">,</span>
+                <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">timer_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;💣 File will self-destruct in </span><span class="si">{</span><span class="n">hours</span><span class="si">}</span><span class="s2"> hours, </span><span class="si">{</span><span class="n">minutes</span><span class="si">}</span><span class="s2"> minutes, </span><span class="si">{</span><span class="n">seconds</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📝 Metadata saved to </span><span class="si">{</span><span class="n">metadata_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mask_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mask sensitive data in the specified DataFrame columns by applying a SHA-256 hash function.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            df (pandas.DataFrame): The DataFrame to mask sensitive data in.</span>
+<span class="sd">            columns (list): A list of strings specifying the names of the columns to mask.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pandas.DataFrame: A copy of the input DataFrame with the specified columns masked.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_anonymize_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Anonymize sensitive data in the specified DataFrame columns by replacing it with random characters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            df (pandas.DataFrame): The DataFrame to anonymize sensitive data in.</span>
+<span class="sd">            columns (list): A list of strings specifying the names of the columns to anonymize.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pandas.DataFrame: A copy of the input DataFrame with the specified columns anonymized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_uppercase</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]))</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_self_destruct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hours</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">minutes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete the compressed and encrypted file after a specified amount of time has elapsed.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            hours (int): The number of hours until file deletion.</span>
+<span class="sd">            minutes (int): The number of minutes until file deletion.</span>
+<span class="sd">            seconds (int): The number of seconds until file deletion.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df_zip</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="si">}</span><span class="s2">.zip&quot;</span>
+        <span class="n">metadata_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="si">}</span><span class="s2">.metadata.json&quot;</span>
+        <span class="n">self_destruct_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="n">hours</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="n">minutes</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="n">seconds</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">self_destruct_time</span><span class="p">:</span>
+                <span class="c1"># Delete files with secure deletion</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">.self_destruct</span><span class="w"> </span><span class="kn">import</span> <span class="n">SelfDestruct</span>
+                <span class="n">sd</span> <span class="o">=</span> <span class="n">SelfDestruct</span><span class="p">(</span><span class="n">log_operations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">audit_trail</span><span class="p">)</span>
+
+                <span class="c1"># Securely delete the zip file</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">sd</span><span class="o">.</span><span class="n">secure_delete_file</span><span class="p">(</span><span class="n">df_zip</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ Securely deleted: </span><span class="si">{</span><span class="n">df_zip</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Failed to securely delete </span><span class="si">{</span><span class="n">df_zip</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="c1"># Fallback to standard delete with retry</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_delete_with_retry</span><span class="p">(</span><span class="n">df_zip</span><span class="p">)</span>
+
+                <span class="c1"># Delete metadata file (standard delete is fine for metadata)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_delete_with_retry</span><span class="p">(</span><span class="n">metadata_file</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_delete_with_retry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">initial_delay</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete a file with retry mechanism and exponential backoff.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_path (str): Path to the file to delete</span>
+<span class="sd">            max_retries (int): Maximum number of retry attempts</span>
+<span class="sd">            initial_delay (float): Initial delay in seconds before first retry</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">delay</span> <span class="o">=</span> <span class="n">initial_delay</span>
+        <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_retries</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Ensure file is closed by attempting to open and close it</span>
+                <span class="c1"># This releases any lingering file handles</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
+                    <span class="k">pass</span>
+
+                <span class="c1"># Attempt deletion</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ Successfully deleted: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="k">except</span> <span class="ne">PermissionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">max_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;⚠️  File locked, retrying in </span><span class="si">{</span><span class="n">delay</span><span class="si">}</span><span class="s2">s... (attempt </span><span class="si">{</span><span class="n">attempt</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">max_retries</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+                    <span class="n">delay</span> <span class="o">*=</span> <span class="mi">2</span>  <span class="c1"># Exponential backoff</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;❌ Failed to delete </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> after </span><span class="si">{</span><span class="n">max_retries</span><span class="si">}</span><span class="s2"> attempts: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                <span class="c1"># File already deleted</span>
+                <span class="k">return</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Unexpected error deleting </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">max_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+                    <span class="n">delay</span> <span class="o">*=</span> <span class="mi">2</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_perform_pii_scan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform automatic PII scanning on DataFrame before encryption.</span>
+<span class="sd">        Warns user and suggests anonymization level based on detected PII.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            df (pandas.DataFrame): The DataFrame to scan for PII</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scanner</span> <span class="o">=</span> <span class="n">PIIScanner</span><span class="p">()</span>
+        <span class="n">scan_results</span> <span class="o">=</span> <span class="n">scanner</span><span class="o">.</span><span class="n">scan_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_pii_scan_results</span> <span class="o">=</span> <span class="n">scan_results</span>
+
+        <span class="k">if</span> <span class="n">scan_results</span><span class="p">[</span><span class="s1">&#39;pii_detected&#39;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;⚠️  PII DETECTION WARNING&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Risk Level: </span><span class="si">{</span><span class="n">scan_results</span><span class="p">[</span><span class="s1">&#39;risk_level&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Columns with PII: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">scan_results</span><span class="p">[</span><span class="s1">&#39;columns_with_pii&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Recommended Anonymization Level: </span><span class="si">{</span><span class="n">scan_results</span><span class="p">[</span><span class="s1">&#39;recommended_anonymization_level&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/10&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">()</span>
+
+            <span class="c1"># Display detailed warnings</span>
+            <span class="k">for</span> <span class="n">warning</span> <span class="ow">in</span> <span class="n">scan_results</span><span class="p">[</span><span class="s1">&#39;warnings&#39;</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">warning</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Affected columns:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">matches</span> <span class="ow">in</span> <span class="n">scan_results</span><span class="p">[</span><span class="s1">&#39;columns_with_pii&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">pii_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">pii_type</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">]</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pii_types</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Suggest anonymization level increase</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">anonymization_level</span> <span class="o">&lt;</span> <span class="n">scan_results</span><span class="p">[</span><span class="s1">&#39;recommended_anonymization_level&#39;</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;💡 RECOMMENDATION:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;   Current anonymization level: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">anonymization_level</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;   Suggested anonymization level: </span><span class="si">{</span><span class="n">scan_results</span><span class="p">[</span><span class="s1">&#39;recommended_anonymization_level&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;   Consider using: Zipndel(anonymization_level=</span><span class="si">{</span><span class="n">scan_results</span><span class="p">[</span><span class="s1">&#39;recommended_anonymization_level&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Suggest specific columns to mask/anonymize</span>
+            <span class="n">high_risk_columns</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">col</span> <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">matches</span> <span class="ow">in</span> <span class="n">scan_results</span><span class="p">[</span><span class="s1">&#39;columns_with_pii&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">confidence</span> <span class="o">&gt;</span> <span class="mf">0.7</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="n">high_risk_columns</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_columns</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">anonymize_columns</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;💡 SUGGESTION:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Consider masking these high-risk columns:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   mask_columns=</span><span class="si">{</span><span class="n">high_risk_columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Zipndel.get_pii_scan_results">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.zipit.Zipndel.get_pii_scan_results">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_pii_scan_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the results of the last PII scan performed.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict or None: The scan results if available, None otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_pii_scan_results</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QDaria AS
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p><a href="https://www.zipminator.zip">zipminator.zip</a> | <a href="https://www.zipminator.zip/docs">Docs Overview</a> | <a href="https://qdaria.com">QDaria</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

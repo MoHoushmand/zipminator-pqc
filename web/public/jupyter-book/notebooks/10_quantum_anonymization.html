@@ -1,0 +1,1066 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Quantum-Certified Anonymization: How L10 Works &#8212; Zipminator</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=93784575" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=a56c686a"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/10_quantum_anonymization';</script>
+    <script src="../_static/custom.js?v=b141372c"></script>
+    <link rel="icon" href="../_static/Z.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Quantum Entropy Harvester" href="10_quantum_entropy_harvester.html" />
+    <link rel="prev" title="Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity" href="09_monte_carlo_prng_vs_qrng.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/zipminator-logo-dark.svg" class="logo__image only-light" alt="Zipminator - Home"/>
+    <img src="../_static/zipminator-logo-light.svg" class="logo__image only-dark pst-js-only" alt="Zipminator - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part I: Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part II: Core Cryptography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/core_crypto.html">Core Cryptography: Kyber768 KEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/entropy.html">Quantum Entropy</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../content/qmesh.html">Q-Mesh: Physical Cryptography</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../content/clearance_levels.html">Clearance Levels: L1 through L4</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part III: Data Protection</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/pii_scanning.html">PII Scanning</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../content/anonymization.html">10-Level Data Anonymization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../content/anonymization_levels.html">10-Level Anonymization System</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/self_destruct.html">Secure Self-Destruct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/zipndel.html">Zipndel: Encrypt &amp; Compress DataFrames</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IV: Jupyter &amp; Interactive</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/jupyter.html">Jupyter Integration</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part V: Tiers &amp; API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/subscription.html">Subscription Tiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/api_credentials.html">API Credentials &amp; Access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/api_reference.html">API Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VI: Compliance &amp; Use Cases</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/compliance.html">Compliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/government.html">Use Case: Government and Public Sector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/healthcare.html">Use Case: Healthcare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/finance.html">Use Case: Finance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/ecommerce.html">Use Case: E-Commerce</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/defense.html">Use Case: Defense and Intelligence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VII: Interactive Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01_quickstart.html">Getting Started with Zipminator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_anonymization.html">10-Level Anonymization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_qrng_entropy.html">Quantum Random Number Generation &amp; Entropy Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_compliance.html">Compliance and PII Scanning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_shor_demo.html">Shor’s Algorithm and the Quantum Threat to Classical Cryptography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_quantum_capabilities.html">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_vault_workflow.html">Data Vault Workflow: From Raw Data to Quantum-Safe Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08_qmesh_physical_crypto.html">Q-Mesh: Physical Cryptography — Zero-Interaction Authentication</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VIII: Advanced Topics</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="09_monte_carlo_prng_vs_qrng.html">Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Quantum-Certified Anonymization: How L10 Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_quantum_entropy_harvester.html">Quantum Entropy Harvester</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IX: CLI Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/cli.html">Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/cli_reference.html">CLI Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part X: Releases, Research &amp; IP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/papers.html">Research Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/patents.html">Patent Portfolio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/mesh_wave1.html">Q-Mesh: Physical Cryptography Wave 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/flutter_app.html">Flutter Super-App</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/appendix/anonymization_techniques.html">Appendix: Anonymization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/appendix/fips_203.html">Appendix: NIST FIPS 203 (ML-KEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/appendix/glossary.html">Appendix: Glossary</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/QDaria/zipminator/blob/master/notebooks/10_quantum_anonymization.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator/issues/new?title=Issue%20on%20page%20%2Fnotebooks/10_quantum_anonymization.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/10_quantum_anonymization.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Quantum-Certified Anonymization: How L10 Works</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-born-rule-guarantee">The Born Rule Guarantee</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classical-prng-vs-qrng-the-irreversibility-gap">Classical PRNG vs. QRNG: The Irreversibility Gap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-l10-quantum-anonymization-works">How L10 Quantum Anonymization Works</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#competitive-landscape-anonymization-tools">Competitive Landscape: Anonymization Tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#patentability-analysis">Patentability Analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#independence-from-p-vs-np">Independence from P vs NP</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="quantum-certified-anonymization-how-l10-works">
+<h1>Quantum-Certified Anonymization: How L10 Works<a class="headerlink" href="#quantum-certified-anonymization-how-l10-works" title="Link to this heading">#</a></h1>
+<p>Every anonymization tool in existence today, from ARX and sdcMicro to Google’s Differential
+Privacy library, Apple’s Local DP, Amnesia, and Microsoft Presidio, relies on classical
+pseudo-random number generators (PRNGs) as its entropy source. A PRNG is deterministic:
+given the seed, you can reconstruct every “random” value it produced and reverse the
+anonymization. The seed may be well-protected, but its existence is an irreducible
+vulnerability. Seed compromise means total de-anonymization.</p>
+<p>Zipminator L10 is different. It replaces every value in the dataset with a string derived
+from quantum random numbers, generated by measuring qubits in superposition on IBM Quantum
+hardware. The mapping between original values and replacement strings is intentionally
+destroyed after use. No seed exists. No replay is possible. No amount of computation,
+classical or quantum, can reconstruct the original data.</p>
+<p><strong>Claim:</strong> To our knowledge, L10 is the first anonymization system where irreversibility
+is guaranteed by quantum mechanics rather than computational hardness.</p>
+<section id="the-born-rule-guarantee">
+<h2>The Born Rule Guarantee<a class="headerlink" href="#the-born-rule-guarantee" title="Link to this heading">#</a></h2>
+<p>When a qubit is prepared in a superposition state</p>
+<div class="math notranslate nohighlight">
+\[|\psi\rangle = \alpha|0\rangle + \beta|1\rangle\]</div>
+<p>and then measured in the computational basis, the outcome is governed by the
+<strong>Born rule</strong>:</p>
+<div class="math notranslate nohighlight">
+\[P(|0\rangle) = |\alpha|^2, \quad P(|1\rangle) = |\beta|^2\]</div>
+<p>For a balanced superposition (<span class="math notranslate nohighlight">\(\alpha = \beta = 1/\sqrt{2}\)</span>), each outcome has
+probability exactly <span class="math notranslate nohighlight">\(1/2\)</span>. The outcome is not merely unpredictable in practice;
+it is <strong>fundamentally indeterminate</strong> prior to measurement. There is no hidden
+state, no pre-existing value waiting to be revealed.</p>
+<p>This is not a philosophical claim. Bell’s theorem (1964) and its experimental
+confirmations (Aspect et al. 1982, Hensen et al. 2015, the 2022 Nobel Prize
+in Physics to Aspect, Clauser, and Zeilinger) rigorously rule out local hidden
+variable theories. The randomness of quantum measurement outcomes is a
+consequence of the structure of quantum mechanics itself.</p>
+<p>IBM Quantum’s processors (up to 156 qubits in the systems Zipminator connects
+to) produce measurement outcomes that are provably random to within the precision
+of quantum mechanics. Each bit of QRNG output is the result of a physical
+measurement on a qubit in superposition. There is no seed. There is no state
+to capture. There is nothing to replay.</p>
+</section>
+<section id="classical-prng-vs-qrng-the-irreversibility-gap">
+<h2>Classical PRNG vs. QRNG: The Irreversibility Gap<a class="headerlink" href="#classical-prng-vs-qrng-the-irreversibility-gap" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Classical PRNG (<code class="docutils literal notranslate"><span class="pre">os.urandom</span></code>, <code class="docutils literal notranslate"><span class="pre">/dev/urandom</span></code>)</p></th>
+<th class="head"><p>QRNG (IBM Quantum)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Deterministic</p></td>
+<td><p>Yes (given internal state/seed)</p></td>
+<td><p>No (Born rule)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Seed recovery</p></td>
+<td><p>Possible in theory (state extraction, side channels)</p></td>
+<td><p>Physically impossible</p></td>
+</tr>
+<tr class="row-even"><td><p>Reversible anonymization</p></td>
+<td><p>If seed/state is captured</p></td>
+<td><p>Never, by physics</p></td>
+</tr>
+<tr class="row-odd"><td><p>Entropy source</p></td>
+<td><p>CPU timing jitter, interrupt timing, thermal noise</p></td>
+<td><p>Quantum measurement</p></td>
+</tr>
+<tr class="row-even"><td><p>NIST SP 800-90B compliant</p></td>
+<td><p>Yes</p></td>
+<td><p>Yes (and fundamentally stronger)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Vulnerable to future quantum computers</p></td>
+<td><p>PRNG algorithms may be weakened</p></td>
+<td><p>No (measurement randomness is irreducible)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The distinction matters for adversarial models. A classical PRNG’s security rests on the
+assumption that no adversary can recover the internal state. That assumption may hold in
+practice, but it is a <strong>computational</strong> assumption, not a physical law. QRNG security
+rests on the Born rule, which is a physical law verified to extraordinary precision
+across decades of experiment.</p>
+<p>For anonymization specifically, this means: if an adversary captures a snapshot of the
+PRNG state at the moment anonymization was performed, they can reconstruct every
+“random” replacement value and reverse the entire operation. With QRNG, there is no
+state to capture. The measurement outcomes existed only at the instant of measurement
+and were consumed immediately.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+
+<span class="c1"># === Classical PRNG: same seed produces identical output ===</span>
+<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">classical_run_1</span> <span class="o">=</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+
+<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>  <span class="c1"># replay the seed</span>
+<span class="n">classical_run_2</span> <span class="o">=</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Classical PRNG (seed=42)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Run 1: </span><span class="si">{</span><span class="n">classical_run_1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Run 2: </span><span class="si">{</span><span class="n">classical_run_2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Identical (reversible): </span><span class="si">{</span><span class="n">classical_run_1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">classical_run_2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># True</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># === QRNG: no seed exists, output is never reproducible ===</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.entropy.pool_provider</span><span class="w"> </span><span class="kn">import</span> <span class="n">PoolProvider</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">provider</span> <span class="o">=</span> <span class="n">PoolProvider</span><span class="p">()</span>
+    <span class="n">qrng_bytes_1</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">_read_pool</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+    <span class="n">qrng_bytes_2</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">_read_pool</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;QRNG (IBM Quantum pool)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Sample 1: </span><span class="si">{</span><span class="n">qrng_bytes_1</span><span class="o">.</span><span class="n">hex</span><span class="p">()[:</span><span class="mi">32</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Sample 2: </span><span class="si">{</span><span class="n">qrng_bytes_2</span><span class="o">.</span><span class="n">hex</span><span class="p">()[:</span><span class="mi">32</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Identical: </span><span class="si">{</span><span class="n">qrng_bytes_1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">qrng_bytes_2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># False</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Bytes remaining in pool: </span><span class="si">{</span><span class="n">provider</span><span class="o">.</span><span class="n">bytes_remaining</span><span class="p">()</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;QRNG pool file not found on this machine.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;In production, entropy comes from IBM Quantum 156-qubit hardware.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The pool is populated by: zipminator.entropy.scheduler&quot;</span><span class="p">)</span>
+    <span class="c1"># Demonstrate with os.urandom fallback (still not reproducible, but not quantum)</span>
+    <span class="n">fb1</span><span class="p">,</span> <span class="n">fb2</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  os.urandom fallback sample: </span><span class="si">{</span><span class="n">fb1</span><span class="o">.</span><span class="n">hex</span><span class="p">()[:</span><span class="mi">32</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Identical: </span><span class="si">{</span><span class="n">fb1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">fb2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+</section>
+<section id="how-l10-quantum-anonymization-works">
+<h2>How L10 Quantum Anonymization Works<a class="headerlink" href="#how-l10-quantum-anonymization-works" title="Link to this heading">#</a></h2>
+<p>The L10 algorithm is straightforward. Its power comes not from algorithmic
+complexity but from the entropy source.</p>
+<p><strong>Step 1: Generate QRNG replacement strings.</strong> For each unique value in each
+column of the dataset, read 16 bytes from the quantum entropy pool and convert
+them to a 16-character alphanumeric string. Each byte selects a character from
+the alphabet <code class="docutils literal notranslate"><span class="pre">[a-zA-Z0-9]</span></code> using modular arithmetic on the raw QRNG byte.</p>
+<p><strong>Step 2: Build the one-time pad (OTP) mapping.</strong> Create a dictionary:
+<code class="docutils literal notranslate"><span class="pre">original_value</span> <span class="pre">-&gt;</span> <span class="pre">QRNG_string</span></code>. Every occurrence of a given value maps to the
+same replacement (consistency within the dataset), but the replacement is
+quantum-random and unrelated to the original.</p>
+<p><strong>Step 3: Apply the mapping.</strong> Replace every value in the DataFrame using the
+OTP dictionary.</p>
+<p><strong>Step 4: Discard the mapping.</strong> The OTP dictionary is NOT persisted to disk,
+database, or any external store. It exists only in process memory during the
+<code class="docutils literal notranslate"><span class="pre">apply()</span></code> call. Once the method returns, the mapping is eligible for garbage
+collection and is never recoverable.</p>
+<p>Because the replacement strings come from quantum measurement (no seed, no
+deterministic state), and because the mapping is intentionally destroyed,
+<strong>reconstruction of the original values is physically impossible</strong>. This holds
+even against an adversary with:</p>
+<ul class="simple">
+<li><p>Unlimited classical compute</p></li>
+<li><p>A universal quantum computer</p></li>
+<li><p>Full knowledge of the algorithm and source code</p></li>
+<li><p>Access to the anonymized dataset</p></li>
+</ul>
+<p>The only thing that could reverse L10 anonymization is possession of the OTP
+mapping itself, which was destroyed.</p>
+<p>This satisfies <strong>GDPR Recital 26</strong>: <em>“The principles of data protection should
+therefore not apply to anonymous information, namely information which does not
+relate to an identified or identifiable natural person or to personal data
+rendered anonymous in such a manner that the data subject is not or no longer
+identifiable.”</em></p>
+<p>L10 output is anonymous information under this definition. The data subject is
+not identifiable because identification would require reversing the OTP, which
+requires the destroyed mapping, which was generated from irreproducible quantum
+random numbers.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.anonymizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">LevelAnonymizer</span>
+
+<span class="c1"># Sample dataset with PII</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Alice Johnson&quot;</span><span class="p">,</span> <span class="s2">&quot;Bob Smith&quot;</span><span class="p">,</span> <span class="s2">&quot;Carol Williams&quot;</span><span class="p">,</span> <span class="s2">&quot;David Lee&quot;</span><span class="p">,</span> <span class="s2">&quot;Eve Brown&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;alice@example.com&quot;</span><span class="p">,</span> <span class="s2">&quot;bob@corp.net&quot;</span><span class="p">,</span> <span class="s2">&quot;carol@hospital.org&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;david@school.edu&quot;</span><span class="p">,</span> <span class="s2">&quot;eve@lab.io&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;salary&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">85000</span><span class="p">,</span> <span class="mi">92000</span><span class="p">,</span> <span class="mi">78000</span><span class="p">,</span> <span class="mi">105000</span><span class="p">,</span> <span class="mi">67000</span><span class="p">],</span>
+    <span class="s2">&quot;diagnosis&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Diabetes&quot;</span><span class="p">,</span> <span class="s2">&quot;Hypertension&quot;</span><span class="p">,</span> <span class="s2">&quot;Diabetes&quot;</span><span class="p">,</span> <span class="s2">&quot;Asthma&quot;</span><span class="p">,</span> <span class="s2">&quot;Migraine&quot;</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Original Data ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Apply L10 quantum anonymization</span>
+<span class="n">anonymizer</span> <span class="o">=</span> <span class="n">LevelAnonymizer</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">anonymizer</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== L10 Quantum Anonymized ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Key observations</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Observations:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Every value replaced with a 16-char QRNG-derived string&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - &#39;Diabetes&#39; appears twice in original but maps to the SAME token&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    (consistency within dataset: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;diagnosis&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;diagnosis&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - The OTP mapping was NOT persisted. It cannot be recovered.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - This is true anonymization, not pseudonymization.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Run again to show non-reproducibility</span>
+<span class="n">anonymizer2</span> <span class="o">=</span> <span class="n">LevelAnonymizer</span><span class="p">()</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">anonymizer2</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Second Run (different QRNG output) ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Alice&#39;s name token, run 1: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Alice&#39;s name token, run 2: </span><span class="si">{</span><span class="n">result2</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Tokens match: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">result2</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+</section>
+<section id="competitive-landscape-anonymization-tools">
+<h2>Competitive Landscape: Anonymization Tools<a class="headerlink" href="#competitive-landscape-anonymization-tools" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tool</p></th>
+<th class="head"><p>Technique</p></th>
+<th class="head"><p>Entropy Source</p></th>
+<th class="head"><p>Irreversibility Guarantee</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Zipminator L10</strong></p></td>
+<td><p>QRNG one-time pad</p></td>
+<td><p>IBM Quantum 156q</p></td>
+<td><p><strong>Born rule</strong> (physics)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ARX</p></td>
+<td><p>k-anonymity, l-diversity, t-closeness, DP</p></td>
+<td><p>Classical PRNG</p></td>
+<td><p>Computational</p></td>
+</tr>
+<tr class="row-even"><td><p>sdcMicro</p></td>
+<td><p>k-anonymity, microaggregation, PRAM</p></td>
+<td><p>Classical PRNG</p></td>
+<td><p>Computational</p></td>
+</tr>
+<tr class="row-odd"><td><p>Google DP Library</p></td>
+<td><p>Laplace/Gaussian mechanism</p></td>
+<td><p>Classical PRNG</p></td>
+<td><p>Computational</p></td>
+</tr>
+<tr class="row-even"><td><p>Apple Local DP</p></td>
+<td><p>Randomized response, CMS</p></td>
+<td><p>Classical PRNG</p></td>
+<td><p>Computational</p></td>
+</tr>
+<tr class="row-odd"><td><p>Amnesia</p></td>
+<td><p>k-anonymity, km-anonymity, DP</p></td>
+<td><p>Classical PRNG</p></td>
+<td><p>Computational</p></td>
+</tr>
+<tr class="row-even"><td><p>Microsoft Presidio</p></td>
+<td><p>PII detection + masking/redaction</p></td>
+<td><p>Classical PRNG</p></td>
+<td><p>Computational</p></td>
+</tr>
+<tr class="row-odd"><td><p>OpenDP</p></td>
+<td><p>Laplace, Gaussian, exponential mechanism</p></td>
+<td><p>Classical PRNG</p></td>
+<td><p>Computational</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Computational irreversibility</strong> means the anonymization is secure assuming the
+adversary lacks sufficient compute to recover the PRNG state or brute-force the
+replacement values. This is a reasonable assumption today, but it is an assumption,
+not a guarantee. It degrades over time as compute becomes cheaper and attacks
+improve.</p>
+<p><strong>Physics irreversibility</strong> means the anonymization is secure regardless of the
+adversary’s computational resources, including access to universal quantum
+computers. The guarantee follows from the Born rule, not from computational
+complexity. It does not degrade over time.</p>
+<p>No other tool in the table above uses QRNG as its entropy source for
+anonymization. This is not because QRNG is unavailable (IBM Quantum, Quantinuum,
+and IonQ all offer API access), but because the anonymization community has not
+yet connected quantum entropy to the irreversibility argument. L10 makes that
+connection explicit.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Anonymization Approach Comparison Radar ──</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="p">;</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_helpers.viz</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">zm_radar</span><span class="p">(</span>
+    <span class="n">categories</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Privacy&quot;</span><span class="p">,</span> <span class="s2">&quot;Utility&quot;</span><span class="p">,</span> <span class="s2">&quot;Speed&quot;</span><span class="p">,</span> <span class="s2">&quot;Auditability&quot;</span><span class="p">,</span> <span class="s2">&quot;Quantum Safety&quot;</span><span class="p">],</span>
+    <span class="n">values_dict</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;Zipminator L10&quot;</span><span class="p">:</span>       <span class="p">[</span><span class="mi">95</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+        <span class="s2">&quot;k-Anonymity&quot;</span><span class="p">:</span>          <span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span>  <span class="mi">40</span><span class="p">,</span>   <span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&quot;Differential Privacy&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span>  <span class="mi">30</span><span class="p">,</span>   <span class="mi">0</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Anonymization Approach Comparison&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+</section>
+<section id="patentability-analysis">
+<h2>Patentability Analysis<a class="headerlink" href="#patentability-analysis" title="Link to this heading">#</a></h2>
+<p>The novel combination in L10 is:</p>
+<ol class="arabic simple">
+<li><p><strong>One-time pad mapping</strong> using true quantum random numbers (not classical PRNG)</p></li>
+<li><p><strong>Non-persistence</strong> of the mapping (intentional destruction after use)</p></li>
+<li><p><strong>The resulting irreversibility guarantee</strong> based on quantum mechanics</p></li>
+</ol>
+<p>Each element exists individually in prior art:</p>
+<ul class="simple">
+<li><p>OTP-based data masking is known (though typically with classical randomness)</p></li>
+<li><p>QRNG hardware and APIs exist (IBM Quantum, ID Quantique, Quantinuum)</p></li>
+<li><p>Intentional key destruction is standard practice in secure deletion</p></li>
+</ul>
+<p>The non-obvious step is combining these three elements specifically for <strong>data
+anonymization</strong> and recognizing that the combination produces a qualitatively
+different guarantee (physics-based irreversibility vs. computational
+irreversibility). A prior art search would need to find a system that uses QRNG
+specifically for anonymization OTP generation with intentional mapping destruction.</p>
+<p>This combination is likely patentable under:</p>
+<ul class="simple">
+<li><p><strong>35 U.S.C. § 101</strong> (useful process): the method produces a tangible result
+(an anonymized dataset with a physics-based irreversibility guarantee)</p></li>
+<li><p><strong>35 U.S.C. § 103</strong> (non-obvious): the combination of QRNG + OTP + mapping
+destruction for anonymization is not an obvious step from either the QRNG
+literature or the anonymization literature; neither community has connected
+quantum entropy to the irreversibility argument for data anonymization</p></li>
+</ul>
+<p><strong>Draft claim language:</strong></p>
+<blockquote>
+<div><p>A method for irreversible data anonymization comprising: (a) generating a
+one-time pad from quantum random numbers produced by measuring qubits in
+superposition; (b) applying said one-time pad to replace each unique data
+value with a corresponding quantum-random string; and (c) destroying the
+mapping between original values and quantum-random strings such that
+reconstruction of the original values is physically impossible under the
+Born rule of quantum mechanics.</p>
+</div></blockquote>
+<p>This is a preliminary analysis, not legal advice. A patent attorney should
+conduct a formal freedom-to-operate search and draft claims.</p>
+</section>
+<section id="independence-from-p-vs-np">
+<h2>Independence from P vs NP<a class="headerlink" href="#independence-from-p-vs-np" title="Link to this heading">#</a></h2>
+<p>Classical anonymization is secure <strong>if</strong> P ≠ NP. If P = NP were proven
+(or practically achieved), all computational hardness assumptions collapse:
+CSPRNG seed recovery becomes efficient, hash pre-images become findable,
+and every classical anonymization method on earth becomes reversible.</p>
+<p>L10 quantum anonymization is secure <strong>regardless</strong> of whether P = NP.
+The Born rule is a physical law, not a computational assumption. Even with
+polynomial-time algorithms for every NP problem, you still cannot:</p>
+<ul class="simple">
+<li><p>Predict a quantum measurement outcome before it happens</p></li>
+<li><p>Reconstruct a quantum measurement outcome after the fact</p></li>
+<li><p>Find a seed that does not exist</p></li>
+</ul>
+<p>This makes L10 the only anonymization method that survives the collapse
+of computational complexity assumptions. In formal terms:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Scenario</p></th>
+<th class="head"><p>Classical Anonymization</p></th>
+<th class="head"><p>L10 Quantum Anonymization</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>P ≠ NP (current assumption)</p></td>
+<td><p>Secure</p></td>
+<td><p>Secure</p></td>
+</tr>
+<tr class="row-odd"><td><p>P = NP (hypothetical)</p></td>
+<td><p><strong>Broken</strong></p></td>
+<td><p>Secure</p></td>
+</tr>
+<tr class="row-even"><td><p>Quantum computer breaks PRNG</p></td>
+<td><p><strong>Broken</strong></p></td>
+<td><p>Secure</p></td>
+</tr>
+<tr class="row-odd"><td><p>Adversary captures PRNG state</p></td>
+<td><p><strong>Broken</strong></p></td>
+<td><p>Secure (no state exists)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This is not a theoretical curiosity. It means L10 anonymization provides
+a guarantee that does not degrade over time, regardless of advances in
+mathematics, computer science, or quantum computing. For organizations
+that need data to remain anonymous for decades (medical records, financial
+archives, government records), this is the only credible guarantee.</p>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>L10 quantum anonymization is, to our knowledge, the first anonymization system
+where irreversibility is guaranteed by the laws of physics rather than
+computational hardness assumptions.</p>
+<p>The argument is simple:</p>
+<ol class="arabic simple">
+<li><p>The Born rule ensures that quantum measurement outcomes have no seed, no
+hidden state, and no deterministic reconstruction path.</p></li>
+<li><p>L10 uses these measurement outcomes as one-time pad values for data
+replacement.</p></li>
+<li><p>The OTP mapping is destroyed after use.</p></li>
+<li><p>Therefore, reversing L10 anonymization requires information that was never
+recorded and cannot be reconstructed from any physical process.</p></li>
+</ol>
+<p>Classical anonymization tools (ARX, sdcMicro, Google DP, Apple DP, OpenDP)
+provide computational irreversibility only. Their security degrades if PRNG
+state is compromised, if computational power increases, or if new attacks on
+the PRNG algorithm are discovered.</p>
+<p><strong>Implications:</strong></p>
+<ul class="simple">
+<li><p><strong>GDPR compliance:</strong> L10 output satisfies Recital 26’s definition of anonymous
+information. The data subject is not identifiable because identification
+requires reversing a quantum-random OTP whose mapping has been destroyed.</p></li>
+<li><p><strong>DORA compliance:</strong> L10 provides auditable, forward-secure anonymization that
+satisfies Article 6’s requirement for cryptographic updates based on
+developments in cryptanalysis. Physics-based guarantees are immune to
+cryptanalytic advances.</p></li>
+<li><p><strong>Patent potential:</strong> The QRNG + OTP + mapping destruction combination for
+anonymization appears to be novel and non-obvious.</p></li>
+<li><p><strong>Quantum-safe:</strong> Unlike classical cryptographic anonymization, L10 is not
+weakened by the existence of large-scale quantum computers. The guarantee
+comes from quantum mechanics, not from computational hardness.</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="09_monte_carlo_prng_vs_qrng.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="10_quantum_entropy_harvester.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Quantum Entropy Harvester</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-born-rule-guarantee">The Born Rule Guarantee</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classical-prng-vs-qrng-the-irreversibility-gap">Classical PRNG vs. QRNG: The Irreversibility Gap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-l10-quantum-anonymization-works">How L10 Quantum Anonymization Works</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#competitive-landscape-anonymization-tools">Competitive Landscape: Anonymization Tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#patentability-analysis">Patentability Analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#independence-from-p-vs-np">Independence from P vs NP</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QDaria AS
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p><a href="https://www.zipminator.zip">zipminator.zip</a> | <a href="https://www.zipminator.zip/docs">Docs Overview</a> | <a href="https://qdaria.com">QDaria</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,766 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Use Case: Defense and Intelligence &#8212; Zipminator</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=93784575" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=a56c686a"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/use_cases/defense';</script>
+    <script src="../../_static/custom.js?v=b141372c"></script>
+    <link rel="icon" href="../../_static/Z.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Getting Started with Zipminator" href="../../notebooks/01_quickstart.html" />
+    <link rel="prev" title="Use Case: E-Commerce" href="ecommerce.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/zipminator-logo-dark.svg" class="logo__image only-light" alt="Zipminator - Home"/>
+    <img src="../../_static/zipminator-logo-light.svg" class="logo__image only-dark pst-js-only" alt="Zipminator - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part I: Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part II: Core Cryptography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../core_crypto.html">Core Cryptography: Kyber768 KEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../entropy.html">Quantum Entropy</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../qmesh.html">Q-Mesh: Physical Cryptography</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../clearance_levels.html">Clearance Levels: L1 through L4</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part III: Data Protection</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../pii_scanning.html">PII Scanning</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../anonymization.html">10-Level Data Anonymization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../anonymization_levels.html">10-Level Anonymization System</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../self_destruct.html">Secure Self-Destruct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../zipndel.html">Zipndel: Encrypt &amp; Compress DataFrames</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IV: Jupyter &amp; Interactive</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../jupyter.html">Jupyter Integration</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part V: Tiers &amp; API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../subscription.html">Subscription Tiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_credentials.html">API Credentials &amp; Access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VI: Compliance &amp; Use Cases</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../compliance.html">Compliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="government.html">Use Case: Government and Public Sector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="healthcare.html">Use Case: Healthcare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="finance.html">Use Case: Finance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ecommerce.html">Use Case: E-Commerce</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Use Case: Defense and Intelligence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VII: Interactive Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/01_quickstart.html">Getting Started with Zipminator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/02_anonymization.html">10-Level Anonymization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/03_qrng_entropy.html">Quantum Random Number Generation &amp; Entropy Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/04_compliance.html">Compliance and PII Scanning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/05_shor_demo.html">Shor’s Algorithm and the Quantum Threat to Classical Cryptography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/06_quantum_capabilities.html">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/07_vault_workflow.html">Data Vault Workflow: From Raw Data to Quantum-Safe Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/08_qmesh_physical_crypto.html">Q-Mesh: Physical Cryptography — Zero-Interaction Authentication</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VIII: Advanced Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/09_monte_carlo_prng_vs_qrng.html">Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/10_quantum_anonymization.html">Quantum-Certified Anonymization: How L10 Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/10_quantum_entropy_harvester.html">Quantum Entropy Harvester</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IX: CLI Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_reference.html">CLI Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part X: Releases, Research &amp; IP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../papers.html">Research Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../patents.html">Patent Portfolio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mesh_wave1.html">Q-Mesh: Physical Cryptography Wave 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flutter_app.html">Flutter Super-App</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../appendix/anonymization_techniques.html">Appendix: Anonymization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/fips_203.html">Appendix: NIST FIPS 203 (ML-KEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/glossary.html">Appendix: Glossary</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator/issues/new?title=Issue%20on%20page%20%2Fcontent/use_cases/defense.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/content/use_cases/defense.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Use Case: Defense and Intelligence</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-challenge">The Challenge</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#zipminator-solution">Zipminator Solution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-resistant-key-exchange">Quantum-Resistant Key Exchange</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#true-quantum-entropy">True Quantum Entropy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#air-gapped-deployment">Air-Gapped Deployment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classified-data-handling">Classified Data Handling</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#security-properties">Security Properties</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#constant-time-guarantees">Constant-Time Guarantees</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nist-kat-validation">NIST KAT Validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fuzz-testing">Fuzz Testing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#open-source-auditability">Open Source Auditability</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nist-fips-203-compliance">NIST FIPS 203 Compliance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deployment-model">Deployment Model</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="use-case-defense-and-intelligence">
+<h1>Use Case: Defense and Intelligence<a class="headerlink" href="#use-case-defense-and-intelligence" title="Link to this heading">#</a></h1>
+<p>Defense organizations handle classified information with lifespans measured in decades. The quantum threat is not hypothetical for this sector; adversaries are already conducting harvest-now-decrypt-later attacks on intercepted communications. Zipminator provides NIST-standard post-quantum key exchange with true quantum entropy from IBM Quantum hardware.</p>
+<section id="the-challenge">
+<h2>The Challenge<a class="headerlink" href="#the-challenge" title="Link to this heading">#</a></h2>
+<p>Defense-specific requirements include:</p>
+<ul class="simple">
+<li><p><strong>Classification lifetimes</strong>: TOP SECRET/SCI data must remain protected for 50+ years</p></li>
+<li><p><strong>Adversary capability</strong>: Nation-state adversaries have the resources to build quantum computers first</p></li>
+<li><p><strong>Supply chain security</strong>: Cryptographic implementations must be auditable and free of backdoors</p></li>
+<li><p><strong>Air-gapped networks</strong>: Many defense systems operate without internet connectivity</p></li>
+<li><p><strong>NATO interoperability</strong>: Allied nations must agree on cryptographic standards</p></li>
+</ul>
+<p>NIST’s Post-Quantum Cryptography Standardization project selected ML-KEM (Kyber) as the primary KEM standard specifically because of the defense sector’s urgency.</p>
+</section>
+<section id="zipminator-solution">
+<h2>Zipminator Solution<a class="headerlink" href="#zipminator-solution" title="Link to this heading">#</a></h2>
+<section id="quantum-resistant-key-exchange">
+<h3>Quantum-Resistant Key Exchange<a class="headerlink" href="#quantum-resistant-key-exchange" title="Link to this heading">#</a></h3>
+<p>Replace classical Diffie-Hellman with Kyber768 for all key negotiations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator</span><span class="w"> </span><span class="kn">import</span> <span class="n">keypair</span><span class="p">,</span> <span class="n">encapsulate</span><span class="p">,</span> <span class="n">decapsulate</span>
+
+<span class="c1"># Unit A generates a keypair (done once, public key distributed)</span>
+<span class="n">pk_a</span><span class="p">,</span> <span class="n">sk_a</span> <span class="o">=</span> <span class="n">keypair</span><span class="p">()</span>
+
+<span class="c1"># Unit B encapsulates a session key using Unit A&#39;s public key</span>
+<span class="n">ct</span><span class="p">,</span> <span class="n">session_key</span> <span class="o">=</span> <span class="n">encapsulate</span><span class="p">(</span><span class="n">pk_a</span><span class="p">)</span>
+
+<span class="c1"># Unit A decapsulates to recover the session key</span>
+<span class="n">recovered</span> <span class="o">=</span> <span class="n">decapsulate</span><span class="p">(</span><span class="n">ct</span><span class="p">,</span> <span class="n">sk_a</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">session_key</span> <span class="o">==</span> <span class="n">recovered</span>  <span class="c1"># 32-byte shared secret</span>
+<span class="c1"># Use session_key for AES-256-GCM encryption of communications</span>
+</pre></div>
+</div>
+</section>
+<section id="true-quantum-entropy">
+<h3>True Quantum Entropy<a class="headerlink" href="#true-quantum-entropy" title="Link to this heading">#</a></h3>
+<p>For key generation at the highest security level, seed with entropy harvested from IBM Quantum hardware:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.crypto.pqc</span><span class="w"> </span><span class="kn">import</span> <span class="n">PQC</span>
+
+<span class="c1"># Read 32 bytes of quantum entropy from the pool</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;quantum_entropy/quantum_entropy_pool.bin&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+
+<span class="n">pqc</span> <span class="o">=</span> <span class="n">PQC</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">768</span><span class="p">)</span>
+<span class="n">pk</span><span class="p">,</span> <span class="n">sk</span> <span class="o">=</span> <span class="n">pqc</span><span class="o">.</span><span class="n">generate_keypair</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+<span class="c1"># Key material seeded from 156-qubit Eagle r3 quantum processor</span>
+</pre></div>
+</div>
+<p>The entropy pool is fed by real quantum circuits executed on IBM Fez and Marrakesh processors (156-qubit Eagle r3 family) via qBraid. Each harvest cycle produces ~50KB of raw quantum entropy.</p>
+</section>
+<section id="air-gapped-deployment">
+<h3>Air-Gapped Deployment<a class="headerlink" href="#air-gapped-deployment" title="Link to this heading">#</a></h3>
+<p>Zipminator operates fully offline:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set offline mode (no API calls)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ZIPMINATOR_OFFLINE</span><span class="o">=</span><span class="m">1</span>
+
+<span class="c1"># Use activation code instead of API key</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ZIPMINATOR_ACTIVATION_CODE</span><span class="o">=</span><span class="s2">&quot;ENTERPRISE-LEVEL10&quot;</span>
+
+<span class="c1"># Pre-harvest entropy on a connected system, transfer the pool file</span>
+<span class="c1"># via approved data diode or removable media</span>
+scp<span class="w"> </span>quantum_entropy/quantum_entropy_pool.bin<span class="w"> </span>airgap:/opt/zipminator/entropy/
+</pre></div>
+</div>
+</section>
+<section id="classified-data-handling">
+<h3>Classified Data Handling<a class="headerlink" href="#classified-data-handling" title="Link to this heading">#</a></h3>
+<p>For temporary access to classified data, use the self-destruct module:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.crypto.self_destruct</span><span class="w"> </span><span class="kn">import</span> <span class="n">SecureDestruct</span>
+
+<span class="c1"># Create a self-destructing encrypted container</span>
+<span class="n">sd</span> <span class="o">=</span> <span class="n">SecureDestruct</span><span class="p">(</span>
+    <span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;/tmp/classified_briefing.enc&quot;</span><span class="p">,</span>
+    <span class="n">ttl_seconds</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>  <span class="c1"># Auto-destruct after 1 hour</span>
+    <span class="n">overwrite_passes</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># DoD 5220.22-M 3-pass overwrite</span>
+<span class="p">)</span>
+
+<span class="c1"># After TTL expires or manual trigger:</span>
+<span class="n">sd</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+<span class="c1"># Pass 1: zeros, Pass 2: ones, Pass 3: random bytes</span>
+<span class="c1"># Audit log entry created</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="security-properties">
+<h2>Security Properties<a class="headerlink" href="#security-properties" title="Link to this heading">#</a></h2>
+<section id="constant-time-guarantees">
+<h3>Constant-Time Guarantees<a class="headerlink" href="#constant-time-guarantees" title="Link to this heading">#</a></h3>
+<p>All secret-dependent operations in Zipminator’s Kyber768 implementation use constant-time primitives:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Operation</p></th>
+<th class="head"><p>Technique</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Key comparison</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">subtle::ConstantTimeEq</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Secret selection</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">subtle::ConditionallySelectable</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Conditional subtraction</p></td>
+<td><p>Arithmetic masking (no branches)</p></td>
+</tr>
+<tr class="row-odd"><td><p>NTT multiplication</p></td>
+<td><p>Montgomery reduction (<code class="docutils literal notranslate"><span class="pre">#[inline(always)]</span></code>)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>These prevent timing side-channel attacks, which are a primary concern in defense environments where adversaries have physical access to hardware.</p>
+</section>
+<section id="nist-kat-validation">
+<h3>NIST KAT Validation<a class="headerlink" href="#nist-kat-validation" title="Link to this heading">#</a></h3>
+<p>The implementation is validated against NIST’s official Known Answer Test vectors:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>crates/zipminator-nist<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cargo<span class="w"> </span><span class="nb">test</span>
+<span class="c1"># 35 tests against official FIPS 203 KAT vectors</span>
+</pre></div>
+</div>
+</section>
+<section id="fuzz-testing">
+<h3>Fuzz Testing<a class="headerlink" href="#fuzz-testing" title="Link to this heading">#</a></h3>
+<p>Four cargo-fuzz targets cover the attack surface with millions of randomized inputs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>crates/zipminator-fuzz
+cargo<span class="w"> </span>fuzz<span class="w"> </span>run<span class="w"> </span>fuzz_keygen<span class="w"> </span>--<span class="w"> </span>-max_total_time<span class="o">=</span><span class="m">86400</span><span class="w">  </span><span class="c1"># 24-hour fuzz run</span>
+cargo<span class="w"> </span>fuzz<span class="w"> </span>run<span class="w"> </span>fuzz_encapsulate<span class="w"> </span>--<span class="w"> </span>-max_total_time<span class="o">=</span><span class="m">86400</span>
+cargo<span class="w"> </span>fuzz<span class="w"> </span>run<span class="w"> </span>fuzz_decapsulate<span class="w"> </span>--<span class="w"> </span>-max_total_time<span class="o">=</span><span class="m">86400</span>
+cargo<span class="w"> </span>fuzz<span class="w"> </span>run<span class="w"> </span>fuzz_round_trip<span class="w"> </span>--<span class="w"> </span>-max_total_time<span class="o">=</span><span class="m">86400</span>
+</pre></div>
+</div>
+</section>
+<section id="open-source-auditability">
+<h3>Open Source Auditability<a class="headerlink" href="#open-source-auditability" title="Link to this heading">#</a></h3>
+<p>The Rust core is open source (Apache-2.0), enabling independent security audits. The codebase enforces:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">#![forbid(unsafe_code)]</span></code> in all non-FFI modules</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cargo</span> <span class="pre">clippy</span> <span class="pre">--all-targets</span> <span class="pre">--</span> <span class="pre">-D</span> <span class="pre">warnings</span></code> (zero warnings)</p></li>
+<li><p>No external cryptographic dependencies beyond <code class="docutils literal notranslate"><span class="pre">subtle</span></code> (constant-time primitives)</p></li>
+</ul>
+</section>
+</section>
+<section id="nist-fips-203-compliance">
+<h2>NIST FIPS 203 Compliance<a class="headerlink" href="#nist-fips-203-compliance" title="Link to this heading">#</a></h2>
+<p>Zipminator implements the NIST FIPS 203 (ML-KEM-768) algorithm specification. It has <strong>not</strong> undergone FIPS 140-3 module validation (CMVP certification). For deployments requiring FIPS 140-3 validated modules, the Enterprise tier includes a roadmap to CMVP certification.</p>
+</section>
+<section id="deployment-model">
+<h2>Deployment Model<a class="headerlink" href="#deployment-model" title="Link to this heading">#</a></h2>
+<p>Defense deployments typically require:</p>
+<ul class="simple">
+<li><p><strong>On-premise / air-gapped</strong> installation with no external dependencies</p></li>
+<li><p><strong>HSM integration</strong> (PKCS#11) for key storage</p></li>
+<li><p><strong>Pre-harvested quantum entropy</strong> transferred via secure channel</p></li>
+<li><p><strong>Source code audit</strong> before deployment</p></li>
+<li><p><strong>Custom integration</strong> with existing COMSEC infrastructure</p></li>
+</ul>
+<p>Contact <a class="reference external" href="mailto:mo&#37;&#52;&#48;qdaria&#46;com">mo<span>&#64;</span>qdaria<span>&#46;</span>com</a> for defense and classified program inquiries.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content/use_cases"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ecommerce.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Use Case: E-Commerce</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../../notebooks/01_quickstart.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Getting Started with Zipminator</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-challenge">The Challenge</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#zipminator-solution">Zipminator Solution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-resistant-key-exchange">Quantum-Resistant Key Exchange</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#true-quantum-entropy">True Quantum Entropy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#air-gapped-deployment">Air-Gapped Deployment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classified-data-handling">Classified Data Handling</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#security-properties">Security Properties</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#constant-time-guarantees">Constant-Time Guarantees</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nist-kat-validation">NIST KAT Validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fuzz-testing">Fuzz Testing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#open-source-auditability">Open Source Auditability</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nist-fips-203-compliance">NIST FIPS 203 Compliance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deployment-model">Deployment Model</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QDaria AS
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p><a href="https://www.zipminator.zip">zipminator.zip</a> | <a href="https://www.zipminator.zip/docs">Docs Overview</a> | <a href="https://qdaria.com">QDaria</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

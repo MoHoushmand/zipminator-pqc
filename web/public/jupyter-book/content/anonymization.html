@@ -1,0 +1,829 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>10-Level Data Anonymization &#8212; Zipminator</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=93784575" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=a56c686a"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/anonymization';</script>
+    <script src="../_static/custom.js?v=b141372c"></script>
+    <link rel="icon" href="../_static/Z.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="10-Level Anonymization System" href="anonymization_levels.html" />
+    <link rel="prev" title="PII Scanning" href="pii_scanning.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/zipminator-logo-dark.svg" class="logo__image only-light" alt="Zipminator - Home"/>
+    <img src="../_static/zipminator-logo-light.svg" class="logo__image only-dark pst-js-only" alt="Zipminator - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part I: Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part II: Core Cryptography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="core_crypto.html">Core Cryptography: Kyber768 KEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entropy.html">Quantum Entropy</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="qmesh.html">Q-Mesh: Physical Cryptography</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="clearance_levels.html">Clearance Levels: L1 through L4</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part III: Data Protection</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pii_scanning.html">PII Scanning</a></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">10-Level Data Anonymization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="anonymization_levels.html">10-Level Anonymization System</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="self_destruct.html">Secure Self-Destruct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zipndel.html">Zipndel: Encrypt &amp; Compress DataFrames</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IV: Jupyter &amp; Interactive</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="jupyter.html">Jupyter Integration</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part V: Tiers &amp; API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="subscription.html">Subscription Tiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_credentials.html">API Credentials &amp; Access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VI: Compliance &amp; Use Cases</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="compliance.html">Compliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/government.html">Use Case: Government and Public Sector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/healthcare.html">Use Case: Healthcare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/finance.html">Use Case: Finance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/ecommerce.html">Use Case: E-Commerce</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/defense.html">Use Case: Defense and Intelligence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VII: Interactive Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/01_quickstart.html">Getting Started with Zipminator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/02_anonymization.html">10-Level Anonymization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/03_qrng_entropy.html">Quantum Random Number Generation &amp; Entropy Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/04_compliance.html">Compliance and PII Scanning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/05_shor_demo.html">Shor’s Algorithm and the Quantum Threat to Classical Cryptography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/06_quantum_capabilities.html">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/07_vault_workflow.html">Data Vault Workflow: From Raw Data to Quantum-Safe Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/08_qmesh_physical_crypto.html">Q-Mesh: Physical Cryptography — Zero-Interaction Authentication</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VIII: Advanced Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/09_monte_carlo_prng_vs_qrng.html">Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/10_quantum_anonymization.html">Quantum-Certified Anonymization: How L10 Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/10_quantum_entropy_harvester.html">Quantum Entropy Harvester</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IX: CLI Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_reference.html">CLI Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part X: Releases, Research &amp; IP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="papers.html">Research Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="patents.html">Patent Portfolio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_wave1.html">Q-Mesh: Physical Cryptography Wave 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flutter_app.html">Flutter Super-App</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="appendix/anonymization_techniques.html">Appendix: Anonymization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/fips_203.html">Appendix: NIST FIPS 203 (ML-KEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/glossary.html">Appendix: Glossary</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator/issues/new?title=Issue%20on%20page%20%2Fcontent/anonymization.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/content/anonymization.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>10-Level Data Anonymization</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#level-by-level-reference">Level-by-Level Reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-1-sha-256-hashing">Level 1: SHA-256 Hashing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-2-quantum-random-replacement">Level 2: Quantum-Random Replacement</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-3-deterministic-tokenization">Level 3: Deterministic Tokenization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-4-generalization">Level 4: Generalization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-5-suppression">Level 5: Suppression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-6-quantum-noise-injection">Level 6: Quantum Noise Injection</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-7-synthetic-data-generation">Level 7: Synthetic Data Generation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-8-k-anonymity-grouping">Level 8: k-Anonymity Grouping</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-9-differential-privacy-laplace-noise">Level 9: Differential Privacy (Laplace Noise)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-10-paillier-homomorphic-encryption">Level 10: Paillier Homomorphic Encryption</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subscription-gating">Subscription Gating</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="level-data-anonymization">
+<h1>10-Level Data Anonymization<a class="headerlink" href="#level-data-anonymization" title="Link to this heading">#</a></h1>
+<p>Zipminator provides a progressive anonymization system with 10 levels, ranging from basic SHA-256 hashing to Paillier homomorphic encryption. Each level is designed for different use cases, regulatory requirements, and data sensitivity levels.</p>
+<div class="note admonition">
+<p class="admonition-title">Pseudonymization vs. Anonymization (GDPR Art. 4(5))</p>
+<p>Levels 1-4 are <strong>pseudonymization</strong> techniques: the data can be re-identified using additional information (hash reversal via lookup, token maps, or deterministic mappings). These remain “personal data” under GDPR.</p>
+<p>Levels 5-10 are <strong>anonymization</strong> techniques: the transformation is statistically irreversible. Properly anonymized data falls outside GDPR scope entirely.</p>
+</div>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-right"><p>Level</p></th>
+<th class="head"><p>Technique</p></th>
+<th class="head"><p>Category</p></th>
+<th class="head text-center"><p>Tier Required</p></th>
+<th class="head text-center"><p>Reversible?</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-right"><p>1</p></td>
+<td><p>SHA-256 hashing</p></td>
+<td><p>Pseudonymization</p></td>
+<td class="text-center"><p>Free</p></td>
+<td class="text-center"><p>No*</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>2</p></td>
+<td><p>Quantum-random replacement</p></td>
+<td><p>Pseudonymization</p></td>
+<td class="text-center"><p>Free</p></td>
+<td class="text-center"><p>No</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>3</p></td>
+<td><p>Deterministic tokenization</p></td>
+<td><p>Pseudonymization</p></td>
+<td class="text-center"><p>Free</p></td>
+<td class="text-center"><p>Yes (with map)</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>4</p></td>
+<td><p>Generalization (ranges/categories)</p></td>
+<td><p>Pseudonymization</p></td>
+<td class="text-center"><p>Developer</p></td>
+<td class="text-center"><p>No</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>5</p></td>
+<td><p>Suppression (NULL replacement)</p></td>
+<td><p>Anonymization</p></td>
+<td class="text-center"><p>Developer</p></td>
+<td class="text-center"><p>No</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>6</p></td>
+<td><p>Quantum noise injection</p></td>
+<td><p>Anonymization</p></td>
+<td class="text-center"><p>Pro</p></td>
+<td class="text-center"><p>No</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>7</p></td>
+<td><p>Synthetic data generation (Faker)</p></td>
+<td><p>Anonymization</p></td>
+<td class="text-center"><p>Pro</p></td>
+<td class="text-center"><p>No</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>8</p></td>
+<td><p>k-Anonymity grouping</p></td>
+<td><p>Anonymization</p></td>
+<td class="text-center"><p>Enterprise</p></td>
+<td class="text-center"><p>No</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>9</p></td>
+<td><p>Differential privacy (Laplace noise)</p></td>
+<td><p>Anonymization</p></td>
+<td class="text-center"><p>Enterprise</p></td>
+<td class="text-center"><p>No</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>10</p></td>
+<td><p>Paillier homomorphic encryption</p></td>
+<td><p>Anonymization</p></td>
+<td class="text-center"><p>Enterprise</p></td>
+<td class="text-center"><p>Yes (with key)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>*L1 hashes are deterministic; identical inputs produce identical outputs, enabling re-identification via rainbow tables.</p>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.crypto.anonymization</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnonymizationEngine</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">engine</span> <span class="o">=</span> <span class="n">AnonymizationEngine</span><span class="p">()</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="s2">&quot;Bob&quot;</span><span class="p">,</span> <span class="s2">&quot;Charlie&quot;</span><span class="p">,</span> <span class="s2">&quot;Diana&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;salary&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">55000</span><span class="p">,</span> <span class="mi">62000</span><span class="p">,</span> <span class="mi">71000</span><span class="p">,</span> <span class="mi">48000</span><span class="p">],</span>
+    <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;alice@corp.com&quot;</span><span class="p">,</span> <span class="s2">&quot;bob@corp.com&quot;</span><span class="p">,</span> <span class="s2">&quot;charlie@corp.com&quot;</span><span class="p">,</span> <span class="s2">&quot;diana@corp.com&quot;</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="c1"># Apply level 1 (SHA-256 hashing) to the name column</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="level-by-level-reference">
+<h2>Level-by-Level Reference<a class="headerlink" href="#level-by-level-reference" title="Link to this heading">#</a></h2>
+<section id="level-1-sha-256-hashing">
+<h3>Level 1: SHA-256 Hashing<a class="headerlink" href="#level-1-sha-256-hashing" title="Link to this heading">#</a></h3>
+<p>One-way cryptographic hash. Identical inputs always produce the same hash, making it useful for deduplication without exposing the original value.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># &quot;2bd806c97f0e00af1a1fc3328fa763a9269723c8db8fac4f93af71db186d6e90&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="level-2-quantum-random-replacement">
+<h3>Level 2: Quantum-Random Replacement<a class="headerlink" href="#level-2-quantum-random-replacement" title="Link to this heading">#</a></h3>
+<p>Replaces each value with a 10-character random string generated by the <code class="docutils literal notranslate"><span class="pre">QuantumRandom</span></code> engine. When quantum entropy is available, the randomness is seeded from IBM Quantum hardware.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># &quot;X7K2M9QR4P&quot; (random each time)</span>
+</pre></div>
+</div>
+</section>
+<section id="level-3-deterministic-tokenization">
+<h3>Level 3: Deterministic Tokenization<a class="headerlink" href="#level-3-deterministic-tokenization" title="Link to this heading">#</a></h3>
+<p>Maps each unique value to a stable token based on its MD5 hash. The same input always produces the same token, preserving referential integrity across datasets. The token map is stored in <code class="docutils literal notranslate"><span class="pre">engine._token_maps</span></code> for optional reversal.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># &quot;TOKEN_2BD806C9&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="level-4-generalization">
+<h3>Level 4: Generalization<a class="headerlink" href="#level-4-generalization" title="Link to this heading">#</a></h3>
+<p>Numeric values are bucketed into ranges (default bucket size: 10). Text values are reduced to their first-letter category.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;salary&quot;</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;salary&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># &quot;55000-55010&quot;</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># &quot;CATEGORY_A&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="level-5-suppression">
+<h3>Level 5: Suppression<a class="headerlink" href="#level-5-suppression" title="Link to this heading">#</a></h3>
+<p>Replaces all values with <code class="docutils literal notranslate"><span class="pre">pd.NA</span></code> (NULL). The column structure is preserved but all data is removed. Useful for columns that must exist in the schema but cannot contain any values.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># &lt;NA&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="level-6-quantum-noise-injection">
+<h3>Level 6: Quantum Noise Injection<a class="headerlink" href="#level-6-quantum-noise-injection" title="Link to this heading">#</a></h3>
+<p>For numeric columns, adds noise proportional to the value (10% noise factor) using quantum random numbers. For non-numeric columns, falls back to quantum-random replacement.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;salary&quot;</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;salary&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># 53724.81 (original 55000 +/- ~10%)</span>
+</pre></div>
+</div>
+</section>
+<section id="level-7-synthetic-data-generation">
+<h3>Level 7: Synthetic Data Generation<a class="headerlink" href="#level-7-synthetic-data-generation" title="Link to this heading">#</a></h3>
+<p>Uses the Faker library to generate realistic synthetic data based on column name hints. Recognized column names include: name, email, phone, address, company, ssn, credit card.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># &quot;Jennifer Martinez&quot; (realistic but entirely synthetic)</span>
+</pre></div>
+</div>
+<p>Requires <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">zipminator[anonymization]</span></code> for the Faker dependency. Without Faker, falls back to random string generation.</p>
+</section>
+<section id="level-8-k-anonymity-grouping">
+<h3>Level 8: k-Anonymity Grouping<a class="headerlink" href="#level-8-k-anonymity-grouping" title="Link to this heading">#</a></h3>
+<p>Generalizes quasi-identifiers so that every combination of values appears at least k times in the dataset (default k=5). Numeric columns are bucketed; categorical columns are grouped.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;salary&quot;</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="c1"># Salary values grouped into ranges ensuring k=5 equivalence classes</span>
+</pre></div>
+</div>
+</section>
+<section id="level-9-differential-privacy-laplace-noise">
+<h3>Level 9: Differential Privacy (Laplace Noise)<a class="headerlink" href="#level-9-differential-privacy-laplace-noise" title="Link to this heading">#</a></h3>
+<p>Adds calibrated Laplace noise to numeric columns. The noise scale is determined by the data sensitivity (max - min) and the privacy budget (epsilon=1.0). For categorical data, applies randomized response with probability p=0.75.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;salary&quot;</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="c1"># Salary values have Laplace noise added (epsilon=1.0)</span>
+</pre></div>
+</div>
+<p>Requires numpy. The privacy guarantee is epsilon-differential privacy, meaning individual records cannot be identified with confidence above <code class="docutils literal notranslate"><span class="pre">e^epsilon</span></code>.</p>
+</section>
+<section id="level-10-paillier-homomorphic-encryption">
+<h3>Level 10: Paillier Homomorphic Encryption<a class="headerlink" href="#level-10-paillier-homomorphic-encryption" title="Link to this heading">#</a></h3>
+<p>Encrypts numeric values using the Paillier cryptosystem. The encrypted values support addition and scalar multiplication without decryption, enabling computation on encrypted data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;salary&quot;</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1"># Salary values are Paillier-encrypted objects</span>
+<span class="c1"># Compute on encrypted data:</span>
+<span class="c1"># encrypted_sum = result[&quot;salary&quot;][0] + result[&quot;salary&quot;][1]</span>
+<span class="c1"># decrypted = engine.private_key.decrypt(encrypted_sum)</span>
+</pre></div>
+</div>
+<p>Requires <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">phe</span></code>. Without it, falls back to Level 9 (differential privacy). The Paillier keypair is generated on first use and stored in <code class="docutils literal notranslate"><span class="pre">engine.public_key</span></code> / <code class="docutils literal notranslate"><span class="pre">engine.private_key</span></code>.</p>
+</section>
+</section>
+<section id="subscription-gating">
+<h2>Subscription Gating<a class="headerlink" href="#subscription-gating" title="Link to this heading">#</a></h2>
+<p>Levels 1-3 are always available without authentication. Levels 4-10 require an API key or activation code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.crypto.subscription</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIKeyValidator</span>
+
+<span class="c1"># Check if a level is accessible</span>
+<span class="n">allowed</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">APIKeyValidator</span><span class="o">.</span><span class="n">authorize_level</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1"># allowed=True, method=&quot;free_tier&quot;</span>
+
+<span class="n">allowed</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">APIKeyValidator</span><span class="o">.</span><span class="n">authorize_level</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="c1"># allowed=False, msg=&quot;Level 7 requires Pro tier or higher...&quot;</span>
+
+<span class="c1"># Set API key for higher levels</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ZIPMINATOR_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;your-key&quot;</span>
+<span class="n">allowed</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">APIKeyValidator</span><span class="o">.</span><span class="n">authorize_level</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="subscription.html"><span class="doc">Subscription Tiers</span></a> for full tier details and activation code formats.</p>
+</section>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pii_scanning.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">PII Scanning</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="anonymization_levels.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">10-Level Anonymization System</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#level-by-level-reference">Level-by-Level Reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-1-sha-256-hashing">Level 1: SHA-256 Hashing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-2-quantum-random-replacement">Level 2: Quantum-Random Replacement</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-3-deterministic-tokenization">Level 3: Deterministic Tokenization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-4-generalization">Level 4: Generalization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-5-suppression">Level 5: Suppression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-6-quantum-noise-injection">Level 6: Quantum Noise Injection</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-7-synthetic-data-generation">Level 7: Synthetic Data Generation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-8-k-anonymity-grouping">Level 8: k-Anonymity Grouping</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-9-differential-privacy-laplace-noise">Level 9: Differential Privacy (Laplace Noise)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-10-paillier-homomorphic-encryption">Level 10: Paillier Homomorphic Encryption</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subscription-gating">Subscription Gating</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QDaria AS
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p><a href="https://www.zipminator.zip">zipminator.zip</a> | <a href="https://www.zipminator.zip/docs">Docs Overview</a> | <a href="https://qdaria.com">QDaria</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

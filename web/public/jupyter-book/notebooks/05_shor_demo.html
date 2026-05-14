@@ -1,0 +1,1235 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Shor’s Algorithm and the Quantum Threat to Classical Cryptography &#8212; Zipminator</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=93784575" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=a56c686a"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/05_shor_demo';</script>
+    <script src="../_static/custom.js?v=b141372c"></script>
+    <link rel="icon" href="../_static/Z.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Quantum Capabilities: True Randomness &amp; NIST Statistical Validation" href="06_quantum_capabilities.html" />
+    <link rel="prev" title="Compliance and PII Scanning" href="04_compliance.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/zipminator-logo-dark.svg" class="logo__image only-light" alt="Zipminator - Home"/>
+    <img src="../_static/zipminator-logo-light.svg" class="logo__image only-dark pst-js-only" alt="Zipminator - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part I: Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part II: Core Cryptography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/core_crypto.html">Core Cryptography: Kyber768 KEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/entropy.html">Quantum Entropy</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../content/qmesh.html">Q-Mesh: Physical Cryptography</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../content/clearance_levels.html">Clearance Levels: L1 through L4</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part III: Data Protection</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/pii_scanning.html">PII Scanning</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../content/anonymization.html">10-Level Data Anonymization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../content/anonymization_levels.html">10-Level Anonymization System</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/self_destruct.html">Secure Self-Destruct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/zipndel.html">Zipndel: Encrypt &amp; Compress DataFrames</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IV: Jupyter &amp; Interactive</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/jupyter.html">Jupyter Integration</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part V: Tiers &amp; API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/subscription.html">Subscription Tiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/api_credentials.html">API Credentials &amp; Access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/api_reference.html">API Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VI: Compliance &amp; Use Cases</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/compliance.html">Compliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/government.html">Use Case: Government and Public Sector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/healthcare.html">Use Case: Healthcare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/finance.html">Use Case: Finance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/ecommerce.html">Use Case: E-Commerce</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/defense.html">Use Case: Defense and Intelligence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VII: Interactive Notebooks</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01_quickstart.html">Getting Started with Zipminator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_anonymization.html">10-Level Anonymization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_qrng_entropy.html">Quantum Random Number Generation &amp; Entropy Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_compliance.html">Compliance and PII Scanning</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Shor’s Algorithm and the Quantum Threat to Classical Cryptography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_quantum_capabilities.html">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_vault_workflow.html">Data Vault Workflow: From Raw Data to Quantum-Safe Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08_qmesh_physical_crypto.html">Q-Mesh: Physical Cryptography — Zero-Interaction Authentication</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VIII: Advanced Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="09_monte_carlo_prng_vs_qrng.html">Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_quantum_anonymization.html">Quantum-Certified Anonymization: How L10 Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_quantum_entropy_harvester.html">Quantum Entropy Harvester</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IX: CLI Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/cli.html">Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/cli_reference.html">CLI Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part X: Releases, Research &amp; IP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/papers.html">Research Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/patents.html">Patent Portfolio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/mesh_wave1.html">Q-Mesh: Physical Cryptography Wave 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/flutter_app.html">Flutter Super-App</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/appendix/anonymization_techniques.html">Appendix: Anonymization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/appendix/fips_203.html">Appendix: NIST FIPS 203 (ML-KEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/appendix/glossary.html">Appendix: Glossary</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/QDaria/zipminator/blob/master/notebooks/05_shor_demo.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator/issues/new?title=Issue%20on%20page%20%2Fnotebooks/05_shor_demo.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/05_shor_demo.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Shor’s Algorithm and the Quantum Threat to Classical Cryptography</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-mathematics-of-shor-s-algorithm">The Mathematics of Shor’s Algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-setup">Environment Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factoring-n-15-with-shor-s-algorithm">Factoring N = 15 with Shor’s Algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#qubit-requirements-the-chasm-between-toy-examples-and-real-rsa">Qubit Requirements: The Chasm Between Toy Examples and Real RSA</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-hndl-timeline-when-does-encrypted-data-become-vulnerable">The HNDL Timeline: When Does Encrypted Data Become Vulnerable?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hndl-risk-calculator">HNDL Risk Calculator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-size-comparison-classical-vs-post-quantum-algorithms">Key Size Comparison: Classical vs Post-Quantum Algorithms</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-algorithm-security-over-time">Interactive: Algorithm Security Over Time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion-the-time-to-act-is-now">Conclusion: The Time to Act Is Now</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="shor-s-algorithm-and-the-quantum-threat-to-classical-cryptography">
+<h1>Shor’s Algorithm and the Quantum Threat to Classical Cryptography<a class="headerlink" href="#shor-s-algorithm-and-the-quantum-threat-to-classical-cryptography" title="Link to this heading">#</a></h1>
+<p>In 1994, mathematician Peter Shor published an algorithm that would reshape the foundations of modern cryptography.
+His algorithm demonstrated that a sufficiently large quantum computer could factor integers in polynomial time,
+reducing a problem that takes classical computers billions of years to one solvable in hours or minutes.
+This is not a theoretical curiosity: the entire security of RSA encryption rests on the assumption that
+factoring the product of two large primes is computationally infeasible. Elliptic Curve Cryptography (ECC)
+faces a parallel threat through the quantum discrete logarithm problem.</p>
+<p>The urgency is compounded by the <strong>Harvest Now, Decrypt Later (HNDL)</strong> threat model. Nation-state
+adversaries and sophisticated attackers are already intercepting and storing encrypted traffic today,
+betting that future quantum computers will let them decrypt it retroactively. For data with long
+retention requirements (healthcare records, government secrets, financial instruments, intellectual property),
+this means the threat window is <strong>not</strong> when a cryptographically relevant quantum computer (CRQC) arrives;
+it is <strong>today</strong>, the moment the data is transmitted.</p>
+<p>The NSA’s CNSA 2.0 advisory mandates that all new National Security Systems use post-quantum algorithms
+by <strong>2027</strong>, with full transition by 2033. NIST deprecated RSA and ECC for new applications in 2024
+and will disallow them entirely after 2035. The migration window is closing.</p>
+<p>This notebook walks through Shor’s algorithm step by step, visualizes the qubit gap between today’s
+hardware and what is needed to break RSA, and demonstrates Zipminator’s HNDL risk calculator to
+quantify the exposure of real-world data assets.</p>
+<section id="the-mathematics-of-shor-s-algorithm">
+<h2>The Mathematics of Shor’s Algorithm<a class="headerlink" href="#the-mathematics-of-shor-s-algorithm" title="Link to this heading">#</a></h2>
+<p>Shor’s algorithm converts the factoring problem into a <strong>period-finding</strong> problem, which quantum
+computers solve exponentially faster than classical ones. The procedure has four key stages:</p>
+<p><strong>1. Random base selection.</strong> Choose a random integer <span class="math notranslate nohighlight">\(a\)</span> where <span class="math notranslate nohighlight">\(1 &lt; a &lt; N\)</span> and <span class="math notranslate nohighlight">\(\gcd(a, N) = 1\)</span>.
+If <span class="math notranslate nohighlight">\(\gcd(a, N) \neq 1\)</span>, we already found a factor and can stop.</p>
+<p><strong>2. Quantum period finding.</strong> The core quantum subroutine finds the period <span class="math notranslate nohighlight">\(r\)</span> of the function
+<span class="math notranslate nohighlight">\(f(x) = a^x \bmod N\)</span>. This is the smallest positive integer <span class="math notranslate nohighlight">\(r\)</span> such that <span class="math notranslate nohighlight">\(a^r \equiv 1 \pmod{N}\)</span>.
+The quantum circuit prepares a superposition of all <span class="math notranslate nohighlight">\(x\)</span> values, computes <span class="math notranslate nohighlight">\(a^x \bmod N\)</span> in a second
+register via <strong>modular exponentiation</strong>, then applies the <strong>inverse Quantum Fourier Transform (QFT)</strong>
+to the first register. Measurement yields a value <span class="math notranslate nohighlight">\(y \approx k \cdot 2^n / r\)</span> for some integer <span class="math notranslate nohighlight">\(k\)</span>.</p>
+<p><strong>3. Classical post-processing.</strong> Use the <strong>continued fractions algorithm</strong> to extract <span class="math notranslate nohighlight">\(r\)</span> from the
+measured <span class="math notranslate nohighlight">\(y/2^n\)</span>. The convergents of the continued fraction expansion give candidate periods.</p>
+<p><strong>4. Factor extraction.</strong> If <span class="math notranslate nohighlight">\(r\)</span> is even, compute <span class="math notranslate nohighlight">\(\gcd(a^{r/2} \pm 1, N)\)</span>. With probability
+<span class="math notranslate nohighlight">\(\geq 1/2\)</span>, at least one of these is a non-trivial factor of <span class="math notranslate nohighlight">\(N\)</span>.</p>
+<p>The computational complexity is <span class="math notranslate nohighlight">\(O((\log N)^2 (\log \log N)(\log \log \log N))\)</span> for the quantum
+part, compared to the best known classical algorithm (General Number Field Sieve) at
+<span class="math notranslate nohighlight">\(O\left(\exp\left(\left(\frac{64}{9}\right)^{1/3} (\ln N)^{1/3} (\ln \ln N)^{2/3}\right)\right)\)</span>.
+For RSA-2048, this is the difference between hours on a quantum computer and trillions of years classically.</p>
+</section>
+<section id="environment-setup">
+<h2>Environment Setup<a class="headerlink" href="#environment-setup" title="Link to this heading">#</a></h2>
+<p>This notebook uses Qiskit for quantum circuit construction and simulation. If Qiskit is not
+installed, the circuit-building cells will not execute, but the analysis and visualization cells
+use only Plotly and NumPy and will run independently.</p>
+<p>Install the quantum extras with: <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">zipminator[quantum]</span></code></p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_helpers.viz</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">QISKIT_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">qiskit</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">QFT</span>
+    <span class="n">QISKIT_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Qiskit version: </span><span class="si">{</span><span class="n">qiskit</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Qiskit not installed. Circuit cells will be skipped.&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NumPy: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Plotly: </span><span class="si">{</span><span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;plotly&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="kc">False</span> <span class="k">else</span> <span class="s2">&quot;Plotly: loaded via viz helper&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Quantum dark theme: active&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Qiskit version: 2.4.0
+NumPy: 2.4.4
+Plotly: loaded via viz helper
+Quantum dark theme: active
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="factoring-n-15-with-shor-s-algorithm">
+<h2>Factoring N = 15 with Shor’s Algorithm<a class="headerlink" href="#factoring-n-15-with-shor-s-algorithm" title="Link to this heading">#</a></h2>
+<p>N = 15 is the canonical demonstration target for Shor’s algorithm. It is the smallest composite
+number that is a product of two distinct odd primes (3 and 5). We use base <span class="math notranslate nohighlight">\(a = 7\)</span>. The sequence
+<span class="math notranslate nohighlight">\(7^x \bmod 15\)</span> produces: 1, 7, 4, 13, 1, 7, 4, 13, … giving a period <span class="math notranslate nohighlight">\(r = 4\)</span>.</p>
+<p>From this: <span class="math notranslate nohighlight">\(\gcd(7^{4/2} + 1, 15) = \gcd(50, 15) = 5\)</span> and <span class="math notranslate nohighlight">\(\gcd(7^{4/2} - 1, 15) = \gcd(48, 15) = 3\)</span>.</p>
+<p>The circuit uses 8 counting qubits and 4 work qubits, totaling 12 qubits.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize the modular exponentiation sequence: 7^x mod 15</span>
+<span class="n">x_vals</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+<span class="n">y_vals</span> <span class="o">=</span> <span class="p">[</span><span class="nb">pow</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x_vals</span><span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">x_vals</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_vals</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines+markers&quot;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;cyan&quot;</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;cyan&quot;</span><span class="p">],</span>
+                <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">)),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;7^x mod 15&quot;</span><span class="p">,</span>
+    <span class="n">hovertemplate</span><span class="o">=</span><span class="s2">&quot;x=%</span><span class="si">{x}</span><span class="s2">&lt;br&gt;7^x mod 15 = %</span><span class="si">{y}</span><span class="s2">&lt;extra&gt;&lt;/extra&gt;&quot;</span><span class="p">,</span>
+<span class="p">))</span>
+
+<span class="c1"># Highlight the period</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">add_vrect</span><span class="p">(</span><span class="n">x0</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">fillcolor</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;violet&quot;</span><span class="p">],</span>
+                  <span class="n">opacity</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Modular Exponentiation: 7&lt;sup&gt;x&lt;/sup&gt; mod 15 (Period r = 4)&quot;</span><span class="p">,</span>
+    <span class="n">xaxis_title</span><span class="o">=</span><span class="s2">&quot;Exponent x&quot;</span><span class="p">,</span>
+    <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;7&lt;sup&gt;x&lt;/sup&gt; mod 15&quot;</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
+    <span class="n">annotations</span><span class="o">=</span><span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Period r = 4&quot;</span><span class="p">,</span> <span class="n">showarrow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;violet&quot;</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">))]</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_html">        <script>
+        window.PlotlyConfig = {MathJaxConfig: 'local'};
+        if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+        </script>
+        <script type="module">import "https://cdn.plot.ly/plotly-3.5.0.min"</script>
+        </div><div class="output text_html"><div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.5.0.min.js" integrity="sha256-fHbNLP+GlIXN+efbQec78UkemUz3NJp7UmfGxC1tNxs=" crossorigin="anonymous"></script>                <div id="345eff42-ec8e-4021-9b46-9ec0b4a9d029" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("345eff42-ec8e-4021-9b46-9ec0b4a9d029")) {                    Plotly.newPlot(                        "345eff42-ec8e-4021-9b46-9ec0b4a9d029",                        [{"hovertemplate":"x=%{x}\u003cbr\u003e7^x mod 15 = %{y}\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#22d3ee","width":3},"marker":{"color":"#22d3ee","line":{"color":"white","width":1},"size":10},"mode":"lines+markers","name":"7^x mod 15","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"y":[1,7,4,13,1,7,4,13,1,7,4,13,1,7,4,13],"type":"scatter"}],                        {"template":{"layout":{"colorway":["#22d3ee","#a78bfa","#34d399","#f59e0b","#fb7185","#60a5fa","#818cf8","#2dd4bf","#fb923c","#f472b6"],"font":{"color":"#e2e8f0","family":"DM Sans, sans-serif","size":13},"hoverlabel":{"bgcolor":"#1e293b","bordercolor":"#22d3ee","font":{"color":"#f8fafc","size":12}},"legend":{"bgcolor":"rgba(15,23,42,0.8)","bordercolor":"rgba(34,211,238,0.15)","borderwidth":1,"font":{"color":"#e2e8f0"}},"margin":{"b":50,"l":60,"r":30,"t":60},"paper_bgcolor":"#0a0f1e","plot_bgcolor":"#0f172a","title":{"font":{"color":"#f8fafc","size":18},"x":0.5},"xaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"},"yaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"}}},"shapes":[{"fillcolor":"#a78bfa","line":{"width":0},"opacity":0.15,"type":"rect","x0":-0.3,"x1":0.3,"xref":"x","y0":0,"y1":1,"yref":"y domain"},{"fillcolor":"#a78bfa","line":{"width":0},"opacity":0.15,"type":"rect","x0":3.7,"x1":4.3,"xref":"x","y0":0,"y1":1,"yref":"y domain"},{"fillcolor":"#a78bfa","line":{"width":0},"opacity":0.15,"type":"rect","x0":7.7,"x1":8.3,"xref":"x","y0":0,"y1":1,"yref":"y domain"},{"fillcolor":"#a78bfa","line":{"width":0},"opacity":0.15,"type":"rect","x0":11.7,"x1":12.3,"xref":"x","y0":0,"y1":1,"yref":"y domain"}],"title":{"text":"Modular Exponentiation: 7\u003csup\u003ex\u003c\u002fsup\u003e mod 15 (Period r = 4)"},"xaxis":{"title":{"text":"Exponent x"}},"yaxis":{"title":{"text":"7\u003csup\u003ex\u003c\u002fsup\u003e mod 15"}},"height":400,"annotations":[{"font":{"color":"#a78bfa","size":14},"showarrow":false,"text":"Period r = 4","x":2,"y":16}]},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('345eff42-ec8e-4021-9b46-9ec0b4a9d029');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div></div>
+</div>
+</section>
+<section id="qubit-requirements-the-chasm-between-toy-examples-and-real-rsa">
+<h2>Qubit Requirements: The Chasm Between Toy Examples and Real RSA<a class="headerlink" href="#qubit-requirements-the-chasm-between-toy-examples-and-real-rsa" title="Link to this heading">#</a></h2>
+<p>Factoring N = 15 on 12 qubits is compelling, but it is separated from breaking real cryptography
+by an enormous gap. The number of <strong>logical</strong> qubits scales as roughly <span class="math notranslate nohighlight">\(2n + O(\log n)\)</span>. For RSA-2048,
+that means approximately 4,098 logical qubits.</p>
+<p>However, each logical qubit must be encoded in many <strong>physical</strong> qubits using quantum error correction.
+Current estimates require 1,000 to 10,000 physical qubits per logical qubit. This puts RSA-2048
+at approximately 4 to 20 million physical qubits.</p>
+<p>IBM’s current largest processor has ~1,100 qubits (Condor, 2023). Their roadmap targets
+100,000 qubits by 2033, still 1-2 orders of magnitude short.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;N=15 (4 bits)&#39;</span><span class="p">,</span> <span class="s1">&#39;N=21 (5 bits)&#39;</span><span class="p">,</span> <span class="s1">&#39;RSA-1024&#39;</span><span class="p">,</span> <span class="s1">&#39;RSA-2048&#39;</span><span class="p">,</span> <span class="s1">&#39;RSA-4096&#39;</span><span class="p">]</span>
+<span class="n">logical_qubits</span>  <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">2_050</span><span class="p">,</span> <span class="mi">4_098</span><span class="p">,</span> <span class="mi">8_196</span><span class="p">]</span>
+<span class="n">physical_qubits</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">4_000_000</span><span class="p">,</span> <span class="mi">20_000_000</span><span class="p">,</span> <span class="mi">100_000_000</span><span class="p">]</span>
+<span class="n">bar_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;emerald&quot;</span><span class="p">],</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;emerald&quot;</span><span class="p">],</span>
+              <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;amber&quot;</span><span class="p">],</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">],</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">]]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">zm_subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">titles</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Logical Qubits Required&quot;</span><span class="p">,</span> <span class="s2">&quot;Physical Qubits (with QEC)&quot;</span><span class="p">])</span>
+
+<span class="c1"># Logical qubits</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">logical_qubits</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;h&quot;</span><span class="p">,</span>
+    <span class="n">marker_color</span><span class="o">=</span><span class="n">bar_colors</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Logical&quot;</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">logical_qubits</span><span class="p">],</span> <span class="n">textposition</span><span class="o">=</span><span class="s2">&quot;outside&quot;</span><span class="p">,</span>
+    <span class="n">hovertemplate</span><span class="o">=</span><span class="s2">&quot;%</span><span class="si">{y}</span><span class="s2">: %</span><span class="si">{x:,}</span><span class="s2"> logical qubits&lt;extra&gt;&lt;/extra&gt;&quot;</span><span class="p">,</span>
+<span class="p">),</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Physical qubits</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">physical_qubits</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;h&quot;</span><span class="p">,</span>
+    <span class="n">marker_color</span><span class="o">=</span><span class="n">bar_colors</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Physical&quot;</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mf">1e6</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="o">/</span><span class="mf">1e6</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">M&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">physical_qubits</span><span class="p">],</span>
+    <span class="n">textposition</span><span class="o">=</span><span class="s2">&quot;outside&quot;</span><span class="p">,</span>
+    <span class="n">hovertemplate</span><span class="o">=</span><span class="s2">&quot;%</span><span class="si">{y}</span><span class="s2">: %</span><span class="si">{x:,}</span><span class="s2"> physical qubits&lt;extra&gt;&lt;/extra&gt;&quot;</span><span class="p">,</span>
+<span class="p">),</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Hardware milestone lines</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_vline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">156</span><span class="p">,</span> <span class="n">line_dash</span><span class="o">=</span><span class="s2">&quot;dash&quot;</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;cyan&quot;</span><span class="p">],</span>
+              <span class="n">annotation_text</span><span class="o">=</span><span class="s2">&quot;IBM 156q (2025)&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_vline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1100</span><span class="p">,</span> <span class="n">line_dash</span><span class="o">=</span><span class="s2">&quot;dash&quot;</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;violet&quot;</span><span class="p">],</span>
+              <span class="n">annotation_text</span><span class="o">=</span><span class="s2">&quot;IBM Condor 1,100q&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_vline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">100_000</span><span class="p">,</span> <span class="n">line_dash</span><span class="o">=</span><span class="s2">&quot;dash&quot;</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;amber&quot;</span><span class="p">],</span>
+              <span class="n">annotation_text</span><span class="o">=</span><span class="s2">&quot;IBM 100K target (2033)&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;The Quantum Gap: Current Hardware vs RSA Requirements&quot;</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.5.0.min.js" integrity="sha256-fHbNLP+GlIXN+efbQec78UkemUz3NJp7UmfGxC1tNxs=" crossorigin="anonymous"></script>                <div id="2d8dec08-7e9d-4a5c-8e54-5a91eabbc15f" class="plotly-graph-div" style="height:500px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("2d8dec08-7e9d-4a5c-8e54-5a91eabbc15f")) {                    Plotly.newPlot(                        "2d8dec08-7e9d-4a5c-8e54-5a91eabbc15f",                        [{"hovertemplate":"%{y}: %{x:,} logical qubits\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":["#34d399","#34d399","#f59e0b","#fb7185","#fb7185"]},"name":"Logical","orientation":"h","text":["12","15","2,050","4,098","8,196"],"textposition":"outside","x":[12,15,2050,4098,8196],"y":["N=15 (4 bits)","N=21 (5 bits)","RSA-1024","RSA-2048","RSA-4096"],"type":"bar","xaxis":"x","yaxis":"y"},{"hovertemplate":"%{y}: %{x:,} physical qubits\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":["#34d399","#34d399","#f59e0b","#fb7185","#fb7185"]},"name":"Physical","orientation":"h","text":["12","15","4M","20M","100M"],"textposition":"outside","x":[12,15,4000000,20000000,100000000],"y":["N=15 (4 bits)","N=21 (5 bits)","RSA-1024","RSA-2048","RSA-4096"],"type":"bar","xaxis":"x2","yaxis":"y2"}],                        {"template":{"layout":{"colorway":["#22d3ee","#a78bfa","#34d399","#f59e0b","#fb7185","#60a5fa","#818cf8","#2dd4bf","#fb923c","#f472b6"],"font":{"color":"#e2e8f0","family":"DM Sans, sans-serif","size":13},"hoverlabel":{"bgcolor":"#1e293b","bordercolor":"#22d3ee","font":{"color":"#f8fafc","size":12}},"legend":{"bgcolor":"rgba(15,23,42,0.8)","bordercolor":"rgba(34,211,238,0.15)","borderwidth":1,"font":{"color":"#e2e8f0"}},"margin":{"b":50,"l":60,"r":30,"t":60},"paper_bgcolor":"#0a0f1e","plot_bgcolor":"#0f172a","title":{"font":{"color":"#f8fafc","size":18},"x":0.5},"xaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"},"yaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"}}},"xaxis":{"anchor":"y","domain":[0.0,0.45],"type":"log"},"yaxis":{"anchor":"x","domain":[0.0,1.0]},"xaxis2":{"anchor":"y2","domain":[0.55,1.0],"type":"log"},"yaxis2":{"anchor":"x2","domain":[0.0,1.0]},"annotations":[{"font":{"size":16},"showarrow":false,"text":"Logical Qubits Required","x":0.225,"xanchor":"center","xref":"paper","y":1.0,"yanchor":"bottom","yref":"paper"},{"font":{"size":16},"showarrow":false,"text":"Physical Qubits (with QEC)","x":0.775,"xanchor":"center","xref":"paper","y":1.0,"yanchor":"bottom","yref":"paper"},{"showarrow":false,"text":"IBM 156q (2025)","x":156,"xanchor":"left","xref":"x","y":1,"yanchor":"top","yref":"y domain"},{"showarrow":false,"text":"IBM Condor 1,100q","x":1100,"xanchor":"left","xref":"x","y":1,"yanchor":"top","yref":"y domain"},{"showarrow":false,"text":"IBM 100K target (2033)","x":100000,"xanchor":"left","xref":"x2","y":1,"yanchor":"top","yref":"y2 domain"}],"shapes":[{"line":{"color":"#22d3ee","dash":"dash"},"type":"line","x0":156,"x1":156,"xref":"x","y0":0,"y1":1,"yref":"y domain"},{"line":{"color":"#a78bfa","dash":"dash"},"type":"line","x0":1100,"x1":1100,"xref":"x","y0":0,"y1":1,"yref":"y domain"},{"line":{"color":"#f59e0b","dash":"dash"},"type":"line","x0":100000,"x1":100000,"xref":"x2","y0":0,"y1":1,"yref":"y2 domain"}],"title":{"text":"The Quantum Gap: Current Hardware vs RSA Requirements"},"height":500,"showlegend":false},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('2d8dec08-7e9d-4a5c-8e54-5a91eabbc15f');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div></div>
+</div>
+</section>
+<section id="the-hndl-timeline-when-does-encrypted-data-become-vulnerable">
+<h2>The HNDL Timeline: When Does Encrypted Data Become Vulnerable?<a class="headerlink" href="#the-hndl-timeline-when-does-encrypted-data-become-vulnerable" title="Link to this heading">#</a></h2>
+<p>The Harvest Now, Decrypt Later threat does not begin when a CRQC is built. It begins the moment
+sensitive data is transmitted over a channel that an adversary can intercept:</p>
+<div class="math notranslate nohighlight">
+\[\text{At risk if: } T_{\text{harvest}} + T_{\text{retention}} &gt; T_{\text{CRQC}}\]</div>
+<p>The timeline below maps the critical milestones from NIST standardization through RSA deprecation.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">milestones</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="s2">&quot;NIST PQC Standards Finalized&quot;</span><span class="p">,</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;emerald&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="s2">&quot;Current QC: ~1,100 qubits&quot;</span><span class="p">,</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;cyan&quot;</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2027</span><span class="p">,</span> <span class="s2">&quot;CNSA 2.0 Deadline&quot;</span><span class="p">,</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;amber&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2030</span><span class="p">,</span> <span class="s2">&quot;NIST Deprecates RSA &amp; ECC&quot;</span><span class="p">,</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;amber&quot;</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2033</span><span class="p">,</span> <span class="s2">&quot;IBM 100K Qubit Target&quot;</span><span class="p">,</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;violet&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2035</span><span class="p">,</span> <span class="s2">&quot;NIST Disallows RSA &amp; ECC&quot;</span><span class="p">,</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+
+<span class="c1"># Timeline axis</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">2036</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;#94a3b8&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span> <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">))</span>
+
+<span class="c1"># HNDL danger zone</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_vrect</span><span class="p">(</span><span class="n">x0</span><span class="o">=</span><span class="mi">2024</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="mi">2035</span><span class="p">,</span> <span class="n">fillcolor</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">],</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.06</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_annotation</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">2029.5</span><span class="p">,</span> <span class="n">y</span><span class="o">=-</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;HNDL DANGER ZONE&quot;</span><span class="p">,</span>
+                   <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span> <span class="n">showarrow</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">year</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">direction</span> <span class="ow">in</span> <span class="n">milestones</span><span class="p">:</span>
+    <span class="c1"># Connector line</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">year</span><span class="p">,</span> <span class="n">year</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">direction</span> <span class="o">*</span> <span class="mf">0.4</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+        <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">))</span>
+    <span class="c1"># Marker</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">year</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span>
+        <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">)),</span>
+        <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hovertext</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">hoverinfo</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+    <span class="p">))</span>
+    <span class="c1"># Label</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">add_annotation</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">direction</span> <span class="o">*</span> <span class="mf">0.55</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&lt;b&gt;</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2">&lt;/b&gt;&lt;br&gt;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">11</span><span class="p">),</span> <span class="n">showarrow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="c1"># NOW marker</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_vline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">2026</span><span class="p">,</span> <span class="n">line_dash</span><span class="o">=</span><span class="s2">&quot;dot&quot;</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;cyan&quot;</span><span class="p">],</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_annotation</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">2026</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;&lt;b&gt;NOW&lt;/b&gt;&quot;</span><span class="p">,</span>
+                   <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;cyan&quot;</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">13</span><span class="p">),</span> <span class="n">showarrow</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;The Post-Quantum Migration Timeline&quot;</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="mi">2023</span><span class="p">,</span> <span class="mf">2036.5</span><span class="p">],</span> <span class="n">dtick</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">],</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">450</span><span class="p">,</span> <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">template</span><span class="o">=</span><span class="n">ZM_TEMPLATE</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.5.0.min.js" integrity="sha256-fHbNLP+GlIXN+efbQec78UkemUz3NJp7UmfGxC1tNxs=" crossorigin="anonymous"></script>                <div id="0b505a58-188a-44aa-ad3f-2000fb7b159c" class="plotly-graph-div" style="height:450px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("0b505a58-188a-44aa-ad3f-2000fb7b159c")) {                    Plotly.newPlot(                        "0b505a58-188a-44aa-ad3f-2000fb7b159c",                        [{"line":{"color":"#94a3b8","width":3},"mode":"lines","showlegend":false,"x":[2023,2036],"y":[0,0],"type":"scatter"},{"line":{"color":"#34d399","width":2},"mode":"lines","showlegend":false,"x":[2024,2024],"y":[0,0.4],"type":"scatter"},{"hoverinfo":"text","hovertext":"2024: NIST PQC Standards Finalized","marker":{"color":"#34d399","line":{"color":"white","width":2},"size":14},"mode":"markers","showlegend":false,"x":[2024],"y":[0],"type":"scatter"},{"line":{"color":"#22d3ee","width":2},"mode":"lines","showlegend":false,"x":[2025,2025],"y":[0,-0.4],"type":"scatter"},{"hoverinfo":"text","hovertext":"2025: Current QC: ~1,100 qubits","marker":{"color":"#22d3ee","line":{"color":"white","width":2},"size":14},"mode":"markers","showlegend":false,"x":[2025],"y":[0],"type":"scatter"},{"line":{"color":"#f59e0b","width":2},"mode":"lines","showlegend":false,"x":[2027,2027],"y":[0,0.4],"type":"scatter"},{"hoverinfo":"text","hovertext":"2027: CNSA 2.0 Deadline","marker":{"color":"#f59e0b","line":{"color":"white","width":2},"size":14},"mode":"markers","showlegend":false,"x":[2027],"y":[0],"type":"scatter"},{"line":{"color":"#f59e0b","width":2},"mode":"lines","showlegend":false,"x":[2030,2030],"y":[0,-0.4],"type":"scatter"},{"hoverinfo":"text","hovertext":"2030: NIST Deprecates RSA & ECC","marker":{"color":"#f59e0b","line":{"color":"white","width":2},"size":14},"mode":"markers","showlegend":false,"x":[2030],"y":[0],"type":"scatter"},{"line":{"color":"#a78bfa","width":2},"mode":"lines","showlegend":false,"x":[2033,2033],"y":[0,0.4],"type":"scatter"},{"hoverinfo":"text","hovertext":"2033: IBM 100K Qubit Target","marker":{"color":"#a78bfa","line":{"color":"white","width":2},"size":14},"mode":"markers","showlegend":false,"x":[2033],"y":[0],"type":"scatter"},{"line":{"color":"#fb7185","width":2},"mode":"lines","showlegend":false,"x":[2035,2035],"y":[0,-0.4],"type":"scatter"},{"hoverinfo":"text","hovertext":"2035: NIST Disallows RSA & ECC","marker":{"color":"#fb7185","line":{"color":"white","width":2},"size":14},"mode":"markers","showlegend":false,"x":[2035],"y":[0],"type":"scatter"}],                        {"template":{"layout":{"colorway":["#22d3ee","#a78bfa","#34d399","#f59e0b","#fb7185","#60a5fa","#818cf8","#2dd4bf","#fb923c","#f472b6"],"font":{"color":"#e2e8f0","family":"DM Sans, sans-serif","size":13},"hoverlabel":{"bgcolor":"#1e293b","bordercolor":"#22d3ee","font":{"color":"#f8fafc","size":12}},"legend":{"bgcolor":"rgba(15,23,42,0.8)","bordercolor":"rgba(34,211,238,0.15)","borderwidth":1,"font":{"color":"#e2e8f0"}},"margin":{"b":50,"l":60,"r":30,"t":60},"paper_bgcolor":"#0a0f1e","plot_bgcolor":"#0f172a","title":{"font":{"color":"#f8fafc","size":18},"x":0.5},"xaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"},"yaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"}}},"shapes":[{"fillcolor":"#fb7185","opacity":0.06,"type":"rect","x0":2024,"x1":2035,"xref":"x","y0":0,"y1":1,"yref":"y domain"},{"line":{"color":"#22d3ee","dash":"dot"},"opacity":0.5,"type":"line","x0":2026,"x1":2026,"xref":"x","y0":0,"y1":1,"yref":"y domain"}],"annotations":[{"font":{"color":"#fb7185","size":14},"showarrow":false,"text":"HNDL DANGER ZONE","x":2029.5,"y":-0.85},{"font":{"color":"#34d399","size":11},"showarrow":false,"text":"\u003cb\u003e2024\u003c\u002fb\u003e\u003cbr\u003eNIST PQC Standards Finalized","x":2024,"y":0.55},{"font":{"color":"#22d3ee","size":11},"showarrow":false,"text":"\u003cb\u003e2025\u003c\u002fb\u003e\u003cbr\u003eCurrent QC: ~1,100 qubits","x":2025,"y":-0.55},{"font":{"color":"#f59e0b","size":11},"showarrow":false,"text":"\u003cb\u003e2027\u003c\u002fb\u003e\u003cbr\u003eCNSA 2.0 Deadline","x":2027,"y":0.55},{"font":{"color":"#f59e0b","size":11},"showarrow":false,"text":"\u003cb\u003e2030\u003c\u002fb\u003e\u003cbr\u003eNIST Deprecates RSA & ECC","x":2030,"y":-0.55},{"font":{"color":"#a78bfa","size":11},"showarrow":false,"text":"\u003cb\u003e2033\u003c\u002fb\u003e\u003cbr\u003eIBM 100K Qubit Target","x":2033,"y":0.55},{"font":{"color":"#fb7185","size":11},"showarrow":false,"text":"\u003cb\u003e2035\u003c\u002fb\u003e\u003cbr\u003eNIST Disallows RSA & ECC","x":2035,"y":-0.55},{"font":{"color":"#22d3ee","size":13},"showarrow":false,"text":"\u003cb\u003eNOW\u003c\u002fb\u003e","x":2026,"y":0.9}],"xaxis":{"range":[2023,2036.5],"dtick":1},"yaxis":{"range":[-1.1,1.1],"visible":false},"title":{"text":"The Post-Quantum Migration Timeline"},"height":450,"showlegend":false},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('0b505a58-188a-44aa-ad3f-2000fb7b159c');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div></div>
+</div>
+</section>
+<section id="hndl-risk-calculator">
+<h2>HNDL Risk Calculator<a class="headerlink" href="#hndl-risk-calculator" title="Link to this heading">#</a></h2>
+<p>Zipminator includes an HNDL risk scoring engine that quantifies exposure based on four factors:
+data sensitivity, retention period, current encryption, and industry multiplier.</p>
+<p>The risk score ranges from 0 to 100: LOW (&lt; 25), MEDIUM (25-50), HIGH (50-75), CRITICAL (&gt; 75).</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.hndl_risk</span><span class="w"> </span><span class="kn">import</span> <span class="n">HNDLCalculator</span>
+
+<span class="n">calc</span> <span class="o">=</span> <span class="n">HNDLCalculator</span><span class="p">()</span>
+
+<span class="n">scenarios</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Healthcare (HIPAA)&#39;</span><span class="p">,</span>   <span class="s1">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="s1">&#39;top_secret&#39;</span><span class="p">,</span> <span class="s1">&#39;years&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">&#39;industry&#39;</span><span class="p">:</span> <span class="s1">&#39;healthcare&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Financial (SOX)&#39;</span><span class="p">,</span>      <span class="s1">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="s1">&#39;confidential&#39;</span><span class="p">,</span> <span class="s1">&#39;years&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;industry&#39;</span><span class="p">:</span> <span class="s1">&#39;finance&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Government (Secret)&#39;</span><span class="p">,</span>  <span class="s1">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="s1">&#39;top_secret&#39;</span><span class="p">,</span> <span class="s1">&#39;years&#39;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span> <span class="s1">&#39;industry&#39;</span><span class="p">:</span> <span class="s1">&#39;government&#39;</span><span class="p">},</span>
+<span class="p">]</span>
+
+<span class="n">names</span><span class="p">,</span> <span class="n">classical_risks</span><span class="p">,</span> <span class="n">pqc_risks</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scenarios</span><span class="p">:</span>
+    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+    <span class="n">r_classical</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">data_sensitivity</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;sensitivity&#39;</span><span class="p">],</span> <span class="n">retention_years</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;years&#39;</span><span class="p">],</span>
+                                 <span class="n">current_encryption</span><span class="o">=</span><span class="s1">&#39;aes256&#39;</span><span class="p">,</span> <span class="n">industry</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;industry&#39;</span><span class="p">])</span>
+    <span class="n">r_pqc</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">data_sensitivity</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;sensitivity&#39;</span><span class="p">],</span> <span class="n">retention_years</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;years&#39;</span><span class="p">],</span>
+                            <span class="n">current_encryption</span><span class="o">=</span><span class="s1">&#39;kyber768&#39;</span><span class="p">,</span> <span class="n">industry</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;industry&#39;</span><span class="p">])</span>
+    <span class="n">classical_risks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_classical</span><span class="o">.</span><span class="n">overall_risk</span><span class="p">)</span>
+    <span class="n">pqc_risks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_pqc</span><span class="o">.</span><span class="n">overall_risk</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;AES-256 (Classical)&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">classical_risks</span><span class="p">,</span>
+                     <span class="n">marker_color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">],</span> <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">%&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">classical_risks</span><span class="p">],</span>
+                     <span class="n">textposition</span><span class="o">=</span><span class="s2">&quot;outside&quot;</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;ML-KEM-768 (PQC)&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">pqc_risks</span><span class="p">,</span>
+                     <span class="n">marker_color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;emerald&quot;</span><span class="p">],</span> <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">%&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pqc_risks</span><span class="p">],</span>
+                     <span class="n">textposition</span><span class="o">=</span><span class="s2">&quot;outside&quot;</span><span class="p">))</span>
+
+<span class="c1"># Risk level threshold lines</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_hline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="n">line_dash</span><span class="o">=</span><span class="s2">&quot;dash&quot;</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">],</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+              <span class="n">annotation_text</span><span class="o">=</span><span class="s2">&quot;CRITICAL&quot;</span><span class="p">,</span> <span class="n">annotation_position</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_hline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">line_dash</span><span class="o">=</span><span class="s2">&quot;dash&quot;</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;amber&quot;</span><span class="p">],</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+              <span class="n">annotation_text</span><span class="o">=</span><span class="s2">&quot;HIGH&quot;</span><span class="p">,</span> <span class="n">annotation_position</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_hline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">line_dash</span><span class="o">=</span><span class="s2">&quot;dash&quot;</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;cyan&quot;</span><span class="p">],</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+              <span class="n">annotation_text</span><span class="o">=</span><span class="s2">&quot;MEDIUM&quot;</span><span class="p">,</span> <span class="n">annotation_position</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;HNDL Risk Score: Classical vs Post-Quantum Encryption&quot;</span><span class="p">,</span>
+    <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;Risk Score (%)&quot;</span><span class="p">,</span> <span class="n">yaxis_range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">105</span><span class="p">],</span>
+    <span class="n">barmode</span><span class="o">=</span><span class="s2">&quot;group&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">template</span><span class="o">=</span><span class="n">ZM_TEMPLATE</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.5.0.min.js" integrity="sha256-fHbNLP+GlIXN+efbQec78UkemUz3NJp7UmfGxC1tNxs=" crossorigin="anonymous"></script>                <div id="f4dc6d89-b5f4-4e99-a0e2-b13935ca5a12" class="plotly-graph-div" style="height:500px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("f4dc6d89-b5f4-4e99-a0e2-b13935ca5a12")) {                    Plotly.newPlot(                        "f4dc6d89-b5f4-4e99-a0e2-b13935ca5a12",                        [{"marker":{"color":"#fb7185"},"name":"AES-256 (Classical)","text":["100%","100%","100%"],"textposition":"outside","x":["Healthcare (HIPAA)","Financial (SOX)","Government (Secret)"],"y":[100.0,100.0,100.0],"type":"bar"},{"marker":{"color":"#34d399"},"name":"ML-KEM-768 (PQC)","text":["96%","80%","100%"],"textposition":"outside","x":["Healthcare (HIPAA)","Financial (SOX)","Government (Secret)"],"y":[95.9,79.8,100.0],"type":"bar"}],                        {"template":{"layout":{"colorway":["#22d3ee","#a78bfa","#34d399","#f59e0b","#fb7185","#60a5fa","#818cf8","#2dd4bf","#fb923c","#f472b6"],"font":{"color":"#e2e8f0","family":"DM Sans, sans-serif","size":13},"hoverlabel":{"bgcolor":"#1e293b","bordercolor":"#22d3ee","font":{"color":"#f8fafc","size":12}},"legend":{"bgcolor":"rgba(15,23,42,0.8)","bordercolor":"rgba(34,211,238,0.15)","borderwidth":1,"font":{"color":"#e2e8f0"}},"margin":{"b":50,"l":60,"r":30,"t":60},"paper_bgcolor":"#0a0f1e","plot_bgcolor":"#0f172a","title":{"font":{"color":"#f8fafc","size":18},"x":0.5},"xaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"},"yaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"}}},"shapes":[{"line":{"color":"#fb7185","dash":"dash"},"opacity":0.5,"type":"line","x0":0,"x1":1,"xref":"x domain","y0":75,"y1":75,"yref":"y"},{"line":{"color":"#f59e0b","dash":"dash"},"opacity":0.5,"type":"line","x0":0,"x1":1,"xref":"x domain","y0":50,"y1":50,"yref":"y"},{"line":{"color":"#22d3ee","dash":"dash"},"opacity":0.3,"type":"line","x0":0,"x1":1,"xref":"x domain","y0":25,"y1":25,"yref":"y"}],"annotations":[{"showarrow":false,"text":"CRITICAL","x":1,"xanchor":"left","xref":"x domain","y":75,"yanchor":"middle","yref":"y"},{"showarrow":false,"text":"HIGH","x":1,"xanchor":"left","xref":"x domain","y":50,"yanchor":"middle","yref":"y"},{"showarrow":false,"text":"MEDIUM","x":1,"xanchor":"left","xref":"x domain","y":25,"yanchor":"middle","yref":"y"}],"yaxis":{"title":{"text":"Risk Score (%)"},"range":[0,105]},"title":{"text":"HNDL Risk Score: Classical vs Post-Quantum Encryption"},"barmode":"group","height":500},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('f4dc6d89-b5f4-4e99-a0e2-b13935ca5a12');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div></div>
+</div>
+</section>
+<section id="key-size-comparison-classical-vs-post-quantum-algorithms">
+<h2>Key Size Comparison: Classical vs Post-Quantum Algorithms<a class="headerlink" href="#key-size-comparison-classical-vs-post-quantum-algorithms" title="Link to this heading">#</a></h2>
+<p>ML-KEM-768 has a public key of 1,184 bytes vs 256 bytes for RSA-2048 (4.6x increase).
+For context, a single HD video frame is ~300KB. The trade-off is negligible in practice.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">algorithms</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;RSA-2048&#39;</span><span class="p">,</span>     <span class="mi">256</span><span class="p">,</span>    <span class="mi">256</span><span class="p">,</span>    <span class="s1">&#39;KEM&#39;</span><span class="p">,</span>  <span class="kc">False</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;RSA-4096&#39;</span><span class="p">,</span>     <span class="mi">512</span><span class="p">,</span>    <span class="mi">512</span><span class="p">,</span>    <span class="s1">&#39;KEM&#39;</span><span class="p">,</span>  <span class="kc">False</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ECC P-256&#39;</span><span class="p">,</span>     <span class="mi">64</span><span class="p">,</span>     <span class="mi">64</span><span class="p">,</span>    <span class="s1">&#39;KEM&#39;</span><span class="p">,</span>  <span class="kc">False</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ML-KEM-768&#39;</span><span class="p">,</span>  <span class="mi">1184</span><span class="p">,</span>   <span class="mi">1088</span><span class="p">,</span>   <span class="s1">&#39;KEM&#39;</span><span class="p">,</span>  <span class="kc">True</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ML-KEM-1024&#39;</span><span class="p">,</span> <span class="mi">1568</span><span class="p">,</span>   <span class="mi">1568</span><span class="p">,</span>   <span class="s1">&#39;KEM&#39;</span><span class="p">,</span>  <span class="kc">True</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ECDSA P-256&#39;</span><span class="p">,</span>   <span class="mi">64</span><span class="p">,</span>     <span class="mi">64</span><span class="p">,</span>   <span class="s1">&#39;Sig&#39;</span><span class="p">,</span>  <span class="kc">False</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ML-DSA-65&#39;</span><span class="p">,</span>   <span class="mi">1952</span><span class="p">,</span>   <span class="mi">3293</span><span class="p">,</span>   <span class="s1">&#39;Sig&#39;</span><span class="p">,</span>  <span class="kc">True</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;SLH-DSA-128f&#39;</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span>   <span class="mi">17088</span><span class="p">,</span>  <span class="s1">&#39;Sig&#39;</span><span class="p">,</span>  <span class="kc">True</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">algorithms</span><span class="p">]</span>
+<span class="n">pk_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">algorithms</span><span class="p">]</span>
+<span class="n">ct_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">algorithms</span><span class="p">]</span>
+<span class="n">q_safe</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">algorithms</span><span class="p">]</span>
+<span class="n">colors_pk</span> <span class="o">=</span> <span class="p">[</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;cyan&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">qs</span> <span class="k">else</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">qs</span> <span class="ow">in</span> <span class="n">q_safe</span><span class="p">]</span>
+<span class="n">colors_ct</span> <span class="o">=</span> <span class="p">[</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;violet&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">qs</span> <span class="k">else</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;amber&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">qs</span> <span class="ow">in</span> <span class="n">q_safe</span><span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">zm_subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">titles</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Public Key Size (bytes)&quot;</span><span class="p">,</span> <span class="s2">&quot;Ciphertext / Signature Size (bytes)&quot;</span><span class="p">],</span>
+                  <span class="n">shared_xaxes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">vertical_spacing</span><span class="o">=</span><span class="mf">0.12</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">pk_sizes</span><span class="p">,</span> <span class="n">marker_color</span><span class="o">=</span><span class="n">colors_pk</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Public Key&quot;</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">B&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pk_sizes</span><span class="p">],</span> <span class="n">textposition</span><span class="o">=</span><span class="s2">&quot;outside&quot;</span><span class="p">,</span>
+    <span class="n">hovertemplate</span><span class="o">=</span><span class="s2">&quot;%</span><span class="si">{x}</span><span class="s2">: %</span><span class="si">{y:,}</span><span class="s2"> bytes&lt;extra&gt;Public Key&lt;/extra&gt;&quot;</span><span class="p">,</span>
+<span class="p">),</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">ct_sizes</span><span class="p">,</span> <span class="n">marker_color</span><span class="o">=</span><span class="n">colors_ct</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;CT / Sig&quot;</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">B&quot;</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">10000</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="o">/</span><span class="mi">1000</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">KB&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ct_sizes</span><span class="p">],</span>
+    <span class="n">textposition</span><span class="o">=</span><span class="s2">&quot;outside&quot;</span><span class="p">,</span>
+    <span class="n">hovertemplate</span><span class="o">=</span><span class="s2">&quot;%</span><span class="si">{x}</span><span class="s2">: %</span><span class="si">{y:,}</span><span class="s2"> bytes&lt;extra&gt;Ciphertext/Signature&lt;/extra&gt;&quot;</span><span class="p">,</span>
+<span class="p">),</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Algorithm Comparison: Key &amp; Ciphertext Sizes&quot;</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span> <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.5.0.min.js" integrity="sha256-fHbNLP+GlIXN+efbQec78UkemUz3NJp7UmfGxC1tNxs=" crossorigin="anonymous"></script>                <div id="a719d34c-487d-46e3-859d-8fa74a5893c8" class="plotly-graph-div" style="height:700px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("a719d34c-487d-46e3-859d-8fa74a5893c8")) {                    Plotly.newPlot(                        "a719d34c-487d-46e3-859d-8fa74a5893c8",                        [{"hovertemplate":"%{x}: %{y:,} bytes\u003cextra\u003ePublic Key\u003c\u002fextra\u003e","marker":{"color":["#fb7185","#fb7185","#fb7185","#22d3ee","#22d3ee","#fb7185","#22d3ee","#22d3ee"]},"name":"Public Key","text":["256B","512B","64B","1,184B","1,568B","64B","1,952B","32B"],"textposition":"outside","x":["RSA-2048","RSA-4096","ECC P-256","ML-KEM-768","ML-KEM-1024","ECDSA P-256","ML-DSA-65","SLH-DSA-128f"],"y":[256,512,64,1184,1568,64,1952,32],"type":"bar","xaxis":"x","yaxis":"y"},{"hovertemplate":"%{x}: %{y:,} bytes\u003cextra\u003eCiphertext\u002fSignature\u003c\u002fextra\u003e","marker":{"color":["#f59e0b","#f59e0b","#f59e0b","#a78bfa","#a78bfa","#f59e0b","#a78bfa","#a78bfa"]},"name":"CT \u002f Sig","text":["256B","512B","64B","1,088B","1,568B","64B","3,293B","17.1KB"],"textposition":"outside","x":["RSA-2048","RSA-4096","ECC P-256","ML-KEM-768","ML-KEM-1024","ECDSA P-256","ML-DSA-65","SLH-DSA-128f"],"y":[256,512,64,1088,1568,64,3293,17088],"type":"bar","xaxis":"x2","yaxis":"y2"}],                        {"template":{"layout":{"colorway":["#22d3ee","#a78bfa","#34d399","#f59e0b","#fb7185","#60a5fa","#818cf8","#2dd4bf","#fb923c","#f472b6"],"font":{"color":"#e2e8f0","family":"DM Sans, sans-serif","size":13},"hoverlabel":{"bgcolor":"#1e293b","bordercolor":"#22d3ee","font":{"color":"#f8fafc","size":12}},"legend":{"bgcolor":"rgba(15,23,42,0.8)","bordercolor":"rgba(34,211,238,0.15)","borderwidth":1,"font":{"color":"#e2e8f0"}},"margin":{"b":50,"l":60,"r":30,"t":60},"paper_bgcolor":"#0a0f1e","plot_bgcolor":"#0f172a","title":{"font":{"color":"#f8fafc","size":18},"x":0.5},"xaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"},"yaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"}}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"matches":"x2","showticklabels":false},"yaxis":{"anchor":"x","domain":[0.56,1.0],"type":"log"},"xaxis2":{"anchor":"y2","domain":[0.0,1.0]},"yaxis2":{"anchor":"x2","domain":[0.0,0.44],"type":"log"},"annotations":[{"font":{"size":16},"showarrow":false,"text":"Public Key Size (bytes)","x":0.5,"xanchor":"center","xref":"paper","y":1.0,"yanchor":"bottom","yref":"paper"},{"font":{"size":16},"showarrow":false,"text":"Ciphertext \u002f Signature Size (bytes)","x":0.5,"xanchor":"center","xref":"paper","y":0.44,"yanchor":"bottom","yref":"paper"}],"title":{"text":"Algorithm Comparison: Key & Ciphertext Sizes"},"height":700,"showlegend":false},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('a719d34c-487d-46e3-859d-8fa74a5893c8');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div></div>
+</div>
+</section>
+<section id="interactive-algorithm-security-over-time">
+<h2>Interactive: Algorithm Security Over Time<a class="headerlink" href="#interactive-algorithm-security-over-time" title="Link to this heading">#</a></h2>
+<p>Watch how the security of classical algorithms degrades as quantum computing advances,
+while post-quantum algorithms remain secure.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Animated chart: Security level over time as quantum computing scales</span>
+<span class="n">years</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">2041</span><span class="p">))</span>
+<span class="n">algorithms_timeline</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;RSA-2048&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">128</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span> <span class="o">+</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="s2">&quot;ECC P-256&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">128</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span> <span class="o">+</span> <span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="s2">&quot;AES-256&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">256</span><span class="p">]</span><span class="o">*</span><span class="mi">6</span> <span class="o">+</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">135</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">],</span>
+    <span class="s2">&quot;ML-KEM-768&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">192</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">years</span><span class="p">),</span>
+    <span class="s2">&quot;ML-KEM-1024&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">256</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">years</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">frames_data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">years</span><span class="p">):</span>
+    <span class="n">algo_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">algorithms_timeline</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">algorithms_timeline</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">algo_names</span><span class="p">]</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;emerald&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="k">else</span>
+              <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;amber&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">50</span> <span class="k">else</span>
+              <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+    <span class="n">frames_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">),</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">algo_names</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">values</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">colors</span><span class="p">})</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">zm_animated_bar</span><span class="p">(</span><span class="n">frames_data</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Security Level (bits) as Quantum Computing Scales&quot;</span><span class="p">,</span>
+                      <span class="n">x_label</span><span class="o">=</span><span class="s2">&quot;Algorithm&quot;</span><span class="p">,</span> <span class="n">y_label</span><span class="o">=</span><span class="s2">&quot;Effective Security (bits)&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">yaxis_range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">280</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.5.0.min.js" integrity="sha256-fHbNLP+GlIXN+efbQec78UkemUz3NJp7UmfGxC1tNxs=" crossorigin="anonymous"></script>                <div id="d97925c1-14c3-47bc-8389-d83cf64c22b2" class="plotly-graph-div" style="height:500px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("d97925c1-14c3-47bc-8389-d83cf64c22b2")) {                    Plotly.newPlot(                        "d97925c1-14c3-47bc-8389-d83cf64c22b2",                        [{"marker":{"color":["#34d399","#34d399","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[128,128,256,192,256],"type":"bar"}],                        {"template":{"layout":{"colorway":["#22d3ee","#a78bfa","#34d399","#f59e0b","#fb7185","#60a5fa","#818cf8","#2dd4bf","#fb923c","#f472b6"],"font":{"color":"#e2e8f0","family":"DM Sans, sans-serif","size":13},"hoverlabel":{"bgcolor":"#1e293b","bordercolor":"#22d3ee","font":{"color":"#f8fafc","size":12}},"legend":{"bgcolor":"rgba(15,23,42,0.8)","bordercolor":"rgba(34,211,238,0.15)","borderwidth":1,"font":{"color":"#e2e8f0"}},"margin":{"b":50,"l":60,"r":30,"t":60},"paper_bgcolor":"#0a0f1e","plot_bgcolor":"#0f172a","title":{"font":{"color":"#f8fafc","size":18},"x":0.5},"xaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"},"yaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"}}},"title":{"text":"Security Level (bits) as Quantum Computing Scales"},"xaxis":{"title":{"text":"Algorithm"}},"yaxis":{"title":{"text":"Effective Security (bits)"},"range":[0,280]},"updatemenus":[{"buttons":[{"args":[null,{"frame":{"duration":500},"fromcurrent":true}],"label":"Play","method":"animate"},{"args":[[null],{"frame":{"duration":0},"mode":"immediate"}],"label":"Pause","method":"animate"}],"showactive":false,"type":"buttons","x":0.05,"y":1.12}],"sliders":[{"active":0,"len":0.9,"steps":[{"args":[["2024"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2024","method":"animate"},{"args":[["2025"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2025","method":"animate"},{"args":[["2026"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2026","method":"animate"},{"args":[["2027"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2027","method":"animate"},{"args":[["2028"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2028","method":"animate"},{"args":[["2029"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2029","method":"animate"},{"args":[["2030"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2030","method":"animate"},{"args":[["2031"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2031","method":"animate"},{"args":[["2032"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2032","method":"animate"},{"args":[["2033"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2033","method":"animate"},{"args":[["2034"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2034","method":"animate"},{"args":[["2035"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2035","method":"animate"},{"args":[["2036"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2036","method":"animate"},{"args":[["2037"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2037","method":"animate"},{"args":[["2038"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2038","method":"animate"},{"args":[["2039"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2039","method":"animate"},{"args":[["2040"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2040","method":"animate"}],"x":0.05,"y":-0.1,"yanchor":"top"}],"height":500},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('d97925c1-14c3-47bc-8389-d83cf64c22b2', [{"data":[{"marker":{"color":["#34d399","#34d399","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[128,128,256,192,256],"type":"bar"}],"name":"2024"},{"data":[{"marker":{"color":["#34d399","#34d399","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[128,128,256,192,256],"type":"bar"}],"name":"2025"},{"data":[{"marker":{"color":["#34d399","#34d399","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[128,128,256,192,256],"type":"bar"}],"name":"2026"},{"data":[{"marker":{"color":["#f59e0b","#f59e0b","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[100,90,256,192,256],"type":"bar"}],"name":"2027"},{"data":[{"marker":{"color":["#f59e0b","#f59e0b","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[80,70,256,192,256],"type":"bar"}],"name":"2028"},{"data":[{"marker":{"color":["#f59e0b","#fb7185","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[60,50,256,192,256],"type":"bar"}],"name":"2029"},{"data":[{"marker":{"color":["#fb7185","#fb7185","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[40,30,200,192,256],"type":"bar"}],"name":"2030"},{"data":[{"marker":{"color":["#fb7185","#fb7185","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[30,20,180,192,256],"type":"bar"}],"name":"2031"},{"data":[{"marker":{"color":["#fb7185","#fb7185","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[20,10,170,192,256],"type":"bar"}],"name":"2032"},{"data":[{"marker":{"color":["#fb7185","#fb7185","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[10,5,160,192,256],"type":"bar"}],"name":"2033"},{"data":[{"marker":{"color":["#fb7185","#fb7185","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[5,2,150,192,256],"type":"bar"}],"name":"2034"},{"data":[{"marker":{"color":["#fb7185","#fb7185","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[2,1,140,192,256],"type":"bar"}],"name":"2035"},{"data":[{"marker":{"color":["#fb7185","#fb7185","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[1,0,135,192,256],"type":"bar"}],"name":"2036"},{"data":[{"marker":{"color":["#fb7185","#fb7185","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[0,0,130,192,256],"type":"bar"}],"name":"2037"},{"data":[{"marker":{"color":["#fb7185","#fb7185","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[0,0,128,192,256],"type":"bar"}],"name":"2038"},{"data":[{"marker":{"color":["#fb7185","#fb7185","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[0,0,128,192,256],"type":"bar"}],"name":"2039"},{"data":[{"marker":{"color":["#fb7185","#fb7185","#34d399","#34d399","#34d399"]},"x":["RSA-2048","ECC P-256","AES-256","ML-KEM-768","ML-KEM-1024"],"y":[0,0,128,192,256],"type":"bar"}],"name":"2040"}]);
+                        }).then(function(){
+                            
+var gd = document.getElementById('d97925c1-14c3-47bc-8389-d83cf64c22b2');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div></div>
+</div>
+</section>
+<section id="conclusion-the-time-to-act-is-now">
+<h2>Conclusion: The Time to Act Is Now<a class="headerlink" href="#conclusion-the-time-to-act-is-now" title="Link to this heading">#</a></h2>
+<p>This notebook demonstrated that Shor’s algorithm is not science fiction. The mathematics are proven,
+the circuits are well-understood, and the only barrier is hardware scale.</p>
+<p>Zipminator implements <strong>ML-KEM-768 (FIPS 203)</strong>, the NIST-standardized post-quantum key encapsulation
+mechanism. It is not a future product; it is available today.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">zipminator</span>          <span class="c1"># Core PQC encryption</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">zipminator</span><span class="p">[</span><span class="n">quantum</span><span class="p">]</span> <span class="c1"># Quantum extras (Qiskit, entropy harvesting)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="04_compliance.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Compliance and PII Scanning</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="06_quantum_capabilities.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-mathematics-of-shor-s-algorithm">The Mathematics of Shor’s Algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-setup">Environment Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factoring-n-15-with-shor-s-algorithm">Factoring N = 15 with Shor’s Algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#qubit-requirements-the-chasm-between-toy-examples-and-real-rsa">Qubit Requirements: The Chasm Between Toy Examples and Real RSA</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-hndl-timeline-when-does-encrypted-data-become-vulnerable">The HNDL Timeline: When Does Encrypted Data Become Vulnerable?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hndl-risk-calculator">HNDL Risk Calculator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-size-comparison-classical-vs-post-quantum-algorithms">Key Size Comparison: Classical vs Post-Quantum Algorithms</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-algorithm-security-over-time">Interactive: Algorithm Security Over Time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion-the-time-to-act-is-now">Conclusion: The Time to Act Is Now</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QDaria AS
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p><a href="https://www.zipminator.zip">zipminator.zip</a> | <a href="https://www.zipminator.zip/docs">Docs Overview</a> | <a href="https://qdaria.com">QDaria</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

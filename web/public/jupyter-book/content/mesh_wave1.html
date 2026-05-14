@@ -1,0 +1,814 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Q-Mesh: Physical Cryptography Wave 1 &#8212; Zipminator</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=93784575" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=a56c686a"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/mesh_wave1';</script>
+    <script src="../_static/custom.js?v=b141372c"></script>
+    <link rel="icon" href="../_static/Z.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Flutter Super-App" href="flutter_app.html" />
+    <link rel="prev" title="Patent Portfolio" href="patents.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/zipminator-logo-dark.svg" class="logo__image only-light" alt="Zipminator - Home"/>
+    <img src="../_static/zipminator-logo-light.svg" class="logo__image only-dark pst-js-only" alt="Zipminator - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part I: Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part II: Core Cryptography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="core_crypto.html">Core Cryptography: Kyber768 KEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entropy.html">Quantum Entropy</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="qmesh.html">Q-Mesh: Physical Cryptography</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="clearance_levels.html">Clearance Levels: L1 through L4</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part III: Data Protection</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pii_scanning.html">PII Scanning</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="anonymization.html">10-Level Data Anonymization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="anonymization_levels.html">10-Level Anonymization System</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="self_destruct.html">Secure Self-Destruct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zipndel.html">Zipndel: Encrypt &amp; Compress DataFrames</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IV: Jupyter &amp; Interactive</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="jupyter.html">Jupyter Integration</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part V: Tiers &amp; API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="subscription.html">Subscription Tiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_credentials.html">API Credentials &amp; Access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VI: Compliance &amp; Use Cases</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="compliance.html">Compliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/government.html">Use Case: Government and Public Sector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/healthcare.html">Use Case: Healthcare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/finance.html">Use Case: Finance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/ecommerce.html">Use Case: E-Commerce</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/defense.html">Use Case: Defense and Intelligence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VII: Interactive Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/01_quickstart.html">Getting Started with Zipminator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/02_anonymization.html">10-Level Anonymization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/03_qrng_entropy.html">Quantum Random Number Generation &amp; Entropy Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/04_compliance.html">Compliance and PII Scanning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/05_shor_demo.html">Shor’s Algorithm and the Quantum Threat to Classical Cryptography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/06_quantum_capabilities.html">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/07_vault_workflow.html">Data Vault Workflow: From Raw Data to Quantum-Safe Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/08_qmesh_physical_crypto.html">Q-Mesh: Physical Cryptography — Zero-Interaction Authentication</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VIII: Advanced Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/09_monte_carlo_prng_vs_qrng.html">Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/10_quantum_anonymization.html">Quantum-Certified Anonymization: How L10 Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/10_quantum_entropy_harvester.html">Quantum Entropy Harvester</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IX: CLI Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_reference.html">CLI Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part X: Releases, Research &amp; IP</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="papers.html">Research Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="patents.html">Patent Portfolio</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Q-Mesh: Physical Cryptography Wave 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flutter_app.html">Flutter Super-App</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="appendix/anonymization_techniques.html">Appendix: Anonymization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/fips_203.html">Appendix: NIST FIPS 203 (ML-KEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/glossary.html">Appendix: Glossary</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator/issues/new?title=Issue%20on%20page%20%2Fcontent/mesh_wave1.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/content/mesh_wave1.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Q-Mesh: Physical Cryptography Wave 1</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-map">Module map</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#csi-entropy-harvester-csi-entropy-rs">CSI Entropy Harvester (<code class="docutils literal notranslate"><span class="pre">csi_entropy.rs</span></code>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline">Pipeline</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api-sketch">API sketch</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#puek-physical-unclonable-environment-key-puek-rs">PUEK: Physical Unclonable Environment Key (<code class="docutils literal notranslate"><span class="pre">puek.rs</span></code>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#profiles">Profiles</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#derivation">Derivation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#em-canary-em-canary-rs">EM Canary (<code class="docutils literal notranslate"><span class="pre">em_canary.rs</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vital-sign-continuous-auth-vital-auth-rs">Vital-Sign Continuous Auth (<code class="docutils literal notranslate"><span class="pre">vital_auth.rs</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topological-mesh-authentication-topo-auth-rs">Topological Mesh Authentication (<code class="docutils literal notranslate"><span class="pre">topo_auth.rs</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spatiotemporal-non-repudiation-spatiotemporal-rs">Spatiotemporal Non-Repudiation (<code class="docutils literal notranslate"><span class="pre">spatiotemporal.rs</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coverage-highlights">Coverage highlights</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integration">Integration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-chapters">Related chapters</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="q-mesh-physical-cryptography-wave-1">
+<h1>Q-Mesh: Physical Cryptography Wave 1<a class="headerlink" href="#q-mesh-physical-cryptography-wave-1" title="Link to this heading">#</a></h1>
+<p>On 2026-03-20, Zipminator shipped six physical-layer cryptography primitives inside <code class="docutils literal notranslate"><span class="pre">crates/zipminator-mesh/</span></code>. Together they turn raw WiFi channel-state information (CSI) into authenticated sensing mesh keys, and they integrate with the RuView ESP32-S3 mesh hardware used in field deployments. This chapter is the developer reference for Wave 1.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Wave 1 focuses on primitives. Wave 2 adds the attestation protocol on top of these primitives and is documented separately.</p>
+</div>
+<section id="module-map">
+<h2>Module map<a class="headerlink" href="#module-map" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Module</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">csi_entropy.rs</span></code></p></td>
+<td><p>Harvest min-entropy from WiFi CSI snapshots</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">puek.rs</span></code></p></td>
+<td><p>Physical Unclonable Environment Key derived from CSI eigenstructure</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">em_canary.rs</span></code></p></td>
+<td><p>Electromagnetic threat-level canary driving key rotation</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vital_auth.rs</span></code></p></td>
+<td><p>Continuous authentication from WiFi-derived vitals</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">topo_auth.rs</span></code></p></td>
+<td><p>Topology-invariant mesh authentication</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">spatiotemporal.rs</span></code></p></td>
+<td><p>Spatiotemporal presence proofs for non-repudiation</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Each module is independent and composable. Downstream code in <code class="docutils literal notranslate"><span class="pre">crates/zipminator-core/</span></code> consumes the outputs via well-defined traits.</p>
+</section>
+<section id="csi-entropy-harvester-csi-entropy-rs">
+<h2>CSI Entropy Harvester (<code class="docutils literal notranslate"><span class="pre">csi_entropy.rs</span></code>)<a class="headerlink" href="#csi-entropy-harvester-csi-entropy-rs" title="Link to this heading">#</a></h2>
+<p>The entropy harvester is the first module in the pipeline. It turns raw WiFi CSI snapshots into an entropy pool that downstream code can pull from.</p>
+<section id="pipeline">
+<h3>Pipeline<a class="headerlink" href="#pipeline" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Capture CSI snapshot from the driver</p></li>
+<li><p>Apply Von Neumann debiasing to remove static bias</p></li>
+<li><p>XOR with a QRNG sample from the hardware pool</p></li>
+<li><p>Tag the output with a provenance record</p></li>
+<li><p>Expose the result through the <code class="docutils literal notranslate"><span class="pre">PoolEntropySource</span></code> trait</p></li>
+</ol>
+</section>
+<section id="api-sketch">
+<h3>API sketch<a class="headerlink" href="#api-sketch" title="Link to this heading">#</a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">zipminator_mesh</span><span class="p">::</span><span class="n">csi_entropy</span><span class="p">::{</span><span class="n">CsiHarvester</span><span class="p">,</span><span class="w"> </span><span class="n">PoolEntropySource</span><span class="p">};</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">harvester</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CsiHarvester</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="n">driver_handle</span><span class="p">,</span><span class="w"> </span><span class="n">qrng_source</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">harvester</span><span class="p">.</span><span class="n">pool_read</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">   </span><span class="c1">// 32 bytes of certified entropy</span>
+<span class="fm">assert_eq!</span><span class="p">(</span><span class="n">bytes</span><span class="p">.</span><span class="n">len</span><span class="p">(),</span><span class="w"> </span><span class="mi">32</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The harvester expects CSI snapshots at 1 kHz or above. On slower drivers, buffering kicks in and the pool refills at the driver’s actual rate.</p>
+</div>
+</section>
+</section>
+<section id="puek-physical-unclonable-environment-key-puek-rs">
+<h2>PUEK: Physical Unclonable Environment Key (<code class="docutils literal notranslate"><span class="pre">puek.rs</span></code>)<a class="headerlink" href="#puek-physical-unclonable-environment-key-puek-rs" title="Link to this heading">#</a></h2>
+<p>PUEK derives a site-specific key from the eigenstructure of a sequence of CSI snapshots. It behaves like a software PUF anchored to the physical environment.</p>
+<section id="profiles">
+<h3>Profiles<a class="headerlink" href="#profiles" title="Link to this heading">#</a></h3>
+<p>Three profiles are shipped:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Scif</span></code>: for SCIF-grade deployments, with strict variance thresholds and frequent re-derivation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Office</span></code>: for enterprise deployments, with balanced thresholds</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Home</span></code>: for prosumer deployments, with relaxed thresholds to tolerate noisier environments</p></li>
+</ul>
+</section>
+<section id="derivation">
+<h3>Derivation<a class="headerlink" href="#derivation" title="Link to this heading">#</a></h3>
+<p>PUEK runs an SVD on a stacked CSI matrix, selects the top-k singular vectors, quantises them to a fixed grid, and hashes the result to produce a 256-bit key.</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">zipminator_mesh</span><span class="p">::</span><span class="n">puek</span><span class="p">::{</span><span class="n">Puek</span><span class="p">,</span><span class="w"> </span><span class="n">Profile</span><span class="p">};</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Puek</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="n">Profile</span><span class="p">::</span><span class="n">Office</span><span class="p">).</span><span class="n">derive</span><span class="p">(</span><span class="o">&amp;</span><span class="n">csi_snapshots</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="fm">assert_eq!</span><span class="p">(</span><span class="n">key</span><span class="p">.</span><span class="n">len</span><span class="p">(),</span><span class="w"> </span><span class="mi">32</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="em-canary-em-canary-rs">
+<h2>EM Canary (<code class="docutils literal notranslate"><span class="pre">em_canary.rs</span></code>)<a class="headerlink" href="#em-canary-em-canary-rs" title="Link to this heading">#</a></h2>
+<p>The canary watches the electromagnetic floor for anomalies. It outputs one of four threat levels on each tick:</p>
+<ol class="arabic simple">
+<li><p>Normal</p></li>
+<li><p>Elevated</p></li>
+<li><p>High</p></li>
+<li><p>Critical</p></li>
+</ol>
+<p>The policy engine consumes the current level and triggers actions (for example, rotate mesh keys, pause traffic, force re-auth).</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">zipminator_mesh</span><span class="p">::</span><span class="n">em_canary</span><span class="p">::{</span><span class="n">Canary</span><span class="p">,</span><span class="w"> </span><span class="n">ThreatLevel</span><span class="p">,</span><span class="w"> </span><span class="n">Policy</span><span class="p">};</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">canary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Canary</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+<span class="k">match</span><span class="w"> </span><span class="n">canary</span><span class="p">.</span><span class="n">tick</span><span class="p">()</span><span class="o">?</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ThreatLevel</span><span class="p">::</span><span class="n">Normal</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">    </span><span class="n">ThreatLevel</span><span class="p">::</span><span class="n">Elevated</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Policy</span><span class="p">::</span><span class="n">increase_rekey_rate</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">ThreatLevel</span><span class="p">::</span><span class="n">High</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Policy</span><span class="p">::</span><span class="n">force_rekey_now</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">ThreatLevel</span><span class="p">::</span><span class="n">Critical</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Policy</span><span class="p">::</span><span class="n">pause_traffic</span><span class="p">(),</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="vital-sign-continuous-auth-vital-auth-rs">
+<h2>Vital-Sign Continuous Auth (<code class="docutils literal notranslate"><span class="pre">vital_auth.rs</span></code>)<a class="headerlink" href="#vital-sign-continuous-auth-vital-auth-rs" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">vital_auth.rs</span></code> turns WiFi-derived vitals (micro-motion signatures, breathing rhythm) into a rolling HMAC that continuously re-authenticates the user.</p>
+<ul class="simple">
+<li><p>Rolling HMAC window updates at configurable rate</p></li>
+<li><p>Drift detection flags gradual changes (for example, a different user sitting down)</p></li>
+<li><p>Liveness detection rejects replayed vitals</p></li>
+</ul>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">zipminator_mesh</span><span class="p">::</span><span class="n">vital_auth</span><span class="p">::{</span><span class="n">VitalAuth</span><span class="p">,</span><span class="w"> </span><span class="n">AuthState</span><span class="p">};</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">auth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VitalAuth</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="n">seed_key</span><span class="p">);</span>
+<span class="k">match</span><span class="w"> </span><span class="n">auth</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vital_frame</span><span class="p">)</span><span class="o">?</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">AuthState</span><span class="p">::</span><span class="nb">Ok</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">proceed</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">AuthState</span><span class="p">::</span><span class="n">Drift</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">request_reconfirm</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">AuthState</span><span class="p">::</span><span class="n">Rejected</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">terminate_session</span><span class="p">(),</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Vital-auth is a defence in depth. It should never be the sole gate for access to a secret. Combine it with a PQC credential.</p>
+</div>
+</section>
+<section id="topological-mesh-authentication-topo-auth-rs">
+<h2>Topological Mesh Authentication (<code class="docutils literal notranslate"><span class="pre">topo_auth.rs</span></code>)<a class="headerlink" href="#topological-mesh-authentication-topo-auth-rs" title="Link to this heading">#</a></h2>
+<p>Mesh topology is encoded as a graph using <code class="docutils literal notranslate"><span class="pre">petgraph</span></code>. Topology invariants (number of components, diameter, spectral signature) form a fingerprint that must match on re-auth. Any structural change to the mesh triggers re-authentication of the affected subgraph.</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">zipminator_mesh</span><span class="p">::</span><span class="n">topo_auth</span><span class="p">::{</span><span class="n">TopoAuth</span><span class="p">,</span><span class="w"> </span><span class="n">TopoFingerprint</span><span class="p">};</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">auth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TopoAuth</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">fp</span><span class="p">:</span><span class="w"> </span><span class="nc">TopoFingerprint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">auth</span><span class="p">.</span><span class="n">fingerprint</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mesh_graph</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="n">auth</span><span class="p">.</span><span class="n">matches</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fp</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">previous_fp</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">auth</span><span class="p">.</span><span class="n">force_reauth</span><span class="p">(</span><span class="o">&amp;</span><span class="n">affected_subgraph</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="spatiotemporal-non-repudiation-spatiotemporal-rs">
+<h2>Spatiotemporal Non-Repudiation (<code class="docutils literal notranslate"><span class="pre">spatiotemporal.rs</span></code>)<a class="headerlink" href="#spatiotemporal-non-repudiation-spatiotemporal-rs" title="Link to this heading">#</a></h2>
+<p>This module produces presence proofs: signed tuples of <code class="docutils literal notranslate"><span class="pre">(csi_fingerprint,</span> <span class="pre">vital_fingerprint,</span> <span class="pre">timestamp)</span></code> that tie a user and a moment to a physical location. Proofs are non-repudiable under the certified entropy combiner.</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">zipminator_mesh</span><span class="p">::</span><span class="n">spatiotemporal</span><span class="p">::{</span><span class="n">PresenceProver</span><span class="p">,</span><span class="w"> </span><span class="n">PresenceProof</span><span class="p">};</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">prover</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PresenceProver</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="n">signing_key</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">proof</span><span class="p">:</span><span class="w"> </span><span class="nc">PresenceProof</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prover</span><span class="p">.</span><span class="n">prove</span><span class="p">(</span><span class="o">&amp;</span><span class="n">csi_fp</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">vital_fp</span><span class="p">,</span><span class="w"> </span><span class="n">timestamp</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="n">proof</span><span class="p">.</span><span class="n">verify</span><span class="p">(</span><span class="o">&amp;</span><span class="n">verifier_key</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Presence proofs are useful for audit trails in regulated industries. They are designed to be short (under 2 KB per proof) so they can be stored alongside every security-relevant action.</p>
+</div>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading">#</a></h2>
+<p>Wave 1 ships with 106 mesh tests: 90 unit tests plus 16 integration tests exercising end-to-end scenarios across multiple modules. The workspace total is 513 tests across all crates.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cargo<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-p<span class="w"> </span>zipminator-mesh<span class="w">          </span><span class="c1"># run Wave 1 tests only</span>
+cargo<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--workspace<span class="w">                 </span><span class="c1"># run everything</span>
+</pre></div>
+</div>
+<section id="coverage-highlights">
+<h3>Coverage highlights<a class="headerlink" href="#coverage-highlights" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">csi_entropy.rs</span></code>: Von Neumann debiasing correctness, pool refill under driver stall</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">puek.rs</span></code>: SVD stability under noise, profile boundary cases</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">em_canary.rs</span></code>: threshold crossings, level hysteresis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vital_auth.rs</span></code>: drift detection, liveness against replay</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">topo_auth.rs</span></code>: fingerprint invariance under permutation, sensitivity to real change</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">spatiotemporal.rs</span></code>: proof generation, proof verification, tampering rejection</p></li>
+</ul>
+</section>
+</section>
+<section id="integration">
+<h2>Integration<a class="headerlink" href="#integration" title="Link to this heading">#</a></h2>
+<p>The end-to-end notebook for Wave 1 lives at:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">notebooks</span><span class="o">/</span><span class="mi">08</span><span class="n">_qmesh_physical_crypto</span><span class="o">.</span><span class="n">ipynb</span>
+</pre></div>
+</div>
+<p>It walks through capturing CSI, running the full pipeline, and verifying a presence proof in under 60 seconds on a laptop with a supported WiFi chipset.</p>
+</section>
+<section id="related-chapters">
+<h2>Related chapters<a class="headerlink" href="#related-chapters" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="qmesh.html"><span class="std std-doc">Q-Mesh</span></a>, the Q-Mesh overview and clearance model</p></li>
+<li><p><a class="reference internal" href="clearance_levels.html"><span class="std std-doc">Clearance levels</span></a>, policy tiers consumed by <code class="docutils literal notranslate"><span class="pre">em_canary</span></code></p></li>
+<li><p><a class="reference internal" href="entropy.html"><span class="std std-doc">Entropy</span></a>, the pool that <code class="docutils literal notranslate"><span class="pre">csi_entropy</span></code> feeds</p></li>
+<li><p><a class="reference internal" href="papers.html"><span class="std std-doc">Research papers</span></a>, the academic background for CSI entropy and combiner</p></li>
+<li><p><a class="reference internal" href="patents.html"><span class="std std-doc">Patent portfolio</span></a>, the IP protecting these modules</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="patents.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Patent Portfolio</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="flutter_app.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Flutter Super-App</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-map">Module map</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#csi-entropy-harvester-csi-entropy-rs">CSI Entropy Harvester (<code class="docutils literal notranslate"><span class="pre">csi_entropy.rs</span></code>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline">Pipeline</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api-sketch">API sketch</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#puek-physical-unclonable-environment-key-puek-rs">PUEK: Physical Unclonable Environment Key (<code class="docutils literal notranslate"><span class="pre">puek.rs</span></code>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#profiles">Profiles</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#derivation">Derivation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#em-canary-em-canary-rs">EM Canary (<code class="docutils literal notranslate"><span class="pre">em_canary.rs</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vital-sign-continuous-auth-vital-auth-rs">Vital-Sign Continuous Auth (<code class="docutils literal notranslate"><span class="pre">vital_auth.rs</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topological-mesh-authentication-topo-auth-rs">Topological Mesh Authentication (<code class="docutils literal notranslate"><span class="pre">topo_auth.rs</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spatiotemporal-non-repudiation-spatiotemporal-rs">Spatiotemporal Non-Repudiation (<code class="docutils literal notranslate"><span class="pre">spatiotemporal.rs</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coverage-highlights">Coverage highlights</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integration">Integration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-chapters">Related chapters</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QDaria AS
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p><a href="https://www.zipminator.zip">zipminator.zip</a> | <a href="https://www.zipminator.zip/docs">Docs Overview</a> | <a href="https://qdaria.com">QDaria</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

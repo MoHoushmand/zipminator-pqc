@@ -1,0 +1,1151 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Quantum Entropy Harvester &#8212; Zipminator</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=93784575" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=a56c686a"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/10_quantum_entropy_harvester';</script>
+    <script src="../_static/custom.js?v=b141372c"></script>
+    <link rel="icon" href="../_static/Z.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Command-Line Interface" href="../content/cli.html" />
+    <link rel="prev" title="Quantum-Certified Anonymization: How L10 Works" href="10_quantum_anonymization.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/zipminator-logo-dark.svg" class="logo__image only-light" alt="Zipminator - Home"/>
+    <img src="../_static/zipminator-logo-light.svg" class="logo__image only-dark pst-js-only" alt="Zipminator - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part I: Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part II: Core Cryptography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/core_crypto.html">Core Cryptography: Kyber768 KEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/entropy.html">Quantum Entropy</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../content/qmesh.html">Q-Mesh: Physical Cryptography</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../content/clearance_levels.html">Clearance Levels: L1 through L4</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part III: Data Protection</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/pii_scanning.html">PII Scanning</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../content/anonymization.html">10-Level Data Anonymization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../content/anonymization_levels.html">10-Level Anonymization System</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/self_destruct.html">Secure Self-Destruct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/zipndel.html">Zipndel: Encrypt &amp; Compress DataFrames</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IV: Jupyter &amp; Interactive</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/jupyter.html">Jupyter Integration</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part V: Tiers &amp; API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/subscription.html">Subscription Tiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/api_credentials.html">API Credentials &amp; Access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/api_reference.html">API Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VI: Compliance &amp; Use Cases</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/compliance.html">Compliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/government.html">Use Case: Government and Public Sector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/healthcare.html">Use Case: Healthcare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/finance.html">Use Case: Finance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/ecommerce.html">Use Case: E-Commerce</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/defense.html">Use Case: Defense and Intelligence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VII: Interactive Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01_quickstart.html">Getting Started with Zipminator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_anonymization.html">10-Level Anonymization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_qrng_entropy.html">Quantum Random Number Generation &amp; Entropy Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_compliance.html">Compliance and PII Scanning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_shor_demo.html">Shor’s Algorithm and the Quantum Threat to Classical Cryptography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_quantum_capabilities.html">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_vault_workflow.html">Data Vault Workflow: From Raw Data to Quantum-Safe Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08_qmesh_physical_crypto.html">Q-Mesh: Physical Cryptography — Zero-Interaction Authentication</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VIII: Advanced Topics</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="09_monte_carlo_prng_vs_qrng.html">Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_quantum_anonymization.html">Quantum-Certified Anonymization: How L10 Works</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Quantum Entropy Harvester</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IX: CLI Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/cli.html">Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/cli_reference.html">CLI Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part X: Releases, Research &amp; IP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/papers.html">Research Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/patents.html">Patent Portfolio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/mesh_wave1.html">Q-Mesh: Physical Cryptography Wave 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/flutter_app.html">Flutter Super-App</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/appendix/anonymization_techniques.html">Appendix: Anonymization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/appendix/fips_203.html">Appendix: NIST FIPS 203 (ML-KEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/appendix/glossary.html">Appendix: Glossary</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/QDaria/zipminator/blob/master/notebooks/10_quantum_entropy_harvester.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator/issues/new?title=Issue%20on%20page%20%2Fnotebooks/10_quantum_entropy_harvester.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/10_quantum_entropy_harvester.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Quantum Entropy Harvester</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-shot-harvest">One-Shot Harvest</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scheduled-harvest-loop">Scheduled Harvest (Loop)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#download-pool-for-qbraid-lab-remote-use">Download Pool (for qBraid Lab / remote use)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#append-remote-pool-to-local-pool">Append Remote Pool to Local Pool</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="quantum-entropy-harvester">
+<h1>Quantum Entropy Harvester<a class="headerlink" href="#quantum-entropy-harvester" title="Link to this heading">#</a></h1>
+<p>Harvests real quantum entropy from IBM Quantum hardware (ibm_fez, ibm_marrakesh — 156-qubit Heron r2 processors) into Zipminator’s ever-growing entropy pool.</p>
+<p><strong>Two modes:</strong></p>
+<ul class="simple">
+<li><p><strong>One-shot</strong>: Run once, harvest entropy, append to pool</p></li>
+<li><p><strong>Scheduled</strong>: Loop every N minutes, harvesting continuously</p></li>
+</ul>
+<p><strong>Where to run:</strong></p>
+<ul class="simple">
+<li><p><strong>Locally</strong>: Uses IBM Quantum credentials from <code class="docutils literal notranslate"><span class="pre">~/.qiskit/qiskit-ibm.json</span></code></p></li>
+<li><p><strong>qBraid Lab</strong>: Upload this notebook, credentials are automatic</p></li>
+<li><p><strong>Any Jupyter</strong>: Just needs <code class="docutils literal notranslate"><span class="pre">qiskit-ibm-runtime</span></code> installed</p></li>
+</ul>
+<p><strong>Budget guard</strong>: 8 min of 10 min/month free QPU time (configurable)</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configuration</span>
+<span class="n">POOL_PATH</span> <span class="o">=</span> <span class="s2">&quot;../../quantum_entropy/quantum_entropy_pool.bin&quot;</span>  <span class="c1"># Relative to notebook</span>
+<span class="n">LOG_PATH</span> <span class="o">=</span> <span class="s2">&quot;../../quantum_entropy/harvest_log.jsonl&quot;</span>
+<span class="n">BUDGET_PATH</span> <span class="o">=</span> <span class="s2">&quot;../../quantum_entropy/ibm_budget.json&quot;</span>
+
+<span class="n">NUM_QUBITS</span> <span class="o">=</span> <span class="mi">16</span>          <span class="c1"># Qubits per circuit (16 = 2 bytes per shot)</span>
+<span class="n">SHOTS</span> <span class="o">=</span> <span class="mi">1024</span>             <span class="c1"># Shots per circuit (1024 shots = 2048 bytes)</span>
+<span class="n">MAX_QPU_SECONDS</span> <span class="o">=</span> <span class="mi">480</span>    <span class="c1"># 8 min of 10 min free tier</span>
+<span class="n">QPU_MS_PER_SHOT</span> <span class="o">=</span> <span class="mf">1.0</span>    <span class="c1"># Conservative estimate</span>
+
+<span class="c1"># For scheduled mode:</span>
+<span class="n">HARVEST_INTERVAL_MINUTES</span> <span class="o">=</span> <span class="mi">60</span>  <span class="c1"># Harvest every hour</span>
+<span class="n">MAX_HARVESTS</span> <span class="o">=</span> <span class="mi">24</span>              <span class="c1"># Stop after 24 harvests (24 hours)</span>
+
+<span class="c1"># Preferred backends (in order)</span>
+<span class="n">PREFERRED_BACKENDS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ibm_fez&quot;</span><span class="p">,</span> <span class="s2">&quot;ibm_marrakesh&quot;</span><span class="p">,</span> <span class="s2">&quot;ibm_kingston&quot;</span><span class="p">,</span> <span class="s2">&quot;ibm_brisbane&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="c1"># Resolve paths (works both locally and in qBraid Lab)</span>
+<span class="n">pool_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">POOL_PATH</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+<span class="n">log_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">LOG_PATH</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+<span class="n">budget_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">BUDGET_PATH</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
+<span class="c1"># If paths don&#39;t exist (running in qBraid Lab), use local directory</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">pool_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="n">pool_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;quantum_entropy_pool.bin&quot;</span><span class="p">)</span>
+    <span class="n">log_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;harvest_log.jsonl&quot;</span><span class="p">)</span>
+    <span class="n">budget_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;ibm_budget.json&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Remote mode: saving to current directory&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Local mode: pool at </span><span class="si">{</span><span class="n">pool_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pool exists: </span><span class="si">{</span><span class="n">pool_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span><span class="si">}</span><span class="s2">, size: </span><span class="si">{</span><span class="n">pool_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">pool_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="mi">0</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Budget Guard ---</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">current_month</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">load_budget</span><span class="p">():</span>
+    <span class="n">month</span> <span class="o">=</span> <span class="n">current_month</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">budget_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">budget_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;month&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">month</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">data</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;month&quot;</span><span class="p">:</span> <span class="n">month</span><span class="p">,</span> <span class="s2">&quot;cumulative_seconds&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;jobs&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">save_budget</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">budget_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">check_budget</span><span class="p">(</span><span class="n">estimated_seconds</span><span class="p">):</span>
+    <span class="n">budget</span> <span class="o">=</span> <span class="n">load_budget</span><span class="p">()</span>
+    <span class="n">used</span> <span class="o">=</span> <span class="n">budget</span><span class="p">[</span><span class="s2">&quot;cumulative_seconds&quot;</span><span class="p">]</span>
+    <span class="n">projected</span> <span class="o">=</span> <span class="n">used</span> <span class="o">+</span> <span class="n">estimated_seconds</span>
+    <span class="k">if</span> <span class="n">projected</span> <span class="o">&gt;</span> <span class="n">MAX_QPU_SECONDS</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BUDGET EXCEEDED: </span><span class="si">{</span><span class="n">used</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s used + </span><span class="si">{</span><span class="n">estimated_seconds</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s = </span><span class="si">{</span><span class="n">projected</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s &gt; </span><span class="si">{</span><span class="n">MAX_QPU_SECONDS</span><span class="si">}</span><span class="s2">s limit&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">pct</span> <span class="o">=</span> <span class="n">used</span> <span class="o">/</span> <span class="n">MAX_QPU_SECONDS</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Budget: </span><span class="si">{</span><span class="n">used</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s / </span><span class="si">{</span><span class="n">MAX_QPU_SECONDS</span><span class="si">}</span><span class="s2">s (</span><span class="si">{</span><span class="n">pct</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">%) — </span><span class="si">{</span><span class="n">estimated_seconds</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s estimated for this job&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">record_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+    <span class="n">budget</span> <span class="o">=</span> <span class="n">load_budget</span><span class="p">()</span>
+    <span class="n">budget</span><span class="p">[</span><span class="s2">&quot;cumulative_seconds&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">seconds</span>
+    <span class="n">budget</span><span class="p">[</span><span class="s2">&quot;jobs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;job_id&quot;</span><span class="p">:</span> <span class="n">job_id</span><span class="p">,</span> <span class="s2">&quot;seconds&quot;</span><span class="p">:</span> <span class="n">seconds</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()})</span>
+    <span class="n">save_budget</span><span class="p">(</span><span class="n">budget</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Budget this month: </span><span class="si">{</span><span class="n">load_budget</span><span class="p">()[</span><span class="s1">&#39;cumulative_seconds&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s / </span><span class="si">{</span><span class="n">MAX_QPU_SECONDS</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Connect to Quantum Hardware ---</span>
+<span class="c1"># Tries: 1) Rigetti via qBraid (free)  2) IBM via qBraid  3) IBM direct</span>
+
+<span class="n">backend</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">service</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">use_qbraid_rigetti</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># --- Option 1: Rigetti via qBraid (FREE, no QPU limit) ---</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qbraid.runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">QbraidProvider</span>
+    <span class="n">provider</span> <span class="o">=</span> <span class="n">QbraidProvider</span><span class="p">()</span>
+    <span class="n">devices</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">get_devices</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qBraid devices found:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">:</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="s1">&#39;unknown&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">d</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;num_qubits&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;?&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">q)&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Look for Rigetti</span>
+    <span class="n">rigetti</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">devices</span> <span class="k">if</span> <span class="s1">&#39;rigetti&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;ankaa&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="n">rigetti</span><span class="p">:</span>
+        <span class="n">backend</span> <span class="o">=</span> <span class="n">rigetti</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">use_qbraid_rigetti</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Selected: </span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> (Rigetti via qBraid - FREE)&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">No Rigetti device found via qBraid&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;qBraid not available: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># --- Option 2: IBM via qiskit-ibm-runtime ---</span>
+<span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_ibm_runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">QiskitRuntimeService</span>
+        <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ibm_quantum&#39;</span><span class="p">,</span> <span class="s1">&#39;ibm_cloud&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">service</span> <span class="o">=</span> <span class="n">QiskitRuntimeService</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span> <span class="k">if</span> <span class="n">channel</span> <span class="k">else</span> <span class="n">QiskitRuntimeService</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">IBM Quantum connected via </span><span class="si">{</span><span class="n">channel</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;default&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">continue</span>
+        
+        <span class="k">if</span> <span class="n">service</span><span class="p">:</span>
+            <span class="n">backends</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">backends</span><span class="p">(</span><span class="n">simulator</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">operational</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">backends</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">num_qubits</span> <span class="o">&gt;=</span> <span class="n">NUM_QUBITS</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IBM backends (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">backends</span><span class="p">)</span><span class="si">}</span><span class="s2"> total, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">operational</span><span class="p">)</span><span class="si">}</span><span class="s2"> with &gt;=</span><span class="si">{</span><span class="n">NUM_QUBITS</span><span class="si">}</span><span class="s2">q):&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">operational</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">8</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">num_qubits</span><span class="si">}</span><span class="s2">q&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">operational</span><span class="p">:</span>
+                <span class="n">backend</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">operational</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">b</span><span class="p">:</span> <span class="n">b</span><span class="o">.</span><span class="n">status</span><span class="p">()</span><span class="o">.</span><span class="n">pending_jobs</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Selected: </span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">num_qubits</span><span class="si">}</span><span class="s2">q)&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IBM Quantum not available: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">backend</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&gt;&gt;&gt; Ready to harvest from: </span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">id</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">use_qbraid_rigetti</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">backend</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">No quantum backend available!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Build Hadamard Circuit ---</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
+
+<span class="n">qc</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">NUM_QUBITS</span><span class="p">,</span> <span class="n">NUM_QUBITS</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUM_QUBITS</span><span class="p">):</span>
+    <span class="n">qc</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUM_QUBITS</span><span class="p">):</span>
+    <span class="n">qc</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Circuit: H^</span><span class="si">{</span><span class="n">NUM_QUBITS</span><span class="si">}</span><span class="s2"> + measure&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected entropy: </span><span class="si">{</span><span class="n">SHOTS</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">NUM_QUBITS</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="mi">8</span><span class="si">}</span><span class="s2"> bytes (</span><span class="si">{</span><span class="n">SHOTS</span><span class="si">}</span><span class="s2"> shots x </span><span class="si">{</span><span class="n">NUM_QUBITS</span><span class="si">}</span><span class="s2"> bits / 8)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qc</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Harvest Function (supports both Rigetti/qBraid and IBM) ---</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">harvest_once_rigetti</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">num_qubits</span><span class="o">=</span><span class="n">NUM_QUBITS</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="n">SHOTS</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Harvest via qBraid Rigetti backend.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">qasm2</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qbraid.runtime.native.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">Program</span> <span class="k">as</span> <span class="n">NativeProgram</span>
+
+    <span class="n">estimated_seconds</span> <span class="o">=</span> <span class="n">shots</span> <span class="o">*</span> <span class="n">QPU_MS_PER_SHOT</span> <span class="o">/</span> <span class="mi">1000</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">check_budget</span><span class="p">(</span><span class="n">estimated_seconds</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="c1"># Build circuit</span>
+    <span class="n">qc</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">num_qubits</span><span class="p">,</span> <span class="n">num_qubits</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_qubits</span><span class="p">):</span>
+        <span class="n">qc</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_qubits</span><span class="p">):</span>
+        <span class="n">qc</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+    <span class="c1"># Convert to QASM2 string, then wrap in the native Program pydantic model</span>
+    <span class="n">qasm_str</span> <span class="o">=</span> <span class="n">qasm2</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">qc</span><span class="p">)</span>
+    <span class="n">program</span> <span class="o">=</span> <span class="n">NativeProgram</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;qasm2&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">qasm_str</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Built NativeProgram(format=&#39;qasm2&#39;) for </span><span class="si">{</span><span class="n">device</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submitting H^</span><span class="si">{</span><span class="n">num_qubits</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">device</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">shots</span><span class="si">}</span><span class="s2"> shots)...&quot;</span><span class="p">)</span>
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="c1"># Submit directly via device client to bypass the broken device.run() path</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qbraid.runtime.native.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobRequest</span>
+    <span class="n">job_request</span> <span class="o">=</span> <span class="n">JobRequest</span><span class="p">(</span>
+        <span class="n">deviceQrn</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">program</span><span class="o">=</span><span class="n">program</span><span class="p">,</span>
+        <span class="n">shots</span><span class="o">=</span><span class="n">shots</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">job_data</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">create_job</span><span class="p">(</span><span class="n">job_request</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qbraid.runtime.native.job</span><span class="w"> </span><span class="kn">import</span> <span class="n">QbraidJob</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">QbraidJob</span><span class="p">(</span><span class="n">job_id</span><span class="o">=</span><span class="n">job_data</span><span class="o">.</span><span class="n">jobQrn</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">id</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Job ID: </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Completed in </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract counts</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;get_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;measurement_counts&#39;</span><span class="p">]:</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fn</span> <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">counts</span> <span class="o">=</span> <span class="n">fn</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">counts</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">continue</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">counts</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">counts</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get_counts</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">counts</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not extract counts. Result type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Result attrs: </span><span class="si">{</span><span class="p">[</span><span class="n">x</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">dir</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="c1"># Convert to entropy bytes</span>
+    <span class="n">entropy_bytes</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">bitstring</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">bits</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">bitstring</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">n_bytes</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span> <span class="o">//</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="n">byte_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bits</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">n_bytes</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+            <span class="n">entropy_bytes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">byte_val</span><span class="p">)</span>
+
+    <span class="n">entropy</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">entropy_bytes</span><span class="p">)</span>
+    <span class="n">sha</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">entropy</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+    <span class="c1"># Append to pool</span>
+    <span class="n">pool_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pool_before</span> <span class="o">=</span> <span class="n">pool_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span> <span class="k">if</span> <span class="n">pool_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pool_path</span><span class="p">,</span> <span class="s1">&#39;ab&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">entropy</span><span class="p">)</span>
+    <span class="n">pool_after</span> <span class="o">=</span> <span class="n">pool_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+
+    <span class="n">record</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;rigetti/</span><span class="si">{</span><span class="n">device</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;job_id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">job_id</span><span class="p">),</span>
+        <span class="s2">&quot;qubits&quot;</span><span class="p">:</span> <span class="n">num_qubits</span><span class="p">,</span> <span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="n">shots</span><span class="p">,</span>
+        <span class="s2">&quot;circuit&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;H^</span><span class="si">{</span><span class="n">num_qubits</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;entropy_bytes&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">entropy</span><span class="p">),</span> <span class="s2">&quot;sha256&quot;</span><span class="p">:</span> <span class="n">sha</span><span class="p">,</span>
+        <span class="s2">&quot;elapsed_seconds&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">elapsed</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="s2">&quot;pool_before&quot;</span><span class="p">:</span> <span class="n">pool_before</span><span class="p">,</span> <span class="s2">&quot;pool_after&quot;</span><span class="p">:</span> <span class="n">pool_after</span><span class="p">,</span>
+        <span class="s2">&quot;certification&quot;</span><span class="p">:</span> <span class="s2">&quot;born_rule&quot;</span>
+    <span class="p">}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">record</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">record_job</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">job_id</span><span class="p">),</span> <span class="n">estimated_seconds</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Harvested </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">entropy</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes from </span><span class="si">{</span><span class="n">device</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SHA-256: </span><span class="si">{</span><span class="n">sha</span><span class="p">[:</span><span class="mi">16</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pool: </span><span class="si">{</span><span class="n">pool_before</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">pool_after</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unique bitstrings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">entropy</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">harvest_once_ibm</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">circuit</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="n">SHOTS</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Harvest via IBM Quantum (qiskit-ibm-runtime).&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_ibm_runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">SamplerV2</span> <span class="k">as</span> <span class="n">Sampler</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.transpiler.preset_passmanagers</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
+
+    <span class="n">estimated_seconds</span> <span class="o">=</span> <span class="n">shots</span> <span class="o">*</span> <span class="n">QPU_MS_PER_SHOT</span> <span class="o">/</span> <span class="mi">1000</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">check_budget</span><span class="p">(</span><span class="n">estimated_seconds</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="n">pm</span> <span class="o">=</span> <span class="n">generate_preset_pass_manager</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">optimization_level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">transpiled</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
+    <span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submitting to </span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">transpiled</span><span class="p">],</span> <span class="n">shots</span><span class="o">=</span><span class="n">shots</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Job ID: </span><span class="si">{</span><span class="n">job</span><span class="o">.</span><span class="n">job_id</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Completed in </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">meas</span><span class="o">.</span><span class="n">get_counts</span><span class="p">()</span>
+    <span class="n">entropy_bytes</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">bitstring</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">bits</span> <span class="o">=</span> <span class="n">bitstring</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">byte_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bits</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">NUM_QUBITS</span> <span class="o">//</span> <span class="mi">8</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+            <span class="n">entropy_bytes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">byte_val</span><span class="p">)</span>
+
+    <span class="n">entropy</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">entropy_bytes</span><span class="p">)</span>
+    <span class="n">sha</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">entropy</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+    <span class="n">pool_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pool_before</span> <span class="o">=</span> <span class="n">pool_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span> <span class="k">if</span> <span class="n">pool_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pool_path</span><span class="p">,</span> <span class="s1">&#39;ab&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">entropy</span><span class="p">)</span>
+    <span class="n">pool_after</span> <span class="o">=</span> <span class="n">pool_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+
+    <span class="n">record</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;ibm_quantum/</span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;job_id&quot;</span><span class="p">:</span> <span class="n">job</span><span class="o">.</span><span class="n">job_id</span><span class="p">(),</span>
+        <span class="s2">&quot;qubits&quot;</span><span class="p">:</span> <span class="n">NUM_QUBITS</span><span class="p">,</span> <span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="n">shots</span><span class="p">,</span>
+        <span class="s2">&quot;circuit&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;H^</span><span class="si">{</span><span class="n">NUM_QUBITS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;entropy_bytes&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">entropy</span><span class="p">),</span> <span class="s2">&quot;sha256&quot;</span><span class="p">:</span> <span class="n">sha</span><span class="p">,</span>
+        <span class="s2">&quot;elapsed_seconds&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">elapsed</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="s2">&quot;pool_before&quot;</span><span class="p">:</span> <span class="n">pool_before</span><span class="p">,</span> <span class="s2">&quot;pool_after&quot;</span><span class="p">:</span> <span class="n">pool_after</span><span class="p">,</span>
+        <span class="s2">&quot;certification&quot;</span><span class="p">:</span> <span class="s2">&quot;born_rule&quot;</span>
+    <span class="p">}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">record</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">record_job</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">job_id</span><span class="p">(),</span> <span class="n">estimated_seconds</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Harvested </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">entropy</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes from </span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pool: </span><span class="si">{</span><span class="n">pool_before</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">pool_after</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">entropy</span><span class="p">),</span> <span class="n">job</span><span class="o">.</span><span class="n">job_id</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">harvest_once</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">circuit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="n">SHOTS</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Auto-dispatch to Rigetti or IBM.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">use_qbraid_rigetti</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">harvest_once_rigetti</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="n">shots</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">harvest_once_ibm</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">circuit</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="n">shots</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Harvest functions ready.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<section id="one-shot-harvest">
+<h2>One-Shot Harvest<a class="headerlink" href="#one-shot-harvest" title="Link to this heading">#</a></h2>
+<p>Run the cell below to harvest once.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- ONE-SHOT HARVEST ---</span>
+<span class="n">bytes_harvested</span><span class="p">,</span> <span class="n">job_id</span> <span class="o">=</span> <span class="n">harvest_once</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">qc</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Done! </span><span class="si">{</span><span class="n">bytes_harvested</span><span class="si">}</span><span class="s2"> bytes harvested, job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+</section>
+<section id="scheduled-harvest-loop">
+<h2>Scheduled Harvest (Loop)<a class="headerlink" href="#scheduled-harvest-loop" title="Link to this heading">#</a></h2>
+<p>Run the cell below to harvest continuously every <code class="docutils literal notranslate"><span class="pre">HARVEST_INTERVAL_MINUTES</span></code> minutes.
+It will stop after <code class="docutils literal notranslate"><span class="pre">MAX_HARVESTS</span></code> cycles or when the budget is exhausted.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- SCHEDULED HARVEST ---</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">display</span>
+
+<span class="n">total_bytes</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">total_jobs</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">for</span> <span class="n">cycle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">MAX_HARVESTS</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">display</span><span class="o">.</span><span class="n">clear_output</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=== Harvest cycle </span><span class="si">{</span><span class="n">cycle</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">MAX_HARVESTS</span><span class="si">}</span><span class="s2"> ===&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total harvested so far: </span><span class="si">{</span><span class="n">total_bytes</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bytes from </span><span class="si">{</span><span class="n">total_jobs</span><span class="si">}</span><span class="s2"> jobs&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Time: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S UTC&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">harvested</span><span class="p">,</span> <span class="n">jid</span> <span class="o">=</span> <span class="n">harvest_once</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">qc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">harvested</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Budget exhausted. Stopping.&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="n">total_bytes</span> <span class="o">+=</span> <span class="n">harvested</span>
+        <span class="n">total_jobs</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Will retry next cycle.&quot;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">cycle</span> <span class="o">&lt;</span> <span class="n">MAX_HARVESTS</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Sleeping </span><span class="si">{</span><span class="n">HARVEST_INTERVAL_MINUTES</span><span class="si">}</span><span class="s2"> minutes until next harvest...&quot;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">HARVEST_INTERVAL_MINUTES</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== DONE ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total: </span><span class="si">{</span><span class="n">total_bytes</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bytes from </span><span class="si">{</span><span class="n">total_jobs</span><span class="si">}</span><span class="s2"> jobs&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pool size: </span><span class="si">{</span><span class="n">pool_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+</section>
+<section id="download-pool-for-qbraid-lab-remote-use">
+<h2>Download Pool (for qBraid Lab / remote use)<a class="headerlink" href="#download-pool-for-qbraid-lab-remote-use" title="Link to this heading">#</a></h2>
+<p>If running remotely, download the pool file to transfer to your local machine.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show pool stats</span>
+<span class="k">if</span> <span class="n">pool_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">pool_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pool: </span><span class="si">{</span><span class="n">pool_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Size: </span><span class="si">{</span><span class="n">size</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bytes (</span><span class="si">{</span><span class="n">size</span><span class="o">/</span><span class="mi">1024</span><span class="o">/</span><span class="mi">1024</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB)&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># SHA-256 for verification</span>
+    <span class="n">sha</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">pool_path</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SHA-256: </span><span class="si">{</span><span class="n">sha</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># In Jupyter, create download link</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileLink</span>
+        <span class="n">display</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">FileLink</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pool_path</span><span class="p">),</span> <span class="n">result_html_prefix</span><span class="o">=</span><span class="s1">&#39;Download: &#39;</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">To download: copy </span><span class="si">{</span><span class="n">pool_path</span><span class="si">}</span><span class="s2"> to your local machine&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No pool file found.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+</section>
+<section id="append-remote-pool-to-local-pool">
+<h2>Append Remote Pool to Local Pool<a class="headerlink" href="#append-remote-pool-to-local-pool" title="Link to this heading">#</a></h2>
+<p>If you downloaded a pool file from qBraid Lab, run this locally to merge it.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- MERGE REMOTE POOL INTO LOCAL ---</span>
+<span class="c1"># Set this to the path of the downloaded file</span>
+<span class="n">REMOTE_POOL</span> <span class="o">=</span> <span class="s2">&quot;quantum_entropy_pool.bin&quot;</span>  <span class="c1"># Change to your download path</span>
+
+<span class="n">local_pool</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;../../quantum_entropy/quantum_entropy_pool.bin&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+<span class="n">remote_pool</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">REMOTE_POOL</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">remote_pool</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">local_pool</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="n">remote_bytes</span> <span class="o">=</span> <span class="n">remote_pool</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">()</span>
+    <span class="n">local_before</span> <span class="o">=</span> <span class="n">local_pool</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">local_pool</span><span class="p">,</span> <span class="s1">&#39;ab&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">remote_bytes</span><span class="p">)</span>
+    <span class="n">local_after</span> <span class="o">=</span> <span class="n">local_pool</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Appended </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">remote_bytes</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Local pool: </span><span class="si">{</span><span class="n">local_before</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">local_after</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="ow">not</span> <span class="n">remote_pool</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Remote pool not found at </span><span class="si">{</span><span class="n">REMOTE_POOL</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="ow">not</span> <span class="n">local_pool</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Local pool not found. Copying remote as new pool.&quot;</span><span class="p">)</span>
+    <span class="n">local_pool</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">local_pool</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">remote_pool</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="10_quantum_anonymization.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Quantum-Certified Anonymization: How L10 Works</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../content/cli.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Command-Line Interface</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-shot-harvest">One-Shot Harvest</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scheduled-harvest-loop">Scheduled Harvest (Loop)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#download-pool-for-qbraid-lab-remote-use">Download Pool (for qBraid Lab / remote use)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#append-remote-pool-to-local-pool">Append Remote Pool to Local Pool</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QDaria AS
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p><a href="https://www.zipminator.zip">zipminator.zip</a> | <a href="https://www.zipminator.zip/docs">Docs Overview</a> | <a href="https://qdaria.com">QDaria</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

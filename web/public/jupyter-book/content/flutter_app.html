@@ -1,0 +1,861 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Flutter Super-App &#8212; Zipminator</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=93784575" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=a56c686a"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/flutter_app';</script>
+    <script src="../_static/custom.js?v=b141372c"></script>
+    <link rel="icon" href="../_static/Z.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Appendix: Anonymization Techniques" href="appendix/anonymization_techniques.html" />
+    <link rel="prev" title="Q-Mesh: Physical Cryptography Wave 1" href="mesh_wave1.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/zipminator-logo-dark.svg" class="logo__image only-light" alt="Zipminator - Home"/>
+    <img src="../_static/zipminator-logo-light.svg" class="logo__image only-dark pst-js-only" alt="Zipminator - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part I: Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part II: Core Cryptography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="core_crypto.html">Core Cryptography: Kyber768 KEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entropy.html">Quantum Entropy</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="qmesh.html">Q-Mesh: Physical Cryptography</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="clearance_levels.html">Clearance Levels: L1 through L4</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part III: Data Protection</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pii_scanning.html">PII Scanning</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="anonymization.html">10-Level Data Anonymization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="anonymization_levels.html">10-Level Anonymization System</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="self_destruct.html">Secure Self-Destruct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zipndel.html">Zipndel: Encrypt &amp; Compress DataFrames</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IV: Jupyter &amp; Interactive</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="jupyter.html">Jupyter Integration</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part V: Tiers &amp; API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="subscription.html">Subscription Tiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_credentials.html">API Credentials &amp; Access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VI: Compliance &amp; Use Cases</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="compliance.html">Compliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/government.html">Use Case: Government and Public Sector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/healthcare.html">Use Case: Healthcare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/finance.html">Use Case: Finance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/ecommerce.html">Use Case: E-Commerce</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/defense.html">Use Case: Defense and Intelligence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VII: Interactive Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/01_quickstart.html">Getting Started with Zipminator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/02_anonymization.html">10-Level Anonymization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/03_qrng_entropy.html">Quantum Random Number Generation &amp; Entropy Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/04_compliance.html">Compliance and PII Scanning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/05_shor_demo.html">Shor’s Algorithm and the Quantum Threat to Classical Cryptography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/06_quantum_capabilities.html">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/07_vault_workflow.html">Data Vault Workflow: From Raw Data to Quantum-Safe Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/08_qmesh_physical_crypto.html">Q-Mesh: Physical Cryptography — Zero-Interaction Authentication</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VIII: Advanced Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/09_monte_carlo_prng_vs_qrng.html">Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/10_quantum_anonymization.html">Quantum-Certified Anonymization: How L10 Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/10_quantum_entropy_harvester.html">Quantum Entropy Harvester</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IX: CLI Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_reference.html">CLI Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part X: Releases, Research &amp; IP</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="papers.html">Research Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="patents.html">Patent Portfolio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_wave1.html">Q-Mesh: Physical Cryptography Wave 1</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Flutter Super-App</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="appendix/anonymization_techniques.html">Appendix: Anonymization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/fips_203.html">Appendix: NIST FIPS 203 (ML-KEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/glossary.html">Appendix: Glossary</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator/issues/new?title=Issue%20on%20page%20%2Fcontent/flutter_app.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/content/flutter_app.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Flutter Super-App</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#platform-matrix">Platform matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-end-users">Install (end-users)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ios-via-testflight">iOS via TestFlight</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#android-via-play-store">Android via Play Store</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desktop">Desktop</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-locally-developers">Run locally (developers)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">Setup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-variables">Environment variables</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture">Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-management">State management</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#routing">Routing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#native-bridge">Native bridge</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#theme">Theme</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-screens-11">Feature screens (11)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vault">Vault</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#messenger">Messenger</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#voip">VoIP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-vpn">Q-VPN</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#anonymiser">Anonymiser</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-ai">Q-AI</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mail">Mail</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#browser">Browser</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mesh">Mesh</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#settings">Settings</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dashboard">Dashboard</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rust-bridge">Rust bridge</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#auth">Auth</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-chapters">Related chapters</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="flutter-super-app">
+<h1>Flutter Super-App<a class="headerlink" href="#flutter-super-app" title="Link to this heading">#</a></h1>
+<p>Zipminator ships as a Flutter super-app for macOS, Windows, Linux, iOS, Android, and Web from a single Dart codebase in <code class="docutils literal notranslate"><span class="pre">app/</span></code>. Build 43 (<code class="docutils literal notranslate"><span class="pre">v0.5.0+43</span></code>) has been live on TestFlight since 2026-04-06. This chapter documents the platform matrix, installation, architecture, and each of the 11 feature screens.</p>
+<section id="platform-matrix">
+<h2>Platform matrix<a class="headerlink" href="#platform-matrix" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Platform</p></th>
+<th class="head"><p>Status</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>iOS</p></td>
+<td><p>TestFlight (Build 43, 2026-04-06)</p></td>
+<td><p>Public review pending</p></td>
+</tr>
+<tr class="row-odd"><td><p>macOS</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">flutter</span> <span class="pre">build</span> <span class="pre">macos</span></code></p></td>
+<td><p>Desktop-sized layouts</p></td>
+</tr>
+<tr class="row-even"><td><p>Windows</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">flutter</span> <span class="pre">build</span> <span class="pre">windows</span></code></p></td>
+<td><p>Desktop-sized layouts</p></td>
+</tr>
+<tr class="row-odd"><td><p>Linux</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">flutter</span> <span class="pre">build</span> <span class="pre">linux</span></code></p></td>
+<td><p>Desktop-sized layouts</p></td>
+</tr>
+<tr class="row-even"><td><p>Android</p></td>
+<td><p>Google Play Store submission pending</p></td>
+<td><p>Same APK can be side-loaded for internal testing</p></td>
+</tr>
+<tr class="row-odd"><td><p>Web</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">flutter</span> <span class="pre">build</span> <span class="pre">web</span></code></p></td>
+<td><p>Feature subset; no native bridges</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Web target currently disables the Rust-backed VPN and Mesh screens because those features require the native <code class="docutils literal notranslate"><span class="pre">flutter_rust_bridge</span></code> surface. Everything else, including crypto-core primitives compiled to WebAssembly, works.</p>
+</div>
+</section>
+<section id="install-end-users">
+<h2>Install (end-users)<a class="headerlink" href="#install-end-users" title="Link to this heading">#</a></h2>
+<section id="ios-via-testflight">
+<h3>iOS via TestFlight<a class="headerlink" href="#ios-via-testflight" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Install the TestFlight app from the App Store.</p></li>
+<li><p>Email <code class="docutils literal notranslate"><span class="pre">testflight&#64;zipminator.zip</span></code> with your Apple ID.</p></li>
+<li><p>Accept the invite link when it arrives.</p></li>
+<li><p>Future builds auto-update inside TestFlight.</p></li>
+</ol>
+</section>
+<section id="android-via-play-store">
+<h3>Android via Play Store<a class="headerlink" href="#android-via-play-store" title="Link to this heading">#</a></h3>
+<p>The Play Store submission is queued. A note here will confirm when public download opens. In the meantime, Android users can request an APK through the same TestFlight channel and side-load it.</p>
+</section>
+<section id="desktop">
+<h3>Desktop<a class="headerlink" href="#desktop" title="Link to this heading">#</a></h3>
+<p>Desktop builds are produced via the standard Flutter tooling:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>app
+flutter<span class="w"> </span>build<span class="w"> </span>macos<span class="w">     </span><span class="c1"># or windows, linux</span>
+</pre></div>
+</div>
+<p>The resulting bundle lives under <code class="docutils literal notranslate"><span class="pre">build/macos/Build/Products/Release/</span></code>.</p>
+</section>
+</section>
+<section id="run-locally-developers">
+<h2>Run locally (developers)<a class="headerlink" href="#run-locally-developers" title="Link to this heading">#</a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Flutter 3.41.4 or newer</p></li>
+<li><p>Rust toolchain (for the <code class="docutils literal notranslate"><span class="pre">flutter_rust_bridge</span></code> build step)</p></li>
+<li><p>Xcode (for iOS / macOS), Android Studio (for Android)</p></li>
+</ul>
+</section>
+<section id="setup">
+<h3>Setup<a class="headerlink" href="#setup" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/QDaria/zipminator
+<span class="nb">cd</span><span class="w"> </span>zipminator/app
+flutter<span class="w"> </span>pub<span class="w"> </span>get
+flutter<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>macos<span class="w">           </span><span class="c1"># or ios, windows, linux, android, chrome</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>On a fresh clone, the first build regenerates the <code class="docutils literal notranslate"><span class="pre">flutter_rust_bridge</span></code> Dart bindings. This can take a few minutes on a cold build cache.</p>
+</div>
+</section>
+<section id="environment-variables">
+<h3>Environment variables<a class="headerlink" href="#environment-variables" title="Link to this heading">#</a></h3>
+<p>The app expects a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file at <code class="docutils literal notranslate"><span class="pre">app/.env</span></code> with Supabase credentials:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SUPABASE_URL</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">project</span><span class="o">&gt;.</span><span class="n">supabase</span><span class="o">.</span><span class="n">co</span>
+<span class="n">SUPABASE_ANON_KEY</span><span class="o">=...</span>
+</pre></div>
+</div>
+<p>The file is gitignored. For TestFlight builds, the same values are injected at build time so the IPA carries them.</p>
+</section>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">#</a></h2>
+<p>The app follows a strict separation between UI, state, and native code.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">app</span><span class="o">/</span>
+  <span class="n">lib</span><span class="o">/</span>
+    <span class="n">features</span><span class="o">/</span>        <span class="c1"># One folder per feature screen</span>
+    <span class="n">providers</span><span class="o">/</span>       <span class="c1"># 17 Riverpod providers</span>
+    <span class="n">router</span><span class="o">/</span>          <span class="c1"># GoRouter definitions</span>
+    <span class="n">theme</span><span class="o">/</span>           <span class="c1"># Material 3 Quantum theme</span>
+    <span class="n">bridge</span><span class="o">/</span>          <span class="c1"># Generated flutter_rust_bridge bindings</span>
+</pre></div>
+</div>
+<section id="state-management">
+<h3>State management<a class="headerlink" href="#state-management" title="Link to this heading">#</a></h3>
+<p>State is organised around Riverpod 3 providers. The 17 providers cover auth, crypto, entropy, messenger, VoIP, vault, VPN, mail, browser, mesh, AI, settings, dashboard counters, and navigation state. Providers are auto-disposed when their consumer trees unmount.</p>
+</section>
+<section id="routing">
+<h3>Routing<a class="headerlink" href="#routing" title="Link to this heading">#</a></h3>
+<p>GoRouter drives navigation. Routes are declared in <code class="docutils literal notranslate"><span class="pre">router/app_router.dart</span></code> and use typed route parameters where applicable.</p>
+</section>
+<section id="native-bridge">
+<h3>Native bridge<a class="headerlink" href="#native-bridge" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">flutter_rust_bridge</span></code> v2.11.1 connects Dart to the Rust crate at <code class="docutils literal notranslate"><span class="pre">crates/zipminator-app/</span></code>, which exposes 16 FRB functions covering:</p>
+<ul class="simple">
+<li><p>Keygen, encapsulate, decapsulate</p></li>
+<li><p>Entropy pool read / mix / status</p></li>
+<li><p>Anonymisation pipeline entry points</p></li>
+<li><p>Vault open / close / rotate</p></li>
+<li><p>Mesh presence proof generation</p></li>
+<li><p>VPN tunnel control</p></li>
+</ul>
+</section>
+<section id="theme">
+<h3>Theme<a class="headerlink" href="#theme" title="Link to this heading">#</a></h3>
+<p>The Material 3 Quantum theme uses the OKLCH colour tokens from <code class="docutils literal notranslate"><span class="pre">.claude/rules/01-stack.md</span></code>. Fonts are Fraunces (display), DM Sans (body), and JetBrains Mono (code).</p>
+</section>
+</section>
+<section id="feature-screens-11">
+<h2>Feature screens (11)<a class="headerlink" href="#feature-screens-11" title="Link to this heading">#</a></h2>
+<section id="vault">
+<h3>Vault<a class="headerlink" href="#vault" title="Link to this heading">#</a></h3>
+<p>Encrypted local store for credentials, notes, and files. Uses the Rust Kyber768 core for wrap / unwrap. Auto-locks on inactivity.</p>
+</section>
+<section id="messenger">
+<h3>Messenger<a class="headerlink" href="#messenger" title="Link to this heading">#</a></h3>
+<p>End-to-end encrypted text messenger with a PQC ratchet. Coordinates rendezvous through the <a class="reference external" href="http://Fly.io">Fly.io</a> signalling server. Offline messages queue locally and deliver on reconnect.</p>
+</section>
+<section id="voip">
+<h3>VoIP<a class="headerlink" href="#voip" title="Link to this heading">#</a></h3>
+<p>PQC voice calls using the same signalling server. Audio pipeline tuned on-device; end-to-end latency verified on iPhone 14 Pro (2026-04-01).</p>
+</section>
+<section id="q-vpn">
+<h3>Q-VPN<a class="headerlink" href="#q-vpn" title="Link to this heading">#</a></h3>
+<p>Post-quantum tunnel with configurable exit regions. The core tunnel logic lives in <code class="docutils literal notranslate"><span class="pre">browser/src-tauri/src/vpn/</span></code>; the Flutter screen is the control surface. Production VPN servers are staged but not yet deployed.</p>
+</section>
+<section id="anonymiser">
+<h3>Anonymiser<a class="headerlink" href="#anonymiser" title="Link to this heading">#</a></h3>
+<p>UI over the anonymisation pipeline. Accepts structured input (CSV, JSON), runs it through the configured level, and exports a certified transcript.</p>
+</section>
+<section id="q-ai">
+<h3>Q-AI<a class="headerlink" href="#q-ai" title="Link to this heading">#</a></h3>
+<p>Local AI assistant gated through the Q-Mesh clearance model. Answers queries without leaking prompt content to a third-party model provider.</p>
+</section>
+<section id="mail">
+<h3>Mail<a class="headerlink" href="#mail" title="Link to this heading">#</a></h3>
+<p>End-to-end encrypted mail, compatible with IMAP / SMTP for delivery. Messages are PQC-wrapped before handoff to the mail transport.</p>
+</section>
+<section id="browser">
+<h3>Browser<a class="headerlink" href="#browser" title="Link to this heading">#</a></h3>
+<p>Thin Flutter shell over the Tauri PQC browser that lives at <code class="docutils literal notranslate"><span class="pre">browser/src-tauri/</span></code>. Shares the same PQC tunnel as Q-VPN.</p>
+</section>
+<section id="mesh">
+<h3>Mesh<a class="headerlink" href="#mesh" title="Link to this heading">#</a></h3>
+<p>Status panel for the Q-Mesh stack from <a class="reference internal" href="mesh_wave1.html"><span class="std std-doc">Q-Mesh: Physical Cryptography Wave 1</span></a>. Shows threat level, mesh topology, and presence-proof log.</p>
+</section>
+<section id="settings">
+<h3>Settings<a class="headerlink" href="#settings" title="Link to this heading">#</a></h3>
+<p>Controls for theme, security policies, auto-lock timing, clearance level, and entropy source preferences.</p>
+</section>
+<section id="dashboard">
+<h3>Dashboard<a class="headerlink" href="#dashboard" title="Link to this heading">#</a></h3>
+<p>Top-level overview: recent activity, subscription state, and links into each feature screen.</p>
+</section>
+</section>
+<section id="rust-bridge">
+<h2>Rust bridge<a class="headerlink" href="#rust-bridge" title="Link to this heading">#</a></h2>
+<p>The Rust bridge crate exposes 16 FRB functions. A representative slice:</p>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">final</span><span class="w"> </span><span class="n">kp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">rust</span><span class="p">.</span><span class="n">keygenKyber768</span><span class="p">();</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">ct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">rust</span><span class="p">.</span><span class="n">encapsulate</span><span class="p">(</span><span class="nl">publicKey:</span><span class="w"> </span><span class="n">kp</span><span class="p">.</span><span class="n">publicKey</span><span class="p">);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">ss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">rust</span><span class="p">.</span><span class="n">decapsulate</span><span class="p">(</span><span class="nl">secretKey:</span><span class="w"> </span><span class="n">kp</span><span class="p">.</span><span class="n">secretKey</span><span class="p">,</span><span class="w"> </span><span class="nl">ciphertext:</span><span class="w"> </span><span class="n">ct</span><span class="p">.</span><span class="n">ciphertext</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>All bridge calls run on a Rust worker isolate so the UI thread stays responsive.</p>
+</section>
+<section id="auth">
+<h2>Auth<a class="headerlink" href="#auth" title="Link to this heading">#</a></h2>
+<p>The app uses Supabase OAuth with four providers: GitHub, Google, LinkedIn, and Apple. On iOS, the Apple provider is the default per App Store guidelines when other social logins are offered.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If a login hangs after provider consent, verify that <code class="docutils literal notranslate"><span class="pre">app/.env</span></code> is present and that both <code class="docutils literal notranslate"><span class="pre">SUPABASE_URL</span></code> and <code class="docutils literal notranslate"><span class="pre">SUPABASE_ANON_KEY</span></code> are set for the build target.</p>
+</div>
+</section>
+<section id="related-chapters">
+<h2>Related chapters<a class="headerlink" href="#related-chapters" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="installation.html"><span class="std std-doc">Installation</span></a>, base install path</p></li>
+<li><p><a class="reference internal" href="getting_started.html"><span class="std std-doc">Getting started</span></a>, first encrypted payload</p></li>
+<li><p><a class="reference internal" href="releases.html"><span class="std std-doc">Releases</span></a>, what’s new in recent builds</p></li>
+<li><p><a class="reference internal" href="mesh_wave1.html"><span class="std std-doc">Q-Mesh: Physical Cryptography Wave 1</span></a>, mesh stack shown in the Mesh screen</p></li>
+<li><p><a class="reference internal" href="subscription.html"><span class="std std-doc">Subscription</span></a>, subscription level gating in each screen</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="mesh_wave1.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Q-Mesh: Physical Cryptography Wave 1</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="appendix/anonymization_techniques.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Appendix: Anonymization Techniques</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#platform-matrix">Platform matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-end-users">Install (end-users)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ios-via-testflight">iOS via TestFlight</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#android-via-play-store">Android via Play Store</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desktop">Desktop</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-locally-developers">Run locally (developers)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">Setup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-variables">Environment variables</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture">Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-management">State management</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#routing">Routing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#native-bridge">Native bridge</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#theme">Theme</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-screens-11">Feature screens (11)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vault">Vault</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#messenger">Messenger</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#voip">VoIP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-vpn">Q-VPN</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#anonymiser">Anonymiser</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-ai">Q-AI</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mail">Mail</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#browser">Browser</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mesh">Mesh</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#settings">Settings</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dashboard">Dashboard</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rust-bridge">Rust bridge</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#auth">Auth</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-chapters">Related chapters</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QDaria AS
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p><a href="https://www.zipminator.zip">zipminator.zip</a> | <a href="https://www.zipminator.zip/docs">Docs Overview</a> | <a href="https://qdaria.com">QDaria</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

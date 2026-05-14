@@ -1,0 +1,1038 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>zipminator.crypto.quantum_random &#8212; Zipminator</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=93784575" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=a56c686a"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/zipminator/crypto/quantum_random';</script>
+    <script src="../../../_static/custom.js?v=b141372c"></script>
+    <link rel="icon" href="../../../_static/Z.svg"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/zipminator-logo-dark.svg" class="logo__image only-light" alt="Zipminator - Home"/>
+    <img src="../../../_static/zipminator-logo-light.svg" class="logo__image only-dark pst-js-only" alt="Zipminator - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part I: Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part II: Core Cryptography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/core_crypto.html">Core Cryptography: Kyber768 KEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/entropy.html">Quantum Entropy</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../content/qmesh.html">Q-Mesh: Physical Cryptography</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../content/clearance_levels.html">Clearance Levels: L1 through L4</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part III: Data Protection</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/pii_scanning.html">PII Scanning</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../content/anonymization.html">10-Level Data Anonymization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../content/anonymization_levels.html">10-Level Anonymization System</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/self_destruct.html">Secure Self-Destruct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/zipndel.html">Zipndel: Encrypt &amp; Compress DataFrames</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IV: Jupyter &amp; Interactive</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/jupyter.html">Jupyter Integration</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part V: Tiers &amp; API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/subscription.html">Subscription Tiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/api_credentials.html">API Credentials &amp; Access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/api_reference.html">API Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VI: Compliance &amp; Use Cases</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/compliance.html">Compliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/use_cases/government.html">Use Case: Government and Public Sector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/use_cases/healthcare.html">Use Case: Healthcare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/use_cases/finance.html">Use Case: Finance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/use_cases/ecommerce.html">Use Case: E-Commerce</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/use_cases/defense.html">Use Case: Defense and Intelligence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VII: Interactive Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/01_quickstart.html">Getting Started with Zipminator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/02_anonymization.html">10-Level Anonymization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/03_qrng_entropy.html">Quantum Random Number Generation &amp; Entropy Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/04_compliance.html">Compliance and PII Scanning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/05_shor_demo.html">Shor’s Algorithm and the Quantum Threat to Classical Cryptography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/06_quantum_capabilities.html">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/07_vault_workflow.html">Data Vault Workflow: From Raw Data to Quantum-Safe Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/08_qmesh_physical_crypto.html">Q-Mesh: Physical Cryptography — Zero-Interaction Authentication</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VIII: Advanced Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/09_monte_carlo_prng_vs_qrng.html">Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/10_quantum_anonymization.html">Quantum-Certified Anonymization: How L10 Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/10_quantum_entropy_harvester.html">Quantum Entropy Harvester</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IX: CLI Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/cli.html">Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/cli_reference.html">CLI Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part X: Releases, Research &amp; IP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/papers.html">Research Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/patents.html">Patent Portfolio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/mesh_wave1.html">Q-Mesh: Physical Cryptography Wave 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/flutter_app.html">Flutter Super-App</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../content/appendix/anonymization_techniques.html">Appendix: Anonymization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/appendix/fips_203.html">Appendix: NIST FIPS 203 (ML-KEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../content/appendix/glossary.html">Appendix: Glossary</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator/issues/new?title=Issue%20on%20page%20%2F_modules/zipminator/crypto/quantum_random.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for zipminator.crypto.quantum_random</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Robindra - Quantum Random Number Generator</span>
+
+<span class="sd">Drop-in replacement for Python&#39;s `random` module using REAL quantum entropy.</span>
+<span class="sd">Named after Robindra-tier enterprise subscription with LEVEL10 quantum access.</span>
+
+<span class="sd">Usage:</span>
+<span class="sd">    import zipminator.robindra as robindra</span>
+<span class="sd">    x = robindra.randint(1, 100)  # Uses quantum entropy!</span>
+
+<span class="sd">License Tiers:</span>
+<span class="sd">    - Free/Amir/Nils/Solveig: Fallback to pseudo-random (Python&#39;s random)</span>
+<span class="sd">    - Enterprise/Robindra (LEVEL10): True quantum entropy from IBM Quantum</span>
+
+<span class="sd">Author: Zipminator Team</span>
+<span class="sd">License: MIT + Commercial (see LICENSE)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_stdlib_random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">struct</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">TypeVar</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.3.0&quot;</span>
+
+<span class="c1"># Type variables for generics</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
+
+<span class="c1"># Configuration</span>
+<span class="n">ENTROPY_POOL_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> \
+    <span class="s2">&quot;quantum_entropy&quot;</span> <span class="o">/</span> <span class="s2">&quot;quantum_entropy_pool.bin&quot;</span>
+<span class="n">MIN_POOL_THRESHOLD</span> <span class="o">=</span> <span class="mi">500</span>  <span class="c1"># bytes - trigger refill warning</span>
+<span class="n">BYTES_PER_RANDOM</span> <span class="o">=</span> <span class="mi">8</span>  <span class="c1"># 64-bit floats</span>
+
+<span class="c1"># Setup logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="QuantumEntropyPool">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumEntropyPool">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">QuantumEntropyPool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Thread-safe quantum entropy pool manager.</span>
+
+<span class="sd">    Reads from quantum entropy file and provides random bytes.</span>
+<span class="sd">    Automatically refills when pool is exhausted (stub implementation).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="QuantumEntropyPool.__init__">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumEntropyPool.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pool_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">ENTROPY_POOL_PATH</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize quantum entropy pool.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pool_path: Path to quantum entropy binary file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool_path</span> <span class="o">=</span> <span class="n">pool_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">:</span> <span class="nb">bytearray</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total_consumed</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refill_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Load initial pool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_pool</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load quantum entropy from file.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Quantum entropy pool not found: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pool_path</span><span class="si">}</span><span class="s2">. &quot;</span>
+                    <span class="s2">&quot;Falling back to pseudo-random.&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+                <span class="k">return</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pool_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Loaded quantum entropy pool: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pool_path</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load quantum entropy pool: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_refill_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Refill quantum entropy pool.</span>
+
+<span class="sd">        STUB: In production, this would call IBM Quantum API or other QRNG service.</span>
+<span class="sd">        For now, we reload from the demo file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Quantum entropy pool exhausted after </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_total_consumed</span><span class="si">}</span><span class="s2"> bytes consumed. &quot;</span>
+            <span class="s2">&quot;Reloading from shared entropy pool file (populated by qrng_harvester.py).&quot;</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refill_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_pool</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot refill quantum entropy pool - falling back to pseudo-random!&quot;</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="QuantumEntropyPool.get_bytes">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumEntropyPool.get_bytes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get n random bytes from quantum entropy pool.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            n: Number of bytes to retrieve</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Random bytes from quantum pool (or pseudo-random if pool exhausted)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="c1"># For large requests, collect bytes across multiple refills</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+                <span class="n">remaining_needed</span> <span class="o">=</span> <span class="n">n</span>
+
+                <span class="k">while</span> <span class="n">remaining_needed</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># Get what we can from current pool</span>
+                    <span class="n">available</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position</span>
+                    <span class="n">chunk_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">available</span><span class="p">,</span> <span class="n">remaining_needed</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">chunk_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_position</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">+</span> <span class="n">chunk_size</span><span class="p">])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">+=</span> <span class="n">chunk_size</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_total_consumed</span> <span class="o">+=</span> <span class="n">chunk_size</span>
+                        <span class="n">remaining_needed</span> <span class="o">-=</span> <span class="n">chunk_size</span>
+
+                    <span class="c1"># Need more? Refill</span>
+                    <span class="k">if</span> <span class="n">remaining_needed</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_refill_pool</span><span class="p">()</span>
+
+                        <span class="c1"># If still no pool, fallback to pseudo-random for remainder</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;Using pseudo-random for </span><span class="si">{</span><span class="n">remaining_needed</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+                            <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                                <span class="n">_stdlib_random</span><span class="o">.</span><span class="n">randbytes</span><span class="p">(</span><span class="n">remaining_needed</span><span class="p">))</span>
+                            <span class="k">break</span>
+
+                <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+            <span class="c1"># Normal case: request fits in current pool</span>
+            <span class="c1"># Check if we need to refill</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">+</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_refill_pool</span><span class="p">()</span>
+
+                <span class="c1"># If still no pool, fallback to pseudo-random</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using pseudo-random for </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">_stdlib_random</span><span class="o">.</span><span class="n">randbytes</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+            <span class="c1"># Warn if pool is getting low</span>
+            <span class="n">remaining</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position</span>
+            <span class="k">if</span> <span class="n">remaining</span> <span class="o">&lt;</span> <span class="n">MIN_POOL_THRESHOLD</span> <span class="ow">and</span> <span class="n">remaining</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Quantum entropy pool low: </span><span class="si">{</span><span class="n">remaining</span><span class="si">}</span><span class="s2"> bytes remaining &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;(refilled </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_refill_count</span><span class="si">}</span><span class="s2"> times)&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Extract bytes from pool</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_position</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">+</span> <span class="n">n</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">+=</span> <span class="n">n</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_total_consumed</span> <span class="o">+=</span> <span class="n">n</span>
+
+            <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="QuantumEntropyPool.get_stats">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumEntropyPool.get_stats">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get entropy pool statistics.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;pool_size&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">),</span>
+                <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position</span><span class="p">,</span>
+                <span class="s2">&quot;remaining&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position</span><span class="p">,</span>
+                <span class="s2">&quot;total_consumed&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_consumed</span><span class="p">,</span>
+                <span class="s2">&quot;refill_count&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refill_count</span><span class="p">,</span>
+                <span class="s2">&quot;pool_path&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pool_path</span><span class="p">),</span>
+            <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="QuantumRandom">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumRandom">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">QuantumRandom</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Quantum random number generator with Python random module API compatibility.</span>
+
+<span class="sd">    Provides cryptographically secure random numbers using quantum entropy.</span>
+<span class="sd">    Falls back to pseudo-random if quantum pool is unavailable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="QuantumRandom.__init__">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumRandom.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">license_tier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FREE&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize quantum random generator.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            license_tier: License tier (FREE, AMIR, NILS, SOLVEIG, ROBINDRA-LEVEL10, etc.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">license_tier</span> <span class="o">=</span> <span class="n">license_tier</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_quantum_access</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_quantum_access</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_quantum_access</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_entropy_pool</span> <span class="o">=</span> <span class="n">QuantumEntropyPool</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Quantum random initialized with tier: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">license_tier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_entropy_pool</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;License tier </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">license_tier</span><span class="si">}</span><span class="s2"> does not have quantum access. &quot;</span>
+                <span class="s2">&quot;Using pseudo-random fallback.&quot;</span>
+            <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_quantum_access</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if license tier allows quantum entropy access.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if LEVEL10 access granted</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check for LEVEL10 suffix (enterprise/Robindra tier)</span>
+        <span class="k">if</span> <span class="s2">&quot;-LEVEL10&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">license_tier</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">license_tier</span> <span class="o">==</span> <span class="s2">&quot;LEVEL10&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># Check environment variable</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ZIPMINATOR_QUANTUM_ENABLED&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Quantum access enabled via environment variable&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># Free tiers don&#39;t get quantum access</span>
+        <span class="n">free_tiers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;FREE&quot;</span><span class="p">,</span> <span class="s2">&quot;AMIR&quot;</span><span class="p">,</span> <span class="s2">&quot;NILS&quot;</span><span class="p">,</span> <span class="s2">&quot;SOLVEIG&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">license_tier</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">free_tiers</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_random_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get n random bytes (quantum or pseudo-random).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_quantum_access</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_entropy_pool</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_entropy_pool</span><span class="o">.</span><span class="n">get_bytes</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_stdlib_random</span><span class="o">.</span><span class="n">randbytes</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QuantumRandom.random">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumRandom.random">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Random float in [0.0, 1.0) using quantum entropy.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Random float in range [0.0, 1.0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get 8 random bytes and convert to float [0.0, 1.0)</span>
+        <span class="n">random_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_random_bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="c1"># Convert to uint64, then normalize to [0.0, 1.0)</span>
+        <span class="n">random_int</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&gt;Q&quot;</span><span class="p">,</span> <span class="n">random_bytes</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">random_int</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">64</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumRandom.randint">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumRandom.randint">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">randint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Random integer in [a, b] (inclusive on both ends).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            a: Lower bound (inclusive)</span>
+<span class="sd">            b: Upper bound (inclusive)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Random integer in range [a, b]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;empty range for randint(</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Calculate range and number of bytes needed</span>
+        <span class="n">range_size</span> <span class="o">=</span> <span class="n">b</span> <span class="o">-</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">bytes_needed</span> <span class="o">=</span> <span class="p">(</span><span class="n">range_size</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span> <span class="o">+</span> <span class="mi">7</span><span class="p">)</span> <span class="o">//</span> <span class="mi">8</span>
+
+        <span class="c1"># Generate random number in range using rejection sampling</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">random_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_random_bytes</span><span class="p">(</span><span class="n">bytes_needed</span><span class="p">)</span>
+            <span class="n">random_int</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">random_bytes</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;big&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Ensure uniform distribution by rejecting values &gt;= range_size</span>
+            <span class="n">max_valid</span> <span class="o">=</span> <span class="p">(</span><span class="mi">256</span> <span class="o">**</span> <span class="n">bytes_needed</span> <span class="o">//</span> <span class="n">range_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">range_size</span>
+            <span class="k">if</span> <span class="n">random_int</span> <span class="o">&lt;</span> <span class="n">max_valid</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="n">random_int</span> <span class="o">%</span> <span class="n">range_size</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumRandom.choice">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumRandom.choice">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Choose random element from non-empty sequence.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            seq: Non-empty sequence</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Random element from sequence</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            IndexError: If sequence is empty</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Cannot choose from empty sequence&quot;</span><span class="p">)</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">seq</span><span class="p">[</span><span class="n">index</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="QuantumRandom.shuffle">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumRandom.shuffle">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shuffle list in-place using Fisher-Yates algorithm.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            seq: List to shuffle (modified in-place)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">seq</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">seq</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">seq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="QuantumRandom.sample">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumRandom.sample">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Choose k unique random elements from population.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            population: Sequence to sample from</span>
+<span class="sd">            k: Number of elements to choose</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of k unique random elements</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If k &gt; len(population)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">population</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample larger than population: </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Use set-based sampling for efficiency</span>
+        <span class="n">selected_indices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">k</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">selected_indices</span><span class="p">:</span>
+                <span class="n">selected_indices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">population</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="QuantumRandom.uniform">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumRandom.uniform">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">uniform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Random float in [a, b] or [b, a] (order doesn&#39;t matter).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            a: Lower or upper bound</span>
+<span class="sd">            b: Upper or lower bound</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Random float in range</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="QuantumRandom.gauss">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumRandom.gauss">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gauss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gaussian (normal) distribution using Box-Muller transform.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mu: Mean</span>
+<span class="sd">            sigma: Standard deviation</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Random value from Gaussian distribution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Box-Muller transform</span>
+        <span class="n">u1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+        <span class="n">u2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+
+        <span class="c1"># Avoid log(0)</span>
+        <span class="k">while</span> <span class="n">u1</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">u1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+
+        <span class="n">z0</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">u1</span><span class="p">))</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">u2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">z0</span></div>
+
+
+<div class="viewcode-block" id="QuantumRandom.randbytes">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumRandom.randbytes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">randbytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate n random bytes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            n: Number of bytes</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            n random bytes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_random_bytes</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumRandom.getrandbits">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumRandom.getrandbits">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getrandbits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate random integer with k random bits.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            k: Number of bits</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Random integer with k bits</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;number of bits must be positive&quot;</span><span class="p">)</span>
+
+        <span class="n">bytes_needed</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">7</span><span class="p">)</span> <span class="o">//</span> <span class="mi">8</span>
+        <span class="n">random_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_random_bytes</span><span class="p">(</span><span class="n">bytes_needed</span><span class="p">)</span>
+        <span class="n">random_int</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">random_bytes</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;big&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Mask to k bits</span>
+        <span class="k">return</span> <span class="n">random_int</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumRandom.get_stats">
+<a class="viewcode-back" href="../../../content/api_reference.html#zipminator.crypto.quantum_random.QuantumRandom.get_stats">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get statistics about quantum entropy usage.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary with entropy pool statistics</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_entropy_pool</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;license_tier&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">license_tier</span><span class="p">,</span>
+                <span class="s2">&quot;quantum_access&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_quantum_access</span><span class="p">,</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_entropy_pool</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(),</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;license_tier&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">license_tier</span><span class="p">,</span>
+                <span class="s2">&quot;quantum_access&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_quantum_access</span><span class="p">,</span>
+                <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;pseudo-random&quot;</span><span class="p">,</span>
+            <span class="p">}</span></div>
+</div>
+
+
+
+<span class="c1"># Global instance (auto-detect license tier from environment)</span>
+<span class="n">_default_license</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ZIPMINATOR_LICENSE&quot;</span><span class="p">,</span> <span class="s2">&quot;FREE&quot;</span><span class="p">)</span>
+<span class="n">_quantum_random</span> <span class="o">=</span> <span class="n">QuantumRandom</span><span class="p">(</span><span class="n">license_tier</span><span class="o">=</span><span class="n">_default_license</span><span class="p">)</span>
+
+
+<span class="c1"># Module-level functions (match Python&#39;s random module API)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">random</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Random float in [0.0, 1.0).&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_quantum_random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">randint</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Random integer in [a, b].&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_quantum_random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">choice</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Choose random element from sequence.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_quantum_random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">shuffle</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Shuffle list in-place.&quot;&quot;&quot;</span>
+    <span class="n">_quantum_random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="n">population</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Choose k unique random elements.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_quantum_random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">uniform</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Random float in [a, b].&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_quantum_random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">gauss</span><span class="p">(</span><span class="n">mu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gaussian distribution.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_quantum_random</span><span class="o">.</span><span class="n">gauss</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">randbytes</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate n random bytes.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_quantum_random</span><span class="o">.</span><span class="n">randbytes</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">getrandbits</span><span class="p">(</span><span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate random integer with k bits.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_quantum_random</span><span class="o">.</span><span class="n">getrandbits</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_stats</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get entropy pool statistics.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_quantum_random</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+
+
+<span class="c1"># Compatibility aliases</span>
+<span class="n">normalvariate</span> <span class="o">=</span> <span class="n">gauss</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">configure</span><span class="p">(</span><span class="n">license_tier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure quantum random with specific license tier.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        license_tier: License tier (FREE, ROBINDRA-LEVEL10, etc.)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">_quantum_random</span>
+    <span class="n">_quantum_random</span> <span class="o">=</span> <span class="n">QuantumRandom</span><span class="p">(</span><span class="n">license_tier</span><span class="o">=</span><span class="n">license_tier</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Configured quantum random with tier: </span><span class="si">{</span><span class="n">license_tier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># Classes</span>
+    <span class="s2">&quot;QuantumRandom&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QuantumEntropyPool&quot;</span><span class="p">,</span>
+    <span class="c1"># Module functions</span>
+    <span class="s2">&quot;random&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;randint&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;choice&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;shuffle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sample&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;gauss&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;normalvariate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;randbytes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;getrandbits&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;get_stats&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;configure&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QDaria AS
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p><a href="https://www.zipminator.zip">zipminator.zip</a> | <a href="https://www.zipminator.zip/docs">Docs Overview</a> | <a href="https://qdaria.com">QDaria</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

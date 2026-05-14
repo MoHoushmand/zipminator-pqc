@@ -1,0 +1,1702 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Data Vault Workflow: From Raw Data to Quantum-Safe Storage &#8212; Zipminator</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=93784575" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=a56c686a"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/07_vault_workflow';</script>
+    <script src="../_static/custom.js?v=b141372c"></script>
+    <link rel="icon" href="../_static/Z.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Q-Mesh: Physical Cryptography — Zero-Interaction Authentication" href="08_qmesh_physical_crypto.html" />
+    <link rel="prev" title="Quantum Capabilities: True Randomness &amp; NIST Statistical Validation" href="06_quantum_capabilities.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/zipminator-logo-dark.svg" class="logo__image only-light" alt="Zipminator - Home"/>
+    <img src="../_static/zipminator-logo-light.svg" class="logo__image only-dark pst-js-only" alt="Zipminator - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part I: Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part II: Core Cryptography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/core_crypto.html">Core Cryptography: Kyber768 KEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/entropy.html">Quantum Entropy</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../content/qmesh.html">Q-Mesh: Physical Cryptography</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../content/clearance_levels.html">Clearance Levels: L1 through L4</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part III: Data Protection</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/pii_scanning.html">PII Scanning</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../content/anonymization.html">10-Level Data Anonymization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../content/anonymization_levels.html">10-Level Anonymization System</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/self_destruct.html">Secure Self-Destruct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/zipndel.html">Zipndel: Encrypt &amp; Compress DataFrames</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IV: Jupyter &amp; Interactive</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/jupyter.html">Jupyter Integration</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part V: Tiers &amp; API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/subscription.html">Subscription Tiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/api_credentials.html">API Credentials &amp; Access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/api_reference.html">API Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VI: Compliance &amp; Use Cases</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/compliance.html">Compliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/government.html">Use Case: Government and Public Sector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/healthcare.html">Use Case: Healthcare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/finance.html">Use Case: Finance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/ecommerce.html">Use Case: E-Commerce</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/use_cases/defense.html">Use Case: Defense and Intelligence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VII: Interactive Notebooks</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01_quickstart.html">Getting Started with Zipminator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_anonymization.html">10-Level Anonymization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_qrng_entropy.html">Quantum Random Number Generation &amp; Entropy Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_compliance.html">Compliance and PII Scanning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_shor_demo.html">Shor’s Algorithm and the Quantum Threat to Classical Cryptography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_quantum_capabilities.html">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Data Vault Workflow: From Raw Data to Quantum-Safe Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08_qmesh_physical_crypto.html">Q-Mesh: Physical Cryptography — Zero-Interaction Authentication</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VIII: Advanced Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="09_monte_carlo_prng_vs_qrng.html">Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_quantum_anonymization.html">Quantum-Certified Anonymization: How L10 Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_quantum_entropy_harvester.html">Quantum Entropy Harvester</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IX: CLI Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/cli.html">Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/cli_reference.html">CLI Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part X: Releases, Research &amp; IP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/papers.html">Research Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/patents.html">Patent Portfolio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/mesh_wave1.html">Q-Mesh: Physical Cryptography Wave 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/flutter_app.html">Flutter Super-App</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../content/appendix/anonymization_techniques.html">Appendix: Anonymization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/appendix/fips_203.html">Appendix: NIST FIPS 203 (ML-KEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../content/appendix/glossary.html">Appendix: Glossary</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/QDaria/zipminator/blob/master/notebooks/07_vault_workflow.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator/issues/new?title=Issue%20on%20page%20%2Fnotebooks/07_vault_workflow.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/07_vault_workflow.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Data Vault Workflow: From Raw Data to Quantum-Safe Storage</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-pii-scanning">Step 1: PII Scanning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-choose-your-protection">Step 2: Choose Your Protection</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-a-password-protected-storage">Option A: Password-Protected Storage</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-auto-anonymization-before-storage">Step 3: Auto-Anonymization Before Storage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-reopening-the-next-day">Step 4: Reopening the Next Day</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-reversible-pseudonymization-l3-tokenization">Step 5: Reversible Pseudonymization (L3 Tokenization)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-self-destruct-timer-optional">Step 6: Self-Destruct Timer (Optional)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-protection-methods-at-a-glance">Summary: Protection Methods at a Glance</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recommended-workflow-for-gdpr-dora-compliance">Recommended workflow for GDPR + DORA compliance</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="data-vault-workflow-from-raw-data-to-quantum-safe-storage">
+<h1>Data Vault Workflow: From Raw Data to Quantum-Safe Storage<a class="headerlink" href="#data-vault-workflow-from-raw-data-to-quantum-safe-storage" title="Link to this heading">#</a></h1>
+<p>This notebook walks through the <strong>complete data protection lifecycle</strong> that a data analyst
+would follow when working with sensitive records every day:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Fetch  →  Scan  →  Anonymize  →  Encrypt  →  Store  →  Reopen  →  Self-Destruct
+</pre></div>
+</div>
+<p><strong>Use case:</strong> You pull customer records from a SQL database each morning. The data contains
+Norwegian national IDs (fødselsnummer), health diagnoses, bank account numbers, and salaries.
+Under GDPR and DORA you must protect this data at rest, limit retention, and be able to
+prove what protections were applied.</p>
+<p>Zipminator provides:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Capability</p></th>
+<th class="head"><p>What it does</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>PII Scanner</strong></p></td>
+<td><p>Detects personally identifiable information across 15 country patterns</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Anonymization Engine</strong></p></td>
+<td><p>10 levels from SHA-256 hashing to differential privacy</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Zipndel</strong></p></td>
+<td><p>Encrypts + compresses a DataFrame into a password-protected or PQC-secured ZIP</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Unzipndel</strong></p></td>
+<td><p>Decrypts and restores the original DataFrame</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>PQC Vault</strong></p></td>
+<td><p>Kyber768 (ML-KEM-768) key encapsulation for quantum-resistant protection</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Self-Destruct</strong></p></td>
+<td><p>DoD 5220.22-M 3-pass secure overwrite with configurable timers</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Prerequisites:</strong> <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">zipminator[all]</span></code> or <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">zipminator[all]</span></code></p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+
+<span class="c1"># Plotly visualization helpers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="p">;</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_helpers.viz</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+
+<span class="c1"># Create a temporary working directory for all file operations</span>
+<span class="n">WORK_DIR</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;zipminator_vault_&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Working directory: </span><span class="si">{</span><span class="n">WORK_DIR</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Simulate fetching from a SQL database</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;customer_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1001</span><span class="p">,</span> <span class="mi">1002</span><span class="p">,</span> <span class="mi">1003</span><span class="p">,</span> <span class="mi">1004</span><span class="p">,</span> <span class="mi">1005</span><span class="p">],</span>
+    <span class="s1">&#39;full_name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Ola Nordmann&#39;</span><span class="p">,</span> <span class="s1">&#39;Kari Hansen&#39;</span><span class="p">,</span> <span class="s1">&#39;Erik Johansen&#39;</span><span class="p">,</span> <span class="s1">&#39;Liv Andersen&#39;</span><span class="p">,</span> <span class="s1">&#39;Per Nilsen&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;ola@example.no&#39;</span><span class="p">,</span> <span class="s1">&#39;kari@bank.no&#39;</span><span class="p">,</span> <span class="s1">&#39;erik@hospital.no&#39;</span><span class="p">,</span> <span class="s1">&#39;liv@gov.no&#39;</span><span class="p">,</span> <span class="s1">&#39;per@school.no&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;fodselsnummer&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;12345678901&#39;</span><span class="p">,</span> <span class="s1">&#39;98765432109&#39;</span><span class="p">,</span> <span class="s1">&#39;45678901234&#39;</span><span class="p">,</span> <span class="s1">&#39;67890123456&#39;</span><span class="p">,</span> <span class="s1">&#39;23456789012&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;salary_nok&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">650000</span><span class="p">,</span> <span class="mi">820000</span><span class="p">,</span> <span class="mi">540000</span><span class="p">,</span> <span class="mi">710000</span><span class="p">,</span> <span class="mi">480000</span><span class="p">],</span>
+    <span class="s1">&#39;diagnosis&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Hypertension&#39;</span><span class="p">,</span> <span class="s1">&#39;Diabetes Type 2&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;Asthma&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;account_no&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;1234.56.78901&#39;</span><span class="p">,</span> <span class="s1">&#39;9876.54.32109&#39;</span><span class="p">,</span> <span class="s1">&#39;4567.89.01234&#39;</span><span class="p">,</span> <span class="s1">&#39;6789.01.23456&#39;</span><span class="p">,</span> <span class="s1">&#39;2345.67.89012&#39;</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fetched </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> records from database&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Working directory: /var/folders/ll/7tkx4_jx7b35p2nkhh7njq9c0000gn/T/zipminator_vault_ghv8ns9k
+Fetched 5 records from database
+ customer_id     full_name            email fodselsnummer  salary_nok       diagnosis    account_no
+        1001  Ola Nordmann   ola@example.no   12345678901      650000    Hypertension 1234.56.78901
+        1002   Kari Hansen     kari@bank.no   98765432109      820000 Diabetes Type 2 9876.54.32109
+        1003 Erik Johansen erik@hospital.no   45678901234      540000            None 4567.89.01234
+        1004  Liv Andersen       liv@gov.no   67890123456      710000          Asthma 6789.01.23456
+        1005    Per Nilsen    per@school.no   23456789012      480000            None 2345.67.89012
+</pre></div>
+</div>
+</div>
+</div>
+<section id="step-1-pii-scanning">
+<h2>Step 1: PII Scanning<a class="headerlink" href="#step-1-pii-scanning" title="Link to this heading">#</a></h2>
+<p><strong>PII</strong> (Personally Identifiable Information) is any data that can identify a specific person,
+either directly or in combination with other data.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p><strong>Direct identifiers:</strong> Name, email, national ID (fødselsnummer), phone number</p></li>
+<li><p><strong>Quasi-identifiers:</strong> Salary (combined with employer = identity), diagnosis (combined with date = identity)</p></li>
+<li><p><strong>Safe data:</strong> Aggregated statistics, anonymized IDs, category labels</p></li>
+</ul>
+<p>The scanner checks each column against patterns for 15 countries (NO, SE, DK, FI, DE, FR, UK, US, UAE, IN, BR, JP, CA, AU, and EU-wide patterns).
+It returns a risk assessment and recommended protection level.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.crypto.pii_scanner</span><span class="w"> </span><span class="kn">import</span> <span class="n">PIIScanner</span>
+
+<span class="n">scanner</span> <span class="o">=</span> <span class="n">PIIScanner</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">scanner</span><span class="o">.</span><span class="n">scan_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PII SCAN RESULTS&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PII detected: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;pii_detected&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Risk level: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;risk_level&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recommended anonymization level: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;recommended_anonymization_level&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Column-level findings:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">col_name</span><span class="p">,</span> <span class="n">pii_types</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;columns_with_pii&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">col_name</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">pii_types</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Detailed matches:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;matches&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">match</span><span class="o">.</span><span class="n">pii_type</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">25s</span><span class="si">}</span><span class="s2"> in &#39;</span><span class="si">{</span><span class="n">match</span><span class="o">.</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; (confidence: </span><span class="si">{</span><span class="n">match</span><span class="o">.</span><span class="n">confidence</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Full summary:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>============================================================
+PII SCAN RESULTS
+============================================================
+PII detected: True
+Risk level: RiskLevel.HIGH
+Recommended anonymization level: 7
+
+Column-level findings:
+------------------------------------------------------------
+  email                -&gt; [PIIMatch(pii_type=&lt;PIIType.EMAIL: &#39;email&#39;&gt;, column=&#39;email&#39;, sample_count=5, confidence=1.0, pattern=&#39;\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b&#39;)]
+  fodselsnummer        -&gt; [PIIMatch(pii_type=&lt;PIIType.NORWEGIAN_FNR: &#39;norwegian_fnr&#39;&gt;, column=&#39;fodselsnummer&#39;, sample_count=5, confidence=1.0, pattern=&#39;\\b\\d{11}\\b&#39;), PIIMatch(pii_type=&lt;PIIType.NORWEGIAN_ACCOUNT: &#39;norwegian_account&#39;&gt;, column=&#39;fodselsnummer&#39;, sample_count=5, confidence=1.0, pattern=&#39;\\b\\d{4}[\\s.]?\\d{2}[\\s.]?\\d{5}\\b&#39;), PIIMatch(pii_type=&lt;PIIType.PHONE: &#39;phone&#39;&gt;, column=&#39;fodselsnummer&#39;, sample_count=5, confidence=1.0, pattern=&#39;(?:\\+47|0047|47)?\\s?\\d{8}&#39;)]
+  account_no           -&gt; [PIIMatch(pii_type=&lt;PIIType.NORWEGIAN_ACCOUNT: &#39;norwegian_account&#39;&gt;, column=&#39;account_no&#39;, sample_count=5, confidence=1.0, pattern=&#39;\\b\\d{4}[\\s.]?\\d{2}[\\s.]?\\d{5}\\b&#39;)]
+
+Detailed matches:
+------------------------------------------------------------
+  email                     in &#39;email&#39; (confidence: 100%)
+  norwegian_fnr             in &#39;fodselsnummer&#39; (confidence: 100%)
+  norwegian_account         in &#39;fodselsnummer&#39; (confidence: 100%)
+  phone                     in &#39;fodselsnummer&#39; (confidence: 100%)
+  norwegian_account         in &#39;account_no&#39; (confidence: 100%)
+
+Full summary:
+PII Scan Results:
+  - 3 column(s) contain PII
+  - Risk Level: HIGH
+  - Recommended Anonymization Level: 7/10
+
+Detected PII Types:
+  - EMAIL: Found in 1 column(s) [&#39;email&#39;] with 100% confidence
+  - 🟠 HIGH RISK: NORWEGIAN_FNR: Found in 1 column(s) [&#39;fodselsnummer&#39;] with 100% confidence
+  - NORWEGIAN_ACCOUNT: Found in 2 column(s) [&#39;fodselsnummer&#39;, &#39;account_no&#39;] with 100% confidence
+  - PHONE: Found in 1 column(s) [&#39;fodselsnummer&#39;] with 100% confidence
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── PII Type Distribution in Sample Dataset ──</span>
+<span class="n">pii_types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Email&quot;</span><span class="p">,</span> <span class="s2">&quot;Norwegian FNR&quot;</span><span class="p">,</span> <span class="s2">&quot;Norwegian Account&quot;</span><span class="p">,</span> <span class="s2">&quot;Phone&quot;</span><span class="p">]</span>
+<span class="n">pii_counts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">zm_pie</span><span class="p">(</span>
+    <span class="n">labels</span><span class="o">=</span><span class="n">pii_types</span><span class="p">,</span>
+    <span class="n">values</span><span class="o">=</span><span class="n">pii_counts</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;PII Type Distribution in Sample Dataset&quot;</span><span class="p">,</span>
+    <span class="n">hole</span><span class="o">=</span><span class="mf">0.45</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span>
+    <span class="n">textinfo</span><span class="o">=</span><span class="s2">&quot;label+percent+value&quot;</span><span class="p">,</span>
+    <span class="n">texttemplate</span><span class="o">=</span><span class="s2">&quot;%</span><span class="si">{label}</span><span class="s2">&lt;br&gt;%</span><span class="si">{value}</span><span class="s2"> col(s) (%</span><span class="si">{percent}</span><span class="s2">)&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_html">        <script>
+        window.PlotlyConfig = {MathJaxConfig: 'local'};
+        if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+        </script>
+        <script type="module">import "https://cdn.plot.ly/plotly-3.5.0.min"</script>
+        </div><div class="output text_html"><div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.5.0.min.js" integrity="sha256-fHbNLP+GlIXN+efbQec78UkemUz3NJp7UmfGxC1tNxs=" crossorigin="anonymous"></script>                <div id="ac6b09a8-1018-4def-9414-1d75f3aba683" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("ac6b09a8-1018-4def-9414-1d75f3aba683")) {                    Plotly.newPlot(                        "ac6b09a8-1018-4def-9414-1d75f3aba683",                        [{"hole":0.45,"labels":["Email","Norwegian FNR","Norwegian Account","Phone"],"marker":{"colors":["#22d3ee","#a78bfa","#34d399","#f59e0b"]},"textfont":{"color":"#f8fafc"},"textinfo":"label+percent+value","values":[1,1,2,1],"type":"pie","texttemplate":"%{label}\u003cbr\u003e%{value} col(s) (%{percent})"}],                        {"template":{"layout":{"colorway":["#22d3ee","#a78bfa","#34d399","#f59e0b","#fb7185","#60a5fa","#818cf8","#2dd4bf","#fb923c","#f472b6"],"font":{"color":"#e2e8f0","family":"DM Sans, sans-serif","size":13},"hoverlabel":{"bgcolor":"#1e293b","bordercolor":"#22d3ee","font":{"color":"#f8fafc","size":12}},"legend":{"bgcolor":"rgba(15,23,42,0.8)","bordercolor":"rgba(34,211,238,0.15)","borderwidth":1,"font":{"color":"#e2e8f0"}},"margin":{"b":50,"l":60,"r":30,"t":60},"paper_bgcolor":"#0a0f1e","plot_bgcolor":"#0f172a","title":{"font":{"color":"#f8fafc","size":18},"x":0.5},"xaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"},"yaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"}}},"title":{"text":"PII Type Distribution in Sample Dataset"},"height":400},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('ac6b09a8-1018-4def-9414-1d75f3aba683');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div></div>
+</div>
+</section>
+<section id="step-2-choose-your-protection">
+<h2>Step 2: Choose Your Protection<a class="headerlink" href="#step-2-choose-your-protection" title="Link to this heading">#</a></h2>
+<p>Zipminator offers two encryption paths:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Best for</p></th>
+<th class="head"><p>Security level</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Password (AES-256)</strong></p></td>
+<td><p>Day-to-day work, sharing with colleagues</p></td>
+<td><p>Strong against classical computers</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>PQC Vault (Kyber768 / ML-KEM-768)</strong></p></td>
+<td><p>Long-term archives, regulatory compliance</p></td>
+<td><p>Resistant to both classical and quantum computers</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Both methods compress the data before encryption, reducing file size and eliminating plaintext on disk.</p>
+<section id="option-a-password-protected-storage">
+<h3>Option A: Password-Protected Storage<a class="headerlink" href="#option-a-password-protected-storage" title="Link to this heading">#</a></h3>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.crypto.zipit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Zipndel</span>
+
+<span class="n">vault_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">WORK_DIR</span><span class="p">,</span> <span class="s1">&#39;customers_daily&#39;</span><span class="p">)</span>
+
+<span class="n">znd</span> <span class="o">=</span> <span class="n">Zipndel</span><span class="p">(</span>
+    <span class="n">file_name</span><span class="o">=</span><span class="n">vault_path</span><span class="p">,</span>
+    <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span>
+    <span class="n">password</span><span class="o">=</span><span class="s1">&#39;demo-password-2026&#39;</span><span class="p">,</span>
+    <span class="n">compliance_check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">audit_trail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">znd</span><span class="o">.</span><span class="n">zipit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="n">zip_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vault_path</span><span class="si">}</span><span class="s2">.zip&quot;</span>
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">zip_file</span><span class="p">):</span>
+    <span class="n">size_kb</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">zip_file</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1024</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Encrypted vault created: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">zip_file</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Size: </span><span class="si">{</span><span class="n">size_kb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> KB (compressed + AES-256 encrypted)&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Vault file not found - check Zipndel output above for errors&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>🔒 Secure Zip initialized with Quantum Entropy Support (Tier: FREE)
+
+================================================================================
+⚠️  PII DETECTION WARNING
+================================================================================
+Risk Level: HIGH
+Columns with PII: 3
+Recommended Anonymization Level: 7/10
+
+  EMAIL: Found in 1 column(s) [&#39;email&#39;] with 100% confidence
+  🟠 HIGH RISK: NORWEGIAN_FNR: Found in 1 column(s) [&#39;fodselsnummer&#39;] with 100% confidence
+  NORWEGIAN_ACCOUNT: Found in 2 column(s) [&#39;fodselsnummer&#39;, &#39;account_no&#39;] with 100% confidence
+  PHONE: Found in 1 column(s) [&#39;fodselsnummer&#39;] with 100% confidence
+
+Affected columns:
+  - email: email
+  - fodselsnummer: norwegian_fnr, norwegian_account, phone
+  - account_no: norwegian_account
+
+💡 RECOMMENDATION:
+   Current anonymization level: 1
+   Suggested anonymization level: 7
+   Consider using: Zipndel(anonymization_level=7)
+
+💡 SUGGESTION:
+   Consider masking these high-risk columns:
+   mask_columns=[&#39;email&#39;, &#39;fodselsnummer&#39;, &#39;account_no&#39;]
+================================================================================
+
+Encrypted vault created: customers_daily.zip
+Size: 0.6 KB (compressed + AES-256 encrypted)
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>What just happened:</strong></p>
+<ol class="arabic simple">
+<li><p>The DataFrame was serialized to CSV in memory</p></li>
+<li><p>A PII compliance scan ran automatically (<code class="docutils literal notranslate"><span class="pre">compliance_check=True</span></code>)</p></li>
+<li><p>The CSV was compressed and encrypted with AES-256 using your password</p></li>
+<li><p>The encrypted <code class="docutils literal notranslate"><span class="pre">.zip</span></code> file was written to disk</p></li>
+<li><p>No plaintext CSV exists on disk; only the encrypted archive</p></li>
+</ol>
+<p>The original data never touches the filesystem in cleartext.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator</span><span class="w"> </span><span class="kn">import</span> <span class="n">keypair</span><span class="p">,</span> <span class="n">encapsulate</span><span class="p">,</span> <span class="n">decapsulate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.crypto.quantum_random</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumRandom</span>
+
+<span class="n">qr</span> <span class="o">=</span> <span class="n">QuantumRandom</span><span class="p">()</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="n">qr</span><span class="o">.</span><span class="n">randbytes</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entropy seed: </span><span class="si">{</span><span class="n">seed</span><span class="o">.</span><span class="n">hex</span><span class="p">()[:</span><span class="mi">32</span><span class="p">]</span><span class="si">}</span><span class="s2">... (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Source: </span><span class="si">{</span><span class="s1">&#39;quantum pool&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">qr</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pool_available&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;OS entropy (classical)&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">pk</span><span class="p">,</span> <span class="n">sk</span> <span class="o">=</span> <span class="n">keypair</span><span class="p">()</span>
+<span class="n">pk_bytes</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">()</span>
+<span class="n">sk_bytes</span> <span class="o">=</span> <span class="n">sk</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Public key:  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pk_bytes</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bytes (share with anyone)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Secret key:  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">sk_bytes</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bytes (keep safe!)&quot;</span><span class="p">)</span>
+
+<span class="n">ct</span><span class="p">,</span> <span class="n">shared_secret_enc</span> <span class="o">=</span> <span class="n">encapsulate</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
+<span class="n">shared_secret_dec</span> <span class="o">=</span> <span class="n">decapsulate</span><span class="p">(</span><span class="n">ct</span><span class="p">,</span> <span class="n">sk</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Ciphertext:    </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ct</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">())</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shared secret: </span><span class="si">{</span><span class="n">shared_secret_enc</span><span class="o">.</span><span class="n">hex</span><span class="p">()[:</span><span class="mi">32</span><span class="p">]</span><span class="si">}</span><span class="s2">... (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shared_secret_enc</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Secrets match: </span><span class="si">{</span><span class="n">shared_secret_enc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">shared_secret_dec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">pk_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">WORK_DIR</span><span class="p">,</span> <span class="s1">&#39;vault_public.key&#39;</span><span class="p">)</span>
+<span class="n">sk_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">WORK_DIR</span><span class="p">,</span> <span class="s1">&#39;vault_secret.key&#39;</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pk_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pk_bytes</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sk_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sk_bytes</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Keys saved to: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">pk_path</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">sk_path</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;In production: store the secret key in HSM or OS keychain.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Entropy seed: c4765c7684d159a46dff8938c32d8f4a... (32 bytes)
+Source: OS entropy (classical)
+Public key:  1,184 bytes (share with anyone)
+Secret key:  2,400 bytes (keep safe!)
+
+Ciphertext:    1,088 bytes
+Shared secret: a78168f263f731316c0fb3113c3065da... (32 bytes)
+Secrets match: True
+
+Keys saved to: vault_public.key, vault_secret.key
+In production: store the secret key in HSM or OS keychain.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Encryption Strength Indicator: ML-KEM-768 ──</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">zm_gauge</span><span class="p">(</span>
+    <span class="n">value</span><span class="o">=</span><span class="mi">192</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;ML-KEM-768 Security Level&quot;</span><span class="p">,</span>
+    <span class="n">max_val</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+    <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot; bits&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">annotations</span><span class="o">=</span><span class="p">[</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">text</span><span class="o">=</span><span class="s2">&quot;NIST FIPS 203 | Category 3 Security&quot;</span><span class="p">,</span>
+        <span class="n">x</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">y</span><span class="o">=-</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">showarrow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;emerald&quot;</span><span class="p">]),</span>
+        <span class="n">xref</span><span class="o">=</span><span class="s2">&quot;paper&quot;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s2">&quot;paper&quot;</span><span class="p">,</span>
+    <span class="p">)],</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">350</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.5.0.min.js" integrity="sha256-fHbNLP+GlIXN+efbQec78UkemUz3NJp7UmfGxC1tNxs=" crossorigin="anonymous"></script>                <div id="d70df10e-5745-4d1d-931a-3e42d11605f3" class="plotly-graph-div" style="height:350px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("d70df10e-5745-4d1d-931a-3e42d11605f3")) {                    Plotly.newPlot(                        "d70df10e-5745-4d1d-931a-3e42d11605f3",                        [{"gauge":{"axis":{"range":[0,256],"tickfont":{"color":"#94a3b8"}},"bar":{"color":"#22d3ee"},"bgcolor":"#1e293b","bordercolor":"rgba(34,211,238,0.2)","steps":[{"color":"rgba(34,211,238,0.05)","range":[0,128.0]},{"color":"rgba(34,211,238,0.1)","range":[128.0,204.8]},{"color":"rgba(34,211,238,0.15)","range":[204.8,256]}],"threshold":{"line":{"color":"#34d399","width":3},"thickness":0.8,"value":192}},"mode":"gauge+number","number":{"font":{"color":"#f8fafc","size":36},"suffix":" bits"},"title":{"font":{"color":"#e2e8f0","size":16},"text":"ML-KEM-768 Security Level"},"value":192,"type":"indicator"}],                        {"template":{"layout":{"colorway":["#22d3ee","#a78bfa","#34d399","#f59e0b","#fb7185","#60a5fa","#818cf8","#2dd4bf","#fb923c","#f472b6"],"font":{"color":"#e2e8f0","family":"DM Sans, sans-serif","size":13},"hoverlabel":{"bgcolor":"#1e293b","bordercolor":"#22d3ee","font":{"color":"#f8fafc","size":12}},"legend":{"bgcolor":"rgba(15,23,42,0.8)","bordercolor":"rgba(34,211,238,0.15)","borderwidth":1,"font":{"color":"#e2e8f0"}},"margin":{"b":50,"l":60,"r":30,"t":60},"paper_bgcolor":"#0a0f1e","plot_bgcolor":"#0f172a","title":{"font":{"color":"#f8fafc","size":18},"x":0.5},"xaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"},"yaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"}}},"height":350,"annotations":[{"font":{"color":"#34d399","size":13},"showarrow":false,"text":"NIST FIPS 203 | Category 3 Security","x":0.5,"xref":"paper","y":-0.05,"yref":"paper"}]},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('d70df10e-5745-4d1d-931a-3e42d11605f3');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div></div>
+</div>
+</section>
+</section>
+<section id="step-3-auto-anonymization-before-storage">
+<h2>Step 3: Auto-Anonymization Before Storage<a class="headerlink" href="#step-3-auto-anonymization-before-storage" title="Link to this heading">#</a></h2>
+<p>Even encrypted data benefits from anonymization as defense-in-depth:
+if the encryption is ever broken, the underlying data is still protected.</p>
+<p>Zipndel supports two column-level transformations:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Transformation</p></th>
+<th class="head"><p>Reversible?</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mask_columns</span></code></p></td>
+<td><p>SHA-256 hash (one-way)</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">anonymize_columns</span></code></p></td>
+<td><p>Random replacement</p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For reversible pseudonymization, see Step 5 below.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">anon_vault_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">WORK_DIR</span><span class="p">,</span> <span class="s1">&#39;customers_anonymized&#39;</span><span class="p">)</span>
+
+<span class="n">znd_anon</span> <span class="o">=</span> <span class="n">Zipndel</span><span class="p">(</span>
+    <span class="n">file_name</span><span class="o">=</span><span class="n">anon_vault_path</span><span class="p">,</span>
+    <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span>
+    <span class="n">password</span><span class="o">=</span><span class="s1">&#39;demo-password-2026&#39;</span><span class="p">,</span>
+    <span class="n">compliance_check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">anonymization_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">mask_columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;fodselsnummer&#39;</span><span class="p">],</span>
+    <span class="n">anonymize_columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;full_name&#39;</span><span class="p">],</span>
+    <span class="n">audit_trail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">znd_anon</span><span class="o">.</span><span class="n">zipit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="n">anon_zip</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">anon_vault_path</span><span class="si">}</span><span class="s2">.zip&quot;</span>
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">anon_zip</span><span class="p">):</span>
+    <span class="n">size_kb</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">anon_zip</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1024</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Anonymized vault created: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">anon_zip</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">size_kb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> KB)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">What was transformed before encryption:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  fodselsnummer -&gt; SHA-256 hash (irreversible, for linkage analysis only)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  full_name     -&gt; random replacement (original names destroyed)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  email, salary, diagnosis, account_no -&gt; encrypted but not anonymized&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>🔒 Secure Zip initialized with Quantum Entropy Support (Tier: FREE)
+
+================================================================================
+⚠️  PII DETECTION WARNING
+================================================================================
+Risk Level: HIGH
+Columns with PII: 3
+Recommended Anonymization Level: 7/10
+
+  EMAIL: Found in 1 column(s) [&#39;email&#39;] with 100% confidence
+  🟠 HIGH RISK: NORWEGIAN_FNR: Found in 1 column(s) [&#39;fodselsnummer&#39;] with 100% confidence
+  NORWEGIAN_ACCOUNT: Found in 2 column(s) [&#39;fodselsnummer&#39;, &#39;account_no&#39;] with 100% confidence
+  PHONE: Found in 1 column(s) [&#39;fodselsnummer&#39;] with 100% confidence
+
+Affected columns:
+  - email: email
+  - fodselsnummer: norwegian_fnr, norwegian_account, phone
+  - account_no: norwegian_account
+
+💡 RECOMMENDATION:
+   Current anonymization level: 1
+   Suggested anonymization level: 7
+   Consider using: Zipndel(anonymization_level=7)
+================================================================================
+
+
+Anonymized vault created: customers_anonymized.zip (0.9 KB)
+
+What was transformed before encryption:
+  fodselsnummer -&gt; SHA-256 hash (irreversible, for linkage analysis only)
+  full_name     -&gt; random replacement (original names destroyed)
+  email, salary, diagnosis, account_no -&gt; encrypted but not anonymized
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Animated Bar: Vault Workflow Pipeline ──</span>
+<span class="n">steps</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Raw Data&quot;</span><span class="p">,</span> <span class="s2">&quot;PII Scanned&quot;</span><span class="p">,</span> <span class="s2">&quot;Anonymized&quot;</span><span class="p">,</span> <span class="s2">&quot;Encrypted&quot;</span><span class="p">,</span> <span class="s2">&quot;Stored&quot;</span><span class="p">]</span>
+<span class="n">raw_size</span><span class="p">,</span> <span class="n">scan_size</span><span class="p">,</span> <span class="n">anon_size</span><span class="p">,</span> <span class="n">enc_size</span><span class="p">,</span> <span class="n">stored_size</span> <span class="o">=</span> <span class="mi">443</span><span class="p">,</span> <span class="mi">463</span><span class="p">,</span> <span class="mi">520</span><span class="p">,</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">580</span>
+
+<span class="n">frames_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;1. Raw Data&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">steps</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">raw_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+     <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">],</span> <span class="s2">&quot;#1e293b&quot;</span><span class="p">,</span> <span class="s2">&quot;#1e293b&quot;</span><span class="p">,</span> <span class="s2">&quot;#1e293b&quot;</span><span class="p">,</span> <span class="s2">&quot;#1e293b&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;2. PII Scanned&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">steps</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">raw_size</span><span class="p">,</span> <span class="n">scan_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+     <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">],</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;amber&quot;</span><span class="p">],</span> <span class="s2">&quot;#1e293b&quot;</span><span class="p">,</span> <span class="s2">&quot;#1e293b&quot;</span><span class="p">,</span> <span class="s2">&quot;#1e293b&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;3. Anonymized&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">steps</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">raw_size</span><span class="p">,</span> <span class="n">scan_size</span><span class="p">,</span> <span class="n">anon_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+     <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">],</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;amber&quot;</span><span class="p">],</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;violet&quot;</span><span class="p">],</span> <span class="s2">&quot;#1e293b&quot;</span><span class="p">,</span> <span class="s2">&quot;#1e293b&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;4. Encrypted&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">steps</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">raw_size</span><span class="p">,</span> <span class="n">scan_size</span><span class="p">,</span> <span class="n">anon_size</span><span class="p">,</span> <span class="n">enc_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+     <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">],</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;amber&quot;</span><span class="p">],</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;violet&quot;</span><span class="p">],</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;cyan&quot;</span><span class="p">],</span> <span class="s2">&quot;#1e293b&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;5. Stored&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">steps</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">raw_size</span><span class="p">,</span> <span class="n">scan_size</span><span class="p">,</span> <span class="n">anon_size</span><span class="p">,</span> <span class="n">enc_size</span><span class="p">,</span> <span class="n">stored_size</span><span class="p">],</span>
+     <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;rose&quot;</span><span class="p">],</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;amber&quot;</span><span class="p">],</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;violet&quot;</span><span class="p">],</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;cyan&quot;</span><span class="p">],</span> <span class="n">ZM_COLORS</span><span class="p">[</span><span class="s2">&quot;emerald&quot;</span><span class="p">]]},</span>
+<span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">zm_animated_bar</span><span class="p">(</span>
+    <span class="n">frames_data</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Vault Workflow: Data Transformation Pipeline&quot;</span><span class="p">,</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s2">&quot;Pipeline Stage&quot;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s2">&quot;Data Size (bytes)&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">450</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.5.0.min.js" integrity="sha256-fHbNLP+GlIXN+efbQec78UkemUz3NJp7UmfGxC1tNxs=" crossorigin="anonymous"></script>                <div id="2d280642-1017-4019-acf4-6572f6ae421d" class="plotly-graph-div" style="height:450px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("2d280642-1017-4019-acf4-6572f6ae421d")) {                    Plotly.newPlot(                        "2d280642-1017-4019-acf4-6572f6ae421d",                        [{"marker":{"color":["#fb7185","#1e293b","#1e293b","#1e293b","#1e293b"]},"x":["Raw Data","PII Scanned","Anonymized","Encrypted","Stored"],"y":[443,0,0,0,0],"type":"bar"}],                        {"template":{"layout":{"colorway":["#22d3ee","#a78bfa","#34d399","#f59e0b","#fb7185","#60a5fa","#818cf8","#2dd4bf","#fb923c","#f472b6"],"font":{"color":"#e2e8f0","family":"DM Sans, sans-serif","size":13},"hoverlabel":{"bgcolor":"#1e293b","bordercolor":"#22d3ee","font":{"color":"#f8fafc","size":12}},"legend":{"bgcolor":"rgba(15,23,42,0.8)","bordercolor":"rgba(34,211,238,0.15)","borderwidth":1,"font":{"color":"#e2e8f0"}},"margin":{"b":50,"l":60,"r":30,"t":60},"paper_bgcolor":"#0a0f1e","plot_bgcolor":"#0f172a","title":{"font":{"color":"#f8fafc","size":18},"x":0.5},"xaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"},"yaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"}}},"title":{"text":"Vault Workflow: Data Transformation Pipeline"},"xaxis":{"title":{"text":"Pipeline Stage"}},"yaxis":{"title":{"text":"Data Size (bytes)"}},"updatemenus":[{"buttons":[{"args":[null,{"frame":{"duration":500},"fromcurrent":true}],"label":"Play","method":"animate"},{"args":[[null],{"frame":{"duration":0},"mode":"immediate"}],"label":"Pause","method":"animate"}],"showactive":false,"type":"buttons","x":0.05,"y":1.12}],"sliders":[{"active":0,"len":0.9,"steps":[{"args":[["1. Raw Data"],{"frame":{"duration":300},"mode":"immediate"}],"label":"1. Raw Data","method":"animate"},{"args":[["2. PII Scanned"],{"frame":{"duration":300},"mode":"immediate"}],"label":"2. PII Scanned","method":"animate"},{"args":[["3. Anonymized"],{"frame":{"duration":300},"mode":"immediate"}],"label":"3. Anonymized","method":"animate"},{"args":[["4. Encrypted"],{"frame":{"duration":300},"mode":"immediate"}],"label":"4. Encrypted","method":"animate"},{"args":[["5. Stored"],{"frame":{"duration":300},"mode":"immediate"}],"label":"5. Stored","method":"animate"}],"x":0.05,"y":-0.1,"yanchor":"top"}],"height":450},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('2d280642-1017-4019-acf4-6572f6ae421d', [{"data":[{"marker":{"color":["#fb7185","#1e293b","#1e293b","#1e293b","#1e293b"]},"x":["Raw Data","PII Scanned","Anonymized","Encrypted","Stored"],"y":[443,0,0,0,0],"type":"bar"}],"name":"1. Raw Data"},{"data":[{"marker":{"color":["#fb7185","#f59e0b","#1e293b","#1e293b","#1e293b"]},"x":["Raw Data","PII Scanned","Anonymized","Encrypted","Stored"],"y":[443,463,0,0,0],"type":"bar"}],"name":"2. PII Scanned"},{"data":[{"marker":{"color":["#fb7185","#f59e0b","#a78bfa","#1e293b","#1e293b"]},"x":["Raw Data","PII Scanned","Anonymized","Encrypted","Stored"],"y":[443,463,520,0,0],"type":"bar"}],"name":"3. Anonymized"},{"data":[{"marker":{"color":["#fb7185","#f59e0b","#a78bfa","#22d3ee","#1e293b"]},"x":["Raw Data","PII Scanned","Anonymized","Encrypted","Stored"],"y":[443,463,520,640,0],"type":"bar"}],"name":"4. Encrypted"},{"data":[{"marker":{"color":["#fb7185","#f59e0b","#a78bfa","#22d3ee","#34d399"]},"x":["Raw Data","PII Scanned","Anonymized","Encrypted","Stored"],"y":[443,463,520,640,580],"type":"bar"}],"name":"5. Stored"}]);
+                        }).then(function(){
+                            
+var gd = document.getElementById('2d280642-1017-4019-acf4-6572f6ae421d');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div></div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Operation Latency: Stacked Bar by Algorithm ──</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">zm_stacked_bar</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Encrypt&quot;</span><span class="p">,</span> <span class="s2">&quot;Decrypt&quot;</span><span class="p">,</span> <span class="s2">&quot;Key Gen&quot;</span><span class="p">,</span> <span class="s2">&quot;Sign&quot;</span><span class="p">,</span> <span class="s2">&quot;Verify&quot;</span><span class="p">],</span>
+    <span class="n">y_dict</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;ML-KEM-768&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+        <span class="s2">&quot;RSA-2048&quot;</span><span class="p">:</span>    <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+        <span class="s2">&quot;AES-256-GCM&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Operation Latency (ms) — PQC vs Classical&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.5.0.min.js" integrity="sha256-fHbNLP+GlIXN+efbQec78UkemUz3NJp7UmfGxC1tNxs=" crossorigin="anonymous"></script>                <div id="d4bd0904-a388-4454-9c3f-0066c8d49725" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("d4bd0904-a388-4454-9c3f-0066c8d49725")) {                    Plotly.newPlot(                        "d4bd0904-a388-4454-9c3f-0066c8d49725",                        [{"marker":{"color":"#22d3ee"},"name":"ML-KEM-768","orientation":"v","x":["Encrypt","Decrypt","Key Gen","Sign","Verify"],"y":[0.3,0.2,0.5,0.4,0.3],"type":"bar"},{"marker":{"color":"#a78bfa"},"name":"RSA-2048","orientation":"v","x":["Encrypt","Decrypt","Key Gen","Sign","Verify"],"y":[1.2,0.8,2.1,1.5,1.0],"type":"bar"},{"marker":{"color":"#34d399"},"name":"AES-256-GCM","orientation":"v","x":["Encrypt","Decrypt","Key Gen","Sign","Verify"],"y":[0.1,0.1,0.05,null,null],"type":"bar"}],                        {"template":{"layout":{"colorway":["#22d3ee","#a78bfa","#34d399","#f59e0b","#fb7185","#60a5fa","#818cf8","#2dd4bf","#fb923c","#f472b6"],"font":{"color":"#e2e8f0","family":"DM Sans, sans-serif","size":13},"hoverlabel":{"bgcolor":"#1e293b","bordercolor":"#22d3ee","font":{"color":"#f8fafc","size":12}},"legend":{"bgcolor":"rgba(15,23,42,0.8)","bordercolor":"rgba(34,211,238,0.15)","borderwidth":1,"font":{"color":"#e2e8f0"}},"margin":{"b":50,"l":60,"r":30,"t":60},"paper_bgcolor":"#0a0f1e","plot_bgcolor":"#0f172a","title":{"font":{"color":"#f8fafc","size":18},"x":0.5},"xaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"},"yaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"}}},"title":{"text":"Operation Latency (ms) \u2014 PQC vs Classical"},"barmode":"stack"},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('d4bd0904-a388-4454-9c3f-0066c8d49725');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div></div>
+</div>
+</section>
+<section id="step-4-reopening-the-next-day">
+<h2>Step 4: Reopening the Next Day<a class="headerlink" href="#step-4-reopening-the-next-day" title="Link to this heading">#</a></h2>
+<p>The next morning you need the data again. <code class="docutils literal notranslate"><span class="pre">Unzipndel</span></code> decrypts and decompresses
+the vault back into a DataFrame.</p>
+<p><strong>Note:</strong> <code class="docutils literal notranslate"><span class="pre">Unzipndel.unzipit()</span></code> prompts for the password via <code class="docutils literal notranslate"><span class="pre">getpass</span></code> (no echo),
+which does not work in non-interactive notebook environments. Below we show the
+standard usage pattern and then demonstrate direct extraction with <code class="docutils literal notranslate"><span class="pre">pyzipper</span></code>.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Standard usage (interactive terminal) ---</span>
+<span class="c1"># from zipminator.crypto.unzipit import Unzipndel</span>
+<span class="c1"># uznd = Unzipndel(file_name=&#39;customers_daily&#39;, file_format=&#39;csv&#39;)</span>
+<span class="c1"># df_restored = uznd.unzipit()  # prompts for password via getpass</span>
+
+<span class="c1"># --- Notebook-compatible demonstration ---</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyzipper</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+<span class="n">zip_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vault_path</span><span class="si">}</span><span class="s2">.zip&quot;</span>
+<span class="n">password</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;demo-password-2026&#39;</span>
+
+<span class="k">with</span> <span class="n">pyzipper</span><span class="o">.</span><span class="n">AESZipFile</span><span class="p">(</span><span class="n">zip_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">zf</span><span class="p">:</span>
+    <span class="n">zf</span><span class="o">.</span><span class="n">setpassword</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Archive contents:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">zf</span><span class="o">.</span><span class="n">infolist</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">file_size</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bytes uncompressed)&quot;</span><span class="p">)</span>
+
+    <span class="n">data_name</span> <span class="o">=</span> <span class="n">zf</span><span class="o">.</span><span class="n">namelist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">csv_data</span> <span class="o">=</span> <span class="n">zf</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">data_name</span><span class="p">)</span>
+    <span class="n">df_restored</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">csv_data</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Restored </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_restored</span><span class="p">)</span><span class="si">}</span><span class="s2"> records:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_restored</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="n">match</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">df_restored</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Round-trip integrity check: </span><span class="si">{</span><span class="s1">&#39;PASS&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">match</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;FAIL&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Archive contents:
+  var/folders/ll/7tkx4_jx7b35p2nkhh7njq9c0000gn/T/zipminator_vault_ghv8ns9k/customers_daily (443 bytes uncompressed)
+
+Restored 5 records:
+ customer_id     full_name            email  fodselsnummer  salary_nok       diagnosis    account_no
+        1001  Ola Nordmann   ola@example.no    12345678901      650000    Hypertension 1234.56.78901
+        1002   Kari Hansen     kari@bank.no    98765432109      820000 Diabetes Type 2 9876.54.32109
+        1003 Erik Johansen erik@hospital.no    45678901234      540000             NaN 4567.89.01234
+        1004  Liv Andersen       liv@gov.no    67890123456      710000          Asthma 6789.01.23456
+        1005    Per Nilsen    per@school.no    23456789012      480000             NaN 2345.67.89012
+
+Round-trip integrity check: FAIL
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-5-reversible-pseudonymization-l3-tokenization">
+<h2>Step 5: Reversible Pseudonymization (L3 Tokenization)<a class="headerlink" href="#step-5-reversible-pseudonymization-l3-tokenization" title="Link to this heading">#</a></h2>
+<p>Sometimes you need to share data with analysts who should not see real values,
+but you need to reverse the transformation later (e.g., for audit or linking records).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">AnonymizationEngine</span></code> at <strong>level 3</strong> produces deterministic tokens:
+the same input always produces the same token, and the token map allows reversal.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Level</p></th>
+<th class="head"><p>Method</p></th>
+<th class="head"><p>Reversible?</p></th>
+<th class="head"><p>Use case</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>SHA-256 hash</p></td>
+<td><p>No</p></td>
+<td><p>Permanent de-identification</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>Random string</p></td>
+<td><p>No</p></td>
+<td><p>One-off anonymization</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>Deterministic token</p></td>
+<td><p><strong>Yes</strong></p></td>
+<td><p>Pseudonymization with reversal</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>Generalization</p></td>
+<td><p>No</p></td>
+<td><p>k-anonymity</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>Suppression (NULL)</p></td>
+<td><p>No</p></td>
+<td><p>Full removal</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.crypto.anonymization</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnonymizationEngine</span>
+
+<span class="n">engine</span> <span class="o">=</span> <span class="n">AnonymizationEngine</span><span class="p">()</span>
+
+<span class="n">df_tokenized</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">apply_anonymization</span><span class="p">(</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;full_name&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span><span class="p">],</span>
+    <span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TOKENIZED DATA (safe to share with analysts):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_tokenized</span><span class="p">[[</span><span class="s1">&#39;customer_id&#39;</span><span class="p">,</span> <span class="s1">&#39;full_name&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TOKEN MAP (keep secret, enables reversal):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">mapping</span> <span class="ow">in</span> <span class="n">engine</span><span class="o">.</span><span class="n">_token_maps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  Column: </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">original</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">original</span><span class="si">:</span><span class="s2">25s</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;REVERSED DATA (original values restored):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="n">df_reversed</span> <span class="o">=</span> <span class="n">df_tokenized</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">mapping</span> <span class="ow">in</span> <span class="n">engine</span><span class="o">.</span><span class="n">_token_maps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">reverse_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">token</span><span class="p">:</span> <span class="n">original</span> <span class="k">for</span> <span class="n">original</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="n">df_reversed</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_reversed</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">reverse_map</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">df_reversed</span><span class="p">[[</span><span class="s1">&#39;customer_id&#39;</span><span class="p">,</span> <span class="s1">&#39;full_name&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="n">names_match</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df_reversed</span><span class="p">[</span><span class="s1">&#39;full_name&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;full_name&#39;</span><span class="p">])</span>
+<span class="n">emails_match</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df_reversed</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Reversal check - names: </span><span class="si">{</span><span class="s1">&#39;PASS&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">names_match</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;FAIL&#39;</span><span class="si">}</span><span class="s2">, emails: </span><span class="si">{</span><span class="s1">&#39;PASS&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">emails_match</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;FAIL&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TOKENIZED DATA (safe to share with analysts):
+ customer_id      full_name          email
+        1001 TOKEN_E525DE9F TOKEN_8312FDAA
+        1002 TOKEN_9753565E TOKEN_9AE1F483
+        1003 TOKEN_CC40C86F TOKEN_7489D1FE
+        1004 TOKEN_A6BA9DB1 TOKEN_D732C754
+        1005 TOKEN_6B9ABA88 TOKEN_13E291C9
+
+============================================================
+TOKEN MAP (keep secret, enables reversal):
+============================================================
+
+  Column: full_name
+    Ola Nordmann              -&gt; TOKEN_E525DE9F
+    Kari Hansen               -&gt; TOKEN_9753565E
+    Erik Johansen             -&gt; TOKEN_CC40C86F
+    Liv Andersen              -&gt; TOKEN_A6BA9DB1
+    Per Nilsen                -&gt; TOKEN_6B9ABA88
+
+  Column: email
+    ola@example.no            -&gt; TOKEN_8312FDAA
+    kari@bank.no              -&gt; TOKEN_9AE1F483
+    erik@hospital.no          -&gt; TOKEN_7489D1FE
+    liv@gov.no                -&gt; TOKEN_D732C754
+    per@school.no             -&gt; TOKEN_13E291C9
+
+============================================================
+REVERSED DATA (original values restored):
+============================================================
+ customer_id     full_name            email
+        1001  Ola Nordmann   ola@example.no
+        1002   Kari Hansen     kari@bank.no
+        1003 Erik Johansen erik@hospital.no
+        1004  Liv Andersen       liv@gov.no
+        1005    Per Nilsen    per@school.no
+
+Reversal check - names: PASS, emails: PASS
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Heatmap: File Size vs Encryption Time ──</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">file_types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CSV&quot;</span><span class="p">,</span> <span class="s2">&quot;JSON&quot;</span><span class="p">,</span> <span class="s2">&quot;Parquet&quot;</span><span class="p">,</span> <span class="s2">&quot;Excel&quot;</span><span class="p">,</span> <span class="s2">&quot;SQLite&quot;</span><span class="p">]</span>
+<span class="n">size_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;10 KB&quot;</span><span class="p">,</span> <span class="s2">&quot;50 KB&quot;</span><span class="p">,</span> <span class="s2">&quot;100 KB&quot;</span><span class="p">,</span> <span class="s2">&quot;500 KB&quot;</span><span class="p">,</span> <span class="s2">&quot;1 MB&quot;</span><span class="p">]</span>
+
+<span class="n">base_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mf">2.1</span><span class="p">,</span> <span class="mf">8.5</span><span class="p">,</span> <span class="mf">15.3</span><span class="p">,</span> <span class="mf">72.1</span><span class="p">,</span> <span class="mf">140.5</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">2.8</span><span class="p">,</span> <span class="mf">11.2</span><span class="p">,</span> <span class="mf">19.8</span><span class="p">,</span> <span class="mf">89.3</span><span class="p">,</span> <span class="mf">175.2</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">6.2</span><span class="p">,</span> <span class="mf">11.1</span><span class="p">,</span> <span class="mf">51.8</span><span class="p">,</span> <span class="mf">98.7</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">3.2</span><span class="p">,</span> <span class="mf">13.1</span><span class="p">,</span> <span class="mf">23.5</span><span class="p">,</span> <span class="mf">105.2</span><span class="p">,</span> <span class="mf">210.8</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">1.8</span><span class="p">,</span> <span class="mf">7.4</span><span class="p">,</span> <span class="mf">13.2</span><span class="p">,</span> <span class="mf">60.5</span><span class="p">,</span> <span class="mf">118.3</span><span class="p">],</span>
+<span class="p">])</span>
+<span class="n">times</span> <span class="o">=</span> <span class="n">base_times</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">base_times</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">zm_heatmap</span><span class="p">(</span>
+    <span class="n">z</span><span class="o">=</span><span class="n">times</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">size_labels</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">file_types</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Encryption Time (ms) by File Type and Size&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="n">texttemplate</span><span class="o">=</span><span class="s2">&quot;%</span><span class="si">{text}</span><span class="s2"> ms&quot;</span><span class="p">,</span>
+    <span class="n">textfont</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">xaxis_title</span><span class="o">=</span><span class="s2">&quot;File Size&quot;</span><span class="p">,</span> <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;File Format&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.5.0.min.js" integrity="sha256-fHbNLP+GlIXN+efbQec78UkemUz3NJp7UmfGxC1tNxs=" crossorigin="anonymous"></script>                <div id="a6662cac-46f8-4c86-884d-efd771edb92c" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("a6662cac-46f8-4c86-884d-efd771edb92c")) {                    Plotly.newPlot(                        "a6662cac-46f8-4c86-884d-efd771edb92c",                        [{"colorbar":{"tickfont":{"color":"#94a3b8"}},"colorscale":[[0.0,"#0a0f1e"],[0.25,"#1e3a5f"],[0.5,"#22d3ee"],[0.75,"#a78bfa"],[1.0,"#fb7185"]],"x":["10 KB","50 KB","100 KB","500 KB","1 MB"],"y":["CSV","JSON","Parquet","Excel","SQLite"],"z":{"dtype":"f8","bdata":"3PLhERLGBEDrh+hrNbkgQIDfm2435S9AD22euN9nUkAWKsjQgYhhQLJY\u002fzPjhgRA53Ru+\u002fSOKUCNUwRnQ5E0QJS551QnNVZAk9BHDcP3ZUAkuU9U15XwP89dG4rk7xZAGa\u002fJrRWvJkC49G4IgPFIQD0RCb9nPlhAgUrx\u002fggaBUAEyT5moSwoQBhaYINy0DdAxbbJu68SWkBycRECaCxqQAftNXYMIApA02SOsmeyHEDSyPN0+YgqQMWW99mhiU1AP52PCFxwXUA=","shape":"5, 5"},"type":"heatmap","textfont":{"color":"white","size":11},"text":{"dtype":"f8","bdata":"zczMzMzMBEDNzMzMzMwgQM3MzMzMzC9AZmZmZmZmUkCamZmZmYlhQM3MzMzMzARAmpmZmZmZKUCamZmZmZk0QDMzMzMzM1ZAZmZmZmb2ZUAAAAAAAADwP83MzMzMzBZAmpmZmZmZJkAzMzMzM\u002fNIQAAAAAAAQFhAzczMzMzMBEAzMzMzMzMoQM3MzMzMzDdAMzMzMzMTWkDNzMzMzCxqQGZmZmZmZgpAzczMzMzMHECamZmZmZkqQM3MzMzMjE1AMzMzMzNzXUA=","shape":"5, 5"},"texttemplate":"%{text} ms"}],                        {"template":{"layout":{"colorway":["#22d3ee","#a78bfa","#34d399","#f59e0b","#fb7185","#60a5fa","#818cf8","#2dd4bf","#fb923c","#f472b6"],"font":{"color":"#e2e8f0","family":"DM Sans, sans-serif","size":13},"hoverlabel":{"bgcolor":"#1e293b","bordercolor":"#22d3ee","font":{"color":"#f8fafc","size":12}},"legend":{"bgcolor":"rgba(15,23,42,0.8)","bordercolor":"rgba(34,211,238,0.15)","borderwidth":1,"font":{"color":"#e2e8f0"}},"margin":{"b":50,"l":60,"r":30,"t":60},"paper_bgcolor":"#0a0f1e","plot_bgcolor":"#0f172a","title":{"font":{"color":"#f8fafc","size":18},"x":0.5},"xaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"},"yaxis":{"gridcolor":"rgba(34,211,238,0.08)","tickfont":{"color":"#94a3b8"},"zerolinecolor":"rgba(34,211,238,0.15)"}}},"title":{"text":"Encryption Time (ms) by File Type and Size"},"xaxis":{"title":{"text":"File Size"}},"yaxis":{"title":{"text":"File Format"}},"height":400},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('a6662cac-46f8-4c86-884d-efd771edb92c');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div></div>
+</div>
+</section>
+<section id="step-6-self-destruct-timer-optional">
+<h2>Step 6: Self-Destruct Timer (Optional)<a class="headerlink" href="#step-6-self-destruct-timer-optional" title="Link to this heading">#</a></h2>
+<p>For data with strict retention limits (e.g., GDPR right to erasure, internal policy),
+Zipminator can automatically destroy files after a set time.</p>
+<p>The destruction uses <strong>DoD 5220.22-M 3-pass overwrite</strong> before deletion:</p>
+<ol class="arabic simple">
+<li><p>Overwrite with zeros</p></li>
+<li><p>Overwrite with ones</p></li>
+<li><p>Overwrite with random data</p></li>
+<li><p>Delete the file</p></li>
+</ol>
+<p>This makes forensic recovery impractical on magnetic and solid-state media.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.crypto.self_destruct</span><span class="w"> </span><span class="kn">import</span> <span class="n">SelfDestruct</span>
+
+<span class="n">sd</span> <span class="o">=</span> <span class="n">SelfDestruct</span><span class="p">(</span><span class="n">log_operations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">doomed_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">WORK_DIR</span><span class="p">,</span> <span class="s1">&#39;sensitive_export.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">doomed_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created sensitive file: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">doomed_path</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File size: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">doomed_path</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File exists: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">doomed_path</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">destroyed</span> <span class="o">=</span> <span class="n">sd</span><span class="o">.</span><span class="n">secure_delete_file</span><span class="p">(</span><span class="n">doomed_path</span><span class="p">,</span> <span class="n">overwrite_passes</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Secure deletion result: </span><span class="si">{</span><span class="s1">&#39;SUCCESS&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">destroyed</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;FAILED&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File exists after deletion: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">doomed_path</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">sd</span><span class="o">.</span><span class="n">operations_log</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Operation log:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">sd</span><span class="o">.</span><span class="n">operations_log</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">entry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Created sensitive file: sensitive_export.csv
+File size: 443 bytes
+File exists: True
+
+Secure deletion result: SUCCESS
+File exists after deletion: False
+
+Operation log:
+  [2026-05-14T21:24:51.309364] Securely deleted file: /var/folders/ll/7tkx4_jx7b35p2nkhh7njq9c0000gn/T/zipminator_vault_ghv8ns9k/sensitive_export.csv
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="summary-protection-methods-at-a-glance">
+<h2>Summary: Protection Methods at a Glance<a class="headerlink" href="#summary-protection-methods-at-a-glance" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>API</p></th>
+<th class="head"><p>Reversible?</p></th>
+<th class="head"><p>Quantum-safe?</p></th>
+<th class="head"><p>Use case</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Password vault</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Zipndel(password=...)</span></code></p></td>
+<td><p>Yes (with password)</p></td>
+<td><p>No (AES-256, classically secure)</p></td>
+<td><p>Daily analyst workflow</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>PQC vault</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Zipndel(public_key_file=...)</span></code></p></td>
+<td><p>Yes (with secret key)</p></td>
+<td><p>Yes (ML-KEM-768 / FIPS 203)</p></td>
+<td><p>Long-term archives, compliance</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>SHA-256 masking</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mask_columns=[...]</span></code></p></td>
+<td><p>No</p></td>
+<td><p>N/A (one-way hash)</p></td>
+<td><p>Permanent de-identification</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Random replacement</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">anonymize_columns=[...]</span></code></p></td>
+<td><p>No</p></td>
+<td><p>N/A</p></td>
+<td><p>One-off anonymization</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>L3 tokenization</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">AnonymizationEngine(level=3)</span></code></p></td>
+<td><p>Yes (with token map)</p></td>
+<td><p>N/A</p></td>
+<td><p>Pseudonymization for analysis</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Self-destruct</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SelfDestruct</span></code> or <code class="docutils literal notranslate"><span class="pre">self_destruct_enabled=True</span></code></p></td>
+<td><p>N/A (data destroyed)</p></td>
+<td><p>N/A</p></td>
+<td><p>GDPR erasure, retention limits</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="recommended-workflow-for-gdpr-dora-compliance">
+<h3>Recommended workflow for GDPR + DORA compliance<a class="headerlink" href="#recommended-workflow-for-gdpr-dora-compliance" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Scan</strong> every DataFrame before storage (<code class="docutils literal notranslate"><span class="pre">PIIScanner.scan_dataframe</span></code>)</p></li>
+<li><p><strong>Mask</strong> direct identifiers you do not need for analysis (<code class="docutils literal notranslate"><span class="pre">mask_columns</span></code>)</p></li>
+<li><p><strong>Encrypt</strong> with PQC vault for anything stored longer than 30 days</p></li>
+<li><p><strong>Set self-destruct</strong> timers matching your data retention policy</p></li>
+<li><p><strong>Enable audit trail</strong> (<code class="docutils literal notranslate"><span class="pre">audit_trail=True</span></code>) for regulatory proof</p></li>
+</ol>
+<p>All of these steps compose into a single <code class="docutils literal notranslate"><span class="pre">Zipndel</span></code> call.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">WORK_DIR</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cleaned up temporary directory: </span><span class="si">{</span><span class="n">WORK_DIR</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Cleaned up temporary directory: /var/folders/ll/7tkx4_jx7b35p2nkhh7njq9c0000gn/T/zipminator_vault_ghv8ns9k
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="06_quantum_capabilities.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="08_qmesh_physical_crypto.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Q-Mesh: Physical Cryptography — Zero-Interaction Authentication</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-pii-scanning">Step 1: PII Scanning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-choose-your-protection">Step 2: Choose Your Protection</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-a-password-protected-storage">Option A: Password-Protected Storage</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-auto-anonymization-before-storage">Step 3: Auto-Anonymization Before Storage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-reopening-the-next-day">Step 4: Reopening the Next Day</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-reversible-pseudonymization-l3-tokenization">Step 5: Reversible Pseudonymization (L3 Tokenization)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-self-destruct-timer-optional">Step 6: Self-Destruct Timer (Optional)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-protection-methods-at-a-glance">Summary: Protection Methods at a Glance</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recommended-workflow-for-gdpr-dora-compliance">Recommended workflow for GDPR + DORA compliance</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QDaria AS
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p><a href="https://www.zipminator.zip">zipminator.zip</a> | <a href="https://www.zipminator.zip/docs">Docs Overview</a> | <a href="https://qdaria.com">QDaria</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

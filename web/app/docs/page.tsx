@@ -139,7 +139,7 @@ export default function DocsPage() {
       {/* Jupyter Book Banner */}
       <section className="container-custom py-4">
         <motion.a
-          href={JUPYTER_BOOK}
+          href={`${JUPYTER_BOOK}index.html`}
           target="_blank"
           rel="noopener noreferrer"
           variants={fadeUp}

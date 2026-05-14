@@ -1,0 +1,807 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Appendix: NIST FIPS 203 (ML-KEM) &#8212; Zipminator</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=93784575" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=a56c686a"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/appendix/fips_203';</script>
+    <script src="../../_static/custom.js?v=b141372c"></script>
+    <link rel="icon" href="../../_static/Z.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Appendix: Glossary" href="glossary.html" />
+    <link rel="prev" title="Appendix: Anonymization Techniques" href="anonymization_techniques.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/zipminator-logo-dark.svg" class="logo__image only-light" alt="Zipminator - Home"/>
+    <img src="../../_static/zipminator-logo-light.svg" class="logo__image only-dark pst-js-only" alt="Zipminator - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part I: Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part II: Core Cryptography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../core_crypto.html">Core Cryptography: Kyber768 KEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../entropy.html">Quantum Entropy</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../qmesh.html">Q-Mesh: Physical Cryptography</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../clearance_levels.html">Clearance Levels: L1 through L4</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part III: Data Protection</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../pii_scanning.html">PII Scanning</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../anonymization.html">10-Level Data Anonymization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../anonymization_levels.html">10-Level Anonymization System</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../self_destruct.html">Secure Self-Destruct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../zipndel.html">Zipndel: Encrypt &amp; Compress DataFrames</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IV: Jupyter &amp; Interactive</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../jupyter.html">Jupyter Integration</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part V: Tiers &amp; API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../subscription.html">Subscription Tiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_credentials.html">API Credentials &amp; Access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VI: Compliance &amp; Use Cases</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../compliance.html">Compliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../use_cases/government.html">Use Case: Government and Public Sector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../use_cases/healthcare.html">Use Case: Healthcare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../use_cases/finance.html">Use Case: Finance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../use_cases/ecommerce.html">Use Case: E-Commerce</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../use_cases/defense.html">Use Case: Defense and Intelligence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VII: Interactive Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/01_quickstart.html">Getting Started with Zipminator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/02_anonymization.html">10-Level Anonymization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/03_qrng_entropy.html">Quantum Random Number Generation &amp; Entropy Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/04_compliance.html">Compliance and PII Scanning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/05_shor_demo.html">Shor’s Algorithm and the Quantum Threat to Classical Cryptography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/06_quantum_capabilities.html">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/07_vault_workflow.html">Data Vault Workflow: From Raw Data to Quantum-Safe Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/08_qmesh_physical_crypto.html">Q-Mesh: Physical Cryptography — Zero-Interaction Authentication</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VIII: Advanced Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/09_monte_carlo_prng_vs_qrng.html">Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/10_quantum_anonymization.html">Quantum-Certified Anonymization: How L10 Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/10_quantum_entropy_harvester.html">Quantum Entropy Harvester</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IX: CLI Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_reference.html">CLI Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part X: Releases, Research &amp; IP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../papers.html">Research Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../patents.html">Patent Portfolio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mesh_wave1.html">Q-Mesh: Physical Cryptography Wave 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flutter_app.html">Flutter Super-App</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="anonymization_techniques.html">Appendix: Anonymization Techniques</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Appendix: NIST FIPS 203 (ML-KEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Appendix: Glossary</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator/issues/new?title=Issue%20on%20page%20%2Fcontent/appendix/fips_203.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/content/appendix/fips_203.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Appendix: NIST FIPS 203 (ML-KEM)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-fips-203">What is FIPS 203?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ml-kem-parameter-sets">ML-KEM Parameter Sets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-sizes-ml-kem-768">Key Sizes (ML-KEM-768)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-ml-kem-works">How ML-KEM Works</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-generation">Key Generation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#encapsulation">Encapsulation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#decapsulation">Decapsulation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-constant-time-matters">Why Constant-Time Matters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fips-203-vs-fips-140-3">FIPS 203 vs FIPS 140-3</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-zipminator-can-claim">What Zipminator Can Claim</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-nist-post-quantum-timeline">The NIST Post-Quantum Timeline</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-reading">Further Reading</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="appendix-nist-fips-203-ml-kem">
+<h1>Appendix: NIST FIPS 203 (ML-KEM)<a class="headerlink" href="#appendix-nist-fips-203-ml-kem" title="Link to this heading">#</a></h1>
+<p>This appendix provides background on the NIST post-quantum cryptography standard that Zipminator implements.</p>
+<section id="what-is-fips-203">
+<h2>What is FIPS 203?<a class="headerlink" href="#what-is-fips-203" title="Link to this heading">#</a></h2>
+<p>FIPS 203 is a Federal Information Processing Standard published by the National Institute of Standards and Technology (NIST). It specifies <strong>ML-KEM</strong> (Module-Lattice-Based Key-Encapsulation Mechanism), which is the standardized version of the CRYSTALS-Kyber algorithm.</p>
+<p>ML-KEM is the primary post-quantum key encapsulation mechanism selected by NIST after an 8-year evaluation process (2016-2024) that considered 82 initial submissions and narrowed them to 4 finalists.</p>
+</section>
+<section id="ml-kem-parameter-sets">
+<h2>ML-KEM Parameter Sets<a class="headerlink" href="#ml-kem-parameter-sets" title="Link to this heading">#</a></h2>
+<p>FIPS 203 defines three parameter sets:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Set</p></th>
+<th class="head text-center"><p>Security Level</p></th>
+<th class="head text-center"><p>NIST Category</p></th>
+<th class="head text-center"><p>Equivalent Classical</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ML-KEM-512</p></td>
+<td class="text-center"><p>1</p></td>
+<td class="text-center"><p>Category 1</p></td>
+<td class="text-center"><p>AES-128</p></td>
+</tr>
+<tr class="row-odd"><td><p>ML-KEM-768</p></td>
+<td class="text-center"><p>3</p></td>
+<td class="text-center"><p>Category 3</p></td>
+<td class="text-center"><p>AES-192</p></td>
+</tr>
+<tr class="row-even"><td><p>ML-KEM-1024</p></td>
+<td class="text-center"><p>5</p></td>
+<td class="text-center"><p>Category 5</p></td>
+<td class="text-center"><p>AES-256</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Zipminator implements <strong>ML-KEM-768</strong> (Security Level 3), which provides a balance between security margin and performance.</p>
+</section>
+<section id="key-sizes-ml-kem-768">
+<h2>Key Sizes (ML-KEM-768)<a class="headerlink" href="#key-sizes-ml-kem-768" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Object</p></th>
+<th class="head text-right"><p>Size (bytes)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Public key</p></td>
+<td class="text-right"><p>1,184</p></td>
+</tr>
+<tr class="row-odd"><td><p>Secret key</p></td>
+<td class="text-right"><p>2,400</p></td>
+</tr>
+<tr class="row-even"><td><p>Ciphertext</p></td>
+<td class="text-right"><p>1,088</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shared secret</p></td>
+<td class="text-right"><p>32</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For comparison, RSA-2048 public keys are 256 bytes and ciphertexts are 256 bytes, but RSA provides no post-quantum security.</p>
+</section>
+<section id="how-ml-kem-works">
+<h2>How ML-KEM Works<a class="headerlink" href="#how-ml-kem-works" title="Link to this heading">#</a></h2>
+<p>ML-KEM is based on the Module Learning With Errors (MLWE) problem, which is believed to be hard for both classical and quantum computers.</p>
+<section id="key-generation">
+<h3>Key Generation<a class="headerlink" href="#key-generation" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Generate a random seed</p></li>
+<li><p>Expand the seed into a matrix <strong>A</strong> over a polynomial ring</p></li>
+<li><p>Sample secret vectors <strong>s</strong> and <strong>e</strong> from a centered binomial distribution</p></li>
+<li><p>Compute the public key: <strong>t = As + e</strong></p></li>
+<li><p>The public key is <strong>(A, t)</strong>; the secret key is <strong>s</strong></p></li>
+</ol>
+</section>
+<section id="encapsulation">
+<h3>Encapsulation<a class="headerlink" href="#encapsulation" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Sample fresh randomness <strong>r</strong>, <strong>e1</strong>, <strong>e2</strong></p></li>
+<li><p>Compute <strong>u = A^T r + e1</strong> and <strong>v = t^T r + e2 + encode(message)</strong></p></li>
+<li><p>The ciphertext is <strong>(u, v)</strong>; the shared secret is derived from the message via SHA-256</p></li>
+</ol>
+</section>
+<section id="decapsulation">
+<h3>Decapsulation<a class="headerlink" href="#decapsulation" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Compute <strong>v - s^T u</strong> to recover the encoded message</p></li>
+<li><p>Re-encapsulate to verify correctness (Fujisaki-Okamoto transform)</p></li>
+<li><p>If verification succeeds, output the shared secret; otherwise, output a pseudorandom value (implicit rejection)</p></li>
+</ol>
+<p>The Fujisaki-Okamoto transform provides CCA2 security (chosen-ciphertext attack resistance).</p>
+</section>
+</section>
+<section id="why-constant-time-matters">
+<h2>Why Constant-Time Matters<a class="headerlink" href="#why-constant-time-matters" title="Link to this heading">#</a></h2>
+<p>The decapsulation step includes a comparison between the re-encapsulated ciphertext and the received ciphertext. If this comparison leaks timing information, an attacker can mount an adaptive chosen-ciphertext attack.</p>
+<p>Zipminator uses the <code class="docutils literal notranslate"><span class="pre">subtle</span></code> crate for all secret-dependent operations:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ConstantTimeEq</span></code>: Compares two byte sequences in constant time</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ConditionallySelectable</span></code>: Selects between two values without branching</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">csubq()</span></code>: Conditional subtraction using arithmetic masking</p></li>
+</ul>
+<p>These primitives ensure that the execution time of decapsulation does not depend on whether the ciphertext is valid or invalid.</p>
+</section>
+<section id="fips-203-vs-fips-140-3">
+<h2>FIPS 203 vs FIPS 140-3<a class="headerlink" href="#fips-203-vs-fips-140-3" title="Link to this heading">#</a></h2>
+<p>These are two different standards that are often confused:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>FIPS 203</p></th>
+<th class="head"><p>FIPS 140-3</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>What</strong></p></td>
+<td><p>Algorithm specification for ML-KEM</p></td>
+<td><p>Cryptographic module validation program</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Scope</strong></p></td>
+<td><p>Defines the math and encoding</p></td>
+<td><p>Defines physical security, key management, self-tests</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Cost</strong></p></td>
+<td><p>Free (public standard)</p></td>
+<td><p><span class="math notranslate nohighlight">\(80,000 - \)</span>150,000+ (CMVP lab testing)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Timeline</strong></p></td>
+<td><p>Published 2024</p></td>
+<td><p>6-18 months for testing and validation</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Claim</strong></p></td>
+<td><p>“Implements FIPS 203”</p></td>
+<td><p>“FIPS 140-3 Level N validated”</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Certificate</strong></p></td>
+<td><p>Not applicable</p></td>
+<td><p>CMVP certificate number issued</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="what-zipminator-can-claim">
+<h3>What Zipminator Can Claim<a class="headerlink" href="#what-zipminator-can-claim" title="Link to this heading">#</a></h3>
+<p><strong>Safe statements:</strong></p>
+<ul class="simple">
+<li><p>“Implements NIST FIPS 203 (ML-KEM-768)”</p></li>
+<li><p>“Verified against NIST Known Answer Test vectors”</p></li>
+<li><p>“Uses constant-time operations for side-channel resistance”</p></li>
+</ul>
+<p><strong>Statements that must NOT be made:</strong></p>
+<ul class="simple">
+<li><p>“FIPS 140-3 certified” (requires CMVP certificate)</p></li>
+<li><p>“FIPS compliant” (ambiguous; may imply FIPS 140-3 validation)</p></li>
+<li><p>“FIPS validated” (requires CMVP certificate)</p></li>
+</ul>
+</section>
+</section>
+<section id="the-nist-post-quantum-timeline">
+<h2>The NIST Post-Quantum Timeline<a class="headerlink" href="#the-nist-post-quantum-timeline" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Date</p></th>
+<th class="head"><p>Event</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Dec 2016</p></td>
+<td><p>NIST issues call for post-quantum proposals (82 submissions)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Jan 2019</p></td>
+<td><p>Round 2: 26 candidates</p></td>
+</tr>
+<tr class="row-even"><td><p>Jul 2020</p></td>
+<td><p>Round 3: 7 finalists + 8 alternates</p></td>
+</tr>
+<tr class="row-odd"><td><p>Jul 2022</p></td>
+<td><p>NIST selects CRYSTALS-Kyber as the primary KEM</p></td>
+</tr>
+<tr class="row-even"><td><p>Aug 2024</p></td>
+<td><p>FIPS 203 (ML-KEM) published as final standard</p></td>
+</tr>
+<tr class="row-odd"><td><p>2025+</p></td>
+<td><p>Federal agencies begin migration to PQC</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="further-reading">
+<h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://csrc.nist.gov/pubs/fips/203/final">NIST FIPS 203 specification (PDF)</a></p></li>
+<li><p><a class="reference external" href="https://csrc.nist.gov/projects/post-quantum-cryptography">NIST Post-Quantum Cryptography project page</a></p></li>
+<li><p><a class="reference external" href="https://github.com/pq-crystals/kyber">CRYSTALS-Kyber reference implementation</a></p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content/appendix"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="anonymization_techniques.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Appendix: Anonymization Techniques</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="glossary.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Appendix: Glossary</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-fips-203">What is FIPS 203?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ml-kem-parameter-sets">ML-KEM Parameter Sets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-sizes-ml-kem-768">Key Sizes (ML-KEM-768)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-ml-kem-works">How ML-KEM Works</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-generation">Key Generation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#encapsulation">Encapsulation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#decapsulation">Decapsulation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-constant-time-matters">Why Constant-Time Matters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fips-203-vs-fips-140-3">FIPS 203 vs FIPS 140-3</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-zipminator-can-claim">What Zipminator Can Claim</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-nist-post-quantum-timeline">The NIST Post-Quantum Timeline</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-reading">Further Reading</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QDaria AS
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p><a href="https://www.zipminator.zip">zipminator.zip</a> | <a href="https://www.zipminator.zip/docs">Docs Overview</a> | <a href="https://qdaria.com">QDaria</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

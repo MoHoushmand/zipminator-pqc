@@ -1,0 +1,896 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>10-Level Anonymization System &#8212; Zipminator</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=93784575" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=a56c686a"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/anonymization_levels';</script>
+    <script src="../_static/custom.js?v=b141372c"></script>
+    <link rel="icon" href="../_static/Z.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Secure Self-Destruct" href="self_destruct.html" />
+    <link rel="prev" title="10-Level Data Anonymization" href="anonymization.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/zipminator-logo-dark.svg" class="logo__image only-light" alt="Zipminator - Home"/>
+    <img src="../_static/zipminator-logo-light.svg" class="logo__image only-dark pst-js-only" alt="Zipminator - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part I: Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part II: Core Cryptography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="core_crypto.html">Core Cryptography: Kyber768 KEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entropy.html">Quantum Entropy</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="qmesh.html">Q-Mesh: Physical Cryptography</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="clearance_levels.html">Clearance Levels: L1 through L4</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part III: Data Protection</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pii_scanning.html">PII Scanning</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="anonymization.html">10-Level Data Anonymization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">10-Level Anonymization System</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="self_destruct.html">Secure Self-Destruct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zipndel.html">Zipndel: Encrypt &amp; Compress DataFrames</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IV: Jupyter &amp; Interactive</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="jupyter.html">Jupyter Integration</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part V: Tiers &amp; API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="subscription.html">Subscription Tiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_credentials.html">API Credentials &amp; Access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VI: Compliance &amp; Use Cases</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="compliance.html">Compliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/government.html">Use Case: Government and Public Sector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/healthcare.html">Use Case: Healthcare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/finance.html">Use Case: Finance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/ecommerce.html">Use Case: E-Commerce</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases/defense.html">Use Case: Defense and Intelligence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VII: Interactive Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/01_quickstart.html">Getting Started with Zipminator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/02_anonymization.html">10-Level Anonymization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/03_qrng_entropy.html">Quantum Random Number Generation &amp; Entropy Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/04_compliance.html">Compliance and PII Scanning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/05_shor_demo.html">Shor’s Algorithm and the Quantum Threat to Classical Cryptography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/06_quantum_capabilities.html">Quantum Capabilities: True Randomness &amp; NIST Statistical Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/07_vault_workflow.html">Data Vault Workflow: From Raw Data to Quantum-Safe Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/08_qmesh_physical_crypto.html">Q-Mesh: Physical Cryptography — Zero-Interaction Authentication</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part VIII: Advanced Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/09_monte_carlo_prng_vs_qrng.html">Monte Carlo Simulations: PRNG vs QRNG in Banking &amp; Cybersecurity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/10_quantum_anonymization.html">Quantum-Certified Anonymization: How L10 Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/10_quantum_entropy_harvester.html">Quantum Entropy Harvester</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part IX: CLI Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_reference.html">CLI Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part X: Releases, Research &amp; IP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="papers.html">Research Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="patents.html">Patent Portfolio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_wave1.html">Q-Mesh: Physical Cryptography Wave 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flutter_app.html">Flutter Super-App</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="appendix/anonymization_techniques.html">Appendix: Anonymization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/fips_203.html">Appendix: NIST FIPS 203 (ML-KEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/glossary.html">Appendix: Glossary</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/QDaria/zipminator/issues/new?title=Issue%20on%20page%20%2Fcontent/anonymization_levels.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/content/anonymization_levels.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>10-Level Anonymization System</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l1-minimal-masking">L1: Minimal Masking</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l2-partial-redaction">L2: Partial Redaction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l3-static-masking">L3: Static Masking</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l4-pqc-pseudonymization">L4: PQC Pseudonymization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l5-data-generalization">L5: Data Generalization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l6-data-suppression">L6: Data Suppression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l7-quantum-jitter">L7: Quantum Jitter</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l8-differential-privacy">L8: Differential Privacy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l9-enhanced-k-anonymity">L9: Enhanced K-Anonymity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l10-quantum-certified-anonymization">L10: Quantum-Certified Anonymization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-the-right-level">Choosing the Right Level</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tier-requirements">Tier Requirements</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="level-anonymization-system">
+<h1>10-Level Anonymization System<a class="headerlink" href="#level-anonymization-system" title="Link to this heading">#</a></h1>
+<p>Zipminator provides a progressive anonymization system with 10 distinct levels. Each level increases privacy protection at the cost of data utility. Levels are gated by subscription tier.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Level</p></th>
+<th class="head"><p>Name</p></th>
+<th class="head"><p>Tier</p></th>
+<th class="head"><p>Reversible</p></th>
+<th class="head"><p>Utility Loss</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>L1</p></td>
+<td><p>Minimal Masking</p></td>
+<td><p>Free</p></td>
+<td><p>Yes</p></td>
+<td><p>Very Low</p></td>
+</tr>
+<tr class="row-odd"><td><p>L2</p></td>
+<td><p>Partial Redaction</p></td>
+<td><p>Free</p></td>
+<td><p>Yes</p></td>
+<td><p>Low</p></td>
+</tr>
+<tr class="row-even"><td><p>L3</p></td>
+<td><p>Static Masking</p></td>
+<td><p>Free</p></td>
+<td><p>No</p></td>
+<td><p>Medium</p></td>
+</tr>
+<tr class="row-odd"><td><p>L4</p></td>
+<td><p>PQC Pseudonymization</p></td>
+<td><p>Developer</p></td>
+<td><p>With key</p></td>
+<td><p>Low</p></td>
+</tr>
+<tr class="row-even"><td><p>L5</p></td>
+<td><p>Data Generalization</p></td>
+<td><p>Developer</p></td>
+<td><p>No</p></td>
+<td><p>Medium</p></td>
+</tr>
+<tr class="row-odd"><td><p>L6</p></td>
+<td><p>Data Suppression</p></td>
+<td><p>Pro</p></td>
+<td><p>No</p></td>
+<td><p>High</p></td>
+</tr>
+<tr class="row-even"><td><p>L7</p></td>
+<td><p>Quantum Jitter</p></td>
+<td><p>Pro</p></td>
+<td><p>No</p></td>
+<td><p>Medium</p></td>
+</tr>
+<tr class="row-odd"><td><p>L8</p></td>
+<td><p>Differential Privacy</p></td>
+<td><p>Enterprise</p></td>
+<td><p>No</p></td>
+<td><p>Configurable</p></td>
+</tr>
+<tr class="row-even"><td><p>L9</p></td>
+<td><p>Enhanced K-Anonymity</p></td>
+<td><p>Enterprise</p></td>
+<td><p>No</p></td>
+<td><p>Medium-High</p></td>
+</tr>
+<tr class="row-odd"><td><p>L10</p></td>
+<td><p>Quantum-Certified Anonymization</p></td>
+<td><p>Enterprise</p></td>
+<td><p>With key</p></td>
+<td><p>Very Low</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="l1-minimal-masking">
+<h2>L1: Minimal Masking<a class="headerlink" href="#l1-minimal-masking" title="Link to this heading">#</a></h2>
+<p><strong>Tier</strong>: Free | <strong>Reversible</strong>: Yes | <strong>Technique</strong>: Regex pattern matching</p>
+<p>Applies lightweight regex-based masking to known PII patterns (emails, phone numbers, SSNs). The original structure is preserved, making it easy to reverse.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.anonymizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">AdvancedAnonymizer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">anonymizer</span> <span class="o">=</span> <span class="n">AdvancedAnonymizer</span><span class="p">()</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Alice Johnson&quot;</span><span class="p">,</span> <span class="s2">&quot;Bob Smith&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;alice@example.com&quot;</span><span class="p">,</span> <span class="s2">&quot;bob@corp.net&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;phone&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;555-123-4567&quot;</span><span class="p">,</span> <span class="s2">&quot;555-987-6543&quot;</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">anonymizer</span><span class="o">.</span><span class="n">anonymize</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># name            email                   phone</span>
+<span class="c1"># A**** J******   a****@example.com       555-***-4567</span>
+<span class="c1"># B** S****       b**@corp.net            555-***-6543</span>
+</pre></div>
+</div>
+<p><strong>Trade-offs</strong>: Minimal privacy gain. Suitable for internal logging where full PII is unnecessary but data shape must be preserved.</p>
+</section>
+<hr class="docutils" />
+<section id="l2-partial-redaction">
+<h2>L2: Partial Redaction<a class="headerlink" href="#l2-partial-redaction" title="Link to this heading">#</a></h2>
+<p><strong>Tier</strong>: Free | <strong>Reversible</strong>: Yes | <strong>Technique</strong>: First/last character preservation</p>
+<p>Retains the first and last characters of each field value, replacing the middle with asterisks. Preserves enough structure for pattern recognition while obscuring the full value.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">anonymizer</span><span class="o">.</span><span class="n">anonymize</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># name            email                   phone</span>
+<span class="c1"># A***********n   a***********m           5*********7</span>
+<span class="c1"># B*******h       b*******t               5*********3</span>
+</pre></div>
+</div>
+<p><strong>Trade-offs</strong>: Slightly better privacy than L1 but still reversible with context. Good for QA environments.</p>
+</section>
+<hr class="docutils" />
+<section id="l3-static-masking">
+<h2>L3: Static Masking<a class="headerlink" href="#l3-static-masking" title="Link to this heading">#</a></h2>
+<p><strong>Tier</strong>: Free | <strong>Reversible</strong>: No | <strong>Technique</strong>: Fixed <code class="docutils literal notranslate"><span class="pre">[REDACTED]</span></code> replacement</p>
+<p>Replaces all detected PII fields with a static <code class="docutils literal notranslate"><span class="pre">[REDACTED]</span></code> token. This is a one-way operation; original values cannot be recovered.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">anonymizer</span><span class="o">.</span><span class="n">anonymize</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># name         email        phone</span>
+<span class="c1"># [REDACTED]   [REDACTED]   [REDACTED]</span>
+<span class="c1"># [REDACTED]   [REDACTED]   [REDACTED]</span>
+</pre></div>
+</div>
+<p><strong>Trade-offs</strong>: Strong privacy for PII fields but complete loss of analytical utility in masked columns. Non-PII columns are untouched.</p>
+</section>
+<hr class="docutils" />
+<section id="l4-pqc-pseudonymization">
+<h2>L4: PQC Pseudonymization<a class="headerlink" href="#l4-pqc-pseudonymization" title="Link to this heading">#</a></h2>
+<p><strong>Tier</strong>: Developer | <strong>Reversible</strong>: With key | <strong>Technique</strong>: SHA-3 + PQC seed hashing</p>
+<p>Generates deterministic pseudonyms using SHA-3 keyed with a PQC-derived seed. The same input always produces the same pseudonym (enabling joins and aggregation), but the mapping cannot be reversed without the PQC key.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">anonymizer</span><span class="o">.</span><span class="n">anonymize</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># name                              email                             phone</span>
+<span class="c1"># pqc_a3f8b2c1d4e5f6a7b8c9d0e1f2   pqc_1a2b3c4d5e6f7a8b9c0d1e2f3a   pqc_7f8e9d0c1b2a3f4e5d6c7b8a9f</span>
+<span class="c1"># pqc_b4c9d3e2f5a6b7c8d9e0f1a2b3   pqc_2b3c4d5e6f7a8b9c0d1e2f3a4b   pqc_8a9b0c1d2e3f4a5b6c7d8e9f0a</span>
+</pre></div>
+</div>
+<p><strong>Trade-offs</strong>: Preserves referential integrity (same person gets same pseudonym). Requires secure storage of the PQC key for re-identification.</p>
+</section>
+<hr class="docutils" />
+<section id="l5-data-generalization">
+<h2>L5: Data Generalization<a class="headerlink" href="#l5-data-generalization" title="Link to this heading">#</a></h2>
+<p><strong>Tier</strong>: Developer | <strong>Reversible</strong>: No | <strong>Technique</strong>: Range bucketing</p>
+<p>Replaces precise values with generalized ranges. Numeric values are bucketed; categorical values are replaced with broader categories.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df_with_age</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Alice Johnson&quot;</span><span class="p">,</span> <span class="s2">&quot;Bob Smith&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">34</span><span class="p">,</span> <span class="mi">52</span><span class="p">],</span>
+    <span class="s2">&quot;salary&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">85000</span><span class="p">,</span> <span class="mi">120000</span><span class="p">],</span>
+    <span class="s2">&quot;zipcode&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;10001&quot;</span><span class="p">,</span> <span class="s2">&quot;90210&quot;</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">anonymizer</span><span class="o">.</span><span class="n">anonymize</span><span class="p">(</span><span class="n">df_with_age</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># name         age      salary          zipcode</span>
+<span class="c1"># [REDACTED]   30-39    80000-90000     100**</span>
+<span class="c1"># [REDACTED]   50-59    120000-130000   902**</span>
+</pre></div>
+</div>
+<p><strong>Trade-offs</strong>: Preserves statistical distributions at reduced granularity. Suitable for demographic analysis and reporting.</p>
+</section>
+<hr class="docutils" />
+<section id="l6-data-suppression">
+<h2>L6: Data Suppression<a class="headerlink" href="#l6-data-suppression" title="Link to this heading">#</a></h2>
+<p><strong>Tier</strong>: Pro | <strong>Reversible</strong>: No | <strong>Technique</strong>: Column removal</p>
+<p>Removes entire columns that are deemed high-risk for re-identification. The anonymizer uses PII detection to select columns for suppression.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">anonymizer</span><span class="o">.</span><span class="n">anonymize</span><span class="p">(</span><span class="n">df_with_age</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># age    salary</span>
+<span class="c1"># 34     85000</span>
+<span class="c1"># 52     120000</span>
+</pre></div>
+</div>
+<p><strong>Trade-offs</strong>: Eliminates re-identification risk from direct identifiers. May remove columns needed for analysis; review column selection before applying.</p>
+</section>
+<hr class="docutils" />
+<section id="l7-quantum-jitter">
+<h2>L7: Quantum Jitter<a class="headerlink" href="#l7-quantum-jitter" title="Link to this heading">#</a></h2>
+<p><strong>Tier</strong>: Pro | <strong>Reversible</strong>: No | <strong>Technique</strong>: QRNG Gaussian noise injection</p>
+<p>Adds calibrated Gaussian noise to numerical columns using quantum random numbers from the 156-qubit IBM quantum processor. The noise magnitude is proportional to the column’s standard deviation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">anonymizer</span><span class="o">.</span><span class="n">anonymize</span><span class="p">(</span><span class="n">df_with_age</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># name         age    salary    zipcode</span>
+<span class="c1"># [REDACTED]   36     87341     [REDACTED]</span>
+<span class="c1"># [REDACTED]   50     118209    [REDACTED]</span>
+</pre></div>
+</div>
+<p><strong>Trade-offs</strong>: Preserves statistical properties (mean, variance) while preventing exact value matching. The quantum entropy source ensures noise is truly unpredictable.</p>
+</section>
+<hr class="docutils" />
+<section id="l8-differential-privacy">
+<h2>L8: Differential Privacy<a class="headerlink" href="#l8-differential-privacy" title="Link to this heading">#</a></h2>
+<p><strong>Tier</strong>: Enterprise | <strong>Reversible</strong>: No | <strong>Technique</strong>: Calibrated Laplace noise</p>
+<p>Applies formal differential privacy guarantees using the Laplace mechanism. The privacy budget (epsilon) controls the trade-off between privacy and accuracy.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">anonymizer</span><span class="o">.</span><span class="n">anonymize</span><span class="p">(</span><span class="n">df_with_age</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># name         age    salary    zipcode</span>
+<span class="c1"># [REDACTED]   31     79823     [REDACTED]</span>
+<span class="c1"># [REDACTED]   55     125417    [REDACTED]</span>
+</pre></div>
+</div>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">epsilon</span></code> (float): Privacy budget. Lower values provide stronger privacy but more noise. Default: 1.0.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sensitivity</span></code> (float): Maximum influence of a single record. Auto-calculated if not provided.</p></li>
+</ul>
+<p><strong>Trade-offs</strong>: Provides mathematically provable privacy guarantees. Query accuracy degrades with smaller epsilon values.</p>
+</section>
+<hr class="docutils" />
+<section id="l9-enhanced-k-anonymity">
+<h2>L9: Enhanced K-Anonymity<a class="headerlink" href="#l9-enhanced-k-anonymity" title="Link to this heading">#</a></h2>
+<p><strong>Tier</strong>: Enterprise | <strong>Reversible</strong>: No | <strong>Technique</strong>: Quasi-identifier clustering</p>
+<p>Groups records so that every combination of quasi-identifiers (age, zipcode, gender, etc.) appears at least k times. Records are generalized or suppressed to meet the k threshold.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df_large</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="s2">&quot;Bob&quot;</span><span class="p">,</span> <span class="s2">&quot;Carol&quot;</span><span class="p">,</span> <span class="s2">&quot;Dave&quot;</span><span class="p">,</span> <span class="s2">&quot;Eve&quot;</span><span class="p">,</span> <span class="s2">&quot;Frank&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">34</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">53</span><span class="p">],</span>
+    <span class="s2">&quot;zipcode&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;10001&quot;</span><span class="p">,</span> <span class="s2">&quot;10001&quot;</span><span class="p">,</span> <span class="s2">&quot;10002&quot;</span><span class="p">,</span> <span class="s2">&quot;90210&quot;</span><span class="p">,</span> <span class="s2">&quot;90210&quot;</span><span class="p">,</span> <span class="s2">&quot;90211&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;salary&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">85000</span><span class="p">,</span> <span class="mi">88000</span><span class="p">,</span> <span class="mi">82000</span><span class="p">,</span> <span class="mi">120000</span><span class="p">,</span> <span class="mi">115000</span><span class="p">,</span> <span class="mi">125000</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">anonymizer</span><span class="o">.</span><span class="n">anonymize</span><span class="p">(</span><span class="n">df_large</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># name         age      zipcode   salary</span>
+<span class="c1"># [REDACTED]   30-39    100**     85000</span>
+<span class="c1"># [REDACTED]   30-39    100**     88000</span>
+<span class="c1"># [REDACTED]   30-39    100**     82000</span>
+<span class="c1"># [REDACTED]   50-59    902**     120000</span>
+<span class="c1"># [REDACTED]   50-59    902**     115000</span>
+<span class="c1"># [REDACTED]   50-59    902**     125000</span>
+</pre></div>
+</div>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">k</span></code> (int): Minimum group size. Higher values provide stronger anonymity. Default: 5.</p></li>
+</ul>
+<p><strong>Trade-offs</strong>: Strong protection against linkage attacks. Requires sufficient dataset size; small datasets may need aggressive generalization.</p>
+</section>
+<hr class="docutils" />
+<section id="l10-quantum-certified-anonymization">
+<h2>L10: Quantum-Certified Anonymization<a class="headerlink" href="#l10-quantum-certified-anonymization" title="Link to this heading">#</a></h2>
+<p><strong>Tier</strong>: Enterprise | <strong>Reversible</strong>: No (irreversible by physics) | <strong>Technique</strong>: QRNG one-time pad with mapping destruction</p>
+<p>The highest anonymization level, and to our knowledge, the world’s first anonymization system where irreversibility is guaranteed by quantum mechanics rather than computational hardness assumptions. Each original value is mapped to a unique random identifier generated using QRNG from IBM Quantum’s 156-qubit hardware. The mapping is intentionally destroyed after use.</p>
+<p>The randomness of each OTP value is governed by the Born rule: measurement outcomes on a quantum state follow a probability distribution that is intrinsic to the physics and cannot be reversed, predicted, or reproduced. Unlike classical anonymization tools that rely on computational hardness (k-anonymity, differential privacy, PRNG-based masking), L10’s irreversibility holds regardless of an adversary’s computational power, classical or quantum.</p>
+<p>This method remains secure even in a world where P=NP, because its security guarantee is physical, not computational. If P=NP, every CSPRNG seed becomes recoverable and every classical anonymization method breaks. L10 does not depend on computational hardness assumptions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.anonymizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">LevelAnonymizer</span>
+
+<span class="n">anonymizer</span> <span class="o">=</span> <span class="n">LevelAnonymizer</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">anonymizer</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1"># Every value replaced with QRNG-derived string</span>
+<span class="c1"># The OTP mapping was NOT persisted — it cannot be recovered</span>
+<span class="c1"># This is true anonymization, not pseudonymization</span>
+</pre></div>
+</div>
+<p><strong>Properties</strong>:</p>
+<ul class="simple">
+<li><p>Each value gets a unique QRNG-generated identifier</p></li>
+<li><p>The OTP mapping exists only in process memory during <code class="docutils literal notranslate"><span class="pre">apply()</span></code> and is destroyed on return</p></li>
+<li><p>Re-identification is physically impossible (not just computationally infeasible)</p></li>
+<li><p>Preserves referential integrity (same input maps to same token within a single run)</p></li>
+<li><p>Different runs produce different tokens (non-reproducible)</p></li>
+<li><p>Secure against classical computers, quantum computers, and P=NP</p></li>
+</ul>
+<p><strong>Trade-offs</strong>: Maximum privacy, zero reversibility. Once applied, the original data is unrecoverable by anyone, including the data controller. Use when data must be permanently anonymized for sharing, archival, or regulatory exemption (GDPR Recital 26).</p>
+</section>
+<hr class="docutils" />
+<section id="choosing-the-right-level">
+<h2>Choosing the Right Level<a class="headerlink" href="#choosing-the-right-level" title="Link to this heading">#</a></h2>
+<div class="tip admonition">
+<p class="admonition-title">Decision Guide</p>
+<ul class="simple">
+<li><p><strong>Internal analytics, low sensitivity</strong>: L1-L3 (Free tier)</p></li>
+<li><p><strong>Cross-department sharing</strong>: L4-L5 (Developer tier, pseudonymization preserves joins)</p></li>
+<li><p><strong>External data sharing</strong>: L6-L7 (Pro tier, remove identifiers, add noise)</p></li>
+<li><p><strong>Regulatory compliance</strong>: L8-L9 (Enterprise tier, formal privacy guarantees)</p></li>
+<li><p><strong>Maximum protection (irreversible quantum anonymization)</strong>: L10 (Enterprise tier, QRNG OTP, Born rule guarantee)</p></li>
+</ul>
+</div>
+</section>
+<section id="tier-requirements">
+<h2>Tier Requirements<a class="headerlink" href="#tier-requirements" title="Link to this heading">#</a></h2>
+<p>To use levels above your current tier, upgrade your subscription:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zipminator.crypto.subscription</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubscriptionManager</span>
+
+<span class="n">manager</span> <span class="o">=</span> <span class="n">SubscriptionManager</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">manager</span><span class="o">.</span><span class="n">get_allowed_levels</span><span class="p">())</span>
+<span class="c1"># Free: [1, 2, 3]</span>
+<span class="c1"># Developer: [1, 2, 3, 4, 5]</span>
+<span class="c1"># Pro: [1, 2, 3, 4, 5, 6, 7]</span>
+<span class="c1"># Enterprise: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="anonymization.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">10-Level Data Anonymization</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="self_destruct.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Secure Self-Destruct</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l1-minimal-masking">L1: Minimal Masking</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l2-partial-redaction">L2: Partial Redaction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l3-static-masking">L3: Static Masking</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l4-pqc-pseudonymization">L4: PQC Pseudonymization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l5-data-generalization">L5: Data Generalization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l6-data-suppression">L6: Data Suppression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l7-quantum-jitter">L7: Quantum Jitter</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l8-differential-privacy">L8: Differential Privacy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l9-enhanced-k-anonymity">L9: Enhanced K-Anonymity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#l10-quantum-certified-anonymization">L10: Quantum-Certified Anonymization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-the-right-level">Choosing the Right Level</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tier-requirements">Tier Requirements</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QDaria AS
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p><a href="https://www.zipminator.zip">zipminator.zip</a> | <a href="https://www.zipminator.zip/docs">Docs Overview</a> | <a href="https://qdaria.com">QDaria</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

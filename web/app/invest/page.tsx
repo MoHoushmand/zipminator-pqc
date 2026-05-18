@@ -4,6 +4,34 @@ import Link from 'next/link'
 
 const decks = [
   {
+    title: 'Portfolio Significance',
+    description: 'Master synthesis of the three-patent post-quantum stack: source layer, audit layer, application layer, with trillion-scale risk framing and full valuation model',
+    href: '/invest/portfolio',
+    badge: 'Synthesis',
+    badgeColor: '#22D3EE',
+  },
+  {
+    title: 'Patent 1 · Quantum-Certified Anonymization',
+    description: 'NO 20260384, filed 2026-03-24. Born-rule-irreversible anonymization with 2^-95.3 security bound. 15 claims, PoPETs 2026, score 0.97/1.0',
+    href: '/invest/patent-1',
+    badge: 'Anonymization',
+    badgeColor: '#22D3EE',
+  },
+  {
+    title: 'Patent 2 · Unilateral CSI Entropy + PUEK',
+    description: 'Filed 2026-04-04. 5.50 bpb NIST SP 800-90B validated on commodity 802.11 hardware. 14 claims, ACM WiSec 2026 target',
+    href: '/invest/patent-2',
+    badge: 'Entropy Source',
+    badgeColor: '#34D399',
+  },
+  {
+    title: 'Patent 3 · Certified Heterogeneous Entropy + ARE',
+    description: 'Filed 2026-04-05. Merkle-rooted provenance across 3 quantum sources (IBM + Rigetti + qBraid, 156 qubits). 17 claims, ARE over 9 number domains',
+    href: '/invest/patent-3',
+    badge: 'Audit Layer',
+    badgeColor: '#A78BFA',
+  },
+  {
     title: 'Zipminator · Investor Deck',
     description: '22-slide general investor presentation',
     href: '/invest/zipminator',
@@ -47,7 +75,7 @@ export default function InvestSelectorPage() {
         </h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl w-full">
         {decks.map((deck) => (
           <Link
             key={deck.href}

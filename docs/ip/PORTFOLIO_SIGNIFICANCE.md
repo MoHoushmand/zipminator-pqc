@@ -79,7 +79,38 @@ QDaria's three filings, fully prosecuted and bundled, are positioned in the Sand
 
 **Capture-rate reasoning.** The SB1 brief projects defensive financial-services PQC spend at USD 7M (2022) to USD 3.7B (2032), Deloitte. A 0.5-2% capture rate on the EU subset alone yields USD 5-37M annual revenue at 2032, against which the bundled portfolio valuation is the discounted-cash-flow capitalization, not a parallel TAM share. The per-patent dossiers each model a 5-year and 10-year cumulative contribution to QDaria revenue; summed, those imply NOK 90-330M cumulative by 2031 and NOK 425M-1.85B cumulative by 2036, consistent with the bundled valuation range.
 
-## 6. Regulatory alignment matrix
+## 6. Risk mitigated versus value captured
+
+The numbers in section 5 quantify what QDaria can capture from licensing and product revenue. They do not quantify what a customer avoids by deploying the portfolio. The second framing is the trillion-scale story; both belong in any executive deck, with explicit attribution. Conflating the two ("portfolio worth trillions") collapses immediately under banking or investor scrutiny.
+
+**Risk-mitigation and TAM anchors (cited to the SB1 intelligence brief and its primary sources):**
+
+| Anchor | Figure | What it measures | Primary source |
+|---|---|---|---|
+| Quantum-enabled bank attack damage | USD 2.0-3.3 trillion | Indirect US GDP damage from a quantum-enabled attack on a single top-5 US bank's Fedwire access; 10-17% of US annual GDP; six-month recession via cascading liquidity failure | Citi Institute, January 2026 |
+| Global cybercrime damages | USD 10.5 trillion / year by 2025 | All-cause global cybercrime damages projected for 2025 | Cybersecurity Ventures |
+| Quantum financial-services value | USD 400-600 billion by 2035 | Value creation in financial services from quantum technology | McKinsey Quantum Technology Monitor, June 2025 |
+| Quantum total economic value | USD 450-850 billion by 2040 | Total cross-industry economic value from quantum | BCG |
+| Quantum technology total market | USD 97 billion by 2035; USD 198 billion by 2040 | Total quantum technology market size | McKinsey |
+| Financial-services quantum spend | USD 80M (2022) → USD 19B (2032), 72% CAGR | Financial-services quantum spending growth; defensive PQC slice alone USD 7M → USD 3.7B | Deloitte Center for Financial Services |
+| PQC submarket, mid case | USD 420M (2025) → USD 2.84B (2030), 46.2% CAGR | PQC-specific market size | MarketsandMarkets |
+| PQC submarket, upper case | USD 29.95B by 2034 | PQC-specific market, upper projection | Precedence Research |
+| Norwegian financial fraud | NOK 928 million (2023), +51% YoY | Norwegian banking fraud losses in a single year; banks prevented an additional NOK 2,072M | Finanstilsynet |
+| SpareBank 1 single procurement | NOK 625 billion combined assets | Single buying conversation covering 14 alliance banks via the shared Azure platform; ~6,500 employees | SpareBank 1 Utvikling DA disclosures |
+| GDPR penalty exposure | Up to 4% of global turnover | Per-incident regulatory ceiling for non-compliant data controllers | EU Regulation 2016/679 Art. 83 |
+| DORA penalty exposure | Up to 2% of global turnover; EUR 1M for individuals | Per-incident regulatory ceiling for non-compliant financial entities | EU Regulation 2022/2554 Art. 50, in force in Norway 2025-07-01 |
+| Average financial-services breach | USD 6.08 million | Single-incident cost (mean) | IBM Cost of a Data Breach 2024 |
+
+**Two stacked framings (use both in any executive deck):**
+
+1. *Risk-mitigation framing (boardroom / CISO / regulator):* QDaria's three-patent post-quantum portfolio addresses a risk surface measured at the USD 2-3.3 trillion level per quantum-enabled-attack scenario (Citi 2026) inside a USD 10.5 trillion / year all-cause cybercrime market (Cybersecurity Ventures). A single avoided breach pays back the upper bound of single-jurisdiction licensing (IBM 2024 mean breach cost USD 6.08M). Regulatory exposure under GDPR (4% of global turnover) and DORA (2%) provides the structural buyer-side reason to pay.
+2. *Value-capture framing (CFO / investor):* Within the directly addressable PQC submarket reaching USD 2.84B by 2030 (MarketsandMarkets) and USD 29.95B by 2034 (Precedence Research), QDaria's capturable share is modelled in section 5: NOK 1.29-4.70 billion (USD 120-445 million) over 10 years in the base case, with a strategic ceiling of NOK 5-15 billion (USD 470M-1.4B) [unverified upper bound] conditional on DORA enforcement intensity, Tier-1 licensing, and Theory gap T1 closure.
+
+The risk-mitigation framing is what closes a SpareBank 1 procurement conversation; the value-capture framing is what closes a Series A. They share an evidence base; they sell different stories to different counterparties.
+
+**One sentence that holds up in either room:** "QDaria's three Norwegian filings cover the source, audit, and application layers of a post-quantum data-protection stack addressing a trillion-scale risk surface, inside a regulator-pulled PQC submarket projected at USD 2.84-29.95 billion by 2030-2034, with capturable license and product revenue modelled at NOK 1.29-4.70 billion over 10 years."
+
+## 7. Regulatory alignment matrix
 
 | Instrument | Force date | QDaria patent that fits | Mechanism |
 |---|---|---|---|
@@ -97,7 +128,7 @@ QDaria's three filings, fully prosecuted and bundled, are positioned in the Sand
 
 Mandatory FIPS-language reminder: anywhere this portfolio is described externally, use "Implements NIST FIPS 203 (ML-KEM-768)" and "Verified against NIST KAT test vectors". Never write "FIPS 140-3 certified" or "FIPS compliant"; both are flagged in EU and US federal procurement language and require a CMVP certificate not yet held.
 
-## 7. Companion paper and ePrint status
+## 8. Companion paper and ePrint status
 
 | Patent | Companion paper title | Target venue | Internal status | Zenodo | IACR ePrint | arXiv |
 |---|---|---|---|---|---|---|
@@ -115,7 +146,7 @@ Mandatory FIPS-language reminder: anywhere this portfolio is described externall
 - `docs/research/paper-2-csi-entropy-puek/main.tex` and `body-ieee.tex`.
 - `docs/research/paper-3-che-are-provenance/main-draft.tex` plus scoped Option A and gap analysis Option B variants.
 
-## 8. Competitive landscape, consolidated
+## 9. Competitive landscape, consolidated
 
 - **SandboxAQ.** Strength: cryptographic discovery and management via AQtive Guard; FedRAMP Ready; USD ~950M raised at USD ~5.6B valuation. Gap relative to QDaria: no published entropy-source patent, no Merkle-rooted provenance primitive, CSPRNG-based workflows that the QDaria portfolio frames as a lower irreversibility tier. Posture: credible licensee on P3 firmware embedding, credible acquirer if QDaria executes the Nordic banking play.
 - **PQShield.** Strength: co-authored all four NIST PQC standards; USD 65M raised; dense IP on standardized primitives (ML-KEM, ML-DSA, SLH-DSA). Gap: covers primitives, not the source / audit / application layer above them. Posture: complementary, not competing.
@@ -127,7 +158,7 @@ Mandatory FIPS-language reminder: anywhere this portfolio is described externall
 - **ARX, sdcMicro, Amnesia, Privitar, OpenDP, Apple Local DP, Microsoft Presidio, Google DP Library.** All classical-PRNG-backed anonymization tools. None claims physics-based irreversibility; none implements mapping destruction; none survives the seed-recovery threat model. P1 is novel against all of them.
 - **No Norwegian or Nordic bank** has a confirmed quantum initiative tied to certified-randomness procurement; Danske Bank's 2022 QKD pilot is the closest. QDaria is the first mover in the Nordic regulated-buyer market.
 
-## 9. Top twelve portfolio highlights (deck-ready)
+## 10. Top twelve portfolio highlights (deck-ready)
 
 1. Three Norwegian patent filings at Patentstyret on Paris-Convention priority, March-April 2026, covering a single vertically-integrated post-quantum data-protection stack.
 2. P1 is the first anonymization construction whose irreversibility is bound by the Born rule of quantum mechanics rather than by computational hardness, to our knowledge.
@@ -142,7 +173,7 @@ Mandatory FIPS-language reminder: anywhere this portfolio is described externall
 11. Bundled valuation range NOK 1.29B-4.70B (USD 120-445M) over 10 years with NO + US + EP grants, anchor licensee, and credible publication trace.
 12. Strategic ceiling NOK 5-15B (USD 470M-1.4B) [unverified upper bound] conditional on DORA enforcement intensity, Tier-1 licensing, and T1 ARE-reduction closure.
 
-## 10. Consolidated risk register
+## 11. Consolidated risk register
 
 - **Prosecution risk.** Norwegian first-action timelines are 18-36 months; EPO and USPTO grant outcomes are not certain. US §101 / Alice and EPO Article 52(2)(c) exposure on software-implemented signal-processing and method-only claims; mitigation across all three filings is to lead with concrete hardware embodiments (P1 100-qubit QRNG, P2 ESP32-S3, P3 GF(2^8) PCLMULQDQ).
 - **IACR ePrint history (P1).** Prior rejection on "insufficient contribution"; mitigated by the new IND-ANON game, DP composition theorem, and UC ideal functionality in the 0.97-iteration revision. Resubmission queued.
@@ -154,7 +185,7 @@ Mandatory FIPS-language reminder: anywhere this portfolio is described externall
 - **Bundle execution risk.** The 3-5x bundle multiplier in the per-patent ranges assumes all three filings prosecute. Failure on one drops the bundled valuation toward the single-patent floor.
 - **Regulatory trajectory risk.** DORA enforcement intensity is uncertain; if Finanstilsynet defers material fines past 2027, the procurement-pull thesis weakens for P3 in the near term. Patents 1 and 2 retain commercial value independent of DORA timing.
 
-## 11. Next-twelve-months action list
+## 12. Next-twelve-months action list
 
 These are the publication, prosecution, and licensing moves that convert the floor valuation into the bundled range over the next year:
 

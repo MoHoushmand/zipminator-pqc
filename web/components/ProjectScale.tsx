@@ -163,10 +163,10 @@ const ProjectScale = () => {
                   <Users className="w-7 h-7 text-quantum-400" />
                 </div>
                 <div className="text-3xl font-bold text-white mb-1">
-                  50-75
+                  45-70
                 </div>
                 <div className="text-sm text-gray-400">
-                  Senior engineers, cryptographers, researchers, auditors
+                  Senior engineers, cryptographers, quantum specialists, researchers, auditors
                 </div>
               </div>
 
@@ -175,9 +175,9 @@ const ProjectScale = () => {
                   <Clock className="w-7 h-7 text-quantum-400" />
                 </div>
                 <div className="text-3xl font-bold text-white mb-1">
-                  24-36
+                  36-48
                 </div>
-                <div className="text-sm text-gray-400">Months of development</div>
+                <div className="text-sm text-gray-400">Months of focused R&amp;D</div>
               </div>
 
               <div className="text-center">
@@ -185,7 +185,7 @@ const ProjectScale = () => {
                   <DollarSign className="w-7 h-7 text-quantum-400" />
                 </div>
                 <div className="text-3xl font-bold text-white mb-1">
-                  $30-60M+
+                  $35-65M+
                 </div>
                 <div className="text-sm text-gray-400">
                   Engineering, PQC talent, patents, papers, audits, quantum hardware
@@ -193,10 +193,13 @@ const ProjectScale = () => {
               </div>
             </div>
 
-            <div className="mt-8 text-center">
+            <div className="mt-8 text-center space-y-2">
               <p className="text-gray-400 text-sm">
                 Zipminator delivers all of this in a single, install-and-go
                 application. Built by one founder.
+              </p>
+              <p className="text-gray-500 text-xs font-mono">
+                Comparables: PQShield raised ~$65M; SandboxAQ raised ~$950M at ~$5.6B valuation with 500+ employees.
               </p>
             </div>
           </div>

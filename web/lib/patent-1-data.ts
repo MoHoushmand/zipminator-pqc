@@ -46,7 +46,7 @@ export const IRREVERSIBILITY_TIERS = [
     tier: 'Physics-guaranteed',
     accent: '#22D3EE',
     description: 'QRNG-OTP-Destroy. Mapping never existed deterministically and is physically destroyed. Holds even if P=NP.',
-    examples: 'Patent 1 (Norway 20260384) — only known construction',
+    examples: 'Patent 1 (Norway 20260384), only known construction',
     survives: 'Born rule + DoD 5220.22-M three-pass overwrite',
   },
 ]
@@ -92,21 +92,21 @@ export interface ClaimCell {
 }
 
 export const CLAIMS_HEATMAP: ClaimCell[] = [
-  // Claim 1 — independent method
+  // Claim 1, independent method
   { claim: 1, embodiment: 'Method', strength: 4, note: 'Independent: QRNG -> OTP -> Apply -> Destroy' },
   { claim: 1, embodiment: 'System', strength: 2, note: 'Referenced by Claim 2 system' },
   { claim: 1, embodiment: 'Medium', strength: 2, note: 'Referenced by Claim 3 medium' },
   { claim: 1, embodiment: 'Hardware', strength: 3, note: 'Quantum source required' },
   { claim: 1, embodiment: 'Audit', strength: 2, note: 'Optional certificate path' },
   { claim: 1, embodiment: 'Composition', strength: 3, note: 'Anchors all dependents' },
-  // Claim 2 — system
+  // Claim 2, system
   { claim: 2, embodiment: 'Method', strength: 2, note: 'Mirrors Claim 1 steps' },
   { claim: 2, embodiment: 'System', strength: 4, note: 'Independent: QRNG + pool + processor + destruction module' },
   { claim: 2, embodiment: 'Medium', strength: 2, note: 'System carries firmware' },
   { claim: 2, embodiment: 'Hardware', strength: 4, note: 'Physical apparatus' },
   { claim: 2, embodiment: 'Audit', strength: 3, note: 'Ties to GDPR Recital 26' },
   { claim: 2, embodiment: 'Composition', strength: 3, note: 'Multi-stage subsystems' },
-  // Claim 3 — medium
+  // Claim 3, medium
   { claim: 3, embodiment: 'Method', strength: 2, note: 'Encodes Claim 1' },
   { claim: 3, embodiment: 'System', strength: 2, note: 'Embeds in Claim 2' },
   { claim: 3, embodiment: 'Medium', strength: 4, note: 'Independent: non-transitory CRM' },
@@ -174,7 +174,7 @@ export const CLAIMS_HEATMAP: ClaimCell[] = [
   { claim: 12, embodiment: 'System', strength: 3, note: '"Classically anonymized" label fallback' },
   { claim: 12, embodiment: 'Medium', strength: 1, note: '' },
   { claim: 12, embodiment: 'Hardware', strength: 2, note: 'OS-entropy degraded mode' },
-  { claim: 12, embodiment: 'Audit', strength: 3, note: 'Honest labeling' },
+  { claim: 12, embodiment: 'Audit', strength: 3, note: 'Explicit fallback labeling' },
   { claim: 12, embodiment: 'Composition', strength: 2, note: '' },
   // Claim 13
   { claim: 13, embodiment: 'Method', strength: 2, note: '' },

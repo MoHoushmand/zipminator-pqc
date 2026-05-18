@@ -1,5 +1,58 @@
 # Patent 2 — Unilateral CSI Entropy + PUEK: Significance Dossier
 
+## Live interactive companion deck
+
+Open `/invest/patent-2` on the dev server (port 3099). Ten sections, three scenarios (conservative / moderate / optimistic), sidebar navigation, animated charts with data tables under every visualization. Portfolio-level overview at `/invest/portfolio`.
+
+```mermaid
+flowchart LR
+    CSI[(WiFi CSI frames<br/>BCM4339 via Nexmon<br/>or ESP32-S3 802.11n)] --> PHASE[Per-subcarrier<br/>phase computation]
+    PHASE --> QUANT[Quantize to<br/>discrete level]
+    QUANT --> LSB[Extract LSB<br/>raw bit stream]
+    LSB --> VN[Von Neumann<br/>debias]
+    VN --> POOL[(Entropy pool<br/>5.50 bpb min-entropy<br/>NIST SP 800-90B IID)]
+    POOL --> XOR[XOR-compose<br/>with QRNG]
+    XOR --> KDF[HKDF-SHA256]
+    KDF --> MESH[ML-KEM-768 mesh keys<br/>MeshKey, SipHashKey]
+    POOL --> SVD[SVD on CSI matrix C]
+    SVD --> PUEK[PUEK enrollment<br/>top-d right singular vectors]
+    PUEK --> TAU{Similarity tau<br/>0.75 / 0.85 / 0.95 / 0.98}
+    TAU -->|s ge tau| KEY[32-byte derived key,<br/>environment-locked]
+    TAU -->|s lt tau| REJECT[Reject]
+```
+
+**Deck section index** (mirrors the live sidebar):
+
+| # | Section | Primary visualization | Source file |
+|---|---|---|---|
+| 1 | CSI Pipeline | Custom SVG signal-processing pipeline, 6 stages, framer-motion arrow draws | `web/components/patent-2/sections/Section1CsiPipeline.tsx` |
+| 2 | Entropy Triple | Recharts horizontal BarChart, 5.50 vs 6.35 vs 6.36 bpb with delta annotations | `Section2EntropyTriple.tsx` |
+| 3 | PUEK Gauges | 4 Recharts RadialBarChart gauges, tau 0.75 to 0.98 | `Section3PuekGauges.tsx` |
+| 4 | Device Sunburst | Custom SVG sunburst, 802.11 device families with drill-down | `Section4DeviceSunburst.tsx` |
+| 5 | Cost Scatter | Recharts ScatterChart on log-log axes, 5 substrates | `Section5CostScatter.tsx` |
+| 6 | Hardware Compare | Side-by-side GlowCards, ESP32-S3 vs BCM4339 | `Section6HardwareCompare.tsx` |
+| 7 | IoT Bubble Timeline | Recharts ComposedChart, 2024 to 2034 | `Section7IoTBubbleTimeline.tsx` |
+| 8 | License Sankey | Recharts Sankey, tier to rate to annual revenue | `Section8LicenseFlow.tsx` |
+| 9 | Royalty Heatmap | Custom CSS-grid heatmap, license rate by volume | `Section9RoyaltyHeatmap.tsx` |
+| 10 | Moat Radar | Recharts RadarChart vs PUF / SRAM / RO / IDQ / Quantinuum | `Section10MoatRadar.tsx` |
+
+**Empirical anchor (paper-internal invariant, do not change):**
+
+| Source | Min-entropy (bpb) | Substrate | Validation | Cost per byte |
+|---|---|---|---|---|
+| WiFi CSI (this work) | **5.50** | BCM4339 / ESP32-S3, 343 frames, 2,690 bytes | NIST SP 800-90B `ea_non_iid` MCV at 99% CI | ~10^-9 USD [extrapolated] |
+| IBM Quantum `ibm_kingston` | 6.35 | 156-qubit superconducting | NIST SP 800-90B | ~1.60 USD / second of stream |
+| `os.urandom` (Linux baseline) | 6.36 | Kernel CSPRNG | n/a (PRNG) | ~0 |
+
+**PUEK security profiles (Claim 8):**
+
+| Profile | Subspace similarity threshold tau | Use case |
+|---|---|---|
+| Standard | 0.75 | Consumer IoT, smart appliances |
+| Elevated | 0.85 | Enterprise IT, BYOD endpoints |
+| High | 0.95 | Financial services, healthcare |
+| Military | 0.98 | Defense, sovereign deployments |
+
 ## Identification
 
 - **Title:** Method and System for Unilateral Entropy Harvesting from Wireless Channel State Information with Post-Quantum Key Derivation

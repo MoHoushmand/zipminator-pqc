@@ -7,6 +7,48 @@
 
 ---
 
+## 0. Live interactive companion deck
+
+Open `/invest/portfolio` on the dev server (port 3099) for the full interactive presentation. Ten sections, three scenarios (conservative / moderate / optimistic), sidebar navigation, animated charts with data tables under every visualization. Sister decks at `/invest/patent-1`, `/invest/patent-2`, `/invest/patent-3`. Selector hub at `/invest`.
+
+```mermaid
+flowchart LR
+    subgraph SOURCE["Source layer, Patent 2 (filed 2026-04-04)"]
+        P2A[CSI on 802.11 hardware<br/>5.50 bpb min-entropy<br/>NIST SP 800-90B IID]
+        P2B[PUEK location-locked keys<br/>4 security profiles]
+    end
+    subgraph AUDIT["Audit layer, Patent 3 (filed 2026-04-05)"]
+        P3A[3-source quantum mixing<br/>IBM 156-qubit + Rigetti + qBraid]
+        P3B[Merkle-rooted<br/>provenance certificate]
+        P3C[ARE 9-domain extractor]
+    end
+    subgraph APP["Application layer, Patent 1 (NO 20260384, filed 2026-03-24)"]
+        P1A[QRNG-OTP mapping]
+        P1B[Mapping destruction<br/>DoD 5220.22-M overwrite]
+        P1C[Anonymization certificate<br/>2^-95.3 security bound]
+    end
+    SOURCE -- entropy --> AUDIT
+    AUDIT -- audited entropy --> APP
+    APP -- GDPR Recital 26 output --> BUYER[Regulated buyers<br/>Banks DORA, Insurers Solvency II<br/>Telcos NIS2, Government EU AI Act]
+```
+
+**Deck section index** (mirrors the live sidebar):
+
+| # | Section | Primary visualization | Source file |
+|---|---|---|---|
+| 1 | Source-Audit-Application Stack | Custom SVG isometric 3-layer stack | `web/components/portfolio/sections/Section1Stack.tsx` |
+| 2 | Value Flow | Recharts Sankey, P2 to P3 to P1 to buyer | `Section2ValueFlow.tsx` |
+| 3 | Risk vs Capture | Recharts ComposedChart, dual y-axis | `Section3RiskVsCapture.tsx` |
+| 4 | Scenario Waterfall | Custom waterfall bar chart, scenario-driven | `Section4ScenarioWaterfall.tsx` |
+| 5 | Regulatory Radar | Recharts RadarChart, 10 axes, 4 series | `Section5RegulatoryRadar.tsx` |
+| 6 | TAM Treemap | Recharts Treemap, PQC submarket by segment | `Section6TamTreemap.tsx` |
+| 7 | Comparables | Recharts ScatterChart with bubble sizing | `Section7Comparables.tsx` |
+| 8 | Revenue Area | Recharts AreaChart stacked, 10-year | `Section8RevenueArea.tsx` |
+| 9 | Action Timeline | Custom framer-motion Gantt | `Section9ActionTimeline.tsx` |
+| 10 | Highlights | 12 motion-animated cards | `Section10Highlights.tsx` |
+
+---
+
 ## 1. The three-patent thesis
 
 QDaria's portfolio is not three loose inventions; it is a single vertically-integrated post-quantum data-protection stack with three claim families that interlock by design:

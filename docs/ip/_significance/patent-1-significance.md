@@ -1,5 +1,46 @@
 # Patent 1 — Quantum-Certified Anonymization: Significance Dossier
 
+## Live interactive companion deck
+
+Open `/invest/patent-1` on the dev server (port 3099). Ten sections, three scenarios (conservative / moderate / optimistic), sidebar navigation, animated charts with data tables under every visualization. Portfolio-level overview at `/invest/portfolio`.
+
+```mermaid
+flowchart LR
+    Q[156-qubit IBM Quantum<br/>ibm_kingston] -->|harvest| POOL[Entropy pool<br/>thread-safe, position-tracked]
+    POOL -->|read 16 bytes<br/>per unique PII value| GEN[Base62 token generator<br/>rejection sampling]
+    GEN -->|build mapping<br/>per column| MAP[(OTP mapping<br/>volatile memory)]
+    DATA[(Original dataset D)] --> APPLY[Apply mapping<br/>across rows]
+    MAP --> APPLY
+    APPLY --> OUT[(Anonymized D')]
+    APPLY --> DESTROY[ctypes.memset overwrite<br/>plus dict.clear plus del]
+    DESTROY -.->|mapping irrecoverable| BOUND[2^-95.3 mapping-recovery<br/>upper bound per value]
+    OUT --> CERT[Quantum-anonymization<br/>certificate, Claim 15]
+    DESTROY --> CERT
+```
+
+**Deck section index** (mirrors the live sidebar):
+
+| # | Section | Primary visualization | Source file |
+|---|---|---|---|
+| 1 | Irreversibility Pyramid | Custom SVG 3-tier pyramid (computational, information-theoretic, physics-guaranteed) | `web/components/patent-1/sections/Section1IrreversibilityPyramid.tsx` |
+| 2 | OTP-Destroy Flow | Custom SVG 6-stage flow with framer-motion path drawing | `Section2OtpDestroyFlow.tsx` |
+| 3 | Security Bound | Recharts horizontal BarChart on log2 scale | `Section3SecurityBound.tsx` |
+| 4 | Claim Heatmap | Recharts Treemap, 15 claims by 6 embodiments | `Section4ClaimHeatmap.tsx` |
+| 5 | Entropy Harvest | Recharts ComposedChart, cumulative line plus daily bars | `Section5EntropyHarvest.tsx` |
+| 6 | Competitive Radar | Recharts RadarChart, 6 axes by 6 systems | `Section6CompetitiveRadar.tsx` |
+| 7 | Regulatory Gantt | Custom SVG horizontal Gantt, scenario-driven end years | `Section7RegulatoryGantt.tsx` |
+| 8 | Market Funnel | Recharts FunnelChart, TAM to captured | `Section8MarketFunnel.tsx` |
+| 9 | Value Waterfall | Recharts BarChart styled as floating waterfall | `Section9ValueWaterfall.tsx` |
+| 10 | Revenue Area | Recharts stacked AreaChart, 3 series over 10 years | `Section10RevenueArea.tsx` |
+
+**Three-tier irreversibility hierarchy** (Patent 1 claims read on the third tier):
+
+| Tier | Mechanism | Defeated by | Patent 1 status |
+|---|---|---|---|
+| Tier 1, computational | CSPRNG-seeded pseudonymization | Seed recovery, cryptanalysis advance, future quantum factoring | Below claim surface |
+| Tier 2, information-theoretic | True-random one-time pad, mapping retained in escrow | Mapping leak or compelled disclosure | Below claim surface |
+| Tier 3, physics-guaranteed | QRNG one-time pad, mapping destroyed via DoD 5220.22-M overwrite, certificate emitted | Born-rule violation (none known); no cryptanalysis advance defeats a destroyed mapping | Claim 1 reads here |
+
 ## Identification
 
 - **Title:** Method and System for Irreversible Data Anonymization Using Quantum Random Number Generation with Physics-Guaranteed Non-Reversibility

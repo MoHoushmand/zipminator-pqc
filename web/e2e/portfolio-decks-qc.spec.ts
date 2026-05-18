@@ -49,16 +49,28 @@ async function captureConsoleErrors(page: Page): Promise<string[]> {
 }
 
 async function waitForCharts(page: Page) {
-  // Recharts renders inline <svg> with class "recharts-surface". Wait for at
-  // least one to be present; then give framer-motion a chance to settle.
   await page
     .locator('svg.recharts-surface, [data-blueprint-section] svg')
     .first()
     .waitFor({ state: 'visible', timeout: 15_000 })
-    .catch(() => {
-      // Some sections use custom SVG without recharts class; tolerate.
-    })
-  await page.waitForTimeout(1500)
+    .catch(() => {})
+  await page.waitForTimeout(1000)
+}
+
+// Trigger every framer-motion `whileInView` by scrolling through the page in
+// increments, then return to the top. Without this, fullPage screenshots
+// capture sections at opacity 0 because IntersectionObserver never fires.
+async function scrollThroughPage(page: Page) {
+  const pageHeight = await page.evaluate(() => document.documentElement.scrollHeight)
+  const viewportHeight = await page.evaluate(() => window.innerHeight)
+  const step = Math.floor(viewportHeight * 0.7)
+  for (let y = 0; y <= pageHeight; y += step) {
+    await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' as ScrollBehavior }), y)
+    await page.waitForTimeout(220)
+  }
+  await page.waitForTimeout(800)
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior }))
+  await page.waitForTimeout(400)
 }
 
 for (const route of ROUTES) {
@@ -66,6 +78,7 @@ for (const route of ROUTES) {
     test(`[${route.slug}] ${vp.name} (${vp.width}x${vp.height}) screenshots + console`, async ({
       browser,
     }) => {
+      test.setTimeout(120_000)
       const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height } })
       const page = await ctx.newPage()
       const errors = await captureConsoleErrors(page)
@@ -74,6 +87,7 @@ for (const route of ROUTES) {
 
       await page.goto(`/invest/${route.slug}`, { waitUntil: 'domcontentloaded' })
       await waitForCharts(page)
+      await scrollThroughPage(page)
 
       // Full-page screenshot at default (moderate) scenario.
       await page.screenshot({ path: path.join(dir, '01-moderate.png'), fullPage: true })
@@ -82,7 +96,8 @@ for (const route of ROUTES) {
       const conservativeBtn = page.getByRole('button', { name: /conservative/i }).first()
       if (await conservativeBtn.isVisible().catch(() => false)) {
         await conservativeBtn.click()
-        await page.waitForTimeout(800)
+        await page.waitForTimeout(600)
+        await scrollThroughPage(page)
         await page.screenshot({ path: path.join(dir, '02-conservative.png'), fullPage: true })
       }
 
@@ -90,7 +105,8 @@ for (const route of ROUTES) {
       const optimisticBtn = page.getByRole('button', { name: /optimistic/i }).first()
       if (await optimisticBtn.isVisible().catch(() => false)) {
         await optimisticBtn.click()
-        await page.waitForTimeout(800)
+        await page.waitForTimeout(600)
+        await scrollThroughPage(page)
         await page.screenshot({ path: path.join(dir, '03-optimistic.png'), fullPage: true })
       }
 

@@ -46,7 +46,7 @@ export default function Patent2Page() {
   }, [handleIntersect])
 
   return (
-    <div className="h-screen overflow-y-auto" style={{ background: '#020817' }}>
+    <>
       <BlueprintSidebar
         sections={SECTION_LIST}
         activeId={activeId}
@@ -182,6 +182,6 @@ export default function Patent2Page() {
           </p>
         </footer>
       </main>
-    </div>
+    </>
   )
 }

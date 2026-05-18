@@ -121,13 +121,13 @@ export const Section10MoatRadar = ({ scenario }: Props) => {
         <GlowCard accent="#A78BFA">
           <ul className="text-sm text-slate-300 space-y-3" style={{ fontFamily: 'var(--font-dm-sans)' }}>
             <li>
-              <span className="font-mono text-[#22D3EE]">WO2007124054A2 · US20210345102A1 · US10402172B1 · US8015224B1</span> — bilateral CSI key agreement. Two endpoints reconciling a shared secret. Structurally incompatible with the unilateral independent claim.
+              <span className="font-mono text-[#22D3EE]">WO2007124054A2 · US20210345102A1 · US10402172B1 · US8015224B1</span>: bilateral CSI key agreement. Two endpoints reconciling a shared secret. Structurally incompatible with the unilateral independent claim.
             </li>
             <li>
-              <span className="font-mono text-[#F59E0B]">Mathur 2008 · Jana 2009 · Liu 2012 · Avrahami 2023</span> — bilateral CSI literature. Same incompatibility; reviewed in the companion paper related-work section.
+              <span className="font-mono text-[#F59E0B]">Mathur 2008 · Jana 2009 · Liu 2012 · Avrahami 2023</span>: bilateral CSI literature. Same incompatibility; reviewed in the companion paper related-work section.
             </li>
             <li>
-              <span className="font-mono text-[#34D399]">Surveyed unilateral ambient-RF entropy patents</span> — zero published filings predating 2026-04-04 that combine per-subcarrier complex CSI, SP 800-90B-validated extraction, and PUEK-style RF-environment-bound key derivation.
+              <span className="font-mono text-[#34D399]">Surveyed unilateral ambient-RF entropy patents</span>: zero published filings predating 2026-04-04 that combine per-subcarrier complex CSI, SP 800-90B-validated extraction, and PUEK-style RF-environment-bound key derivation.
             </li>
           </ul>
         </GlowCard>

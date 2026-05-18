@@ -1,5 +1,69 @@
 # Patent 3 — Certified Heterogeneous Entropy + ARE Provenance: Significance Dossier
 
+## Live interactive companion deck
+
+Open `/invest/patent-3` on the dev server (port 3099). Ten sections, three scenarios (conservative / moderate / optimistic), sidebar navigation, animated charts with data tables under every visualization. Portfolio-level overview at `/invest/portfolio`.
+
+```mermaid
+flowchart LR
+    IBM[IBM Quantum ibm_kingston<br/>156 qubits, 6.8 MB cumulative] --> HEALTH1[NIST SP 800-90B<br/>health monitor]
+    RIG[Rigetti Ankaa] --> HEALTH2[NIST SP 800-90B<br/>health monitor]
+    QBR[qBraid gateway] --> HEALTH3[NIST SP 800-90B<br/>health monitor]
+    CSI[Classical CSI<br/>ESP32-S3] --> HEALTH4[NIST SP 800-90B<br/>health monitor]
+    OS[os.urandom fallback] --> HEALTH5[NIST SP 800-90B<br/>health monitor]
+    HEALTH1 --> ARE[Algebraic Randomness Extractor<br/>9 number domains]
+    HEALTH2 --> ARE
+    HEALTH3 --> ARE
+    HEALTH4 --> ARE
+    HEALTH5 --> ARE
+    ARE --> COMPOSE[XOR-compose under<br/>independence assumption]
+    COMPOSE --> MERKLE[Merkle tree over<br/>ProvenanceRecord leaves]
+    MERKLE --> CERT[ProvenanceCertificate<br/>root, leaves, audit path]
+    COMPOSE --> OUT[(Audited entropy stream)]
+    OUT --> CONSUMERS[Patent 1 anonymization<br/>Patent 2 PUEK<br/>any FIPS 203 KDF]
+```
+
+**Deck section index** (mirrors the live sidebar):
+
+| # | Section | Primary visualization | Source file |
+|---|---|---|---|
+| 1 | Heterogeneous Mixing | Custom SVG force-directed-style topology, 3 pulsing source nodes | `web/components/patent-3/sections/Section1HeterogeneousMixing.tsx` |
+| 2 | Merkle Provenance | Custom SVG animated Merkle tree, click-to-expand leaves | `Section2MerkleProvenance.tsx` |
+| 3 | ARE 9 Domains | Recharts RadarChart with 9 axes (N, Z, Q, R, C, H, O, GF, Q_p) | `Section3AreNineDomains.tsx` |
+| 4 | Graceful Degradation | Custom SVG state machine HEALTHY to DEGRADED to FAILED | `Section4GracefulDegradation.tsx` |
+| 5 | NIST SP 800-90B Gauges | 3-panel Recharts RadialBarChart, RCT plus APT plus MCV | `Section5NistSp80090BGauges.tsx` |
+| 6 | T1 Gap Roadmap | Custom horizontal Gantt with scenario-driven opacity | `Section6T1GapRoadmap.tsx` |
+| 7 | Regulated Buyer Sunburst | Recharts Treemap as nested sunburst | `Section7RegulatedBuyerSunburst.tsx` |
+| 8 | Conditioner Efficiency | Paired Recharts PieChart donuts, 25 percent to 85 percent | `Section8ConditionerEfficiency.tsx` |
+| 9 | Certificate Royalty | Recharts ComposedChart with Area + dashed scenario Lines | `Section9CertificateRoyalty.tsx` |
+| 10 | Precedent Timeline | Custom SVG horizontal precedent timeline | `Section10PrecedentTimeline.tsx` |
+
+**ARE supported number domains (Claim 1 and dependents):**
+
+| Domain | Symbol | Commutative | Associative | Division algebra | Zero divisors | ARE value |
+|---|---|---|---|---|---|---|
+| Natural | N | yes | yes | no | no | Baseline accumulator |
+| Integer | Z | yes | yes | no | no | Signed accumulator |
+| Rational | Q_n | yes | yes | yes | no | Scaled-integer fraction arithmetic |
+| Real | R | yes | yes | yes | no | Mixed-domain default |
+| Complex | C | yes | yes | yes | no | 2-component mixing |
+| Quaternion | H | no | yes | yes | no | 4-component non-commutative mixing |
+| Octonion | O | no | no | yes | no | 8-component non-associative mixing |
+| Finite field | GF(p^n) | yes | yes | yes | no | Bijection on multiplicative group, formal H_min preserved |
+| p-adic | Q_p | yes | yes | yes | no | Ultrametric orthogonal to R |
+
+**Open gaps and milestones from `docs/research/eprint/SHIP_READINESS.md`:**
+
+| ID | Type | Description | Effort (h) [unverified] | Pivots which deck section |
+|---|---|---|---|---|
+| T1 | Theory | Mixed-domain ARE extraction reduction (general case beyond GF) | 40-200 | Section 6 (Gantt opacity), Section 9 (active scenario), Section 10 (ePrint glow) |
+| T2 / T3 | Theory | Quaternion + octonion adversary model formalization | 20-80 | Section 3 (RadarChart annotation) |
+| T4 | Theory | p-adic orthogonal-metric mixing claim proof or drop | 20-60 | Section 3 |
+| T5 | Theory | 27 percent fold-collision reconciliation lemma | 8-20 | Section 8 (efficiency footnote) |
+| M1 | Measurement | Official NIST SP 800-90B `ea_non_iid` runs (IBM, CSI, urandom) | 8-16 | Section 5 (gauge values) |
+| M2 | Measurement | CSI pool expansion from 9 KB to >= 1M samples | 8-24 | Section 5 |
+| M3 | Measurement | Cross-source mutual-information validation for XOR independence | 8-16 | Section 5 |
+
 ## Identification
 
 - **Title:** Certified Heterogeneous Entropy Composition with Algebraic Randomness Extraction and Cryptographic Provenance

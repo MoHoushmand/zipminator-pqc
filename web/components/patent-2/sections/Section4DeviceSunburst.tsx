@@ -22,7 +22,9 @@ const ADDRESSABLE_PCT: Record<BpScenario, number> = {
   optimistic: 7.5,
 }
 
-// Convert polar -> Cartesian
+// Convert polar -> Cartesian, rounded to 3 decimals to avoid
+// SSR / client hydration float divergence on SVG path attributes.
+const f3 = (n: number) => n.toFixed(3)
 const polar = (cx: number, cy: number, r: number, deg: number) => {
   const rad = ((deg - 90) * Math.PI) / 180
   return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
@@ -35,10 +37,10 @@ const arcPath = (cx: number, cy: number, rInner: number, rOuter: number, startDe
   const endInner = polar(cx, cy, rInner, endDeg)
   const large = endDeg - startDeg > 180 ? 1 : 0
   return [
-    `M ${startOuter.x} ${startOuter.y}`,
-    `A ${rOuter} ${rOuter} 0 ${large} 0 ${endOuter.x} ${endOuter.y}`,
-    `L ${startInner.x} ${startInner.y}`,
-    `A ${rInner} ${rInner} 0 ${large} 1 ${endInner.x} ${endInner.y}`,
+    `M ${f3(startOuter.x)} ${f3(startOuter.y)}`,
+    `A ${rOuter} ${rOuter} 0 ${large} 0 ${f3(endOuter.x)} ${f3(endOuter.y)}`,
+    `L ${f3(startInner.x)} ${f3(startInner.y)}`,
+    `A ${rInner} ${rInner} 0 ${large} 1 ${f3(endInner.x)} ${f3(endInner.y)}`,
     'Z',
   ].join(' ')
 }

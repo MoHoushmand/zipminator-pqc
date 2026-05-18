@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { HEATMAP_RATES, HEATMAP_VOLUMES_M, type BpScenario } from '@/lib/patent-2-data'
 import {
   GlowCard,
@@ -75,9 +75,8 @@ export const Section9RoyaltyHeatmap = ({ scenario }: Props) => {
 
               {/* Body */}
               {matrix.map((row, ri) => (
-                <>
+                <Fragment key={`row-${ri}`}>
                   <div
-                    key={`label-${ri}`}
                     className="p-2 flex items-center justify-end text-[11px]"
                     style={{ fontFamily: 'var(--font-jetbrains)', color: '#94a3b8' }}
                   >
@@ -124,7 +123,7 @@ export const Section9RoyaltyHeatmap = ({ scenario }: Props) => {
                       </motion.div>
                     )
                   })}
-                </>
+                </Fragment>
               ))}
             </div>
           </div>
@@ -153,7 +152,7 @@ export const Section9RoyaltyHeatmap = ({ scenario }: Props) => {
       <DataTable
         accent="#34D399"
         headers={['Rate ($/device)', '5M', '20M', '80M', '300M', '800M']}
-        rows={HEATMAP_RATES.map((rate, i) => [
+        rows={HEATMAP_RATES.map((rate) => [
           `$${rate.toFixed(2)}`,
           ...HEATMAP_VOLUMES_M.map((v) => `$${(rate * v).toFixed(1)}M`),
         ])}

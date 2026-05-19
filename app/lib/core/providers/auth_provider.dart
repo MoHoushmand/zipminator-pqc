@@ -51,9 +51,10 @@ class AuthState {
 class AuthNotifier extends Notifier<AuthState> {
   StreamSubscription<supabase.AuthState>? _sub;
 
-  // Auth & onboarding invariant: see CLAUDE.md "Authentication & Onboarding".
-  // Username MUST be picked by the user via /onboarding on first sign-in.
-  // Do NOT re-introduce auto-derivation from full_name or email here.
+  // Auth & username policy: see CLAUDE.md "Authentication & Onboarding".
+  // Default username is the EMAIL PREFIX (e.g. mo@qdaria.com -> "mo").
+  // It is NEVER derived from full_name (which is the user's legal name).
+  // The user can change their @handle later via Profile -> Change.
 
   @override
   AuthState build() {
@@ -62,6 +63,7 @@ class AuthNotifier extends Notifier<AuthState> {
       _listenToAuthChanges();
     }
     ref.onDispose(() => _sub?.cancel());
+    if (user != null) _ensureUsernameFromEmail(user);
     return AuthState(user: user);
   }
 
@@ -72,10 +74,37 @@ class AuthNotifier extends Notifier<AuthState> {
       final user = data.session?.user;
       if (user != null) {
         state = state.copyWith(user: user, isLoading: false);
+        _ensureUsernameFromEmail(user);
       } else {
         state = const AuthState(); // Fully reset on sign-out.
       }
     });
+  }
+
+  /// Default the @handle to the OAuth email prefix when not already set.
+  /// Source: user.email (the OAuth-verified email). Never full_name.
+  /// Idempotent: returns early if a username is already in user_metadata.
+  Future<void> _ensureUsernameFromEmail(User user) async {
+    final existing = user.userMetadata?['username'] as String?;
+    if (existing != null && existing.isNotEmpty) return;
+
+    final email = user.email ?? '';
+    if (!email.contains('@')) return;
+
+    var candidate = email.split('@').first.toLowerCase();
+    // Sanitize to allowed @handle alphabet (a-z 0-9 . _ -).
+    candidate = candidate.replaceAll(RegExp(r'[^a-z0-9._-]'), '.');
+    candidate = candidate.replaceAll(RegExp(r'\.{2,}'), '.');
+    if (candidate.length < 3) candidate = '${candidate}user';
+    if (candidate.length > 30) candidate = candidate.substring(0, 30);
+
+    try {
+      await SupabaseService.updateProfile(username: candidate);
+      final refreshed = SupabaseService.currentUser;
+      if (refreshed != null) state = state.copyWith(user: refreshed);
+    } catch (_) {
+      // Non-fatal: user can still set their handle via Profile screen.
+    }
   }
 
   bool _requireSupabase() {

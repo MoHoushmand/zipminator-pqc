@@ -37,11 +37,15 @@ Stack conventions (Next.js 16, shadcn v4, Tailwind v4, QDaria tokens) live in `.
 
 This is a hard rule. Future sessions, linters, and auto-formatters keep trying to undo it. **Do not.**
 
-**Username is user-chosen, never auto-derived.** When a user signs in for the first time via OAuth (Google, Apple, GitHub, LinkedIn) or email, their `user_metadata.username` MUST be `null` until they pick a value on the `/onboarding` screen. The router (`app/lib/core/router.dart`) gates new authenticated users to `/onboarding` precisely because `AuthState.needsOnboarding` returns true when `username` is null/empty.
+**Default @handle = OAuth email prefix. Never the user's legal name.** When a user signs in for the first time via OAuth (Google, Apple, GitHub, LinkedIn) or email, `_ensureUsernameFromEmail` in `app/lib/core/providers/auth_provider.dart` sets `user_metadata.username` to the email prefix (lowercased, sanitized to `a-z 0-9 . _ -`). Examples:
 
-**Forbidden code path:** any function that auto-fills `user_metadata.username` from the OAuth profile's `full_name`, email prefix, or any other server-supplied identity field. The previous `_ensureUsername` helper in `app/lib/core/providers/auth_provider.dart` did exactly this and produced the `daniel.mo.houshmand` slug for a user who signed in as `mo@qdaria.com`. **It has been removed and must stay removed.**
+- `mo@qdaria.com` → `@mo`
+- `dmo.houshmand@gmail.com` → `@dmo.houshmand`
+- `alice+spam@example.org` → `@alice.spam`
 
-**Why:** The username is the public @handle other Zipminator users see. The user must own that choice. Conflating it with the OAuth provider's `full_name` (which is the user's legal name, often different from what they want as a handle) is a privacy and UX violation. It also bypasses the onboarding screen entirely, which is the only place where username uniqueness, length, and allowed-character validation runs.
+The user can rename their @handle at any time via Profile → Username card → **Change** (`app/lib/features/auth/profile_screen.dart:152-157`). `/onboarding` is still wired and the router still falls back to it if for any reason the auto-default fails, but in practice users land on `/home` straight after OAuth.
+
+**Forbidden code path:** any function that derives `user_metadata.username` from `user_metadata.full_name` (or `name`, `given_name`, `family_name`). `full_name` is the user's **legal name** from the OAuth profile. Slugifying it produces `@daniel.mo.houshmand` for users named "Daniel Mo Houshmand" who would expect `@mo` from their email. This was the f099ff5 regression on 2026-05-01. Source is constrained to `user.email`. Test `app/test/auth_invariant_test.dart` enforces this in CI.
 
 **The three identity layers in Supabase, kept distinct:**
 
@@ -49,9 +53,9 @@ This is a hard rule. Future sessions, linters, and auto-formatters keep trying t
 |---|---|---|---|
 | `user.email` | OAuth provider, immutable | No | Account identity, login |
 | `user_metadata.full_name` | OAuth profile | Yes (Profile screen) | Display name (real-name field) |
-| `user_metadata.username` | User typed it on `/onboarding` | Yes (Profile → Change) | Public @handle |
+| `user_metadata.username` | Auto-defaulted to email prefix on first sign-in | Yes (Profile → Change) | Public @handle |
 
-**If you find yourself adding back any of:** `_ensureUsername`, `deriveUsername`, `slugFromName`, or any `await ...updateProfile(username: ...)` that runs without explicit user input — **stop and re-read this section.** The Profile screen at `app/lib/features/auth/profile_screen.dart` already has a `Change` button (line 156-157) for users who want to edit their handle later; that is the only authorized write path for `username` outside `/onboarding`.
+**If you find yourself adding back any of:** `deriveUsername`, `slugFromName`, or any code that reads `full_name` and writes `username` — **stop and re-read this section.** Only `_ensureUsernameFromEmail` is authorized to set the initial `username`, and only from `user.email`.
 
 ## Build & Test
 

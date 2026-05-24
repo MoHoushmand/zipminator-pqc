@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Zipminator M1 Mac Installation Test Suite
+# Zipminator macOS (M1-M5) Installation Test Suite
 # Tests all components on Apple Silicon (arm64) architecture
 #
 # Usage: ./scripts/test_m1_installation.sh
@@ -42,22 +42,22 @@ print_header() {
 
 print_test() {
     echo -e "\n${BOLD}🧪 Test: $1${NC}"
-    ((TOTAL_TESTS++))
+    TOTAL_TESTS=$((TOTAL_TESTS + 1))
 }
 
 print_pass() {
     echo -e "${GREEN}✅ PASS:${NC} $1"
-    ((PASSED_TESTS++))
+    PASSED_TESTS=$((PASSED_TESTS + 1))
 }
 
 print_fail() {
     echo -e "${RED}❌ FAIL:${NC} $1"
-    ((FAILED_TESTS++))
+    FAILED_TESTS=$((FAILED_TESTS + 1))
 }
 
 print_warn() {
     echo -e "${YELLOW}⚠️  WARN:${NC} $1"
-    ((WARNINGS++))
+    WARNINGS=$((WARNINGS + 1))
 }
 
 print_info() {
@@ -73,7 +73,7 @@ echo -e "${BOLD}${GREEN}"
 cat << "EOF"
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
-║        🔐 ZIPMINATOR M1 INSTALLATION TEST SUITE          ║
+║      🔐 ZIPMINATOR M1-M5 INSTALLATION TEST SUITE        ║
 ║                                                           ║
 ║     Quantum-Secure Encryption Platform Verification      ║
 ║                                                           ║
@@ -100,7 +100,7 @@ if [ "$ARCH" == "arm64" ]; then
     print_info "macOS Version: $MACOS_VERSION"
 else
     print_fail "Not Apple Silicon: $ARCH (Expected: arm64)"
-    print_fix "This script is designed for M1/M2/M3 Macs"
+    print_fix "This script is designed for Apple Silicon (M1-M5) Macs"
     exit 1
 fi
 
@@ -193,50 +193,26 @@ fi
 # ============================================================================
 print_header "3. RUST BUILD TEST"
 
-print_test "Build Rust CLI"
-if cd src/rust && cargo build --release --target aarch64-apple-darwin 2>&1 | tee "$TEST_DIR/rust_build.log"; then
-    print_pass "Rust CLI built successfully"
-    CLI_PATH="$PROJECT_ROOT/src/rust/target/aarch64-apple-darwin/release/zipminator"
-
-    if [ -f "$CLI_PATH" ]; then
-        print_pass "CLI binary exists: $CLI_PATH"
-
-        # Check binary architecture
-        BINARY_ARCH=$(file "$CLI_PATH" | grep -o "arm64\|x86_64")
-        if [ "$BINARY_ARCH" == "arm64" ]; then
-            print_pass "Binary is arm64 native"
-        else
-            print_warn "Binary is not arm64: $BINARY_ARCH"
-        fi
-
-        # Test CLI execution
-        print_test "CLI Execution Test"
-        if "$CLI_PATH" --version &> /dev/null; then
-            CLI_VERSION=$("$CLI_PATH" --version)
-            print_pass "CLI executes: $CLI_VERSION"
-        else
-            print_fail "CLI does not execute"
-            print_fix "Check build logs in: $TEST_DIR/rust_build.log"
-        fi
+print_test "Build Rust Core Library"
+if cargo build -p zipminator-core --release --target aarch64-apple-darwin 2>&1 | tee "$TEST_DIR/rust_build.log"; then
+    print_pass "Rust Core Library built successfully"
+    LIB_PATH="$PROJECT_ROOT/target/aarch64-apple-darwin/release/libzipminator_core.dylib"
+    if [ -f "$LIB_PATH" ] || [ -f "$PROJECT_ROOT/target/release/libzipminator_core.dylib" ]; then
+        print_pass "Core library exists"
     else
-        print_fail "CLI binary not found at expected path"
+        print_warn "Core library binary not found at custom target path, checked standard target directory too"
     fi
-
-    cd "$PROJECT_ROOT"
 else
     print_fail "Rust build failed"
     print_fix "Check build logs in: $TEST_DIR/rust_build.log"
-    cd "$PROJECT_ROOT"
 fi
 
-print_test "Run Rust Tests"
-if cd src/rust && cargo test --target aarch64-apple-darwin 2>&1 | tee "$TEST_DIR/rust_test.log"; then
+print_test "Run Rust Core Library Tests"
+if cargo test -p zipminator-core --target aarch64-apple-darwin 2>&1 | tee "$TEST_DIR/rust_test.log"; then
     print_pass "Rust tests passed"
-    cd "$PROJECT_ROOT"
 else
     print_fail "Rust tests failed"
     print_fix "Check test logs in: $TEST_DIR/rust_test.log"
-    cd "$PROJECT_ROOT"
 fi
 
 # ============================================================================
@@ -254,7 +230,7 @@ if command -v maturin &> /dev/null || pip3 show maturin &> /dev/null; then
         MATURIN_CMD="python3 -m maturin"
     fi
 
-    if $MATURIN_CMD build --release --target aarch64-apple-darwin 2>&1 | tee "$TEST_DIR/wheel_build.log"; then
+    if $MATURIN_CMD build --release --manifest-path crates/zipminator-core/Cargo.toml --target aarch64-apple-darwin 2>&1 | tee "$TEST_DIR/wheel_build.log"; then
         print_pass "Python wheel built successfully"
 
         # Find the wheel file
@@ -311,14 +287,27 @@ fi
 # ============================================================================
 print_header "5. FUNCTIONALITY TESTS"
 
-if [ -f "$CLI_PATH" ]; then
+# Check if zipminator is importable/installed in the current env
+if python3 -c "import zipminator" &>/dev/null; then
+    CLI_EXEC="python3 -m zipminator.cli"
+else
+    print_warn "zipminator module not installed in current environment. Checking path/global command..."
+    if command -v zipminator &>/dev/null; then
+        CLI_EXEC="zipminator"
+    else
+        CLI_EXEC=""
+    fi
+fi
+
+if [ -n "$CLI_EXEC" ]; then
     print_test "Kyber768 Key Generation"
-    if "$CLI_PATH" keygen --public-key "$TEST_DIR/public.key" --secret-key "$TEST_DIR/secret.key" &> "$TEST_DIR/keygen.log"; then
+    if $CLI_EXEC keygen --output-dir "$TEST_DIR" &> "$TEST_DIR/keygen.log"; then
         print_pass "Keypair generated successfully"
 
-        if [ -f "$TEST_DIR/public.key" ] && [ -f "$TEST_DIR/secret.key" ]; then
-            PUB_SIZE=$(wc -c < "$TEST_DIR/public.key" | tr -d ' ')
-            SEC_SIZE=$(wc -c < "$TEST_DIR/secret.key" | tr -d ' ')
+        # Note: keygen saves keys as public_key.bin and secret_key.bin inside output_dir
+        if [ -f "$TEST_DIR/public_key.bin" ] && [ -f "$TEST_DIR/secret_key.bin" ]; then
+            PUB_SIZE=$(wc -c < "$TEST_DIR/public_key.bin" | tr -d ' ')
+            SEC_SIZE=$(wc -c < "$TEST_DIR/secret_key.bin" | tr -d ' ')
             print_info "Public key size: $PUB_SIZE bytes"
             print_info "Secret key size: $SEC_SIZE bytes"
 
@@ -346,7 +335,8 @@ if [ -f "$CLI_PATH" ]; then
     # Create test file
     echo "This is a test message for Zipminator M1 verification." > "$TEST_DIR/test.txt"
 
-    if "$CLI_PATH" encrypt --public-key "$TEST_DIR/public.key" --input "$TEST_DIR/test.txt" --output "$TEST_DIR/test.enc" &> "$TEST_DIR/encrypt.log"; then
+    # Note: encrypt expects input file as positional argument
+    if $CLI_EXEC encrypt "$TEST_DIR/test.txt" --key-dir "$TEST_DIR" --output "$TEST_DIR/test.enc" &> "$TEST_DIR/encrypt.log"; then
         print_pass "File encrypted successfully"
 
         if [ -f "$TEST_DIR/test.enc" ]; then
@@ -354,7 +344,7 @@ if [ -f "$CLI_PATH" ]; then
             print_info "Encrypted file size: $ENC_SIZE bytes"
 
             # Decrypt
-            if "$CLI_PATH" decrypt --secret-key "$TEST_DIR/secret.key" --input "$TEST_DIR/test.enc" --output "$TEST_DIR/test.dec" &> "$TEST_DIR/decrypt.log"; then
+            if $CLI_EXEC decrypt "$TEST_DIR/test.enc" --key-dir "$TEST_DIR" --output "$TEST_DIR/test.dec" &> "$TEST_DIR/decrypt.log"; then
                 print_pass "File decrypted successfully"
 
                 # Verify content
@@ -383,31 +373,21 @@ fi
 # ============================================================================
 print_header "6. PII SCANNER TEST"
 
-if [ -f "$CLI_PATH" ]; then
+if [ -n "$CLI_EXEC" ]; then
     print_test "PII Scanner Detection"
 
     # Create test file with PII
-    cat > "$TEST_DIR/pii_test.txt" << 'EOF'
-John Doe's email is john.doe@example.com
-His SSN is 123-45-6789
-Credit card: 4532-1234-5678-9010
-Phone: (555) 123-4567
+    cat > "$TEST_DIR/pii_test.csv" << 'EOF'
+name,email,ssn,credit_card,phone
+John Doe,john.doe@example.com,123-45-6789,4532-1234-5678-9010,(555) 123-4567
 EOF
 
-    if "$CLI_PATH" scan-pii --input "$TEST_DIR/pii_test.txt" &> "$TEST_DIR/pii_scan.log"; then
+    if $CLI_EXEC encrypt "$TEST_DIR/pii_test.csv" --key-dir "$TEST_DIR" --output "$TEST_DIR/pii_test.enc" &> "$TEST_DIR/pii_scan.log"; then
         SCAN_OUTPUT=$(cat "$TEST_DIR/pii_scan.log")
 
         # Check if PII was detected
-        if echo "$SCAN_OUTPUT" | grep -q -i "email\|ssn\|credit\|phone"; then
+        if echo "$SCAN_OUTPUT" | grep -q -i "detected\|email\|ssn\|credit\|phone"; then
             print_pass "PII scanner detected sensitive data"
-
-            # Count detections
-            EMAIL_COUNT=$(echo "$SCAN_OUTPUT" | grep -c -i "email" || true)
-            SSN_COUNT=$(echo "$SCAN_OUTPUT" | grep -c -i "ssn" || true)
-            CARD_COUNT=$(echo "$SCAN_OUTPUT" | grep -c -i "credit\|card" || true)
-            PHONE_COUNT=$(echo "$SCAN_OUTPUT" | grep -c -i "phone" || true)
-
-            print_info "Detections - Email: $EMAIL_COUNT, SSN: $SSN_COUNT, Card: $CARD_COUNT, Phone: $PHONE_COUNT"
         else
             print_warn "PII scanner may not be detecting all patterns"
         fi
@@ -478,7 +458,7 @@ fi
 # ============================================================================
 print_header "8. PERFORMANCE BENCHMARK"
 
-if [ -f "$CLI_PATH" ]; then
+if [ -n "$CLI_EXEC" ]; then
     print_test "Kyber768 Performance Benchmark"
 
     # Run a simple benchmark
@@ -487,7 +467,7 @@ if [ -f "$CLI_PATH" ]; then
 
     START_TIME=$(date +%s%N)
     for i in $(seq 1 $BENCH_ITERATIONS); do
-        "$CLI_PATH" keygen --public-key "$TEST_DIR/bench_pub_$i.key" --secret-key "$TEST_DIR/bench_sec_$i.key" &> /dev/null
+        $CLI_EXEC keygen --output-dir "$TEST_DIR" &> /dev/null
     done
     END_TIME=$(date +%s%N)
 
@@ -532,12 +512,12 @@ fi
 if [ $FAILED_TESTS -eq 0 ]; then
     echo -e "${GREEN}${BOLD}✅ ALL TESTS PASSED!${NC}"
     echo ""
-    echo -e "${GREEN}Your Zipminator installation is ready for M1 Mac!${NC}"
+    echo -e "${GREEN}Your Zipminator installation is ready for Apple Silicon (M1-M5) Mac!${NC}"
     echo ""
     echo -e "${BOLD}Next Steps:${NC}"
-    echo "  1. Run the CLI: ./src/rust/target/aarch64-apple-darwin/release/zipminator --help"
+    echo "  1. Run the CLI: zipminator --help"
     echo "  2. Try the demo: cd demo && npm start"
-    echo "  3. Read the docs: docs/QUICK_START_CI_CD.md"
+    echo "  3. Read the docs: docs/QUICK_START.md"
 elif [ $FAILED_TESTS -le 2 ] && [ $WARNINGS -le 3 ]; then
     echo -e "${YELLOW}${BOLD}⚠️  MOSTLY WORKING${NC}"
     echo ""

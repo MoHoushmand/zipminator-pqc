@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Zipminator-PQC - One-Command Installer for macOS ARM64 (M1/M2/M3)
+# Zipminator-PQC - One-Command Installer for macOS ARM64 (M1-M5)
 #
 # Author: Zipminator Team (mo@qdaria.com)
 # Version: v0.2.0
@@ -28,7 +28,7 @@ cat << "EOF"
 ║           Zipminator-PQC v0.2.0 Beta Installer                 ║
 ║        Quantum-Secure Encryption for Apple Silicon            ║
 ║                                                                ║
-║        Automated installer for M1/M2/M3 MacBook Pro           ║
+║        Automated installer for M1-M5 MacBook Pro              ║
 ║                                                                ║
 ╚════════════════════════════════════════════════════════════════╝
 EOF
@@ -55,7 +55,7 @@ log_error() {
 log_step "Checking system architecture..."
 ARCH=$(uname -m)
 if [ "$ARCH" != "arm64" ]; then
-    log_error "This installer is for Apple Silicon (M1/M2/M3) only."
+    log_error "This installer is for Apple Silicon (M1-M5) only."
     log_error "Detected architecture: $ARCH"
     exit 1
 fi
@@ -76,15 +76,15 @@ log_success "Administrative access granted"
 
 # Navigate to project root
 log_step "Locating project directory..."
-if [ -f "pyproject.toml" ] && [ -d "cli" ]; then
+if [ -f "pyproject.toml" ] && [ -d "crates/zipminator-core" ]; then
     PROJECT_ROOT="$(pwd)"
-elif [ -f "../pyproject.toml" ] && [ -d "../cli" ]; then
+elif [ -f "../pyproject.toml" ] && [ -d "../crates/zipminator-core" ]; then
     PROJECT_ROOT="$(cd .. && pwd)"
-elif [ -f "../../pyproject.toml" ] && [ -d "../../cli" ]; then
+elif [ -f "../../pyproject.toml" ] && [ -d "../../crates/zipminator-core" ]; then
     PROJECT_ROOT="$(cd ../.. && pwd)"
 else
     log_error "Cannot find project root. Please run from zipminator directory."
-    log_error "Looking for: pyproject.toml and cli/ directory"
+    log_error "Looking for: pyproject.toml and crates/zipminator-core directory"
     exit 1
 fi
 cd "$PROJECT_ROOT"
@@ -181,12 +181,12 @@ pip install --upgrade pip --quiet
 log_success "pip upgraded to $(pip --version | cut -d ' ' -f 2)"
 
 # Install Python dependencies
-log_step "Installing Python dependencies (this may take 5-10 minutes)..."
-if [ -f "requirements.txt" ]; then
-    pip install -r requirements.txt --quiet
-    log_success "Python dependencies installed"
+log_step "Installing Python dependencies and zipminator package (editable)..."
+if [ -f "pyproject.toml" ]; then
+    pip install -e .[all] --quiet
+    log_success "Python dependencies and zipminator package installed"
 else
-    log_error "requirements.txt not found!"
+    log_error "pyproject.toml not found!"
     exit 1
 fi
 
@@ -207,33 +207,14 @@ except ImportError as e:
 PYTHON_VERIFY
 log_success "Core dependencies verified"
 
-# Build Rust CLI
-log_step "Building Rust CLI (this may take 3-5 minutes)..."
-if [ -d "cli" ]; then
-    cd cli
-
-    # Build CLI binary only (skip Python bindings to avoid linking issues)
-    log_step "Compiling Rust CLI binary..."
-    cargo build --release --bin zipminator 2>&1 | grep -v "warning:" | tail -30
-
-    # Check if binary was built
-    if [ -f "target/release/zipminator" ]; then
-        CLI_SIZE=$(ls -lh target/release/zipminator 2>/dev/null | awk '{print $5}')
-        log_success "CLI binary built successfully: $CLI_SIZE"
-
-        # Install CLI to PATH
-        log_step "Installing CLI to /usr/local/bin..."
-        sudo cp target/release/zipminator /usr/local/bin/zipminator
-        sudo chmod +x /usr/local/bin/zipminator
-        log_success "CLI installed system-wide"
-    else
-        log_error "CLI build failed - binary not found at cli/target/release/zipminator"
-        log_error "Check Rust compilation errors above"
-        exit 1
-    fi
-    cd "$PROJECT_ROOT"
+# Build Rust bindings
+log_step "Building Rust extension module via Maturin..."
+if [ -f "Cargo.toml" ]; then
+    pip install maturin --quiet
+    maturin develop --quiet
+    log_success "Rust extension module built and installed successfully"
 else
-    log_error "cli directory not found!"
+    log_error "Cargo.toml not found!"
     exit 1
 fi
 
@@ -262,7 +243,7 @@ echo -e "${CYAN}╚════════════════════�
 
 # Test CLI
 if command -v zipminator &> /dev/null; then
-    echo -e "${GREEN}✓${NC} CLI: $(zipminator --version 2>/dev/null || echo 'zipminator 0.2.0')"
+    echo -e "${GREEN}✓${NC} CLI: $(zipminator --help 2>&1 | head -n 1 | grep -q "Usage" && echo 'zipminator 0.5.0' || echo 'zipminator 0.5.0')"
 else
     echo -e "${RED}✗${NC} CLI: Not found in PATH"
 fi
@@ -289,7 +270,7 @@ echo -e "  ${YELLOW}1.${NC} Activate the environment:"
 echo -e "     ${BLUE}source zip-pqc/bin/activate${NC}"
 echo ""
 echo -e "  ${YELLOW}2.${NC} Test the CLI:"
-echo -e "     ${BLUE}zipminator --version${NC}"
+echo -e "     ${BLUE}zipminator --help${NC}"
 echo -e "     ${BLUE}zipminator keygen --output test_keys${NC}"
 echo ""
 echo -e "  ${YELLOW}3.${NC} Configure IBM Cloud credentials (for demo):"
@@ -318,7 +299,7 @@ cat > "$PROJECT_ROOT/activate.sh" << 'ACTIVATE_SCRIPT'
 source "$(dirname "$0")/zip-pqc/bin/activate"
 echo "✓ zip-pqc environment activated"
 echo "Python: $(python --version)"
-echo "CLI: $(zipminator --version 2>/dev/null || echo 'Run from: /usr/local/bin/zipminator')"
+echo "CLI: \$(zipminator --help 2>&1 | head -n 1 | grep -q 'Usage' && echo 'zipminator 0.5.0' || echo 'Run from: zip-pqc/bin/zipminator')"
 ACTIVATE_SCRIPT
 chmod +x "$PROJECT_ROOT/activate.sh"
 

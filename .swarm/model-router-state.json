@@ -1,0 +1,22 @@
+{
+  "totalDecisions": 0,
+  "modelDistribution": {
+    "haiku": 0,
+    "sonnet": 0,
+    "opus": 0,
+    "inherit": 0
+  },
+  "avgComplexity": 0.5,
+  "avgConfidence": 0.8,
+  "circuitBreakerTrips": 0,
+  "lastUpdated": "2026-03-19T13:51:01.451Z",
+  "learningHistory": [
+    {
+      "task": "self-improve-pipeline",
+      "model": "opus",
+      "complexity": 0.5,
+      "outcome": "success",
+      "timestamp": "2026-03-19T13:51:01.451Z"
+    }
+  ]
+}

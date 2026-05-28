@@ -91,7 +91,7 @@ const Hero = () => {
               className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-gray-300 hover:border-green-400/40 hover:text-white transition-colors"
             >
               <span className="w-2 h-2 rounded-full bg-green-400" aria-hidden="true" />
-              TestFlight Build 43
+              iOS beta on TestFlight
             </Link>
             <a
               href={SITE_CONFIG.links.pypi}
@@ -116,11 +116,11 @@ const Hero = () => {
             variants={itemVariants}
             className="text-lg md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
           >
-            Real quantum entropy from{' '}
-            <span className="text-quantum-400 font-bold">156-qubit quantum hardware</span>
-            {' '}combined with{' '}
-            <span className="text-quantum-400 font-bold">NIST FIPS 203 Kyber768</span>
-            {' '}cryptography for quantum-resistant security
+            Quantum entropy harvested from{' '}
+            <span className="text-quantum-400 font-bold">IBM's 156-qubit Heron processor</span>
+            {' '}feeds{' '}
+            <span className="text-quantum-400 font-bold">NIST FIPS 203 ML-KEM-768</span>
+            {' '}for quantum-resistant encryption
           </motion.p>
 
           {/* CTA Buttons */}
@@ -181,9 +181,9 @@ const Hero = () => {
                   <Zap className="w-7 h-7 text-quantum-400" />
                 </div>
                 <div className="text-3xl font-bold bg-gradient-to-br from-quantum-400 to-purple-400 bg-clip-text text-transparent mb-2">
-                  0.034ms
+                  9 Pillars
                 </div>
-                <div className="text-gray-400 font-medium">Encryption Speed</div>
+                <div className="text-gray-400 font-medium">Post-Quantum Coverage</div>
               </div>
             </motion.div>
 
@@ -204,7 +204,7 @@ const Hero = () => {
                 <div className="text-3xl font-bold bg-gradient-to-br from-quantum-400 to-purple-400 bg-clip-text text-transparent mb-2">
                   156 Qubits
                 </div>
-                <div className="text-gray-400 font-medium">Quantum Hardware Entropy</div>
+                <div className="text-gray-400 font-medium">IBM Heron r2 Entropy Source</div>
               </div>
             </motion.div>
 

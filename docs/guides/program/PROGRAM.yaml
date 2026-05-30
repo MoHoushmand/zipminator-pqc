@@ -1,0 +1,286 @@
+# Zipminator Full-Program Beta Push — track manifest (single source of truth)
+# Read/written by /goals; mirrored into ruflo memory for cross-session resume.
+# Plan: ~/.claude/plans/compiled-tickling-snowglobe.md
+# States: PLANNED | IN_PROGRESS | AWAITING_REVIEW | MERGED | ABORTED | HUMAN_GATED
+program: zipminator-pqc-superapp
+created: 2026-05-30
+updated: 2026-05-30
+
+gate_policy:
+  required: [cargo_test, clippy, build, playwright_screenshot]
+  crates_extra: [fmt_check, nist_kat, const_time, cargo_audit, cargo_deny, cargo_fuzz_keygen]
+  web: [type_check, lint, vitest, build, playwright_prod]   # Playwright vs `next start`, never HMR
+  flutter: [flutter_test, flutter_analyze]
+  python: [pytest, ruff, version_reconcile]
+  docs: [link_check, citation_resolve, claim_scan, features_sync]
+port_locks:
+  "3099": null   # only one track binds the web dev/preview server at a time
+
+defaults:
+  branch_prefix: "marathon/20260530"
+  worktree_prefix: "../zipminator-"
+  ralph_max_iter: 12
+  merge: human-only            # via /goals approve
+  auto_commit: branch-only     # never main
+
+tracks:
+  T0:
+    name: "Merge train · version reconcile · repo hygiene"
+    tier: opus
+    worktree: ../zipminator-T0
+    branch: marathon/20260530/setup
+    state: IN_PROGRESS
+    blocking: true             # gates D, E, I
+    milestones:
+      - id: version-reconcile
+        success_criteria: ["pyproject.toml==0.5.1 matches __init__.py", "per-artifact scheme documented"]
+        status: pending
+      - id: branch-triage
+        success_criteria: ["antigravity-ux-review/archive/old-structure classified", "merge order report"]
+        status: pending
+      - id: worktree-hygiene
+        success_criteria: ["modified docs + stash + untracked skills assets dispositioned"]
+        status: pending
+    human_actions:
+      - "Confirm version scheme on diff; perform merges to main; decide stash@{0} disposition"
+    checkpoint_key: "program/T0/checkpoint"
+
+  A:
+    name: "Waitlist e2e + anonymous fallback"
+    tier: sonnet ; security_review: opus
+    worktree: ../zipminator-A ; branch: marathon/20260530/waitlist
+    owns: ["web/app/api/waitlist", "web/lib/supabase.ts", "web/lib/email.ts", "web/supabase/"]
+    state: PLANNED
+    milestones:
+      - {id: sql-migration, success_criteria: ["0001_waitlist.sql with UNIQUE(email)"], status: pending}
+      - {id: key-model, success_criteria: ["supabase.ts on publishable/secret key model"], status: pending}
+      - {id: anon-fallback, success_criteria: ["submit without OAuth works; OAuth auto-fill optional"], status: pending}
+      - {id: email-hardening, success_criteria: ["Resend graceful no-op + warning"], status: pending}
+      - {id: e2e, success_criteria: ["Playwright success/409/400/429 green"], status: pending}
+    human_actions:
+      - "Run migration on prod Supabase; mint new Supabase keys + RESEND_API_KEY; set Vercel env; verify qdaria.com SPF/DKIM in Resend"
+    checkpoint_key: "program/A/checkpoint"
+
+  J:
+    name: "Design-system drift correction"
+    tier: sonnet
+    worktree: ../zipminator-J ; branch: marathon/20260530/design-drift
+    owns: ["web/app/globals.css", "web/tailwind.config.js", "web/DESIGN_SPEC.md", "web font imports"]
+    merge_after: [A]
+    state: PLANNED
+    milestones:
+      - {id: fonts, success_criteria: ["Inter -> DM Sans/Fraunces/JetBrains Mono"], status: pending}
+      - {id: tokens, success_criteria: ["purple ramp -> OKLCH quantum tokens"], status: pending}
+      - {id: spec, success_criteria: ["DESIGN_SPEC.md matches .claude/rules/01-stack.md"], status: pending}
+    checkpoint_key: "program/J/checkpoint"
+
+  B:
+    name: "Web deploy + landing polish"
+    tier: sonnet
+    worktree: ../zipminator-B ; branch: marathon/20260530/web-deploy
+    owns: ["web marketing pages", "web/public", "web metadata", "web/.env.example"]
+    merge_after: [A, J]
+    state: PLANNED
+    milestones:
+      - {id: polish, success_criteria: ["logos/OG/favicons/copy/SEO/sitemap per SUMMARY.md"], status: pending}
+      - {id: env-example, success_criteria: [".env.example lists Supabase/GA/AUTH names"], status: pending}
+    human_actions:
+      - "Verify mo@qdaria.com on GitHub (Vercel git-deploy) OR `cd web && vercel --prod --scope qdarias-projects`"
+    checkpoint_key: "program/B/checkpoint"
+
+  K:
+    name: "Crypto core / Pillar 1 Vault hardening"
+    tier: opus ; effort: max
+    worktree: ../zipminator-K ; branch: marathon/20260530/crypto
+    owns: ["crates/zipminator-core", "crates/zipminator-nist", "crates/zipminator-fuzz", "Cargo.lock"]
+    lockfile_owner: true
+    state: PLANNED
+    milestones:
+      - {id: vault-harden, success_criteria: ["const-time maintained", "crypto gate green"], status: pending}
+    human_review_required: true
+    checkpoint_key: "program/K/checkpoint"
+
+  V:
+    name: "Q-VPN / Pillar 4"
+    tier: opus
+    worktree: ../zipminator-V ; branch: marathon/20260530/vpn
+    owns: ["crates/pq-wireguard", "vpn-server", "browser/src-tauri/src/vpn"]
+    rebase_after: [K]
+    state: PLANNED
+    milestones:
+      - {id: userspace, success_criteria: ["HKDF/property tests green"], status: pending}
+    deferred: ["macOS kernel module -> v1.0.0-final"]
+    human_actions: ["VPN network-extension entitlement if shipping"]
+    checkpoint_key: "program/V/checkpoint"
+
+  S:
+    name: "Q-Mesh / Pillar 9"
+    tier: opus
+    worktree: ../zipminator-S ; branch: marathon/20260530/mesh
+    owns: ["crates/qmesh-core", "crates/zipminator-mesh"]
+    rebase_after: [K]
+    state: PLANNED
+    milestones:
+      - {id: wave1, success_criteria: ["physical-crypto tests green + CSI coverage"], status: pending}
+    deferred: ["ESP32-S3 hardware demos"]
+    checkpoint_key: "program/S/checkpoint"
+
+  F:
+    name: "Flutter anonymizer selector / Pillar 5"
+    tier: sonnet
+    worktree: ../zipminator-F ; branch: marathon/20260530/anon-selector
+    owns: ["app/lib/features/anonymizer", "app/lib/core/providers/pii_provider.dart", "app/test"]
+    merge_before: [E]
+    state: PLANNED
+    milestones:
+      - {id: wire-selector, success_criteria: ["10 levels bound to PiiScanState.selectedLevel", "flutter test green"], status: pending}
+    checkpoint_key: "program/F/checkpoint"
+
+  C:
+    name: "Tauri browser gaps / Pillar 8 + signing prep"
+    tier: opus ; web: sonnet
+    worktree: ../zipminator-C ; branch: marathon/20260530/browser
+    owns: ["browser/src-tauri"]
+    rebase_after: [K]
+    state: PLANNED
+    milestones:
+      - {id: dialog-plugin, success_criteria: ["tauri-plugin-dialog wired (Cargo+main.rs+capabilities)"], status: pending}
+      - {id: self-destruct-e2e, success_criteria: ["exercised in bundle"], status: pending}
+      - {id: keystore, success_criteria: ["AI sidebar cloud keystore registered or preview-only"], status: pending}
+      - {id: model-download, success_criteria: ["first-run UX handled"], status: pending}
+    human_actions:
+      - "Developer ID cert + notarization creds; signingIdentity in tauri.conf.json; rustup target add x86_64-apple-darwin; signed universal build + xcrun stapler staple"
+    checkpoint_key: "program/C/checkpoint"
+
+  M2:
+    name: "Messenger E2E / Pillar 2"
+    tier: sonnet
+    worktree: ../zipminator-M2 ; branch: marathon/20260530/messenger
+    owns: ["crates messenger", "api"]
+    state: PLANNED
+    milestones:
+      - {id: e2e-integration, success_criteria: ["ML-KEM-768 messenger e2e vs running API"], status: pending}
+    checkpoint_key: "program/M2/checkpoint"
+
+  M3:
+    name: "VoIP / Pillar 3"
+    tier: sonnet ; crypto: opus
+    worktree: ../zipminator-M3 ; branch: marathon/20260530/voip
+    owns: ["crates voip", "app voip"]
+    state: PLANNED
+    milestones:
+      - {id: dtls-srtp-pq, success_criteria: ["WebRTC DTLS-SRTP -> PQ key exchange"], status: pending}
+    human_actions: ["Deploy TURN/STUN server"]
+    checkpoint_key: "program/M3/checkpoint"
+
+  M6:
+    name: "Q-AI / Pillar 6"
+    tier: sonnet
+    worktree: ../zipminator-M6 ; branch: marathon/20260530/qai
+    owns: ["api q-ai", "ollama integration"]
+    coordinate_with: [C]
+    state: PLANNED
+    milestones:
+      - {id: ollama-sidebar, success_criteria: ["local model auto-download + Tauri sidebar"], status: pending}
+    checkpoint_key: "program/M6/checkpoint"
+
+  M7:
+    name: "Quantum Email / Pillar 7 (highest gap, 75%)"
+    tier: sonnet ; crypto: opus
+    worktree: ../zipminator-M7 ; branch: marathon/20260530/email
+    owns: ["email", "crates mail", "api mail"]
+    state: PLANNED
+    milestones:
+      - {id: phase-7a-7e, success_criteria: ["envelope/SMTP code + attachment-anon UI", "mail tests >=41"], status: pending}
+    human_actions: ["Production SMTP/IMAP hosting"]
+    checkpoint_key: "program/M7/checkpoint"
+
+  D:
+    name: "Python SDK PyPI 0.5.1"
+    tier: sonnet ; release: opus
+    worktree: ../zipminator-D ; branch: marathon/20260530/pypi
+    blocked_by: [T0]
+    state: PLANNED
+    milestones:
+      - {id: build-check, success_criteria: ["pytest 629 green", "maturin build+sdist", "twine check"], status: pending}
+    human_actions: ["git tag -a v0.5.1 && git push; approve pypi GH environment (OIDC, no token)"]
+    checkpoint_key: "program/D/checkpoint"
+
+  E:
+    name: "iOS TestFlight (prep-only)"
+    tier: sonnet
+    worktree: ../zipminator-E ; branch: marathon/20260530/ios
+    blocked_by: [T0, F]
+    state: PLANNED
+    milestones:
+      - {id: build-bump, success_criteria: ["pubspec build number bumped", "beta lane verified"], status: pending}
+    human_actions:
+      - "Create QDaria/certificates repo; fastlane match init; register 6 GH secrets + ITC_TEAM_ID; tag to trigger testflight.yml"
+    checkpoint_key: "program/E/checkpoint"
+
+  I:
+    name: "Android AAB (prep-only)"
+    tier: sonnet
+    worktree: ../zipminator-I ; branch: marathon/20260530/android
+    blocked_by: [T0]
+    state: PLANNED
+    milestones:
+      - {id: keystore-prep, success_criteria: ["key.properties from .example", "bundletool dry-run documented"], status: pending}
+    human_actions: ["Generate keystore; populate secrets; upload AAB to Play Console"]
+    checkpoint_key: "program/I/checkpoint"
+
+  G:
+    name: "Papers / Zenodo"
+    tier: opus ; sweep: haiku
+    worktree: ../zipminator-G ; branch: marathon/20260530/papers
+    owns: ["docs/research"]
+    state: PLANNED
+    milestones:
+      - {id: nits, success_criteria: ["Paper2 'to our knowledge' qualifier", "Paper3 soften DORA claim"], status: pending}
+      - {id: preflight, success_criteria: ["banned-word/em-dash sweep clean", "PDF checksums verified", "bash -n zenodo-post-publish.sh"], status: pending}
+    human_actions:
+      - "ORCID + reserve 3 DOIs + upload + publish; run scripts/zenodo-post-publish.sh; OTS stamp"
+      - "Lane 2: track PoPETs-2027 / CCS-2026 venue submissions (IACR Paper-1 needs rejection ID)"
+    checkpoint_key: "program/G/checkpoint"
+
+  H:
+    name: "IP / DMCA / Patents prep"
+    tier: opus
+    worktree: ../zipminator-H ; branch: marathon/20260530/ip
+    owns: ["docs/ip"]
+    state: PLANNED
+    milestones:
+      - {id: dmca-final, success_criteria: ["dmca-takedown-github.md finalized (CYBERELLUM infringer)"], status: pending}
+      - {id: provenance, success_criteria: ["OTS/Zenodo provenance bundle assembled"], status: pending}
+      - {id: pct-reminders, success_criteria: ["2027-03-24/04-04/04-05 -30d reminders drafted"], status: pending}
+    human_actions:
+      - "Submit DMCA at github.com/contact/dmca-takedown (perjury statement); file PCT with Patentstyret; sync Patent-1 files from other Mac"
+    checkpoint_key: "program/H/checkpoint"
+
+  Lic:
+    name: "Licensing / SBOM / compliance"
+    tier: opus ; gen: haiku
+    worktree: ../zipminator-Lic ; branch: marathon/20260530/licensing
+    owns: ["root LICENSE/terms", "deny.toml", "SBOM artifacts"]
+    state: PLANNED
+    milestones:
+      - {id: sbom, success_criteria: ["Cargo+pip+pubspec SBOMs; root deny.toml; cargo deny check licenses"], status: pending}
+      - {id: terms, success_criteria: ["commercial EULA/ToS + CLA drafts; GDPR/DORA Art.7 checklist"], status: pending}
+    human_actions: ["Counsel sign-off before publishing terms"]
+    checkpoint_key: "program/Lic/checkpoint"
+
+  Sec:
+    name: "Security / dependency hygiene / secret remediation"
+    tier: opus
+    worktree: ../zipminator-Sec ; branch: marathon/20260530/security
+    owns: [".github", "auto-commit hardening", "dependabot", "transcript scrub"]
+    runs_with: [T0]
+    state: PLANNED
+    milestones:
+      - {id: symlink, success_criteria: ["web/.env -> ../.env symlink remediated (web-scoped gitignored file)"], status: pending}
+      - {id: dep-audit, success_criteria: ["cargo audit/pnpm audit/cargo deny clean; liboqs>=0.10.0"], status: pending}
+      - {id: dependabot, success_criteria: ["30+ branches triaged into consolidated PRs"], status: pending}
+      - {id: transcript-scrub, success_criteria: ["docs/guides/session-transcripts/*.html scrubbed"], status: pending}
+    human_actions:
+      - "Rotate stale keys (Supabase, Resend); DELETE dead SENDGRID_API_KEY; rotate OAuth + root cloud/quantum keys; merge dependabot PRs"
+    checkpoint_key: "program/Sec/checkpoint"

@@ -51,7 +51,7 @@ const chartData = MARKET_ANALYSTS.map((a) => ({
 
 const BAR_COLORS = [
   '#6366f1', '#818cf8', '#a78bfa', '#c084fc',
-  '#8b5cf6', '#7c3aed', '#6d28d9',
+  'oklch(0.72 0.17 290)', 'oklch(0.62 0.18 290)', 'oklch(0.52 0.18 290)',
 ]
 
 function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number; dataKey: string }>; label?: string }) {

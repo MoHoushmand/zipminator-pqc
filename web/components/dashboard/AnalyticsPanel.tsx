@@ -8,7 +8,7 @@ import {
 
 const STATS = [
   { label: 'Lines of Code', value: 300000, suffix: '+', icon: Code2, color: 'text-quantum-400' },
-  { label: 'Source Files', value: 1780, suffix: '+', icon: FileCode2, color: 'text-purple-400' },
+  { label: 'Source Files', value: 1780, suffix: '+', icon: FileCode2, color: 'text-violet-400' },
   { label: 'Encryption Algorithms', value: 11, suffix: '+', icon: Shield, color: 'text-green-400' },
   { label: 'Security Layers', value: 10, suffix: '', icon: Layers, color: 'text-yellow-400' },
   { label: 'Platforms', value: 5, suffix: '', icon: Monitor, color: 'text-blue-400' },
@@ -17,7 +17,7 @@ const STATS = [
 
 const ENCRYPTION_TYPES = [
   { name: 'Kyber768 KEM', percentage: 100, color: 'from-quantum-500 to-quantum-400' },
-  { name: 'AES-256-GCM', percentage: 95, color: 'from-purple-500 to-purple-400' },
+  { name: 'AES-256-GCM', percentage: 95, color: 'from-indigo-500 to-indigo-400' },
   { name: 'ChaCha20-Poly1305', percentage: 88, color: 'from-blue-500 to-blue-400' },
   { name: 'HMAC-SHA256', percentage: 100, color: 'from-green-500 to-green-400' },
   { name: 'PQ Double Ratchet', percentage: 92, color: 'from-yellow-500 to-yellow-400' },

@@ -4,8 +4,18 @@
 @tailwind utilities;
 
 :root {
-  --font-inter: 'Inter', system-ui, sans-serif;
-  --font-outfit: 'Outfit', system-ui, sans-serif;
+  /* QDaria typography tokens */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-code: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* QDaria quantum color tokens (OKLCH) */
+  --quantum-cyan:    oklch(0.82 0.15 200);   /* #22D3EE */
+  --quantum-amber:   oklch(0.77 0.18 85);    /* #F59E0B */
+  --quantum-rose:    oklch(0.72 0.19 10);    /* #FB7185 */
+  --quantum-emerald: oklch(0.79 0.17 155);   /* #34D399 */
+  --quantum-violet:  oklch(0.72 0.17 290);   /* #A78BFA */
+  --bg-primary:      oklch(0.10 0.02 250);   /* #020817 */
 }
 
 html {
@@ -152,7 +162,7 @@ html {
 
   /* Gradient heading text */
   .gradient-text {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-quantum-400 via-purple-400 to-quantum-300;
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-quantum-400 via-quantum-300 to-cyan-400;
   }
 
   /* Chart container glow effect */

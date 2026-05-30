@@ -39,7 +39,7 @@ const StatsBar = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="bg-gradient-to-r from-quantum-900/50 to-purple-900/50 backdrop-blur-sm rounded-2xl p-12 border border-quantum-500/20"
+          className="bg-gradient-to-r from-quantum-900/50 to-quantum-800/50 backdrop-blur-sm rounded-2xl p-12 border border-quantum-500/20"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 divide-y md:divide-y-0 md:divide-x divide-white/10">
             {stats.map((stat, index) => (

@@ -118,7 +118,7 @@ export default function KeyVerification({
             <span
               key={i}
               className={`
-                ${i % 2 === 0 ? 'text-quantum-400' : 'text-purple-400'}
+                ${i % 2 === 0 ? 'text-quantum-400' : 'text-violet-400'}
                 tracking-wider
               `}
             >

@@ -21,7 +21,7 @@ const stackLayers = [
     name: 'ML-KEM-768 (Kyber768)',
     standard: 'NIST FIPS 203',
     description: 'Lattice-based key encapsulation mechanism; the foundation of all PQC in Zipminator',
-    color: 'from-quantum-500 to-purple-600',
+    color: 'from-quantum-500 to-quantum-700',
   },
   {
     icon: Key,
@@ -49,7 +49,7 @@ const stackLayers = [
     name: 'PQC TLS',
     standard: 'TLS 1.3 + ML-KEM',
     description: 'Quantum-safe transport layer security for all web and API traffic',
-    color: 'from-violet-500 to-purple-500',
+    color: 'from-violet-500 to-indigo-500',
   },
   {
     icon: Cpu,
@@ -91,7 +91,7 @@ const stackLayers = [
     name: 'Cookie Rotation & FP Resistance',
     standard: 'Browser Defense',
     description: 'Automated cookie cycling and fingerprint randomization to prevent tracking',
-    color: 'from-purple-500 to-indigo-500',
+    color: 'from-indigo-500 to-blue-600',
   },
   {
     icon: Shield,

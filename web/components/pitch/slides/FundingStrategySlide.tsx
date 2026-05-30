@@ -186,8 +186,8 @@ export default function FundingStrategySlide({ scenario: _scenario = 'base' }: {
             value: '$15-25M',
             desc: 'If/when taking equity, from a position of strength',
             timeline: 'Year 3+',
-            color: 'text-purple-400',
-            border: 'border-purple-500/30',
+            color: 'text-violet-400',
+            border: 'border-violet-500/30',
           },
         ].map((phase, i) => (
           <div
@@ -327,7 +327,7 @@ export default function FundingStrategySlide({ scenario: _scenario = 'base' }: {
             </div>
             <div className="text-center">
               <p className="text-xs text-gray-400 font-mono mb-1">US Federal Programs</p>
-              <p className="text-2xl font-bold text-purple-400 font-mono">$7.1B</p>
+              <p className="text-2xl font-bold text-violet-400 font-mono">$7.1B</p>
               <p className="text-xs text-gray-500">PQC migration budget (2025-2035)</p>
             </div>
           </div>

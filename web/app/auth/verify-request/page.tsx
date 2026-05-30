@@ -13,7 +13,7 @@ export default function VerifyRequestPage() {
       </div>
 
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-white font-outfit">
+        <h1 className="text-2xl font-bold text-white font-display">
           Check your email
         </h1>
         <p className="text-gray-400 text-sm">

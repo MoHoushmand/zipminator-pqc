@@ -14,7 +14,7 @@ export default function LoginPage() {
           alt="Zipminator"
           className="h-12 w-auto mx-auto"
         />
-        <h1 className="text-2xl font-bold text-white font-outfit">
+        <h1 className="text-2xl font-bold text-white font-display">
           Sign in to Zipminator
         </h1>
         <p className="text-gray-400 text-sm">

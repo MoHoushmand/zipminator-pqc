@@ -118,7 +118,7 @@ const MOCK_EMAILS: MockEmail[] = [
       name: 'HR Department',
       email: 'hr@qdaria.com',
       avatar: 'HR',
-      color: 'bg-purple-600',
+      color: 'bg-indigo-600',
     },
     subject: 'Employee onboarding documents - CONTAINS PII',
     preview:

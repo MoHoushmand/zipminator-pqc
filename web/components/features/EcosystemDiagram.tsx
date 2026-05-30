@@ -19,7 +19,7 @@ const modules = [
     id: 'entropy',
     icon: Atom,
     name: 'Quantum Entropy',
-    color: 'from-purple-500 to-pink-500',
+    color: 'from-rose-500 to-pink-500',
     description: 'Real IBM 156-qubit quantum hardware via qBraid pipeline. Ever-growing entropy pool with multi-source fallback chain.',
   },
   {
@@ -68,7 +68,7 @@ const modules = [
     id: 'device',
     icon: Smartphone,
     name: 'Device Shield',
-    color: 'from-violet-500 to-purple-500',
+    color: 'from-violet-500 to-indigo-500',
     description: 'Install once, protect everything. System-wide PQC encryption for all network traffic.',
   },
   {
@@ -88,7 +88,7 @@ const EcosystemDiagram = () => {
     <section className="py-24 relative overflow-hidden">
       <div className="absolute inset-0">
         <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-quantum-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-quantum-700/5 rounded-full blur-3xl" />
       </div>
 
       <div className="container-custom relative z-10">

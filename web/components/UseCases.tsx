@@ -50,7 +50,7 @@ const useCases = [
       'Multi-tenant security',
       'API integration',
     ],
-    gradient: 'from-purple-500 to-indigo-500',
+    gradient: 'from-indigo-500 to-blue-600',
   },
 ]
 

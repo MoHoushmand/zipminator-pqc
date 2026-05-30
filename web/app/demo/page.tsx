@@ -299,7 +299,7 @@ assert shared_secret == recovered  # Quantum-safe!`}
                 </Link>
               </div>
             </div>
-            <div className="w-48 h-48 rounded-2xl bg-gradient-to-br from-quantum-900/40 to-purple-900/40 border border-quantum-500/20 flex items-center justify-center shrink-0">
+            <div className="w-48 h-48 rounded-2xl bg-gradient-to-br from-quantum-900/40 to-quantum-800/40 border border-quantum-500/20 flex items-center justify-center shrink-0">
               <Code2 className="w-16 h-16 text-quantum-400/60" />
             </div>
           </div>

@@ -60,9 +60,9 @@ const Hero = () => {
         >
           {/* Badge */}
           <motion.div variants={itemVariants} className="inline-block mb-8">
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-quantum-900/40 to-purple-900/40 border border-quantum-400/30 rounded-full px-5 py-2.5 backdrop-blur-sm shadow-lg shadow-quantum-500/20 hover:shadow-quantum-500/40 transition-shadow duration-300">
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-quantum-900/40 to-quantum-800/40 border border-quantum-400/30 rounded-full px-5 py-2.5 backdrop-blur-sm shadow-lg shadow-quantum-500/20 hover:shadow-quantum-500/40 transition-shadow duration-300">
               <Shield className="w-4 h-4 text-quantum-400 animate-pulse" />
-              <span className="text-sm font-semibold bg-gradient-to-r from-quantum-300 to-purple-300 bg-clip-text text-transparent">
+              <span className="text-sm font-semibold bg-gradient-to-r from-quantum-300 to-cyan-300 bg-clip-text text-transparent">
                 NIST FIPS 203 Approved Post-Quantum Cryptography
               </span>
             </div>
@@ -73,7 +73,7 @@ const Hero = () => {
             variants={itemVariants}
             className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-[1.05] tracking-tight"
           >
-            <span className="block bg-gradient-to-r from-quantum-300 via-quantum-400 to-purple-400 bg-clip-text text-transparent drop-shadow-2xl">
+            <span className="block bg-gradient-to-r from-quantum-300 via-quantum-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-2xl">
               The Quantum-Secure
             </span>
             <span className="block text-white drop-shadow-lg mt-2">
@@ -134,7 +134,7 @@ const Hero = () => {
             >
               <span className="relative z-10">Join the Beta</span>
               <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
-              <div className="absolute inset-0 bg-gradient-to-r from-quantum-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-r from-quantum-600 to-quantum-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </Link>
             <Link
               href="/features"
@@ -175,12 +175,12 @@ const Hero = () => {
               }}
               className="card-quantum text-center group relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/10 to-quantum-700/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative z-10">
-                <div className="w-14 h-14 bg-gradient-to-br from-quantum-900/60 to-purple-900/60 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-quantum-500/20">
+                <div className="w-14 h-14 bg-gradient-to-br from-quantum-900/60 to-quantum-800/60 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-quantum-500/20">
                   <Zap className="w-7 h-7 text-quantum-400" />
                 </div>
-                <div className="text-3xl font-bold bg-gradient-to-br from-quantum-400 to-purple-400 bg-clip-text text-transparent mb-2">
+                <div className="text-3xl font-bold bg-gradient-to-br from-quantum-400 to-cyan-400 bg-clip-text text-transparent mb-2">
                   0.034ms
                 </div>
                 <div className="text-gray-400 font-medium">Encryption Speed</div>
@@ -196,12 +196,12 @@ const Hero = () => {
               }}
               className="card-quantum text-center group relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/10 to-quantum-700/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative z-10">
-                <div className="w-14 h-14 bg-gradient-to-br from-quantum-900/60 to-purple-900/60 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-quantum-500/20">
+                <div className="w-14 h-14 bg-gradient-to-br from-quantum-900/60 to-quantum-800/60 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-quantum-500/20">
                   <Cpu className="w-7 h-7 text-quantum-400" />
                 </div>
-                <div className="text-3xl font-bold bg-gradient-to-br from-quantum-400 to-purple-400 bg-clip-text text-transparent mb-2">
+                <div className="text-3xl font-bold bg-gradient-to-br from-quantum-400 to-cyan-400 bg-clip-text text-transparent mb-2">
                   156 Qubits
                 </div>
                 <div className="text-gray-400 font-medium">Quantum Hardware Entropy</div>
@@ -217,12 +217,12 @@ const Hero = () => {
               }}
               className="card-quantum text-center group relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/10 to-quantum-700/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative z-10">
-                <div className="w-14 h-14 bg-gradient-to-br from-quantum-900/60 to-purple-900/60 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-quantum-500/20">
+                <div className="w-14 h-14 bg-gradient-to-br from-quantum-900/60 to-quantum-800/60 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-quantum-500/20">
                   <Shield className="w-7 h-7 text-quantum-400" />
                 </div>
-                <div className="text-3xl font-bold bg-gradient-to-br from-quantum-400 to-purple-400 bg-clip-text text-transparent mb-2">
+                <div className="text-3xl font-bold bg-gradient-to-br from-quantum-400 to-cyan-400 bg-clip-text text-transparent mb-2">
                   NIST Level 3
                 </div>
                 <div className="text-gray-400 font-medium">Security Standard</div>

@@ -133,7 +133,7 @@ export default function TractionSlide({ scenario: _scenario }: { scenario?: Scen
                 </linearGradient>
                 <linearGradient id="gradProgress" x1="0" y1="0" x2="1" y2="0">
                   <stop offset="0%" stopColor="#6366f1" stopOpacity={0.7} />
-                  <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.95} />
+                  <stop offset="100%" stopColor="oklch(0.72 0.17 290)" stopOpacity={0.95} />
                 </linearGradient>
                 <linearGradient id="gradPlanned" x1="0" y1="0" x2="1" y2="0">
                   <stop offset="0%" stopColor="#4b5563" stopOpacity={0.5} />

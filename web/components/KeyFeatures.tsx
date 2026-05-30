@@ -8,14 +8,14 @@ const features = [
     icon: Atom,
     title: 'True Quantum Randomness',
     description: 'Entropy harvested from IBM\'s 156-qubit quantum computer, not pseudo-random algorithms',
-    gradient: 'from-quantum-500 via-blue-500 to-purple-500',
+    gradient: 'from-quantum-500 via-blue-500 to-cyan-500',
     animationDelay: 0,
   },
   {
     icon: ShieldCheck,
     title: 'FIPS 203 Kyber768',
     description: 'NIST-approved post-quantum cryptography resistant to quantum attacks',
-    gradient: 'from-purple-500 via-pink-500 to-red-500',
+    gradient: 'from-rose-500 via-pink-500 to-red-500',
     animationDelay: 0.1,
   },
   {
@@ -36,7 +36,7 @@ const features = [
     icon: FlaskConical,
     title: 'JupyterLab Integration',
     description: 'Interactive quantum cryptography notebooks with magic commands and live widgets',
-    gradient: 'from-blue-500 via-indigo-500 to-purple-500',
+    gradient: 'from-blue-500 via-indigo-500 to-violet-500',
     animationDelay: 0.4,
   },
   {
@@ -55,7 +55,7 @@ const KeyFeatures = () => {
       <div className="absolute inset-0 quantum-bg opacity-50" />
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-quantum-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-quantum-700/10 rounded-full blur-3xl" />
       </div>
 
       <div className="container-custom relative z-10">
@@ -115,7 +115,7 @@ const KeyFeatures = () => {
 
                   {/* Animated Particles */}
                   <div className="absolute top-4 right-4 w-2 h-2 bg-quantum-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping" />
-                  <div className="absolute bottom-4 left-4 w-1.5 h-1.5 bg-purple-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse" />
+                  <div className="absolute bottom-4 left-4 w-1.5 h-1.5 bg-violet-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse" />
                 </div>
 
                 {/* Hover Glow Effect */}

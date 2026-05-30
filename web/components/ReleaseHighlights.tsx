@@ -59,7 +59,7 @@ const highlights: Highlight[] = [
     body: 'Six new mesh modules: CSI entropy, PUEK, EM canary, vital-auth, topo-auth, spatiotemporal non-repudiation. 106 mesh tests.',
     href: '/blueprint#mesh',
     external: false,
-    color: 'text-purple-400',
+    color: 'text-violet-400',
   },
 ]
 

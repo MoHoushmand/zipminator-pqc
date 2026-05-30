@@ -23,7 +23,7 @@ const LEVELS: Record<number, LevelMeta> = {
   5:  { name: 'Data Generalization',               description: 'Numeric values bucketed into statistical ranges',            color: 'text-amber-400',   bg: 'bg-amber-500/10',    border: 'border-amber-500/30',   requiresQuantum: false },
   6:  { name: 'Data Suppression',                  description: 'Entire columns dropped from the output',                    color: 'text-orange-400',  bg: 'bg-orange-500/10',   border: 'border-orange-500/30',  requiresQuantum: false },
   7:  { name: 'Quantum Jitter',                    description: 'QRNG Gaussian noise injected (5% std-dev)',                 color: 'text-violet-400',  bg: 'bg-violet-500/10',   border: 'border-violet-500/30',  requiresQuantum: true  },
-  8:  { name: 'Quantum Differential Privacy',      description: 'ε-DP Laplace mechanism driven by QRNG entropy',             color: 'text-purple-400',  bg: 'bg-purple-500/10',   border: 'border-purple-500/30',  requiresQuantum: true  },
+  8:  { name: 'Quantum Differential Privacy',      description: 'ε-DP Laplace mechanism driven by QRNG entropy',             color: 'text-violet-400',  bg: 'bg-violet-500/10',   border: 'border-violet-500/30',  requiresQuantum: true  },
   9:  { name: 'Enhanced K-Anonymity',              description: 'QRNG-assisted quantile clustering for k-anonymity',         color: 'text-fuchsia-400', bg: 'bg-fuchsia-500/10',  border: 'border-fuchsia-500/30', requiresQuantum: true  },
   10: { name: 'Total Quantum Pseudoanonymization', description: 'One-time-pad mapping generated from live QRNG entropy',     color: 'text-quantum-400', bg: 'bg-quantum-500/10',  border: 'border-quantum-500/30', requiresQuantum: true  },
 }
@@ -85,8 +85,8 @@ function LevelSlider({
               #84cc16 30%,
               #eab308 50%,
               #f97316 60%,
-              #8b5cf6 70%,
-              #a855f7 ${((value - 1) / 9) * 100}%,
+              oklch(0.72 0.17 290) 70%,
+              oklch(0.82 0.15 200) ${((value - 1) / 9) * 100}%,
               rgba(255,255,255,0.1) ${((value - 1) / 9) * 100}%)`,
           }}
         />

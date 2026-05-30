@@ -29,7 +29,7 @@ import { fadeUp } from '../slide-utils'
 const PIE_COLORS = [
   '#22c55e', // Engineering -- green-500
   '#6366f1', // Security -- quantum-500
-  '#a78bfa', // Go-to-Market -- purple-400
+  'oklch(0.72 0.17 290)', // Go-to-Market -- quantum-violet
   '#f59e0b', // Infrastructure -- amber-500
   '#818cf8', // Operations -- indigo-400
 ]
@@ -128,7 +128,7 @@ export default function AskSlide({ scenario = 'base' }: { scenario?: Scenario })
             icon: Layers,
             label: 'Strategic Raise',
             value: FUNDING_ASK.strategicRaise,
-            color: 'text-purple-400',
+            color: 'text-violet-400',
           },
         ].map((item) => (
           <div key={item.label} className="card-quantum text-center">
@@ -168,13 +168,13 @@ export default function AskSlide({ scenario = 'base' }: { scenario?: Scenario })
 
       {/* Comparable Seed Rounds Callout */}
       <motion.div {...fadeUp(0.1)} className="mb-8">
-        <div className="rounded-xl bg-purple-500/[0.05] border border-purple-500/15 p-4 flex items-start gap-3">
-          <TrendingUp className="w-5 h-5 text-purple-400 mt-0.5 shrink-0" />
+        <div className="rounded-xl bg-violet-500/[0.05] border border-violet-500/15 p-4 flex items-start gap-3">
+          <TrendingUp className="w-5 h-5 text-violet-400 mt-0.5 shrink-0" />
           <div>
             <h4 className="text-sm font-semibold text-white mb-1">Market Context: Comparable Seed Rounds</h4>
             <p className="text-xs text-gray-400 leading-relaxed">
-              Cybersecurity median seed round: <span className="text-purple-400 font-semibold">$3-4M</span>.
-              PQ-specific companies have raised significantly more: <span className="text-purple-400 font-semibold">PQShield $70M (Series B), SandboxAQ $950M total</span>.
+              Cybersecurity median seed round: <span className="text-violet-400 font-semibold">$3-4M</span>.
+              PQ-specific companies have raised significantly more: <span className="text-violet-400 font-semibold">PQShield $70M (Series B), SandboxAQ $950M total</span>.
               Our ask is at the conservative end with the highest product completeness.
             </p>
           </div>

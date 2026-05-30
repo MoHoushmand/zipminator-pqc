@@ -139,7 +139,7 @@ export default function CompetitiveSlide({ scenario: _scenario }: { scenario?: S
             <defs>
               <linearGradient id="gradZipminator" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#6366f1" stopOpacity={0.9} />
-                <stop offset="50%" stopColor="#8b5cf6" stopOpacity={0.95} />
+                <stop offset="50%" stopColor="oklch(0.72 0.17 290)" stopOpacity={0.95} />
                 <stop offset="100%" stopColor="#a855f7" stopOpacity={1} />
               </linearGradient>
               <linearGradient id="gradCompetitor" x1="0" y1="0" x2="1" y2="0">

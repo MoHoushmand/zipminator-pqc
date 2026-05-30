@@ -488,7 +488,7 @@ export default function TechnologyPage() {
 
       {/* Bottom CTA */}
       <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/10 via-transparent to-purple-500/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/10 via-transparent to-quantum-700/10" />
         <div className="container-custom relative z-10 text-center">
           <motion.div {...fadeUp}>
             <h2 className="text-3xl md:text-5xl font-bold mb-6">

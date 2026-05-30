@@ -17,7 +17,7 @@ const features = [
     icon: Shield,
     title: 'PQC Encryption Engine',
     description: 'Kyber768 core with real quantum entropy from IBM 156-qubit hardware',
-    gradient: 'from-quantum-500 to-purple-600',
+    gradient: 'from-quantum-500 to-quantum-700',
     tag: 'NIST FIPS 203',
   },
   {
@@ -52,7 +52,7 @@ const features = [
     icon: Compass,
     title: 'ZipBrowser',
     description: 'PQC TLS + built-in Q-VPN + AI assistant. Zero telemetry, zero fingerprints',
-    gradient: 'from-violet-500 to-purple-500',
+    gradient: 'from-violet-500 to-indigo-500',
     tag: 'AI-powered',
   },
   {
@@ -95,7 +95,7 @@ const SuperAppShowcase = () => {
       <div className="absolute inset-0 quantum-bg opacity-50" />
       <div className="absolute inset-0">
         <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-quantum-500/8 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[500px] bg-purple-500/8 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[500px] bg-quantum-700/8 rounded-full blur-3xl" />
       </div>
 
       <div className="container-custom relative z-10">

@@ -1177,7 +1177,7 @@ export default function ProposalsPage() {
           {/* Inspire Me */}
           <button
             onClick={inspireMe}
-            className="w-full py-2.5 rounded-lg text-sm font-semibold transition-all bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 hover:from-indigo-500 hover:via-violet-500 hover:to-purple-500 text-white shadow-lg shadow-violet-600/20 hover:shadow-violet-500/30"
+            className="w-full py-2.5 rounded-lg text-sm font-semibold transition-all bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-700 hover:from-indigo-500 hover:via-violet-500 hover:to-indigo-600 text-white shadow-lg shadow-violet-600/20 hover:shadow-violet-500/30"
           >
             Inspire Me
           </button>

@@ -19,7 +19,7 @@ const verticals = [
   { icon: ShieldCheck, label: 'Defense & Intel', color: 'from-green-500 to-emerald-500' },
   { icon: Heart, label: 'Healthcare', color: 'from-red-500 to-pink-500' },
   { icon: Landmark, label: 'Finance & Banking', color: 'from-blue-500 to-cyan-500' },
-  { icon: Building2, label: 'Government', color: 'from-purple-500 to-indigo-500' },
+  { icon: Building2, label: 'Government', color: 'from-indigo-500 to-blue-600' },
   { icon: Scale, label: 'Legal', color: 'from-amber-500 to-yellow-500' },
   { icon: Briefcase, label: 'Enterprise', color: 'from-orange-500 to-red-500' },
 ]

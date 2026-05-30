@@ -34,13 +34,13 @@ const CTA = () => {
   return (
     <section className="relative py-24 md:py-32 overflow-hidden" id="demo">
       {/* Quantum Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/20 via-purple-600/20 to-quantum-900/20" />
+      <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/20 via-quantum-700/20 to-quantum-900/20" />
 
       {/* Animated Grid Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
-          backgroundImage: `linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px),
-                           linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(oklch(0.82 0.15 200 / 0.1) 1px, transparent 1px),
+                           linear-gradient(90deg, oklch(0.82 0.15 200 / 0.1) 1px, transparent 1px)`,
           backgroundSize: '50px 50px'
         }} />
       </div>
@@ -127,9 +127,9 @@ const CTA = () => {
             {/* TODO: Inconsistent CTA - manually recreates gradient style instead of using btn-primary class from globals.css */}
             <Link
               href="#waitlist"
-              className="group relative inline-flex items-center space-x-2 bg-gradient-to-r from-quantum-500 to-purple-600 text-white font-semibold text-lg px-10 py-5 rounded-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-quantum-500/50 w-full sm:w-auto"
+              className="group relative inline-flex items-center space-x-2 bg-gradient-to-r from-quantum-500 to-quantum-700 text-white font-semibold text-lg px-10 py-5 rounded-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-quantum-500/50 w-full sm:w-auto"
             >
-              <span className="absolute inset-0 bg-gradient-to-r from-quantum-400 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <span className="absolute inset-0 bg-gradient-to-r from-quantum-400 to-quantum-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="relative flex items-center space-x-2">
                 <span>Join the Beta — Free</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

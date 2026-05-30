@@ -27,7 +27,7 @@ const SCENARIO_CONFIG: Array<{
   icon: typeof BarChart3
   color: string
 }> = [
-  { key: 'all', label: 'All', icon: Layers, color: 'text-purple-400' },
+  { key: 'all', label: 'All', icon: Layers, color: 'text-violet-400' },
   { key: 'conservative', label: 'Conservative', icon: TrendingDown, color: 'text-blue-400' },
   { key: 'base', label: 'Base', icon: BarChart3, color: 'text-quantum-400' },
   { key: 'upside', label: 'Upside', icon: TrendingUp, color: 'text-green-400' },

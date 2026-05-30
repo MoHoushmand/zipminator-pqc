@@ -106,7 +106,7 @@ const SS7Killer = () => {
               className="group"
             >
               <div className="relative bg-gray-900/60 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-quantum-500/40 transition-all duration-300 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-br from-quantum-500/5 to-quantum-700/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                 <div className="relative z-10 flex items-center gap-4">
                   {/* Attack side */}
@@ -158,7 +158,7 @@ const SS7Killer = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center"
         >
-          <div className="inline-block bg-gradient-to-r from-quantum-900/50 to-purple-900/50 border border-quantum-500/20 rounded-2xl px-8 py-6 backdrop-blur-sm max-w-3xl">
+          <div className="inline-block bg-gradient-to-r from-quantum-900/50 to-quantum-800/50 border border-quantum-500/20 rounded-2xl px-8 py-6 backdrop-blur-sm max-w-3xl">
             <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
               Zipminator wraps{' '}
               <span className="text-quantum-400 font-bold">every signal</span>{' '}

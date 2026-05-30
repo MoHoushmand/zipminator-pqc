@@ -24,7 +24,7 @@ export default function TitleSlide({ scenario: _scenario }: { scenario?: Scenari
       {/* Background glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-quantum-500/10 rounded-full blur-[120px]" />
-        <div className="absolute top-1/3 left-1/3 w-[300px] h-[300px] bg-purple-600/8 rounded-full blur-[80px]" />
+        <div className="absolute top-1/3 left-1/3 w-[300px] h-[300px] bg-quantum-700/8 rounded-full blur-[80px]" />
       </div>
 
       {/* Floating icons */}

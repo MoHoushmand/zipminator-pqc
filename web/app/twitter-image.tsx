@@ -17,7 +17,7 @@ export default async function Image() {
           alignItems: 'center',
           justifyContent: 'center',
           background: 'linear-gradient(145deg, #0a0a0f 0%, #0d1117 50%, #0a0a0f 100%)',
-          fontFamily: 'Inter, system-ui, sans-serif',
+          fontFamily: 'DM Sans, system-ui, sans-serif',
           position: 'relative',
           overflow: 'hidden',
         }}

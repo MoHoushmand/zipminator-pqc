@@ -4,14 +4,14 @@ export const SCENARIO_COLORS: Record<Scenario | 'all', string> = {
   base: '#6366f1',       // quantum-500
   upside: '#22c55e',     // green-500
   conservative: '#3b82f6', // blue-500
-  all: '#a855f7',        // purple-500 (used for combined views)
+  all: 'oklch(0.72 0.17 290)',  // quantum-violet (used for combined views)
 }
 
 export const SCENARIO_FILL_COLORS: Record<Scenario, string> = {
   base: 'rgba(99, 102, 241, 0.15)',
   upside: 'rgba(34, 197, 94, 0.15)',
   conservative: 'rgba(59, 130, 246, 0.15)',
-  all: 'rgba(168, 85, 247, 0.15)',
+  all: 'oklch(0.72 0.17 290 / 0.15)',
 }
 
 export const CHART_THEME = {
@@ -30,7 +30,7 @@ export const CHART_ANIMATION_DURATION = 1200
 export const REGION_COLORS: Record<string, string> = {
   norway: '#22c55e',     // green-500
   eu: '#6366f1',         // quantum-500
-  us: '#a855f7',         // purple-500
+  us: 'oklch(0.72 0.17 290)',  // quantum-violet
   nato: '#3b82f6',       // blue-500
 }
 

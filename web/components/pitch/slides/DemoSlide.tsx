@@ -371,9 +371,9 @@ const MODULES: ModuleTab[] = [
     tagline: 'Security-aware AI that never leaks your data',
     icon: Bot,
     keyPoint: 'On-device AI with optional quantum-encrypted cloud routing.',
-    accentColor: 'text-purple-400',
-    accentBg: 'bg-purple-500/10',
-    accentBorder: 'border-purple-500/20',
+    accentColor: 'text-violet-400',
+    accentBg: 'bg-violet-500/10',
+    accentBorder: 'border-violet-500/20',
     visual: <AIVisual />,
   },
   {

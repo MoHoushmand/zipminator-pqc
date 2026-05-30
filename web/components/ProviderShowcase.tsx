@@ -9,14 +9,14 @@ const ProviderShowcase = () => {
       name: 'NIST',
       description: 'FIPS 203 / 204 Standards',
       icon: Award,
-      color: 'from-purple-500 to-pink-500',
+      color: 'from-rose-500 to-pink-500',
       verified: true
     },
     {
       name: 'ML-KEM-768',
       description: 'Kyber Lattice KEM',
       icon: Shield,
-      color: 'from-quantum-500 to-purple-500',
+      color: 'from-quantum-500 to-quantum-700',
       verified: true
     },
     {

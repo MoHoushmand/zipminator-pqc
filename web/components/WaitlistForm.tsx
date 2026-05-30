@@ -58,6 +58,38 @@ const oauthProviders = [
   },
 ]
 
+/** Section header + benefit badges, shared between both form variants. */
+function SectionHeader() {
+  return (
+    <div className="text-center mb-12">
+      <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-quantum-500/20 text-quantum-300 border border-quantum-500/50 mb-4">
+        <span className="w-2 h-2 bg-quantum-400 rounded-full mr-2 animate-pulse" />
+        Enterprise Beta — Q2 2026
+      </span>
+      <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-display">
+        Join the <span className="gradient-text">Beta Program</span>
+      </h2>
+      <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+        Be among the first to deploy quantum-safe encryption. Beta participants receive priority onboarding,
+        early access pricing locked for 12 months, and direct engineering support.
+      </p>
+
+      <div className="flex flex-wrap justify-center gap-4 mt-8">
+        {[
+          { icon: Shield, text: 'Priority Onboarding' },
+          { icon: Zap, text: 'Locked-In Pricing' },
+          { icon: CheckCircle, text: 'Direct Engineering Support' },
+        ].map(({ icon: Icon, text }) => (
+          <div key={text} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300">
+            <Icon className="w-4 h-4 text-quantum-400" />
+            {text}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function WaitlistForm() {
   const { data: session, status: authStatus } = useSession()
   const [status, setStatus] = useState<Status>('idle')
@@ -65,6 +97,7 @@ export default function WaitlistForm() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
 
+  // Auto-fill from OAuth session when one becomes available.
   useEffect(() => {
     if (authStatus === 'authenticated' && session?.user) {
       if (session.user.name) setFullName(session.user.name)
@@ -81,14 +114,15 @@ export default function WaitlistForm() {
     const fd = new FormData(form)
 
     const payload = {
-      fullName: fullName || fd.get('fullName') as string,
+      fullName: fullName || (fd.get('fullName') as string),
       companyName: fd.get('companyName') as string,
-      email: email || fd.get('email') as string,
+      email: email || (fd.get('email') as string),
       industry: fd.get('industry') as string,
       expectedVolume: fd.get('expectedVolume') as string,
-      useCase: fd.get('useCase') as string || undefined,
-      couponCode: fd.get('couponCode') as string || undefined,
+      useCase: (fd.get('useCase') as string) || undefined,
+      couponCode: (fd.get('couponCode') as string) || undefined,
       ndaConsent: fd.get('ndaConsent') === 'on',
+      // userId is optional — omitted for anonymous submissions.
       userId: session?.user?.id || undefined,
     }
 
@@ -133,7 +167,8 @@ export default function WaitlistForm() {
     )
   }
 
-  // Loading state
+  // Auth is still resolving — render a minimal skeleton so the page doesn't
+  // flicker between the sign-in card and the form.
   if (authStatus === 'loading') {
     return (
       <section id="waitlist" className="py-20 relative overflow-hidden">
@@ -147,250 +182,196 @@ export default function WaitlistForm() {
     )
   }
 
-  // Unauthenticated: show sign-in card
-  if (authStatus !== 'authenticated') {
-    return (
-      <section id="waitlist" className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-quantum-900/20 via-transparent to-transparent" />
-        <div className="container-custom relative">
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-quantum-500/20 text-quantum-300 border border-quantum-500/50 mb-4">
-              <span className="w-2 h-2 bg-quantum-400 rounded-full mr-2 animate-pulse" />
-              Enterprise Beta — Q2 2026
-            </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-display">
-              Join the <span className="gradient-text">Beta Program</span>
-            </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Be among the first to deploy quantum-safe encryption. Beta participants receive priority onboarding,
-              early access pricing locked for 12 months, and direct engineering support.
-            </p>
-          </div>
+  // Determine whether OAuth auto-fill is available (session loaded + user present).
+  const isAuthenticated = authStatus === 'authenticated' && !!session?.user
+  const lockedName = isAuthenticated && !!session?.user?.name
+  const lockedEmail = isAuthenticated && !!session?.user?.email
 
-          {/* Benefits badges */}
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {[
-              { icon: Shield, text: 'Priority Onboarding' },
-              { icon: Zap, text: 'Locked-In Pricing' },
-              { icon: CheckCircle, text: 'Direct Engineering Support' },
-            ].map(({ icon: Icon, text }) => (
-              <div key={text} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300">
-                <Icon className="w-4 h-4 text-quantum-400" />
-                {text}
-              </div>
+  // Shared form body rendered for both authenticated and anonymous visitors.
+  const formBody = (
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto card-quantum p-8 space-y-6">
+      {/* Session badge — only shown when OAuth auto-fill is active */}
+      {isAuthenticated && (
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-quantum-500/10 border border-quantum-500/30 text-quantum-300 text-sm">
+          <CheckCircle className="w-4 h-4 shrink-0" />
+          Signed in as {session?.user?.email}
+        </div>
+      )}
+
+      {/* Anonymous prompt — shown only to visitors not signed in */}
+      {!isAuthenticated && (
+        <div className="flex flex-col gap-3 p-4 rounded-lg bg-white/5 border border-white/10">
+          <p className="text-sm text-gray-400">
+            Sign in to auto-fill your name and email, or fill in the fields below manually.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {oauthProviders.map((provider) => (
+              <button
+                key={provider.id}
+                type="button"
+                onClick={() => signIn(provider.id, { callbackUrl: '/#waitlist' })}
+                className="flex items-center gap-2 px-3 py-2 border border-white/10 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition-all duration-200 text-sm"
+              >
+                {provider.icon}
+                {provider.name}
+              </button>
             ))}
           </div>
+        </div>
+      )}
 
-          {/* Sign-in card */}
-          <div className="max-w-md mx-auto card-quantum p-8 text-center">
-            <Shield className="w-12 h-12 text-quantum-400 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-white mb-2 font-display">Sign in to join</h3>
-            <p className="text-gray-400 mb-6 text-sm">
-              Your name and email will be filled automatically
-            </p>
+      {status === 'error' && (
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
+          <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
+          {errorMsg}
+        </div>
+      )}
+      {status === 'duplicate' && (
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-quantum-500/10 border border-quantum-500/30 text-quantum-300 text-sm">
+          <CheckCircle className="w-5 h-5 mt-0.5 shrink-0" />
+          You&apos;re already on the waitlist! We&apos;ll be in touch soon.
+        </div>
+      )}
 
-            <div className="space-y-3">
-              {oauthProviders.map((provider) => (
-                <button
-                  key={provider.id}
-                  onClick={() => signIn(provider.id, { callbackUrl: '/#waitlist' })}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-white/10 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all duration-200 font-medium"
-                >
-                  {provider.icon}
-                  Continue with {provider.name}
-                </button>
-              ))}
-            </div>
+      <div className="grid md:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="fullName" className="block text-sm font-medium text-gray-200 mb-2">
+            Full Name <span className="text-red-400">*</span>
+          </label>
+          <div className="relative">
+            <input
+              type="text" id="fullName" name="fullName" required minLength={2} maxLength={100}
+              placeholder="Jane Smith"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              readOnly={lockedName}
+              className={`w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition ${lockedName ? 'bg-gray-800/60 text-gray-300' : ''}`}
+            />
+            {lockedName && <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />}
           </div>
         </div>
-      </section>
-    )
-  }
+        <div>
+          <label htmlFor="companyName" className="block text-sm font-medium text-gray-200 mb-2">
+            Company <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="text" id="companyName" name="companyName" required minLength={2} maxLength={100}
+            placeholder="Acme Corp"
+            className="w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition"
+          />
+        </div>
+      </div>
 
-  // Authenticated: show form with auto-filled fields
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium text-gray-200 mb-2">
+          Work Email <span className="text-red-400">*</span>
+        </label>
+        <div className="relative">
+          <input
+            type="email" id="email" name="email" required maxLength={255}
+            placeholder="jane@acme.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            readOnly={lockedEmail}
+            className={`w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition ${lockedEmail ? 'bg-gray-800/60 text-gray-300' : ''}`}
+          />
+          {lockedEmail && <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />}
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="industry" className="block text-sm font-medium text-gray-200 mb-2">
+            Industry <span className="text-red-400">*</span>
+          </label>
+          <select
+            id="industry" name="industry" required
+            className="w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition"
+          >
+            <option value="">Select industry...</option>
+            {INDUSTRIES.map(i => (
+              <option key={i.value} value={i.value}>{i.label}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="expectedVolume" className="block text-sm font-medium text-gray-200 mb-2">
+            Expected Volume <span className="text-red-400">*</span>
+          </label>
+          <select
+            id="expectedVolume" name="expectedVolume" required
+            className="w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition"
+          >
+            <option value="">Select volume...</option>
+            {VOLUMES.map(v => (
+              <option key={v.value} value={v.value}>{v.label}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="useCase" className="block text-sm font-medium text-gray-200 mb-2">
+          Use Case <span className="text-gray-500">(optional)</span>
+        </label>
+        <textarea
+          id="useCase" name="useCase" rows={3} maxLength={500}
+          placeholder="Describe how you plan to use quantum-safe encryption..."
+          className="w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition resize-none"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="couponCode" className="block text-sm font-medium text-gray-200 mb-2">
+          Coupon Code <span className="text-gray-500">(optional)</span>
+        </label>
+        <input
+          type="text" id="couponCode" name="couponCode" maxLength={50}
+          placeholder="BETA2026"
+          className="w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition font-mono uppercase"
+        />
+        <p className="text-sm text-gray-500 mt-1">
+          Follow us on LinkedIn for exclusive early access codes.
+        </p>
+      </div>
+
+      <label className="flex items-start gap-3 cursor-pointer">
+        <input
+          type="checkbox" name="ndaConsent" required
+          className="mt-1 h-4 w-4 rounded border-white/20 bg-gray-900/50 text-quantum-500 focus:ring-quantum-500/20"
+        />
+        <span className="text-sm text-gray-300">
+          I agree to sign an NDA for beta testing and understand that early access is subject to availability.
+          <span className="text-red-400 ml-1">*</span>
+        </span>
+      </label>
+
+      <button
+        type="submit"
+        disabled={status === 'loading'}
+        className="w-full btn-primary py-4 text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {status === 'loading' ? (
+          <>
+            <Loader2 className="w-5 h-5 animate-spin" />
+            Submitting...
+          </>
+        ) : (
+          <>
+            <Send className="w-5 h-5" />
+            Join the Beta Waitlist
+          </>
+        )}
+      </button>
+    </form>
+  )
+
   return (
     <section id="waitlist" className="py-20 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-quantum-900/20 via-transparent to-transparent" />
       <div className="container-custom relative">
-        <div className="text-center mb-12">
-          <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-quantum-500/20 text-quantum-300 border border-quantum-500/50 mb-4">
-            <span className="w-2 h-2 bg-quantum-400 rounded-full mr-2 animate-pulse" />
-            Enterprise Beta — Q2 2026
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-display">
-            Join the <span className="gradient-text">Beta Program</span>
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Be among the first to deploy quantum-safe encryption. Beta participants receive priority onboarding,
-            early access pricing locked for 12 months, and direct engineering support.
-          </p>
-        </div>
-
-        {/* Benefits badges */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {[
-            { icon: Shield, text: 'Priority Onboarding' },
-            { icon: Zap, text: 'Locked-In Pricing' },
-            { icon: CheckCircle, text: 'Direct Engineering Support' },
-          ].map(({ icon: Icon, text }) => (
-            <div key={text} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300">
-              <Icon className="w-4 h-4 text-quantum-400" />
-              {text}
-            </div>
-          ))}
-        </div>
-
-        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto card-quantum p-8 space-y-6">
-          {/* Signed-in badge */}
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-quantum-500/10 border border-quantum-500/30 text-quantum-300 text-sm">
-            <CheckCircle className="w-4 h-4 shrink-0" />
-            Signed in as {session.user?.email}
-          </div>
-
-          {status === 'error' && (
-            <div className="flex items-start gap-3 p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
-              <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
-              {errorMsg}
-            </div>
-          )}
-          {status === 'duplicate' && (
-            <div className="flex items-start gap-3 p-4 rounded-lg bg-quantum-500/10 border border-quantum-500/30 text-quantum-300 text-sm">
-              <CheckCircle className="w-5 h-5 mt-0.5 shrink-0" />
-              You&apos;re already on the waitlist! We&apos;ll be in touch soon.
-            </div>
-          )}
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-200 mb-2">
-                Full Name <span className="text-red-400">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="text" id="fullName" name="fullName" required minLength={2} maxLength={100}
-                  placeholder="Jane Smith"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  readOnly={!!session?.user?.name}
-                  className={`w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition ${session?.user?.name ? 'bg-gray-800/60 text-gray-300' : ''}`}
-                />
-                {session?.user?.name && <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />}
-              </div>
-            </div>
-            <div>
-              <label htmlFor="companyName" className="block text-sm font-medium text-gray-200 mb-2">
-                Company <span className="text-red-400">*</span>
-              </label>
-              <input
-                type="text" id="companyName" name="companyName" required minLength={2} maxLength={100}
-                placeholder="Acme Corp"
-                className="w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-200 mb-2">
-              Work Email <span className="text-red-400">*</span>
-            </label>
-            <div className="relative">
-              <input
-                type="email" id="email" name="email" required maxLength={255}
-                placeholder="jane@acme.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                readOnly={!!session?.user?.email}
-                className={`w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition ${session?.user?.email ? 'bg-gray-800/60 text-gray-300' : ''}`}
-              />
-              {session?.user?.email && <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />}
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="industry" className="block text-sm font-medium text-gray-200 mb-2">
-                Industry <span className="text-red-400">*</span>
-              </label>
-              <select
-                id="industry" name="industry" required
-                className="w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition"
-              >
-                <option value="">Select industry...</option>
-                {INDUSTRIES.map(i => (
-                  <option key={i.value} value={i.value}>{i.label}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="expectedVolume" className="block text-sm font-medium text-gray-200 mb-2">
-                Expected Volume <span className="text-red-400">*</span>
-              </label>
-              <select
-                id="expectedVolume" name="expectedVolume" required
-                className="w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition"
-              >
-                <option value="">Select volume...</option>
-                {VOLUMES.map(v => (
-                  <option key={v.value} value={v.value}>{v.label}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="useCase" className="block text-sm font-medium text-gray-200 mb-2">
-              Use Case <span className="text-gray-500">(optional)</span>
-            </label>
-            <textarea
-              id="useCase" name="useCase" rows={3} maxLength={500}
-              placeholder="Describe how you plan to use quantum-safe encryption..."
-              className="w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition resize-none"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="couponCode" className="block text-sm font-medium text-gray-200 mb-2">
-              Coupon Code <span className="text-gray-500">(optional)</span>
-            </label>
-            <input
-              type="text" id="couponCode" name="couponCode" maxLength={50}
-              placeholder="BETA2026"
-              className="w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-quantum-500 focus:ring-2 focus:ring-quantum-500/20 transition font-mono uppercase"
-            />
-            <p className="text-sm text-gray-500 mt-1">
-              Follow us on LinkedIn for exclusive early access codes.
-            </p>
-          </div>
-
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox" name="ndaConsent" required
-              className="mt-1 h-4 w-4 rounded border-white/20 bg-gray-900/50 text-quantum-500 focus:ring-quantum-500/20"
-            />
-            <span className="text-sm text-gray-300">
-              I agree to sign an NDA for beta testing and understand that early access is subject to availability.
-              <span className="text-red-400 ml-1">*</span>
-            </span>
-          </label>
-
-          <button
-            type="submit"
-            disabled={status === 'loading'}
-            className="w-full btn-primary py-4 text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {status === 'loading' ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Submitting...
-              </>
-            ) : (
-              <>
-                <Send className="w-5 h-5" />
-                Join the Beta Waitlist
-              </>
-            )}
-          </button>
-        </form>
+        <SectionHeader />
+        {formBody}
       </div>
     </section>
   )

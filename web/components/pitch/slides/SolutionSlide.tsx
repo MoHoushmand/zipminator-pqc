@@ -24,7 +24,7 @@ const MODULE_WEIGHTS = [
   { name: 'Email', value: 12, color: '#22c55e' },
   { name: 'QRNG', value: 10, color: '#f59e0b' },
   { name: 'PII', value: 8, color: '#ec4899' },
-  { name: 'AI', value: 10, color: '#a855f7' },
+  { name: 'AI', value: 10, color: '#a78bfa' },
 ]
 
 const RADIAN = Math.PI / 180

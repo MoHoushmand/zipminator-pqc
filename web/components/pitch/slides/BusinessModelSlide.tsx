@@ -22,7 +22,7 @@ import {
 import { fadeUp } from '../slide-utils'
 import { TOOLTIP_STYLE, GRADIENT_DEFS } from '../chart-config'
 
-const MODULE_COLORS = ['#6366f1', '#22c55e', '#3b82f6', '#a855f7', '#f59e0b', '#ec4899']
+const MODULE_COLORS = ['#6366f1', '#22c55e', '#3b82f6', '#a78bfa', '#f59e0b', '#ec4899']
 
 const SCENARIO_COLORS: Record<string, string> = {
   base: '#6366f1',

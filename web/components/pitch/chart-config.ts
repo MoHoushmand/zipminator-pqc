@@ -55,7 +55,7 @@ export const GRADIENT_DEFS = {
   blue:    { id: 'gradBlue',    color: '#3b82f6', opacity: [0.3, 0.05] as [number, number] },
   amber:   { id: 'gradAmber',   color: '#f59e0b', opacity: [0.3, 0.05] as [number, number] },
   red:     { id: 'gradRed',     color: '#ef4444', opacity: [0.3, 0.05] as [number, number] },
-  purple:  { id: 'gradPurple',  color: '#a855f7', opacity: [0.3, 0.05] as [number, number] },
+  purple:  { id: 'gradPurple',  color: '#a78bfa', opacity: [0.3, 0.05] as [number, number] },
   cyan:    { id: 'gradCyan',    color: '#06b6d4', opacity: [0.3, 0.05] as [number, number] },
   emerald: { id: 'gradEmerald', color: '#10b981', opacity: [0.3, 0.05] as [number, number] },
   pink:    { id: 'gradPink',    color: '#ec4899', opacity: [0.3, 0.05] as [number, number] },
@@ -92,7 +92,7 @@ export const AXIS_STYLE = {
 // Module chart colors (consistent across BusinessModel, Financials, etc.)
 // ---------------------------------------------------------------------------
 export const MODULE_COLORS = [
-  '#6366f1', '#22c55e', '#3b82f6', '#a855f7', '#f59e0b', '#ec4899',
+  '#6366f1', '#22c55e', '#3b82f6', '#a78bfa', '#f59e0b', '#ec4899',
   '#06b6d4', '#10b981',
 ]
 

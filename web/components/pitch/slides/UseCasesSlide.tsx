@@ -35,7 +35,7 @@ const MARKET_BY_SECTOR = [
   { sector: 'Defense', value: 78, color: '#6366f1' },
   { sector: 'Healthcare', value: 72, color: '#ef4444' },
   { sector: 'Enterprise', value: 65, color: '#06b6d4' },
-  { sector: 'Legal', value: 45, color: '#a855f7' },
+  { sector: 'Legal', value: 45, color: '#a78bfa' },
   { sector: 'Education', value: 38, color: '#818cf8' },
 ]
 

@@ -37,7 +37,7 @@ const REGION_COLORS: Record<string, string> = {
   norway: '#22c55e',
   eu: '#6366f1',
   nato: '#3b82f6',
-  us: '#a855f7',
+  us: '#a78bfa',
 }
 
 function getStatusBadge(status: string): { bg: string; text: string } {

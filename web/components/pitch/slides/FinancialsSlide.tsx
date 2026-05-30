@@ -23,7 +23,7 @@ const SCENARIO_COLORS: Record<string, string> = {
   conservative: '#3b82f6',
 }
 
-const PIE_COLORS = ['#6366f1', 'oklch(0.72 0.17 290)', '#22c55e', '#3b82f6', '#a855f7', '#6b7280']
+const PIE_COLORS = ['#6366f1', 'oklch(0.72 0.17 290)', '#22c55e', '#3b82f6', '#a78bfa', '#6b7280']
 
 function formatUsers(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`

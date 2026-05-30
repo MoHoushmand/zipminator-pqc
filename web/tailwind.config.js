@@ -10,27 +10,28 @@ module.exports = {
         extend: {
             colors: {
                 // QDaria quantum token palette (OKLCH — mapped to Tailwind for className usage)
+                // OKLCH with <alpha-value> so Tailwind v3 opacity modifiers (e.g. /30) resolve.
                 quantum: {
-                    50:  'oklch(0.97 0.03 200)',
-                    100: 'oklch(0.94 0.05 200)',
-                    200: 'oklch(0.90 0.08 200)',
-                    300: 'oklch(0.87 0.11 200)',
-                    400: 'oklch(0.84 0.13 200)',
-                    500: 'var(--quantum-cyan)',    /* oklch(0.82 0.15 200) */
-                    600: 'oklch(0.73 0.15 200)',
-                    700: 'oklch(0.62 0.15 200)',
-                    800: 'oklch(0.50 0.13 200)',
-                    900: 'oklch(0.36 0.10 200)',
-                    950: 'oklch(0.22 0.07 200)',
+                    50:  'oklch(0.97 0.03 200 / <alpha-value>)',
+                    100: 'oklch(0.94 0.05 200 / <alpha-value>)',
+                    200: 'oklch(0.90 0.08 200 / <alpha-value>)',
+                    300: 'oklch(0.87 0.11 200 / <alpha-value>)',
+                    400: 'oklch(0.84 0.13 200 / <alpha-value>)',
+                    500: 'oklch(0.82 0.15 200 / <alpha-value>)',  /* --quantum-cyan */
+                    600: 'oklch(0.73 0.15 200 / <alpha-value>)',
+                    700: 'oklch(0.62 0.15 200 / <alpha-value>)',
+                    800: 'oklch(0.50 0.13 200 / <alpha-value>)',
+                    900: 'oklch(0.36 0.10 200 / <alpha-value>)',
+                    950: 'oklch(0.22 0.07 200 / <alpha-value>)',
                 },
                 // QDaria semantic quantum tokens
-                'quantum-amber':   'var(--quantum-amber)',
-                'quantum-rose':    'var(--quantum-rose)',
-                'quantum-emerald': 'var(--quantum-emerald)',
-                'quantum-violet':  'var(--quantum-violet)',
+                'quantum-amber':   'oklch(0.77 0.18 85 / <alpha-value>)',
+                'quantum-rose':    'oklch(0.72 0.19 10 / <alpha-value>)',
+                'quantum-emerald': 'oklch(0.79 0.17 155 / <alpha-value>)',
+                'quantum-violet':  'oklch(0.72 0.17 290 / <alpha-value>)',
                 nist: {
-                    blue: 'oklch(0.48 0.18 258)',
-                    gold: 'oklch(0.88 0.18 90)',
+                    blue: 'oklch(0.48 0.18 258 / <alpha-value>)',
+                    gold: 'oklch(0.88 0.18 90 / <alpha-value>)',
                 }
             },
             backgroundImage: {

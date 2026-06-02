@@ -1,0 +1,161 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:00000000-0000-0000-0000-000000000002",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-06-03T00:00:00Z",
+    "tools": [
+      {
+        "name": "TODO: cyclonedx-py",
+        "version": "NOT INSTALLED",
+        "vendor": "CycloneDX",
+        "note": "Install with: micromamba activate zip-pqc && uv pip install cyclonedx-bom; then run: cyclonedx-py environment -o docs/compliance/sbom/sbom-pip.cyclonedx.json"
+      }
+    ],
+    "component": {
+      "type": "library",
+      "name": "zipminator-python-sdk",
+      "version": "0.5.1",
+      "licenses": [{"license": {"id": "Apache-2.0"}}],
+      "purl": "pkg:pypi/zipminator@0.5.1"
+    }
+  },
+  "_note": "STUB derived from pyproject.toml. Run cyclonedx-py for a resolved SBOM with transitive deps.",
+  "components": [
+    {
+      "type": "library", "name": "cryptography", "version": ">=41.0.0",
+      "licenses": [{"license": {"id": "Apache-2.0"}}],
+      "purl": "pkg:pypi/cryptography"
+    },
+    {
+      "type": "library", "name": "click", "version": ">=8.0.0",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}],
+      "purl": "pkg:pypi/click"
+    },
+    {
+      "type": "library", "name": "python-dotenv", "version": ">=1.0.0",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}],
+      "purl": "pkg:pypi/python-dotenv"
+    },
+    {
+      "type": "library", "name": "pyyaml", "version": ">=6.0.0",
+      "licenses": [{"license": {"id": "MIT"}}],
+      "purl": "pkg:pypi/pyyaml"
+    },
+    {
+      "type": "library", "name": "numpy", "version": ">=1.20.0",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}],
+      "purl": "pkg:pypi/numpy",
+      "_extras": ["data", "anonymization"]
+    },
+    {
+      "type": "library", "name": "pandas", "version": ">=1.3.0",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}],
+      "purl": "pkg:pypi/pandas",
+      "_extras": ["data", "anonymization"]
+    },
+    {
+      "type": "library", "name": "pyzipper", "version": ">=0.3.6",
+      "licenses": [{"license": {"id": "MIT"}}],
+      "purl": "pkg:pypi/pyzipper",
+      "_extras": ["data"]
+    },
+    {
+      "type": "library", "name": "faker", "version": ">=20.0",
+      "licenses": [{"license": {"id": "MIT"}}],
+      "purl": "pkg:pypi/faker",
+      "_extras": ["anonymization"]
+    },
+    {
+      "type": "library", "name": "typer", "version": ">=0.9.0",
+      "licenses": [{"license": {"id": "MIT"}}],
+      "purl": "pkg:pypi/typer",
+      "_extras": ["cli"]
+    },
+    {
+      "type": "library", "name": "rich", "version": ">=13.0.0",
+      "licenses": [{"license": {"id": "MIT"}}],
+      "purl": "pkg:pypi/rich",
+      "_extras": ["cli"]
+    },
+    {
+      "type": "library", "name": "httpx", "version": ">=0.25.0",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}],
+      "purl": "pkg:pypi/httpx",
+      "_extras": ["quantum"]
+    },
+    {
+      "type": "library", "name": "jupyterlab", "version": ">=4.0",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}],
+      "purl": "pkg:pypi/jupyterlab",
+      "_extras": ["jupyter"]
+    },
+    {
+      "type": "library", "name": "ipywidgets", "version": ">=8.0",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}],
+      "purl": "pkg:pypi/ipywidgets",
+      "_extras": ["jupyter"]
+    },
+    {
+      "type": "library", "name": "ipython", "version": ">=8.0",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}],
+      "purl": "pkg:pypi/ipython",
+      "_extras": ["jupyter"]
+    },
+    {
+      "type": "library", "name": "plotly", "version": ">=5.0",
+      "licenses": [{"license": {"id": "MIT"}}],
+      "purl": "pkg:pypi/plotly",
+      "_extras": ["jupyter"]
+    },
+    {
+      "type": "library", "name": "aiosmtpd", "version": ">=1.4.0",
+      "licenses": [{"license": {"id": "Apache-2.0"}}],
+      "purl": "pkg:pypi/aiosmtpd",
+      "_extras": ["email"]
+    },
+    {
+      "type": "library", "name": "matplotlib", "version": ">=3.10.0",
+      "licenses": [{"license": {"name": "PSF-2.0"}}],
+      "purl": "pkg:pypi/matplotlib",
+      "_extras": ["benchmark"]
+    },
+    {
+      "type": "library", "name": "seaborn", "version": ">=0.13.0",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}],
+      "purl": "pkg:pypi/seaborn",
+      "_extras": ["benchmark"]
+    },
+    {
+      "type": "library", "name": "pytest", "version": ">=7.0.0",
+      "licenses": [{"license": {"id": "MIT"}}],
+      "purl": "pkg:pypi/pytest",
+      "_extras": ["dev"]
+    },
+    {
+      "type": "library", "name": "pytest-cov", "version": ">=4.0.0",
+      "licenses": [{"license": {"id": "MIT"}}],
+      "purl": "pkg:pypi/pytest-cov",
+      "_extras": ["dev"]
+    },
+    {
+      "type": "library", "name": "ruff", "version": ">=0.1.0",
+      "licenses": [{"license": {"id": "MIT"}}],
+      "purl": "pkg:pypi/ruff",
+      "_extras": ["dev"]
+    },
+    {
+      "type": "library", "name": "mypy", "version": ">=1.0.0",
+      "licenses": [{"license": {"id": "MIT"}}],
+      "purl": "pkg:pypi/mypy",
+      "_extras": ["dev"]
+    }
+  ],
+  "TODO": [
+    "Install: micromamba activate zip-pqc && uv pip install cyclonedx-bom",
+    "Generate full resolved SBOM: cyclonedx-py environment -o docs/compliance/sbom/sbom-pip.cyclonedx.json",
+    "Alternative (license table): micromamba activate zip-pqc && uv pip install pip-licenses && pip-licenses --format=json --with-urls --with-authors > docs/compliance/sbom/pip-licenses.json"
+  ]
+}

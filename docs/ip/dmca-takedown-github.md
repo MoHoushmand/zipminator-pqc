@@ -1,8 +1,13 @@
-# DMCA Takedown Notice — GitHub
+# DMCA Takedown Notice (GitHub)
 
-**Submit at: https://github.com/contact/dmca-takedown**
+**Submit at: https://github.com/contact/dmca-takedown** (webform, not email; GitHub does not accept DMCA notices by email)
 
-Copy the text below into the GitHub DMCA form. Fill in the [BRACKETED] fields.
+Copy each answer below into the matching field of the GitHub DMCA webform. The form is sectioned exactly as the headings below. Before submitting, fill in every `[BRACKETED]` field. The two fields that still require your input are:
+
+- `[QDaria AS org. number]`: QDaria AS Norwegian organisasjonsnummer (9 digits, from Brønnøysund/Altinn)
+- `[your phone number]`: a reachable telephone number (GitHub requires either a phone number or a physical address; the physical address is already supplied)
+
+Escalation procedure (if GitHub does not act within its stated window) is in `dmca-escalation-runbook.md`. The public-safe provenance summary that backs every factual claim in this notice is in `DMCA_DEFENSE.md`.
 
 ---
 
@@ -12,7 +17,7 @@ Copy the text below into the GitHub DMCA form. Fill in the [BRACKETED] fields.
 
 Yes, I am the copyright holder.
 
-**Are you submitting a revised DMCA notice after GitHub Sstaff asked you to make changes to your original notice?**
+**Are you submitting a revised DMCA notice after GitHub staff asked you to make changes to your original notice?**
 
 No
 
@@ -22,7 +27,7 @@ GitHub
 
 **Please describe the nature of your copyright ownership or authorization to act on the owner's behalf.**
 
-I am Daniel Mo Houshmand, CEO and sole founder of QDaria AS (Norwegian org. number: 925030244), and the original author of the Zipminator-PQC software. I created this software beginning in January 2023 under the GitHub organization QDaria (https://github.com/QDaria/zipminator, created January 8, 2023). The canonical development repository is at https://github.com/MoHoushmand/zipminator-pqc (created November 4, 2025, made public April 12, 2026). All code, architecture, and documentation in these repositories is my original work, authored by me under the email addresses dmo.houshmand@gmail.com and mos@example.com, as verifiable in the git commit history. Independent provenance is established via Zenodo DOI (minted on public release tag) and OpenTimestamps Bitcoin-blockchain proofs (see .ots/ directory in the repository). Three patent applications covering the underlying methods are filed at Patentstyret (Norwegian Patent Office): application 20260384 (priority 2026-03-24), plus two additional applications filed 2026-04-05.
+I am Daniel Mo Houshmand, CEO and sole founder of QDaria AS (Norwegian org. number: [QDaria AS org. number]), and the original author of the Zipminator-PQC software. I created this software beginning in January 2023 under the GitHub organization QDaria (https://github.com/QDaria/zipminator, created January 8, 2023). The canonical development repository is at https://github.com/MoHoushmand/zipminator-pqc (created November 4, 2025, made public April 12, 2026). All code, architecture, and documentation in these repositories is my original work, authored by me under the names "mos" and "D. Mo Houshmand" and the email addresses dmo.houshmand@gmail.com and mos@example.com, as verifiable in the git commit history. Independent provenance is established via OpenTimestamps Bitcoin-blockchain proofs of commit hashes (committed in the .ots/ directory of the repository) and, on public release, a Zenodo DOI. Three patent applications covering the underlying methods are filed at Patentstyret (Norwegian Industrial Property Office): application 20260384 (priority date 2026-03-24), plus two additional applications filed 2026-04-04 and 2026-04-05.
 
 **Please provide a detailed description of the original copyrighted work that has allegedly been infringed. If possible, include a URL to where it is posted online.**
 
@@ -46,7 +51,7 @@ The entire repository should be taken down:
 
 https://github.com/CYBERELLUM/zipminator-pqc
 
-This repository is a complete unauthorized copy of my work. The infringer created a new repository (not a GitHub fork) on January 17, 2026, and pushed my commits — including my name and email in the git commit history — as their own. They changed the license from Apache-2.0 to "Other," violating the Apache License 2.0 requirements (Section 4: redistribution must include a copy of the License, and must cause any modified files to carry prominent notices stating that you changed the files).
+This repository is a complete unauthorized copy of my work. The infringer created a new repository (not a GitHub fork) on January 17, 2026, and pushed my commits, including my name and email in the git commit history, as their own. They changed the license from Apache-2.0 to "Other," violating the Apache License 2.0 requirements (Section 4: redistribution must include a copy of the License, and must cause any modified files to carry prominent notices stating that you changed the files).
 
 **Do you claim to have any technological measures in place to control access to your copyrighted content? Please note: if you are sending a takedown notice against a circumvention claim, you need to follow the DMCA 1201 process.**
 
@@ -69,7 +74,7 @@ Even under Apache-2.0, these violations make the redistribution unauthorized.
 
 **How do you believe the license is being violated?**
 
-The Apache License 2.0 (Section 4 — Redistribution) requires:
+The Apache License 2.0 (Section 4, Redistribution) requires:
 
 (a) You must give any other recipients of the Work or Derivative Works a copy of this License; and
 (b) You must cause any modified files to carry prominent notices stating that You changed the files; and
@@ -114,17 +119,17 @@ I have a good faith belief that use of the copyrighted materials described above
 
 I swear, under penalty of perjury, that the information in this notification is accurate and that I am the copyright owner, or am authorized to act on behalf of the owner, of an exclusive right that is allegedly infringed.
 
-**Please confirm that you have you am authorized to act on behalf of the owner, of an exclusive right that is allegedly infringed.**
+**Please confirm that you have read and understand GitHub's Guide to Filing a DMCA Notice.**
 
-I have read and understand GitHub's Guide to Filing a DMCA Notice.
+I have read and understand GitHub's Guide to Filing a DMCA Notice (https://docs.github.com/en/site-policy/content-removal-policies/guide-to-submitting-a-dmca-takedown-notice).
 
 **So that we can get back to you, please provide either your telephone number or physical address.**
 
 Daniel Mo Houshmand
-QDaria AS (org.nr 925030244)
+QDaria AS
 Oslo, Norway
 mo@qdaria.com
-+47 980 79 896
+[your phone number]
 
 **Please type your full legal name below to sign this request.**
 

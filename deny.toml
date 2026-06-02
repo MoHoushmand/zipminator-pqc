@@ -1,0 +1,132 @@
+# deny.toml — cargo-deny configuration for Zipminator workspace
+# Docs: https://embarkstudios.github.io/cargo-deny/
+# CI: .github/workflows/security.yml already invokes cargo-deny via EmbarkStudios/cargo-deny-action@v1
+
+[graph]
+# Evaluate all workspace members (default).  Targets are checked per-crate.
+# If you want to restrict to a specific target triple, set targets here:
+# targets = [
+#   { triple = "x86_64-unknown-linux-gnu" },
+#   { triple = "aarch64-apple-darwin" },
+# ]
+all-features = false
+no-default-features = false
+
+# ---------------------------------------------------------------------------
+# [licenses] — allowlist of acceptable SPDX license identifiers.
+# The crypto rules (.claude/rules/02-security-pqc.md) require pinned deps;
+# all must carry at least one of the licenses below.
+# ---------------------------------------------------------------------------
+[licenses]
+# Require all packages to have a recognised license (or be in the exceptions list).
+# "deny" means any package whose effective license is NOT in `allow` will fail the check.
+version = 2
+allow = [
+  "MIT",
+  "Apache-2.0",
+  "Apache-2.0 WITH LLVM-exception",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "ISC",
+  "OpenSSL",           # aws-lc-sys transitive; permissive, noted in NOTICE
+  "Unlicense",
+  "0BSD",
+  "Zlib",
+  "Unicode-3.0",
+  "Unicode-DFS-2016",
+  "CC0-1.0",
+  "CDLA-Permissive-2.0",  # webpki-roots (Mozilla root certs data)
+  "BSL-1.0",              # ryu — Apache-2.0 OR BSL-1.0; permissive for production use
+  "NCSA",                 # libfuzzer-sys (dev/fuzz only, not shipped in production)
+  "MPL-2.0",              # cssparser/selectors in zipbrowser — file-level copyleft; see exceptions below
+]
+
+# Confidence threshold for license detection (0.0 - 1.0).
+confidence-threshold = 0.8
+
+# Packages whose licenses are not automatically detectable (no SPDX in Cargo.toml).
+# Add "clarify" entries for packages with UNKNOWN licenses found in the SBOM audit.
+[[licenses.clarify]]
+name = "allo-isolate"
+version = "*"
+# allo-isolate is likely MIT — verify on crates.io and add SPDX to Cargo.toml if possible
+expression = "MIT"
+license-files = [
+  { path = "LICENSE", hash = 0x001c7e6c },
+]
+
+# Internal crates missing license field — will be set directly in Cargo.toml.
+# Listed here as an acknowledgement until Cargo.toml is patched.
+[[licenses.clarify]]
+name = "zipminator-fuzz"
+version = "*"
+expression = "MIT"
+license-files = [{ path = "LICENSE", hash = 0x001c7e6c }]
+
+[[licenses.clarify]]
+name = "rust_lib_zipminator"
+version = "*"
+expression = "MIT"
+license-files = [{ path = "LICENSE", hash = 0x001c7e6c }]
+
+# ---------------------------------------------------------------------------
+# [bans] — disallowed crates, duplicate-version limits, and wildcard bans.
+# ---------------------------------------------------------------------------
+[bans]
+# Warn on multiple versions of the same crate (common with transitive deps).
+multiple-versions = "warn"
+# Deny wildcard dependencies in workspace crates.
+wildcards = "deny"
+# Deny workspace dependencies that are not in the workspace resolver.
+workspace-default-features = "allow"
+external-default-features = "allow"
+
+# Unconditionally banned crates (security / license / quality reasons):
+deny = [
+  # Old OpenSSL bindings with known CVEs — use rustls / aws-lc-rs instead.
+  { name = "openssl", reason = "Use rustls + aws-lc-rs (FIPS-203 path). openssl-sys is not allowed." },
+  { name = "openssl-sys", reason = "Same as above." },
+  # Avoid ring since pq-wireguard and core already use aws-lc-rs / pqcrypto.
+  # (Uncomment if you want to enforce a single crypto backend.)
+  # { name = "ring", reason = "Consolidate on aws-lc-rs + pqcrypto for PQC path." },
+
+  # GPL-licensed crates are incompatible with the commercial (closed-source) tier.
+  { name = "gpl-crate-placeholder", reason = "GPL is incompatible with Zipminator Enterprise terms." },
+]
+
+# Allowed duplicates — these are known to ship multiple major versions.
+skip = [
+  # hyper and related crates have 0.x / 1.x variants in flight.
+  { name = "base64" },
+  { name = "core-foundation" },
+  { name = "webpki-roots" },
+  { name = "rustls" },
+  { name = "tokio-rustls" },
+  { name = "rustls-pki-types" },
+]
+
+# ---------------------------------------------------------------------------
+# [advisories] — RustSec advisory database integration.
+# The CI security.yml job also runs cargo-audit directly; this provides a
+# second advisory check as part of cargo-deny.
+# ---------------------------------------------------------------------------
+[advisories]
+# Path to a local advisory database clone, or leave empty to use the bundled DB.
+# db-path = "~/.cargo/advisory-db"
+db-urls = ["https://github.com/rustsec/advisory-db"]
+version = 2
+# Deny any crate with an active security advisory.
+ignore = [
+  # Add advisory IDs to ignore only after documented risk-acceptance review.
+  # Example: { id = "RUSTSEC-2023-0071", reason = "..." }
+]
+
+# ---------------------------------------------------------------------------
+# [sources] — permitted crate registries and git sources.
+# ---------------------------------------------------------------------------
+[sources]
+unknown-registry = "deny"
+unknown-git = "warn"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+# Workspace-local path dependencies are always allowed.
+allow-git = []

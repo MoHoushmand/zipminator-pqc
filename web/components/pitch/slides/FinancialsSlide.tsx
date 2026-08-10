@@ -11,7 +11,7 @@ import { fadeUp, useAnimatedCounter } from '../slide-utils'
 import { TOOLTIP_STYLE, GRADIENT_DEFS } from '../chart-config'
 
 const SCENARIO_META: Record<Scenario, { label: string; accent: string }> = {
-  all: { label: 'All Scenarios', accent: 'bg-purple-500' },
+  all: { label: 'All Scenarios', accent: 'bg-violet-500' },
   conservative: { label: 'Conservative', accent: 'bg-gray-500' },
   base: { label: 'Base', accent: 'bg-quantum-500' },
   upside: { label: 'Upside', accent: 'bg-green-500' },
@@ -23,7 +23,7 @@ const SCENARIO_COLORS: Record<string, string> = {
   conservative: '#3b82f6',
 }
 
-const PIE_COLORS = ['#6366f1', '#8b5cf6', '#22c55e', '#3b82f6', '#a855f7', '#6b7280']
+const PIE_COLORS = ['#6366f1', 'oklch(0.72 0.17 290)', '#22c55e', '#3b82f6', '#a78bfa', '#6b7280']
 
 function formatUsers(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`

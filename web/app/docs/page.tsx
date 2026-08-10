@@ -53,7 +53,7 @@ const quickStartSteps = [
 const docSections = [
   { icon: Rocket, title: 'Getting Started', desc: 'Installation, first key generation, and basic encryption in under 5 minutes.', href: `${JUPYTER_BOOK}content/getting_started.html`, color: 'text-green-400' },
   { icon: Code2, title: 'API Reference', desc: 'Full SDK documentation for Python, Rust, and Node.js bindings.', href: `${JUPYTER_BOOK}content/api_reference.html`, color: 'text-blue-400' },
-  { icon: Terminal, title: 'CLI Reference', desc: 'Command-line tool for key management, encryption, and PII scanning.', href: `${JUPYTER_BOOK}content/cli.html`, color: 'text-purple-400' },
+  { icon: Terminal, title: 'CLI Reference', desc: 'Command-line tool for key management, encryption, and PII scanning.', href: `${JUPYTER_BOOK}content/cli.html`, color: 'text-violet-400' },
   { icon: Layers, title: '10-Level Anonymization', desc: 'From basic redaction to quantum-secure k-anonymity with differential privacy.', href: `${JUPYTER_BOOK}content/anonymization.html`, color: 'text-orange-400' },
   { icon: Shield, title: 'Compliance & Standards', desc: 'NIST FIPS 203 (ML-KEM-768), NIST Security Level 3, KAT vector verification.', href: `${JUPYTER_BOOK}content/compliance.html`, color: 'text-cyan-400' },
   { icon: FlaskConical, title: 'JupyterLab Integration', desc: 'Magic commands, interactive widgets, and quantum entropy visualization.', href: `${JUPYTER_BOOK}content/jupyter.html`, color: 'text-yellow-400' },

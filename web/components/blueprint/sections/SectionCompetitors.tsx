@@ -37,7 +37,7 @@ const RADAR_DATA = DIMENSIONS.map(({ key, label }) => {
 const COMPETITOR_COLORS: Record<string, { stroke: string; opacity: number; width: number }> = {
   Zipminator: { stroke: '#22D3EE', opacity: 0.35, width: 3 },
   Signal: { stroke: '#9ca3af', opacity: 0.15, width: 1.5 },
-  ProtonMail: { stroke: '#a855f7', opacity: 0.12, width: 1.5 },
+  ProtonMail: { stroke: '#a78bfa', opacity: 0.12, width: 1.5 },
   NordVPN: { stroke: '#3b82f6', opacity: 0.12, width: 1.5 },
   'Wickr (AWS)': { stroke: '#f59e0b', opacity: 0.12, width: 1.5 },
 }

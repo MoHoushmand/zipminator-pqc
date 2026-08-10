@@ -57,7 +57,7 @@ const DIFFERENTIATORS = [
 
 const STAT_BADGES = [
   { Icon: Calendar, label: 'Founded 2024', color: 'text-quantum-400' },
-  { Icon: Package, label: '9 Products', color: 'text-purple-400' },
+  { Icon: Package, label: '9 Products', color: 'text-violet-400' },
   { Icon: Code2, label: '300K+ LOC', color: 'text-cyan-400' },
   { Icon: Wrench, label: '26 Technologies', color: 'text-emerald-400' },
 ]
@@ -273,9 +273,9 @@ export default function CompanySlide({ scenario: _scenario }: { scenario?: Scena
       {/* Social Impact callout */}
       <motion.div
         {...fadeUp(0.8)}
-        className="flex items-start gap-3 px-5 py-4 rounded-xl bg-purple-500/[0.06] border border-purple-500/20"
+        className="flex items-start gap-3 px-5 py-4 rounded-xl bg-violet-500/[0.06] border border-violet-500/20"
       >
-        <Heart className="w-5 h-5 text-purple-400 shrink-0 mt-0.5" />
+        <Heart className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" />
         <div>
           <p className="text-white font-semibold text-sm mb-1">
             Security as a Human Right

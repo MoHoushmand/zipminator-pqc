@@ -67,7 +67,7 @@ export default function ContactSlide({ scenario: _scenario = 'base' }: { scenari
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute inset-2 rounded-full bg-purple-500/15 blur-2xl"
+            className="absolute inset-2 rounded-full bg-violet-500/15 blur-2xl"
             animate={{ scale: [1.1, 1, 1.1], opacity: [0.2, 0.4, 0.2] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
           />

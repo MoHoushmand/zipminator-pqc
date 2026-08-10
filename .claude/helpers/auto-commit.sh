@@ -32,6 +32,8 @@ UNSTAGE_PATTERNS=(
   '*.lock'    '*.bin'     '*.png'     '*.jpg'     '*.svg'
   '*.dmg'     '*.whl'     '*.so'      '*.dylib'
   '.env'      '*.key'     '*.pem'
+  '.env.local'  '*/.env.local'  '*.env.local'  'web/.env'
+  '*.p12'     '*.p8'      '*.keystore'  '*/e2e/.auth/*'
   'local.properties'      'key.properties*'
   '*/.gradle/*'            '*/.mypy_cache/*'        '*/__pycache__/*'
   '*/node_modules/*'       '*/build/*'              'target/*'
@@ -48,6 +50,18 @@ done
 STAGED_NOW=$(git diff --cached --name-only 2>/dev/null || true)
 if [ -z "$STAGED_NOW" ]; then
   echo "auto-commit: nothing to stage after filtering"
+  exit 0
+fi
+
+# ─── Secret-scan backstop: refuse to commit obvious live secrets ──────
+# (catches keys that slipped past the path globs above; names-only is safe)
+SECRET_HITS=$(git diff --cached -U0 2>/dev/null \
+  | grep -E '^\+' \
+  | grep -EiI '(-----BEGIN [A-Z ]*PRIVATE KEY-----|AKIA[0-9A-Z]{16}|sk-[A-Za-z0-9]{20,}|SG\.[A-Za-z0-9_-]{20,}|re_[A-Za-z0-9]{20,}|eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.)' \
+  | head -3 || true)
+if [ -n "$SECRET_HITS" ]; then
+  echo "auto-commit: ABORT — staged change appears to contain a secret. Unstaging." >&2
+  git reset HEAD -- . 2>/dev/null || true
   exit 0
 fi
 

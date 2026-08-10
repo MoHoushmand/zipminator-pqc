@@ -1,9 +1,26 @@
 import { Resend } from 'resend'
 
+// RESEND_API_KEY is required for email delivery. When absent the service
+// degrades gracefully: all send functions return false and log a warning.
+// This is intentional for local dev and CI environments where email is not
+// configured. The warning makes the missing configuration visible in server
+// logs without crashing the request.
 const resendApiKey = process.env.RESEND_API_KEY
-const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || 'hello@qdaria.com'
+
+if (!resendApiKey) {
+  console.warn(
+    '[email] RESEND_API_KEY is not set — email delivery is disabled. ' +
+    'Waitlist submissions will still be saved to the database. ' +
+    'Set RESEND_API_KEY in your .env.local (or Vercel env vars) to enable emails.'
+  )
+}
+
+// FROM_EMAIL and SALES_EMAIL use env vars named consistently with Resend
+// conventions. The SENDGRID_* names are legacy aliases kept for backward
+// compatibility with existing deployments.
+const FROM_EMAIL = process.env.FROM_EMAIL || process.env.SENDGRID_FROM_EMAIL || 'hello@qdaria.com'
+const FROM_NAME = process.env.FROM_NAME || process.env.SENDGRID_FROM_NAME || 'Qdaria Technologies'
 const SALES_EMAIL = process.env.SALES_EMAIL || 'sales@qdaria.com'
-const FROM_NAME = process.env.SENDGRID_FROM_NAME || 'Qdaria Technologies'
 
 export const resend = resendApiKey ? new Resend(resendApiKey) : null
 

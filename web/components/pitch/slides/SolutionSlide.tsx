@@ -18,13 +18,13 @@ import {
 
 const MODULE_WEIGHTS = [
   { name: 'Messenger', value: 18, color: '#6366f1' },
-  { name: 'VoIP', value: 14, color: '#8b5cf6' },
+  { name: 'VoIP', value: 14, color: 'oklch(0.72 0.17 290)' },
   { name: 'VPN', value: 16, color: '#3b82f6' },
   { name: 'Browser', value: 12, color: '#06b6d4' },
   { name: 'Email', value: 12, color: '#22c55e' },
   { name: 'QRNG', value: 10, color: '#f59e0b' },
   { name: 'PII', value: 8, color: '#ec4899' },
-  { name: 'AI', value: 10, color: '#a855f7' },
+  { name: 'AI', value: 10, color: '#a78bfa' },
 ]
 
 const RADIAN = Math.PI / 180

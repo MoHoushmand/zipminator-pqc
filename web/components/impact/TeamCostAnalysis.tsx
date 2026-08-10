@@ -8,7 +8,7 @@ const roles = [
   { role: 'Rust / Systems Engineers', count: '8-12', salary: '$180-250K', color: 'bg-indigo-500' },
   { role: 'Mobile Developers', count: '4-6', salary: '$160-220K', color: 'bg-blue-500' },
   { role: 'Full-Stack Web Developers', count: '3-4', salary: '$150-200K', color: 'bg-cyan-500' },
-  { role: 'Quantum Computing Specialists', count: '2-3', salary: '$220-350K', color: 'bg-purple-500' },
+  { role: 'Quantum Computing Specialists', count: '2-3', salary: '$220-350K', color: 'bg-violet-500' },
   { role: 'DevOps / SRE', count: '2-3', salary: '$170-230K', color: 'bg-green-500' },
   { role: 'Security Auditors', count: '2-3', salary: '$180-260K', color: 'bg-yellow-500' },
   { role: 'QA Engineers', count: '2-3', salary: '$130-180K', color: 'bg-orange-500' },
@@ -90,7 +90,7 @@ const TeamCostAnalysis = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center"
         >
-          <div className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-quantum-900/40 to-purple-900/40 border border-quantum-500/30">
+          <div className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-quantum-900/40 to-quantum-800/40 border border-quantum-500/30">
             <ArrowRight className="w-5 h-5 text-quantum-400" />
             <span className="text-lg font-semibold text-white">
               Zipminator delivers all of this as a{' '}

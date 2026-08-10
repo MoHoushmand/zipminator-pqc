@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter, JetBrains_Mono, Outfit, Geist } from 'next/font/google'
+import { Fraunces, DM_Sans, JetBrains_Mono, Geist } from 'next/font/google'
 import './globals.css'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
@@ -11,21 +11,22 @@ import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
-const inter = Inter({
+const fraunces = Fraunces({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-display',
+  display: 'swap',
+  axes: ['opsz'],
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-body',
   display: 'swap',
 })
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
-  display: 'swap',
-})
-
-const outfit = Outfit({
-  subsets: ['latin'],
-  variable: '--font-outfit',
   display: 'swap',
 })
 
@@ -198,7 +199,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} ${outfit.variable} font-sans bg-gray-950 text-white antialiased`}>
+      <body className={`${fraunces.variable} ${dmSans.variable} ${jetbrainsMono.variable} font-sans bg-gray-950 text-white antialiased`}>
         <SessionProvider>
           <ThemeProvider>
             <Navigation />

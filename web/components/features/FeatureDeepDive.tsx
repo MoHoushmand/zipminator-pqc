@@ -23,7 +23,7 @@ const features = [
     metric: '156',
     metricLabel: 'qubits',
     description: 'Real quantum randomness from IBM hardware via qBraid pipeline. Multi-source fallback: Rigetti, IBM Quantum, qBraid, then OS entropy. Ever-growing entropy pool.',
-    gradient: 'from-purple-500 to-pink-500',
+    gradient: 'from-rose-500 to-pink-500',
   },
   {
     icon: MessageSquare,
@@ -86,7 +86,7 @@ const features = [
     metric: '5',
     metricLabel: 'platforms',
     description: 'Install once, protect every app and connection. System-wide PQC encryption for iOS, Android, macOS, Windows, and Linux.',
-    gradient: 'from-violet-500 to-purple-500',
+    gradient: 'from-violet-500 to-indigo-500',
   },
   {
     icon: Bot,

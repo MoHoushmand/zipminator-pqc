@@ -175,7 +175,7 @@ const FileVault = () => {
                                             <motion.div
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${progress}%` }}
-                                                className={`h-full bg-gradient-to-r ${mode === 'encrypt' ? 'from-quantum-500 to-purple-500' : 'from-green-500 to-emerald-500'}`}
+                                                className={`h-full bg-gradient-to-r ${mode === 'encrypt' ? 'from-quantum-500 to-quantum-700' : 'from-green-500 to-emerald-500'}`}
                                             />
                                         </div>
                                     </div>

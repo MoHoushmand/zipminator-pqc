@@ -54,7 +54,7 @@ export default function DashboardPage() {
             <aside className="w-64 fixed left-0 top-20 bottom-0 bg-gray-950/80 backdrop-blur-2xl border-r border-white/[0.06] hidden lg:block overflow-y-auto">
                 <div className="p-5 pb-32">
                     <div className="flex items-center gap-3 mb-8 px-2">
-                        <div className="w-9 h-9 bg-gradient-to-br from-quantum-500 to-purple-600 rounded-xl flex items-center justify-center font-bold text-white text-sm shadow-lg shadow-quantum-500/20">
+                        <div className="w-9 h-9 bg-gradient-to-br from-quantum-500 to-quantum-700 rounded-xl flex items-center justify-center font-bold text-white text-sm shadow-lg shadow-quantum-500/20">
                             Z
                         </div>
                         <span className="font-display font-bold text-lg tracking-tight">Zipminator</span>
@@ -80,7 +80,7 @@ export default function DashboardPage() {
                     </nav>
 
                     <div className="absolute bottom-6 left-5 right-5">
-                        <div className="p-4 rounded-xl bg-gradient-to-br from-quantum-950/80 to-purple-950/60 border border-white/[0.06]">
+                        <div className="p-4 rounded-xl bg-gradient-to-br from-quantum-950/80 to-quantum-900/60 border border-white/[0.06]">
                             <div className="text-[10px] uppercase tracking-wider text-quantum-400 font-mono font-medium mb-2">Entropy Pool</div>
                             <div className="flex items-end gap-[3px] h-8 mb-2">
                                 {entropyBarHeights.map((h, i) => (

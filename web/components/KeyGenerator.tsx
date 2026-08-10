@@ -65,7 +65,7 @@ const KeyGenerator = () => {
             <div className="glass-panel rounded-2xl p-8 relative overflow-hidden">
                 {/* Background Glow */}
                 <div className="absolute top-0 right-0 w-96 h-96 bg-quantum-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-quantum-700/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
                 <div className="relative z-10">
                     {/* Header */}
@@ -136,7 +136,7 @@ const KeyGenerator = () => {
                                     <motion.div
                                         initial={{ width: 0 }}
                                         animate={{ width: `${progress}%` }}
-                                        className="h-full bg-gradient-to-r from-quantum-500 to-purple-500"
+                                        className="h-full bg-gradient-to-r from-quantum-500 to-quantum-700"
                                     />
                                 </div>
                                 <div className="mt-4 font-mono text-xs text-gray-500 text-center">

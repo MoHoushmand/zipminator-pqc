@@ -35,7 +35,7 @@ const MARKET_BY_SECTOR = [
   { sector: 'Defense', value: 78, color: '#6366f1' },
   { sector: 'Healthcare', value: 72, color: '#ef4444' },
   { sector: 'Enterprise', value: 65, color: '#06b6d4' },
-  { sector: 'Legal', value: 45, color: '#a855f7' },
+  { sector: 'Legal', value: 45, color: '#a78bfa' },
   { sector: 'Education', value: 38, color: '#818cf8' },
 ]
 
@@ -101,11 +101,11 @@ const INDUSTRIES: IndustryCard[] = [
     icon: Scale,
     description: 'Attorney-client privilege and trade secrets protected for decades',
     badges: ['ABA Ethics', 'Trade Secret Act', '2050+ Safe'],
-    accentColor: 'text-purple-400',
-    accentBg: 'bg-purple-500/15',
-    accentBorder: 'border-purple-500/25',
-    badgeBg: 'bg-purple-500/10',
-    badgeText: 'text-purple-400',
+    accentColor: 'text-violet-400',
+    accentBg: 'bg-violet-500/15',
+    accentBorder: 'border-violet-500/25',
+    badgeBg: 'bg-violet-500/10',
+    badgeText: 'text-violet-400',
   },
   {
     name: 'Enterprise Tech',

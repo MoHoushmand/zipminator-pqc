@@ -192,7 +192,7 @@ function syntaxHighlight(code: string, language: string): React.ReactNode[] {
       if (part === 'END') { currentType = null; continue }
 
       if (currentType === 'kw') {
-        elements.push(<span key={`${i}-${j}`} className="text-purple-400">{part}</span>)
+        elements.push(<span key={`${i}-${j}`} className="text-violet-400">{part}</span>)
       } else if (currentType === 'str') {
         elements.push(<span key={`${i}-${j}`} className="text-amber-300">{part}</span>)
       } else if (currentType === 'type') {
@@ -308,7 +308,7 @@ const HowItWorks = () => {
                 <div key={`${activeTab}-${index}`} className="border-b border-gray-800/50 last:border-b-0">
                   {/* Step Header */}
                   <div className="flex items-center gap-3 px-5 pt-4 pb-2">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-quantum-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-quantum-500 to-quantum-700 flex items-center justify-center text-xs font-bold text-white">
                       {index + 1}
                     </span>
                     <span className="text-sm text-gray-400">{step.title}</span>
@@ -364,7 +364,7 @@ const HowItWorks = () => {
             href="https://github.com/qdaria/zipminator-pqc"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-quantum-500 to-purple-600 text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-quantum-500/50 transition-all duration-300 hover:scale-105"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-quantum-500 to-quantum-700 text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-quantum-500/50 transition-all duration-300 hover:scale-105"
           >
             <Download className="w-5 h-5" />
             View on GitHub

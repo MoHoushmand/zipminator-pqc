@@ -92,7 +92,7 @@ const ProjectScale = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-gray-950 to-gray-900" />
       <div className="absolute inset-0">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-quantum-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-quantum-700/5 rounded-full blur-3xl" />
       </div>
 
       <div className="container-custom relative z-10">
@@ -152,7 +152,7 @@ const ProjectScale = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="max-w-4xl mx-auto"
         >
-          <div className="bg-gradient-to-r from-quantum-900/40 to-purple-900/40 border border-quantum-500/20 rounded-2xl p-8 md:p-10 backdrop-blur-sm">
+          <div className="bg-gradient-to-r from-quantum-900/40 to-quantum-800/40 border border-quantum-500/20 rounded-2xl p-8 md:p-10 backdrop-blur-sm">
             <h3 className="text-xl md:text-2xl font-bold text-white mb-6 text-center">
               What It Would Take to Build This From Scratch
             </h3>

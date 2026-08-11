@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.0",
-    "@babel/preset-react": "^7.23.0",
+    "@babel/preset-react": "^8.0.1",
     "electron-builder": "^24.9.1"
   },
   "build": {
